@@ -66,6 +66,7 @@ The following comparison properties are available:
 
 - [Field](#field)
 - [Name](#name)
+- [Scope](#scope)
 - [Source](#source)
 - [Type](#type)
 
@@ -1680,6 +1681,42 @@ spec:
     notWithinPath:
       - "Deployments/Path/"
     caseSensitive: true
+```
+
+### Scope
+
+The comparison property `scope` is used with a condition to evaluate the scope of the object.
+The `scope` property must be set to `.`.
+Any other value will cause the condition to evaluate to `false`.
+
+Syntax:
+
+```yaml
+scope: '.'
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleScope'
+spec:
+  condition:
+    scope: '.'
+    startsWith: '/'
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleScope'
+spec:
+  if:
+    scope: '.'
+    startsWith: '/'
 ```
 
 ### SetOf

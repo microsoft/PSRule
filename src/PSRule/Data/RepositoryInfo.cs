@@ -15,16 +15,28 @@ namespace PSRule.Data
             DisplayName = headRef;
         }
 
+        /// <summary>
+        /// The full path to the repository root.
+        /// </summary>
         public string FullName { get; }
 
+        /// <summary>
+        /// The full path to the repository root.
+        /// </summary>
         public string BasePath { get; }
 
+        /// <summary>
+        /// The HEAD ref.
+        /// </summary>
         public string DisplayName { get; }
 
+        /// <inheritdoc/>
         string ITargetInfo.TargetName => DisplayName;
 
+        /// <inheritdoc/>
         string ITargetInfo.TargetType => typeof(RepositoryInfo).FullName;
 
+        /// <inheritdoc/>
         TargetSourceInfo ITargetInfo.Source => null;
     }
 }

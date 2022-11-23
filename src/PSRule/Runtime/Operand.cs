@@ -43,7 +43,12 @@ namespace PSRule.Runtime
         /// <summary>
         /// A literal value or function.
         /// </summary>
-        Value = 6
+        Value = 6,
+
+        /// <summary>
+        /// The object scope.
+        /// </summary>
+        Scope = 7
     }
 
     /// <summary>
@@ -125,6 +130,11 @@ namespace PSRule.Runtime
         internal static IOperand FromValue(object value)
         {
             return new Operand(OperandKind.Value, null, value);
+        }
+
+        internal static IOperand FromScope(string scope)
+        {
+            return new Operand(OperandKind.Scope, scope);
         }
 
         internal static string JoinPath(string p1, string p2)

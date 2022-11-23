@@ -83,5 +83,23 @@
         ]
       }
     }
+  },
+  {
+    // Synopsis: Suppress by scope.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "SuppressionGroup",
+    "metadata": {
+      "name": "SuppressByScope"
+    },
+    "spec": {
+      "rule": [
+        "FromFile1",
+        "FromFile2"
+      ],
+      "if": {
+        "scope": ".",
+        "startsWith": "/"
+      }
+    }
   }
 ]

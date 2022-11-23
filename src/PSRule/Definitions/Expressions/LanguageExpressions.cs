@@ -433,12 +433,14 @@ namespace PSRule.Definitions.Expressions
         private const string PROPERTY_SCHEMA = "$schema";
         private const string SOURCE = "source";
         private const string VALUE = "value";
+        private const string SCOPE = "scope";
 
         // Comparisons
         private const string LESS_THAN = "<";
         private const string LESS_THAN_EQUALS = "<=";
         private const string GREATER_THAN = ">=";
         private const string GREATER_THAN_EQUALS = ">=";
+        private const string DOT = ".";
 
         // Define built-ins
         internal readonly static ILanguageExpresssionDescriptor[] Builtin = new ILanguageExpresssionDescriptor[]
@@ -1597,7 +1599,7 @@ namespace PSRule.Definitions.Expressions
             operand = null;
             if (properties.TryGetString(NAME, out var svalue))
             {
-                if (svalue != "." || context?.Context?.LanguageScope == null)
+                if (svalue != DOT || context?.Context?.LanguageScope == null)
                     return Invalid(context, svalue);
 
                 if (!context.Context.LanguageScope.TryGetName(o, out var name, out var path) ||
@@ -1614,7 +1616,7 @@ namespace PSRule.Definitions.Expressions
             operand = null;
             if (properties.TryGetString(TYPE, out var svalue))
             {
-                if (svalue != "." || context?.Context?.LanguageScope == null)
+                if (svalue != DOT || context?.Context?.LanguageScope == null)
                     return Invalid(context, svalue);
 
                 if (!context.Context.LanguageScope.TryGetType(o, out var type, out var path) ||
@@ -1647,6 +1649,23 @@ namespace PSRule.Definitions.Expressions
             {
                 // TODO: Propogate path
                 operand = Operand.FromValue(value);
+            }
+            return operand != null;
+        }
+
+        private static bool TryScope(IExpressionContext context, LanguageExpression.PropertyBag properties, object o, out IOperand operand)
+        {
+            operand = null;
+            if (properties.TryGetString(SCOPE, out var svalue))
+            {
+                if (svalue != DOT || context?.Context?.LanguageScope == null)
+                    return Invalid(context, svalue);
+
+                if (!context.Context.LanguageScope.TryGetScope(o, out var scope) ||
+                    string.IsNullOrEmpty(scope))
+                    return Invalid(context, svalue);
+
+                operand = Operand.FromScope(scope);
             }
             return operand != null;
         }
@@ -1701,6 +1720,7 @@ namespace PSRule.Definitions.Expressions
                 TryName(context, properties, o, out operand) ||
                 TrySource(context, properties, out operand) ||
                 TryValue(context, properties, out operand) ||
+                TryScope(context, properties, o, out operand) ||
                 Invalid(context, name);
         }
 

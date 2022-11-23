@@ -30,8 +30,13 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.7.0-B0006 (pre-release)
+
 What's changed since pre-release v2.7.0-B0001:
 
+- General improvements:
+  - Added support target scope by @BernieWhite.
+    [#1350](https://github.com/microsoft/PSRule/issues/1350)
 - Bug fixes:
   - Fixed exception with comments in JSON baselines by @BernieWhite.
     [#1336](https://github.com/microsoft/PSRule/issues/1336)

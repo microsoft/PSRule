@@ -54,9 +54,25 @@ namespace PSRule.Pipeline
             o.ConvertTargetInfoType();
             Source = ReadSourceInfo(o, source);
             Issue = ReadIssueInfo(o, null);
+            TargetName = o.GetTargetName();
+            TargetType = o.GetTargetType();
+            Scope = o.GetScope();
             Path = ReadPath(o);
             Value = Convert(o);
             _Annotations = new Dictionary<Type, TargetObjectAnnotation>();
+        }
+
+        internal TargetObject(PSObject o, string targetName = null, string targetType = null, string scope = null)
+            : this (o, null)
+        {
+            if (targetName != null)
+                TargetName = targetName;
+
+            if (targetType != null)
+                TargetType = targetType;
+
+            if (scope != null)
+                Scope = scope;
         }
 
         internal PSObject Value { get; }
@@ -64,6 +80,12 @@ namespace PSRule.Pipeline
         internal TargetSourceCollection Source { get; private set; }
 
         internal TargetIssueCollection Issue { get; private set; }
+
+        internal string TargetName { get; }
+
+        internal string TargetType { get; }
+
+        internal string Scope { get; }
 
         internal string Path { get; }
 
