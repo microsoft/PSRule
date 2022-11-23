@@ -41,6 +41,8 @@ namespace PSRule.Pipeline
         private Runspace _Runspace;
         private SHA1Managed _Hash;
 
+        private Runspace _OrginalRunspace;
+
         // Track whether Dispose has been called.
         private bool _Disposed;
 
@@ -65,9 +67,7 @@ namespace PSRule.Pipeline
         {
             get
             {
-                if (_Hash == null)
-                    _Hash = new SHA1Managed();
-
+                _Hash ??= new SHA1Managed();
                 return _Hash;
             }
         }
@@ -143,8 +143,7 @@ namespace PSRule.Pipeline
                 state.LanguageMode = _LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
 
                 _Runspace = RunspaceFactory.CreateRunspace(state);
-                if (Runspace.DefaultRunspace == null)
-                    Runspace.DefaultRunspace = _Runspace;
+                Runspace.DefaultRunspace ??= _Runspace;
 
                 _Runspace.Open();
                 _Runspace.SessionStateProxy.PSVariable.Set(new PSRuleVariable());
@@ -286,6 +285,9 @@ namespace PSRule.Pipeline
             {
                 if (disposing)
                 {
+                    if (_OrginalRunspace != null)
+                        Runspace.DefaultRunspace = _OrginalRunspace;
+
                     if (_Hash != null)
                         _Hash.Dispose();
 

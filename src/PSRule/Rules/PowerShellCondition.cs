@@ -42,8 +42,10 @@ namespace PSRule.Rules
             if (!_Disposed)
             {
                 if (disposing)
+                {
+                    _Condition.Runspace = null;
                     _Condition.Dispose();
-
+                }
                 _Disposed = true;
             }
         }

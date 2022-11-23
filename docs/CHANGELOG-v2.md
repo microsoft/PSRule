@@ -40,6 +40,8 @@ What's changed since pre-release v2.7.0-B0001:
 - Bug fixes:
   - Fixed exception with comments in JSON baselines by @BernieWhite.
     [#1336](https://github.com/microsoft/PSRule/issues/1336)
+  - Fixed handling of constrained language mode with PowerShell 7.3 by @BernieWhite.
+    [#1348](https://github.com/microsoft/PSRule/issues/1348)
 
 ## v2.7.0-B0001 (pre-release)
 

@@ -30,6 +30,7 @@ namespace PSRule.Runtime
             {
                 if (disposing)
                 {
+                    _Block.Runspace = null;
                     _Block.Dispose();
                 }
                 _Disposed = true;

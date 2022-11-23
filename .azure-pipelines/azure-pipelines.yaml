@@ -172,7 +172,14 @@ stages:
 
   - template: jobs/testContainer.yaml
     parameters:
-      name: ps_7_2_ubuntu_20_04
+      name: ps_7_2_ubuntu_22_04
       displayName: 'PowerShell 7.2 - ubuntu-22.04'
       imageName: mcr.microsoft.com/powershell
       imageTag: 7.2-ubuntu-22.04
+
+  - template: jobs/testContainer.yaml
+    parameters:
+      name: ps_7_3_ubuntu_22_04
+      displayName: 'PowerShell 7.3 - ubuntu-22.04'
+      imageName: mcr.microsoft.com/powershell
+      imageTag: 7.3-ubuntu-22.04
