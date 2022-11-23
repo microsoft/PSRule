@@ -30,6 +30,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.7.0-B0006:
+
+- Bug fixes:
+  - Fixed job summary directory creation by @BernieWhite.
+    [#1353](https://github.com/microsoft/PSRule/issues/1353)
+
 ## v2.7.0-B0006 (pre-release)
 
 What's changed since pre-release v2.7.0-B0001:
