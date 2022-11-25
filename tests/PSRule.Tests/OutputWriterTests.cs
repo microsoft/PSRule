@@ -316,7 +316,7 @@ namespace PSRule
             result.Add(GetPass());
             result.Add(GetFail());
             result.Add(GetFail("rid-003", SeverityLevel.Warning, ruleId: "TestModule\\Rule-003"));
-            var writer = new JobSummaryWriter(output, option, null, outputPath: "", stream: stream);
+            var writer = new JobSummaryWriter(output, option, null, outputPath: "reports/summary.md", stream: stream);
             writer.Begin();
             writer.WriteObject(result, false);
             writer.End();

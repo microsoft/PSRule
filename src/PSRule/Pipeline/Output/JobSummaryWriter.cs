@@ -58,7 +58,7 @@ namespace PSRule.Pipeline.Output
 
         private void Open()
         {
-            if (_OutputPath == null || _IsDisposed)
+            if (string.IsNullOrEmpty(_OutputPath) || _IsDisposed || !CreateFile(_OutputPath))
                 return;
 
             _Stream ??= new FileStream(_OutputPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
