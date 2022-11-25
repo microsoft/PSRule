@@ -56,7 +56,7 @@ namespace PSRule.Definitions
 
             // Add Id, Ref, and aliases to the index.
             _Index.Add(target.Id, new TargetLink(target, ResourceIdKind.Id));
-            if (target.Ref.HasValue)
+            if (target.Ref.HasValue && target.Id != target.Ref.Value)
                 _Index.Add(target.Ref.Value, new TargetLink(target, ResourceIdKind.Ref));
 
             for (var i = 0; target.Alias != null && i < target.Alias.Length; i++)

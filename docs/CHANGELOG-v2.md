@@ -35,6 +35,8 @@ What's changed since pre-release v2.7.0-B0006:
 - Bug fixes:
   - Fixed job summary directory creation by @BernieWhite.
     [#1353](https://github.com/microsoft/PSRule/issues/1353)
+  - Fixed same key for ref and name by @BernieWhite
+    [#1354](https://github.com/microsoft/PSRule/issues/1354)
 
 ## v2.7.0-B0006 (pre-release)
 
