@@ -1,202 +1,202 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
-
 //
 // JSON-based rules for unit testing
 //
 [
-    {
-        // Synopsis: A YAML rule for testing.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "JsonBasicRule",
-            "tags": {
-                "feature": "tag"
-            },
-            "labels": {
-                "single": "Value",
-                "multi": [
-                    "Value1",
-                    "Value2"
-                ]
-            }
-        },
-        "spec": {
-            "condition": {
-                "allOf": [
-                    {
-                        "field": "Name",
-                        "equals": "TargetObject1"
-                    },
-                    {
-                        "field": "Value",
-                        "in": [
-                            "Value1",
-                            "Value2"
-                        ]
-                    }
-                ]
-            }
-        }
+  {
+    // Synopsis: A YAML rule for testing.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "JsonBasicRule",
+      "ref": "JsonBasicRule",
+      "tags": {
+        "feature": "tag"
+      },
+      "labels": {
+        "single": "Value",
+        "multi": [
+          "Value1",
+          "Value2"
+        ]
+      }
     },
-    {
-        // Synopsis: A YAML rule for testing.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "RuleJsonTrue",
-            "tags": {
-                "release": "GA"
-            }
-        },
-        "spec": {
-            "condition": {
-                "field": "Value",
-                "equals": 3
-            }
-        }
-    },
-    {
-        // Synopsis: A YAML rule for testing.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "RuleJsonFalse",
-            "tags": {
-                "release": "GA"
-            }
-        },
-        "spec": {
-            "condition": {
-                "field": "Value",
-                "greater": 3
-            }
-        }
-    },
-    {
-        // Synopsis: A YAML rule for testing.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "RuleJsonWithCustomType",
-            "tags": {
-                "release": "GA"
-            }
-        },
-        "spec": {
-            "type": [
-                "CustomType"
-            ],
-            "condition": {
-                "field": "Value",
-                "greater": 3
-            }
-        }
-    },
-    {
-        // Synopsis: A YAML rule for testing.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "RuleJsonWithSelector",
-            "tags": {
-                "release": "GA"
-            }
-        },
-        "spec": {
-            "with": [
-                "Test.Rule.Selector.1"
-            ],
-            "condition": {
-                "field": "notValue",
-                "greaterOrEquals": 3
-            }
-        }
-    },
-    {
-        // Synopsis: A selector for YAML rule tests
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Selector",
-        "metadata": {
-            "name": "Test.Rule.Selector.1"
-        },
-        "spec": {
-            "if": {
-                "field": "notValue",
-                "exists": true
-            }
-        }
-    },
-    {
-        // Synopsis: Test reason from rule.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "JsonReasonTest",
-            "tags": {
-                "test": "Reason"
-            }
-        },
-        "spec": {
-            "condition": {
-                "field": "Name",
-                "equals": "TestValue"
-            }
-        }
-    },
-    {
-        // Synopsis: Rule for unit testing of rule error level.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "JsonRuleErrorLevel",
-            "tags": {
-                "test": "Level"
-            }
-        },
-        "spec": {
-            "level": "Error",
-            "condition": {
-                "field": "name",
-                "equals": "TestObject1"
-            }
-        }
-    },
-    {
-        // Synopsis: Rule for unit testing of rule warning level.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "JsonRuleWarningLevel",
-            "tags": {
-                "test": "Level"
-            }
-        },
-        "spec": {
-            "level": "Warning",
-            "condition": {
-                "field": "name",
-                "equals": "TestObject1"
-            }
-        }
-    },
-    {
-        // Synopsis: Rule for unit testing of rule information level.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "JsonRuleInfoLevel",
-            "tags": {
-                "test": "Level"
-            }
-        },
-        "spec": {
-            "level": "Information",
-            "condition": {
-                "field": "name",
-                "equals": "TestObject1"
-            }
-        }
+    "spec": {
+      "condition": {
+        "allOf": [
+          {
+            "field": "Name",
+            "equals": "TargetObject1"
+          },
+          {
+            "field": "Value",
+            "in": [
+              "Value1",
+              "Value2"
+            ]
+          }
+        ]
+      }
     }
+  },
+  {
+    // Synopsis: A YAML rule for testing.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "RuleJsonTrue",
+      "tags": {
+        "release": "GA"
+      }
+    },
+    "spec": {
+      "condition": {
+        "field": "Value",
+        "equals": 3
+      }
+    }
+  },
+  {
+    // Synopsis: A YAML rule for testing.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "RuleJsonFalse",
+      "tags": {
+        "release": "GA"
+      }
+    },
+    "spec": {
+      "condition": {
+        "field": "Value",
+        "greater": 3
+      }
+    }
+  },
+  {
+    // Synopsis: A YAML rule for testing.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "RuleJsonWithCustomType",
+      "tags": {
+        "release": "GA"
+      }
+    },
+    "spec": {
+      "type": [
+        "CustomType"
+      ],
+      "condition": {
+        "field": "Value",
+        "greater": 3
+      }
+    }
+  },
+  {
+    // Synopsis: A YAML rule for testing.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "RuleJsonWithSelector",
+      "tags": {
+        "release": "GA"
+      }
+    },
+    "spec": {
+      "with": [
+        "Test.Rule.Selector.1"
+      ],
+      "condition": {
+        "field": "notValue",
+        "greaterOrEquals": 3
+      }
+    }
+  },
+  {
+    // Synopsis: A selector for YAML rule tests
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Test.Rule.Selector.1"
+    },
+    "spec": {
+      "if": {
+        "field": "notValue",
+        "exists": true
+      }
+    }
+  },
+  {
+    // Synopsis: Test reason from rule.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "JsonReasonTest",
+      "tags": {
+        "test": "Reason"
+      }
+    },
+    "spec": {
+      "condition": {
+        "field": "Name",
+        "equals": "TestValue"
+      }
+    }
+  },
+  {
+    // Synopsis: Rule for unit testing of rule error level.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "JsonRuleErrorLevel",
+      "tags": {
+        "test": "Level"
+      }
+    },
+    "spec": {
+      "level": "Error",
+      "condition": {
+        "field": "name",
+        "equals": "TestObject1"
+      }
+    }
+  },
+  {
+    // Synopsis: Rule for unit testing of rule warning level.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "JsonRuleWarningLevel",
+      "tags": {
+        "test": "Level"
+      }
+    },
+    "spec": {
+      "level": "Warning",
+      "condition": {
+        "field": "name",
+        "equals": "TestObject1"
+      }
+    }
+  },
+  {
+    // Synopsis: Rule for unit testing of rule information level.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "JsonRuleInfoLevel",
+      "tags": {
+        "test": "Level"
+      }
+    },
+    "spec": {
+      "level": "Information",
+      "condition": {
+        "field": "name",
+        "equals": "TestObject1"
+      }
+    }
+  }
 ]

@@ -209,7 +209,7 @@ namespace PSRule
             Assert.NotNull(rule);
             Assert.Equal("JsonBasicRule", rule[0].Name);
             Assert.Equal(PSRuleOption.GetRootedPath(""), rule[0].Source.HelpPath);
-            Assert.Equal(8, rule[0].Extent.Line);
+            Assert.Equal(7, rule[0].Extent.Line);
 
             // From relative path
             rule = HostHelper.GetRule(GetSource("../../../FromFile.Rule.jsonc"), context, includeDependencies: false);

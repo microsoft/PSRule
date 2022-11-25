@@ -11,6 +11,7 @@ apiVersion: github.com/microsoft/PSRule/v1
 kind: Rule
 metadata:
   name: YamlBasicRule
+  ref: YamlBasicRule
   tags:
     feature: tag
   labels:
