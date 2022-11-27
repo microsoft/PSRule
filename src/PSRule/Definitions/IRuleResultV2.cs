@@ -44,6 +44,9 @@ namespace PSRule.Definitions
         long Time { get; }
     }
 
+    /// <summary>
+    /// Detailed rule records for PSRule v2.
+    /// </summary>
     public interface IDetailedRuleResultV2 : IRuleResultV2
     {
         /// <summary>
@@ -61,8 +64,14 @@ namespace PSRule.Definitions
         /// </summary>
         Hashtable Field { get; }
 
+        /// <summary>
+        /// The bound name of the target.
+        /// </summary>
         string TargetName { get; }
 
+        /// <summary>
+        /// The bound type of the target.
+        /// </summary>
         string TargetType { get; }
     }
 
@@ -92,8 +101,14 @@ namespace PSRule.Definitions
         /// </summary>
         string FullPath { get; }
 
+        /// <summary>
+        /// The reason message.
+        /// </summary>
         string Message { get; }
 
+        /// <summary>
+        /// Return a formatted reason string.
+        /// </summary>
         string Format();
     }
 }

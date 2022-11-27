@@ -4,6 +4,7 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
+using System.IO;
 using System.Management.Automation;
 using PSRule.Pipeline;
 
@@ -11,7 +12,7 @@ namespace PSRule.Tool
 {
     internal sealed class ClientHost : HostContext
     {
-        private InvocationContext _Invocation;
+        private readonly InvocationContext _Invocation;
         private readonly bool _Verbose;
         private readonly bool _Debug;
 
@@ -20,6 +21,8 @@ namespace PSRule.Tool
             _Invocation = invocation;
             _Verbose = verbose;
             _Debug = debug;
+
+            Verbose($"Using working path: {Directory.GetCurrentDirectory()}");
         }
 
         public override ActionPreference GetPreferenceVariable(string variableName)

@@ -11,6 +11,7 @@ using System.Management.Automation;
 using System.Threading;
 using Newtonsoft.Json;
 using PSRule.Definitions.Baselines;
+using PSRule.Pipeline;
 using PSRule.Resources;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -393,6 +394,19 @@ namespace PSRule.Configuration
                 return;
             }
             _GetWorkingPath = () => executionContext.SessionState.Path.CurrentFileSystemLocation.Path;
+        }
+
+        /// <summary>
+        /// Set working path from a command-line host environment.
+        /// </summary>
+        public static void UseHostContext(IHostContext hostContext)
+        {
+            if (hostContext == null)
+            {
+                _GetWorkingPath = () => Directory.GetCurrentDirectory();
+                return;
+            }
+            _GetWorkingPath = () => hostContext.GetWorkingPath();
         }
 
         /// <summary>

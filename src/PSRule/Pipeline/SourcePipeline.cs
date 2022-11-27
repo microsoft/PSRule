@@ -294,13 +294,14 @@ namespace PSRule.Pipeline
             return results;
         }
 
-        private static Source.ModuleInfo LoadManifest(string basePath)
+        private Source.ModuleInfo LoadManifest(string basePath)
         {
             var name = Path.GetFileName(Path.GetDirectoryName(basePath));
             var path = Path.Combine(basePath, GetManifestName(name));
             if (!File.Exists(path))
                 return null;
 
+            Log("Loading manifest for: {0}", basePath);
             using var reader = new StreamReader(path);
             var data = reader.ReadToEnd();
             var ast = System.Management.Automation.Language.Parser.ParseInput(data, out _, out _);
@@ -316,12 +317,30 @@ namespace PSRule.Pipeline
             var projectUri = psData["ProjectUri"] as string;
             var prerelease = psData["Prerelease"] as string;
 
-            if (manifest["RequiredAssemblies"] is Array requiredAssemblies)
+            if (TryRequiredAssemblies(manifest["RequiredAssemblies"], out var requiredAssemblies))
             {
-                foreach (var a in requiredAssemblies.OfType<string>())
-                    Assembly.LoadFile(Path.Combine(basePath, a));
+                foreach (var a in requiredAssemblies)
+                {
+                    var assemblyPath = Path.Combine(basePath, a);
+                    Log("Loading assembly: {0}", assemblyPath);
+                    Assembly.LoadFile(assemblyPath);
+                }
             }
             return new Source.ModuleInfo(basePath, name, version, projectUri, guid, companyName, prerelease);
+        }
+
+        private static bool TryRequiredAssemblies(object value, out IEnumerable<string> requiredAssemblies)
+        {
+            requiredAssemblies = null;
+            if (value == null) return false;
+
+            if (value is string s)
+                requiredAssemblies = new string[] { s };
+
+            if (value is Array array)
+                requiredAssemblies = array.OfType<string>().ToArray();
+
+            return requiredAssemblies != null;
         }
 
         private static string GetManifestName(string name)

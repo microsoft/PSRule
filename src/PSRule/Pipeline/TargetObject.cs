@@ -63,7 +63,7 @@ namespace PSRule.Pipeline
         }
 
         internal TargetObject(PSObject o, string targetName = null, string targetType = null, string scope = null)
-            : this (o, null)
+            : this(o, null)
         {
             if (targetName != null)
                 TargetName = targetName;

@@ -15,8 +15,8 @@ namespace PSRule.Tool
     {
         public static void RunAnalyze(AnalyzerOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
         {
-            var option = GetOption();
             var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
+            var option = GetOption(host);
             var inputPath = operationOptions.InputPath == null || operationOptions.InputPath.Length == 0 ?
                 new string[] { PSRuleOption.GetWorkingPath() } : operationOptions.InputPath;
 
@@ -40,8 +40,8 @@ namespace PSRule.Tool
 
         public static void RunRestore(RestoreOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
         {
-            var option = GetOption();
             var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
+            var option = GetOption(host);
             var requires = option.Requires.ToArray();
 
             using var pwsh = PowerShell.Create();
@@ -97,8 +97,9 @@ namespace PSRule.Tool
             pwsh.Invoke();
         }
 
-        private static PSRuleOption GetOption()
+        private static PSRuleOption GetOption(ClientHost host)
         {
+            PSRuleOption.UseHostContext(host);
             var option = PSRuleOption.FromFileOrEmpty();
             option.Execution.InitialSessionState = Configuration.SessionState.Minimal;
             option.Input.Format = InputFormat.File;

@@ -27,6 +27,9 @@ namespace PSRule.Pipeline
             for (var i = 0; i < module.Length; i++)
                 sourcePipeline.ModuleByName(module[i]);
 
+            for (var i = 0; option.Include.Module != null && i < option.Include.Module.Length; i++)
+                sourcePipeline.ModuleByName(option.Include.Module[i]);
+
             var source = sourcePipeline.Build();
             var pipeline = new InvokeRulePipelineBuilder(source, hostContext);
             pipeline.Configure(option);
@@ -48,6 +51,9 @@ namespace PSRule.Pipeline
             var sourcePipeline = new SourcePipelineBuilder(hostContext, option, GetLocalPath());
             for (var i = 0; module != null && i < module.Length; i++)
                 sourcePipeline.ModuleByName(module[i]);
+
+            for (var i = 0; option.Include.Module != null && i < option.Include.Module.Length; i++)
+                sourcePipeline.ModuleByName(option.Include.Module[i]);
 
             var source = sourcePipeline.Build();
             var pipeline = new AssertPipelineBuilder(source, hostContext);
