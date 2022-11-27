@@ -30,6 +30,14 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.7.0-B0016:
+
+- Bug fixes:
+  - Fixes CLI failed to load required assemblies by @BernieWhite.
+    [#1361](https://github.com/microsoft/PSRule/issues/1361)
+  - Fixes CLI ignores modules specified in `Include.Modules` by @BernieWhite.
+    [#1362](https://github.com/microsoft/PSRule/issues/1362)
+
 ## v2.7.0-B0016 (pre-release)
 
 What's changed since pre-release v2.7.0-B0006:

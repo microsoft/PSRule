@@ -7,8 +7,14 @@ using PSRule.Configuration;
 
 namespace PSRule.Pipeline
 {
+    /// <summary>
+    /// A helper to build a pipeline to return target objects.
+    /// </summary>
     public interface IGetTargetPipelineBuilder : IPipelineBuilder
     {
+        /// <summary>
+        /// Specifies a path for reading input objects from disk.
+        /// </summary>
         void InputPath(string[] path);
     }
 
@@ -25,6 +31,7 @@ namespace PSRule.Pipeline
             _InputPath = null;
         }
 
+        /// <inheritdoc/>
         public override IPipelineBuilder Configure(PSRuleOption option)
         {
             if (option == null)
@@ -41,6 +48,7 @@ namespace PSRule.Pipeline
             return this;
         }
 
+        /// <inheritdoc/>
         public void InputPath(string[] path)
         {
             if (path == null || path.Length == 0)
@@ -58,11 +66,13 @@ namespace PSRule.Pipeline
             _InputPath = builder;
         }
 
+        /// <inheritdoc/>
         public override IPipeline Build(IPipelineWriter writer = null)
         {
             return new GetTargetPipeline(PrepareContext(null, null, null), PrepareReader(), writer ?? PrepareWriter());
         }
 
+        /// <inheritdoc/>
         protected override PipelineReader PrepareReader()
         {
             if (!string.IsNullOrEmpty(Option.Input.ObjectPath))

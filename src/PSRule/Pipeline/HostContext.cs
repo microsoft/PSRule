@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.IO;
 using System.Management.Automation;
 using PSRule.Definitions;
 
@@ -65,6 +66,11 @@ namespace PSRule.Pipeline
         /// Determines if a destructive action such as overwriting a file should be processed.
         /// </summary>
         bool ShouldProcess(string target, string action);
+
+        /// <summary>
+        /// Get the current working path.
+        /// </summary>
+        string GetWorkingPath();
     }
 
     internal static class HostContextExtensions
@@ -186,6 +192,12 @@ namespace PSRule.Pipeline
         {
 
         }
+
+        /// <inheritdoc/>
+        public virtual string GetWorkingPath()
+        {
+            return Directory.GetCurrentDirectory();
+        }
     }
 
     /// <summary>
@@ -272,6 +284,12 @@ namespace PSRule.Pipeline
         public void Object(object sendToPipeline, bool enumerateCollection)
         {
             CmdletContext.WriteObject(sendToPipeline, enumerateCollection);
+        }
+
+        /// <inheritdoc/>
+        public string GetWorkingPath()
+        {
+            return ExecutionContext.SessionState.Path.CurrentFileSystemLocation.Path;
         }
     }
 }
