@@ -1511,6 +1511,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#apiversion" class="md-nav__link">
+    APIVersion
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#contains" class="md-nav__link">
     Contains
   </a>
@@ -2128,6 +2135,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#apiversion" class="md-nav__link">
+    APIVersion
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#contains" class="md-nav__link">
     Contains
   </a>
@@ -2504,6 +2518,7 @@ The <code>$Assert</code> object provides a consistent set of methods to evaluate
 <p>Each <code>$Assert</code> method returns an <code>AssertResult</code> object that contains the result of the assertion.</p>
 <p>The following built-in assertion methods are provided:</p>
 <ul>
+<li><a href="#apiversion">APIVersion</a> - The field value must be a date version string.</li>
 <li><a href="#contains">Contains</a> - The field value must contain at least one of the strings.</li>
 <li><a href="#count">Count</a> - The field value must contain the specified number of items.</li>
 <li><a href="#endswith">EndsWith</a> - The field value must match at least one suffix.</li>
@@ -2612,6 +2627,93 @@ The syntax for an object path is inspired by JSONPath which is current an IETF I
   However member names can not start or end with a dash.
   i.e. <code>Properties.dashed-name</code> and <code>Properties.'-dashed-name'</code> are valid.</li>
 </ul>
+<h3 id="apiversion">APIVersion<a class="headerlink" href="#apiversion" title="Permanent link">#</a></h3>
+<p>The <code>APIVersion</code> assertion method checks the field value is a valid date version.
+A constraint can optionally be provided to require the date version to be within a range.</p>
+<p>A date version uses the format <code>yyyy-MM-dd</code> (<code>2015-10-01</code>).
+Additionally an optional string prerelease identifier can be used <code>yyyy-MM-dd-prerelease</code> (<code>2015-10-01-preview.1</code>).</p>
+<p>The following parameters are accepted:</p>
+<ul>
+<li><code>inputObject</code> - The object being checked for the specified field.</li>
+<li><code>field</code> - The name of the field to check.
+  This is a case insensitive compare.</li>
+<li><code>constraint</code> (optional) - A version constraint, see below for details of version constrain format.</li>
+<li><code>includePrerelease</code> (optional) - Determines if prerelease versions are included.
+  Unless specified this defaults to <code>$False</code>.</li>
+</ul>
+<p>The following are supported constraints:</p>
+<ul>
+<li><code>version</code> - Must match version exactly. This also accepts the prefix <code>=</code>.<ul>
+<li>e.g. <code>2015-10-01</code>, <code>=2015-10-01</code></li>
+</ul>
+</li>
+<li><code>&gt;version</code> - Must be greater than version.<ul>
+<li>e.g. <code>&gt;2015-10-01</code></li>
+</ul>
+</li>
+<li><code>&gt;=version</code> - Must be greater than or equal to version.<ul>
+<li>e.g. <code>&gt;=2015-10-01</code></li>
+</ul>
+</li>
+<li><code>&lt;version</code> - Must be less than version.<ul>
+<li>e.g. <code>&lt;2022-03-01</code></li>
+</ul>
+</li>
+<li><code>&lt;=version</code> - Must be less than or equal to version.<ul>
+<li>e.g. <code>&lt;=2022-03-01</code></li>
+</ul>
+</li>
+</ul>
+<p>An empty, null or <code>*</code> constraint matches all valid date versions.</p>
+<p>Multiple constraints can be joined together:</p>
+<ul>
+<li>Use a <em>space</em> to separate multiple constraints, each must be true (<em>logical AND</em>).</li>
+<li>Separates constraint sets with the double pipe <code>||</code>.
+  Only one constraint set must be true (<em>logical OR</em>).</li>
+</ul>
+<p>By example:</p>
+<ul>
+<li><code>2014-01-01 || &gt;=2015-10-01 &lt;2022-03-01</code> results in:<ul>
+<li>Pass: <code>2014-01-01</code>, <code>2015-10-01</code>, <code>2019-06-30</code>, <code>2022-02-01</code>.</li>
+<li>Fail: <code>2015-01-01</code>, <code>2022-09-01</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Handling for prerelease versions:</p>
+<ul>
+<li>Constraints and versions containing prerelease identifiers are supported.
+  i.e. <code>&gt;=2015-10-01-preview</code> or <code>2015-10-01-preview</code>.</li>
+<li>A version containing a prerelease identifer follows similar ordering to semantic versioning.
+  i.e. <code>2015-10-01-preview</code> &lt; <code>2015-10-01-preview.1</code> &lt; <code>2015-10-01</code> &lt; <code>2022-03-01-preview</code> &lt; <code>2022-03-01</code>.</li>
+<li>A constraint without a prerelease identifer will only match a stable version by default.
+  Set <code>includePrerelease</code> to <code>$True</code> to include prerelease versions.
+  Alternatively use the <code>@pre</code> or <code>@prerelease</code> flag in a constraint.</li>
+</ul>
+<p>Reasons include:</p>
+<ul>
+<li><em>The parameter 'inputObject' is null.</em></li>
+<li><em>The parameter 'field' is null or empty.</em></li>
+<li><em>The field '{0}' does not exist.</em></li>
+<li><em>The field value '{0}' is not a version string.</em></li>
+<li><em>The version '{0}' does not match the constraint '{1}'.</em></li>
+</ul>
+<p>Examples:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Rule</span> <span class="s1">&#39;ValidAPIVersion&#39;</span> <span class="p">{</span>
+    <span class="nv">$Assert</span><span class="p">.</span><span class="n">APIVersion</span><span class="p">(</span><span class="nv">$TargetObject</span><span class="p">,</span> <span class="s1">&#39;apiVersion&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">Rule</span> <span class="s1">&#39;MinimumAPIVersion&#39;</span> <span class="p">{</span>
+    <span class="nv">$Assert</span><span class="p">.</span><span class="n">APIVersion</span><span class="p">(</span><span class="nv">$TargetObject</span><span class="p">,</span> <span class="s1">&#39;apiVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;=2015-10-01&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">Rule</span> <span class="s1">&#39;MinimumAPIVersionWithPrerelease&#39;</span> <span class="p">{</span>
+    <span class="nv">$Assert</span><span class="p">.</span><span class="n">APIVersion</span><span class="p">(</span><span class="nv">$TargetObject</span><span class="p">,</span> <span class="s1">&#39;apiVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;=2015-10-01-0&#39;</span><span class="p">,</span> <span class="nv">$True</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">Rule</span> <span class="s1">&#39;MinimumAPIVersionWithFlag&#39;</span> <span class="p">{</span>
+    <span class="nv">$Assert</span><span class="p">.</span><span class="n">APIVersion</span><span class="p">(</span><span class="nv">$TargetObject</span><span class="p">,</span> <span class="s1">&#39;apiVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;@pre &gt;=2015-10-01-0&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
 <h3 id="contains">Contains<a class="headerlink" href="#contains" title="Permanent link">#</a></h3>
 <p>The <code>Contains</code> assertion method checks the field value contains the specified string.
 Optionally a case-sensitive compare can be used, however case is ignored by default.</p>
@@ -4062,7 +4164,7 @@ If a <code>_PSRule</code> property exists with <code>issue</code> sub-property P
   <small>
     
       Last update:
-      2022-07-28
+      2022-12-03
     
   </small>
 </div>
