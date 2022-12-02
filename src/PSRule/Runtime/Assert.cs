@@ -848,6 +848,30 @@ namespace PSRule.Runtime
         }
 
         /// <summary>
+        /// The APIVersion assertion method checks the field value is a valid date version.
+        /// A constraint can optionally be provided to require the date version to be within a range.
+        /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#apiversion"/>
+        /// </summary>
+        /// <remarks>
+        /// Only applies to strings.
+        /// </remarks>
+        public AssertResult APIVersion(PSObject inputObject, string field, string constraint = null, bool includePrerelease = false)
+        {
+            // Guard parameters
+            if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
+                GuardNullOrEmptyParam(field, nameof(field), out result) ||
+                GuardField(inputObject, field, false, out var fieldValue, out result) ||
+                GuardDateVersion(Operand.FromPath(field), fieldValue, out var value, out result))
+                return result;
+
+            if (!DateVersion.TryParseConstraint(constraint, out var c, includePrerelease))
+                throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, value));
+
+            // Assert
+            return c != null && !c.Equals(value) ? Fail(Operand.FromPath(field), ReasonStrings.VersionContraint, value, constraint) : Pass();
+        }
+
+        /// <summary>
         /// The Greater assertion method checks the field value is greater than the specified value.
         /// The field value can either be an integer, float, array, or string.
         /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#greater"/>
@@ -1354,6 +1378,17 @@ namespace PSRule.Runtime
             result = null;
             value = null;
             if (ExpressionHelpers.TryString(fieldValue, out var sversion) && SemanticVersion.TryParseVersion(sversion, out value))
+                return false;
+
+            result = Fail(operand, ReasonStrings.Version, fieldValue);
+            return true;
+        }
+
+        private bool GuardDateVersion(IOperand operand, object fieldValue, out DateVersion.Version value, out AssertResult result)
+        {
+            result = null;
+            value = null;
+            if (ExpressionHelpers.TryString(fieldValue, out var sversion) && DateVersion.TryParseVersion(sversion, out value))
                 return false;
 
             result = Fail(operand, ReasonStrings.Version, fieldValue);

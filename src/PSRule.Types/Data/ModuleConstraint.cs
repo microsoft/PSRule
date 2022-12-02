@@ -13,7 +13,7 @@ namespace PSRule.Data
         /// </summary>
         /// <param name="module">The name of the module.</param>
         /// <param name="constraint">The version constraint of the module.</param>
-        public ModuleConstraint(string module, IVersionConstraint constraint)
+        public ModuleConstraint(string module, ISemanticVersionConstraint constraint)
         {
             Module = module;
             Constraint = constraint;
@@ -27,6 +27,6 @@ namespace PSRule.Data
         /// <summary>
         /// The version constraint of the module.
         /// </summary>
-        public IVersionConstraint Constraint { get; }
+        public ISemanticVersionConstraint Constraint { get; }
     }
 }

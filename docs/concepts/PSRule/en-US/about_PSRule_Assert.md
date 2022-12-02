@@ -20,6 +20,7 @@ Each `$Assert` method returns an `AssertResult` object that contains the result 
 
 The following built-in assertion methods are provided:
 
+- [APIVersion](#apiversion) - The field value must be a date version string.
 - [Contains](#contains) - The field value must contain at least one of the strings.
 - [Count](#count) - The field value must contain the specified number of items.
 - [EndsWith](#endswith) - The field value must match at least one suffix.
@@ -137,6 +138,88 @@ Notable differences between object paths and JSONPath are:
 - Member names with a dash `-` are supported without being quoted.
   However member names can not start or end with a dash.
   i.e. `Properties.dashed-name` and `Properties.'-dashed-name'` are valid.
+
+### APIVersion
+
+The `APIVersion` assertion method checks the field value is a valid date version.
+A constraint can optionally be provided to require the date version to be within a range.
+
+A date version uses the format `yyyy-MM-dd` (`2015-10-01`).
+Additionally an optional string prerelease identifier can be used `yyyy-MM-dd-prerelease` (`2015-10-01-preview.1`).
+
+The following parameters are accepted:
+
+- `inputObject` - The object being checked for the specified field.
+- `field` - The name of the field to check.
+  This is a case insensitive compare.
+- `constraint` (optional) - A version constraint, see below for details of version constrain format.
+- `includePrerelease` (optional) - Determines if prerelease versions are included.
+  Unless specified this defaults to `$False`.
+
+The following are supported constraints:
+
+- `version` - Must match version exactly. This also accepts the prefix `=`.
+  - e.g. `2015-10-01`, `=2015-10-01`
+- `>version` - Must be greater than version.
+  - e.g. `>2015-10-01`
+- `>=version` - Must be greater than or equal to version.
+  - e.g. `>=2015-10-01`
+- `<version` - Must be less than version.
+  - e.g. `<2022-03-01`
+- `<=version` - Must be less than or equal to version.
+  - e.g. `<=2022-03-01`
+
+An empty, null or `*` constraint matches all valid date versions.
+
+Multiple constraints can be joined together:
+
+- Use a _space_ to separate multiple constraints, each must be true (_logical AND_).
+- Separates constraint sets with the double pipe `||`.
+  Only one constraint set must be true (_logical OR_).
+
+By example:
+
+- `2014-01-01 || >=2015-10-01 <2022-03-01` results in:
+  - Pass: `2014-01-01`, `2015-10-01`, `2019-06-30`, `2022-02-01`.
+  - Fail: `2015-01-01`, `2022-09-01`.
+
+Handling for prerelease versions:
+
+- Constraints and versions containing prerelease identifiers are supported.
+  i.e. `>=2015-10-01-preview` or `2015-10-01-preview`.
+- A version containing a prerelease identifer follows similar ordering to semantic versioning.
+  i.e. `2015-10-01-preview` < `2015-10-01-preview.1` < `2015-10-01` < `2022-03-01-preview` < `2022-03-01`.
+- A constraint without a prerelease identifer will only match a stable version by default.
+  Set `includePrerelease` to `$True` to include prerelease versions.
+  Alternatively use the `@pre` or `@prerelease` flag in a constraint.
+
+Reasons include:
+
+- _The parameter 'inputObject' is null._
+- _The parameter 'field' is null or empty._
+- _The field '{0}' does not exist._
+- _The field value '{0}' is not a version string._
+- _The version '{0}' does not match the constraint '{1}'._
+
+Examples:
+
+```powershell
+Rule 'ValidAPIVersion' {
+    $Assert.APIVersion($TargetObject, 'apiVersion')
+}
+
+Rule 'MinimumAPIVersion' {
+    $Assert.APIVersion($TargetObject, 'apiVersion', '>=2015-10-01')
+}
+
+Rule 'MinimumAPIVersionWithPrerelease' {
+    $Assert.APIVersion($TargetObject, 'apiVersion', '>=2015-10-01-0', $True)
+}
+
+Rule 'MinimumAPIVersionWithFlag' {
+    $Assert.APIVersion($TargetObject, 'apiVersion', '@pre >=2015-10-01-0')
+}
+```
 
 ### Contains
 
