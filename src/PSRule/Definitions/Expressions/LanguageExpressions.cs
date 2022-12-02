@@ -410,6 +410,7 @@ namespace PSRule.Definitions.Expressions
         private const string COUNT = "count";
         private const string NOTCOUNT = "notCount";
         private const string VERSION = "version";
+        private const string APIVERSION = "apiVersion";
         private const string WITHINPATH = "withinPath";
         private const string NOTWITHINPATH = "notWithinPath";
         private const string LIKE = "like";
@@ -484,6 +485,7 @@ namespace PSRule.Definitions.Expressions
             new LanguageExpresssionDescriptor(NOTCOUNT, LanguageExpressionType.Condition, NotCount),
             new LanguageExpresssionDescriptor(HASSCHEMA, LanguageExpressionType.Condition, HasSchema),
             new LanguageExpresssionDescriptor(VERSION, LanguageExpressionType.Condition, Version),
+            new LanguageExpresssionDescriptor(APIVERSION, LanguageExpressionType.Condition, APIVersion),
             new LanguageExpresssionDescriptor(HASDEFAULT, LanguageExpressionType.Condition, HasDefault),
             new LanguageExpresssionDescriptor(WITHINPATH, LanguageExpressionType.Condition, WithinPath),
             new LanguageExpresssionDescriptor(NOTWITHINPATH, LanguageExpressionType.Condition, NotWithinPath),
@@ -1466,6 +1468,31 @@ namespace PSRule.Definitions.Expressions
                 return Pass();
             }
             return Invalid(context, VERSION);
+        }
+
+        internal static bool APIVersion(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+        {
+            var properties = GetProperties(args);
+            if (TryPropertyString(properties, APIVERSION, out var expectedValue) &&
+                TryOperand(context, APIVERSION, o, properties, out var operand) &&
+                TryPropertyBoolOrDefault(properties, INCLUDEPRERELEASE, out var includePrerelease, false))
+            {
+                context.ExpressionTrace(APIVERSION, operand.Value, expectedValue);
+                if (!ExpressionHelpers.TryString(operand.Value, out var version))
+                    return NotString(context, operand);
+
+                if (!DateVersion.TryParseVersion(version, out var actualVersion))
+                    return Fail(context, operand, ReasonStrings.Version, operand.Value);
+
+                if (!DateVersion.TryParseConstraint(expectedValue, out var constraint, includePrerelease))
+                    throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, expectedValue));
+
+                if (constraint != null && !constraint.Equals(actualVersion))
+                    return Fail(context, operand, ReasonStrings.VersionContraint, actualVersion, constraint);
+
+                return Pass();
+            }
+            return Invalid(context, APIVERSION);
         }
 
         #endregion Conditions

@@ -6,6 +6,9 @@ using Xunit;
 
 namespace PSRule
 {
+    /// <summary>
+    /// Tests for semantic version comparison.
+    /// </summary>
     public sealed class SemanticVersionTests
     {
         /// <summary>
@@ -40,10 +43,10 @@ namespace PSRule
         [Fact]
         public void VersionOrder()
         {
-            SemanticVersion.TryParseVersion("1.0.0", out var actual1);
-            SemanticVersion.TryParseVersion("1.2.0", out var actual2);
-            SemanticVersion.TryParseVersion("10.0.0", out var actual3);
-            SemanticVersion.TryParseVersion("1.0.2", out var actual4);
+            Assert.True(SemanticVersion.TryParseVersion("1.0.0", out var actual1));
+            Assert.True(SemanticVersion.TryParseVersion("1.2.0", out var actual2));
+            Assert.True(SemanticVersion.TryParseVersion("10.0.0", out var actual3));
+            Assert.True(SemanticVersion.TryParseVersion("1.0.2", out var actual4));
 
             Assert.True(actual1.CompareTo(actual1) == 0);
             Assert.True(actual1.CompareTo(actual2) < 0);

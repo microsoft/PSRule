@@ -18,6 +18,7 @@ Expressions are comprised of nested conditions, operators, and comparison proper
 
 The following conditions are available:
 
+- [APIVersion](#apiversion)
 - [Contains](#contains)
 - [Count](#count)
 - [Equals](#equals)
@@ -156,6 +157,54 @@ spec:
       exists: true
     - field: 'AlternativeName'
       exists: true
+```
+
+### APIVersion
+
+The `apiVersion` condition determines if the operand is a valid date version.
+A constraint can optionally be provided to require the date version to be within a range.
+Supported version constraints for expression are the same as the `$Assert.APIVersion` assertion helper.
+
+Syntax:
+
+```yaml
+apiVersion: <string>
+includePrerelease: <bool>
+```
+
+For example:
+
+```yaml
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: 'ExampleAPIVersion'
+spec:
+  condition:
+    field: 'engine.apiVersion'
+    apiVersion: '>=2015-10-01'
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleAnyAPIVersion'
+spec:
+  if:
+    field: 'engine.apiVersion'
+    apiVersion: ''
+
+---
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: 'ExampleAPIVersionIncludingPrerelease'
+spec:
+  if:
+    field: 'engine.apiVersion'
+    apiVersion: '>=2015-10-01'
+    includePrerelease: true
 ```
 
 ### Contains

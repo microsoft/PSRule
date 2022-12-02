@@ -717,6 +717,43 @@ namespace PSRule
         }
 
         [Fact]
+        public void APIVersion()
+        {
+            SetContext();
+            var assert = GetAssertionHelper();
+            var value = GetObject(
+                (name: "version", value: "2015-10-01"),
+                (name: "version2", value: "2015-10-01-preview"),
+                (name: "version3", value: "2022-01-01-preview"),
+                (name: "notversion", value: "x.y.z")
+            );
+
+            Assert.True(assert.APIVersion(value, "version", "2015-10-01").Result);
+            Assert.True(assert.APIVersion(value, "version", "=2015-10-01").Result);
+            Assert.True(assert.APIVersion(value, "version", ">=2015-10-01").Result);
+            Assert.False(assert.APIVersion(value, "version", "<2015-10-01").Result);
+            Assert.True(assert.APIVersion(value, "version", ">2014-01-01").Result);
+            Assert.True(assert.APIVersion(value, "version", ">=2015-10-01-preview").Result);
+            Assert.True(assert.APIVersion(value, "version", ">=2015-10-01-preview", includePrerelease: true).Result);
+
+            Assert.False(assert.APIVersion(value, "version2", "2015-10-01").Result);
+            Assert.False(assert.APIVersion(value, "version2", "=2015-10-01").Result);
+            Assert.False(assert.APIVersion(value, "version2", ">=2015-10-01").Result);
+            Assert.False(assert.APIVersion(value, "version2", "<2015-10-01").Result);
+            Assert.False(assert.APIVersion(value, "version2", ">2014-01-01").Result);
+            Assert.True(assert.APIVersion(value, "version2", ">=2015-10-01-preview").Result);
+            Assert.True(assert.APIVersion(value, "version2", ">=2015-10-01-preview", includePrerelease: true).Result);
+
+            Assert.False(assert.APIVersion(value, "version3", "2015-10-01").Result);
+            Assert.False(assert.APIVersion(value, "version3", "=2015-10-01").Result);
+            Assert.False(assert.APIVersion(value, "version3", ">=2015-10-01").Result);
+            Assert.False(assert.APIVersion(value, "version3", "<2015-10-01").Result);
+            Assert.False(assert.APIVersion(value, "version3", ">2014-01-01").Result);
+            Assert.False(assert.APIVersion(value, "version3", ">=2015-10-01-preview").Result);
+            Assert.True(assert.APIVersion(value, "version3", ">=2015-10-01-preview", includePrerelease: true).Result);
+        }
+
+        [Fact]
         public void Greater()
         {
             SetContext();

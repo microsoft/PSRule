@@ -1801,5 +1801,48 @@
         ]
       }
     }
+  },
+  {
+    // Synopsis: Test comparison with apiVersion.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "JsonAPIVersion"
+    },
+    "spec": {
+      "if": {
+        "field": "dateVersion",
+        "apiVersion": ">=2015-10-01"
+      }
+    }
+  },
+  {
+    // Synopsis: Test comparison with apiVersion.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "JsonAPIVersionWithPrerelease"
+    },
+    "spec": {
+      "if": {
+        "field": "dateVersion",
+        "apiVersion": ">=2015-10-01",
+        "includePrerelease": true
+      }
+    }
+  },
+  {
+    // Synopsis: Test comparison with apiVersion.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "JsonAPIVersionAnyVersion"
+    },
+    "spec": {
+      "if": {
+        "field": "dateVersion",
+        "apiVersion": ""
+      }
+    }
   }
 ]
