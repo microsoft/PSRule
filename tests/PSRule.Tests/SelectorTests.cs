@@ -41,7 +41,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelector(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(94, selector.Length);
+            Assert.Equal(97, selector.Length);
 
             var actual = selector[0];
             var visitor = new SelectorVisitor(context, actual.Id, actual.Source, actual.Spec.If);
@@ -1539,6 +1539,47 @@ namespace PSRule
             Assert.False(version.Match(actual7));
 
             version = GetSelectorVisitor($"{type}VersionAnyVersion", GetSource(path), out _);
+            Assert.True(version.Match(actual1));
+            Assert.True(version.Match(actual2));
+            Assert.True(version.Match(actual3));
+            Assert.True(version.Match(actual4));
+            Assert.True(version.Match(actual5));
+            Assert.False(version.Match(actual6));
+            Assert.False(version.Match(actual7));
+        }
+
+        [Theory]
+        [InlineData("Yaml", SelectorYamlFileName)]
+        [InlineData("Json", SelectorJsonFileName)]
+        public void APIVersion(string type, string path)
+        {
+            var actual1 = GetObject((name: "dateVersion", value: "2015-10-01"));
+            var actual2 = GetObject((name: "dateVersion", value: "2014-01-01"));
+            var actual3 = GetObject((name: "dateVersion", value: "2022-01-01"));
+            var actual4 = GetObject((name: "dateVersion", value: "2015-10-01-preview"));
+            var actual5 = GetObject((name: "dateVersion", value: "2022-01-01-preview"));
+            var actual6 = GetObject();
+            var actual7 = GetObject((name: "dateVersion", value: "a-b-c"));
+
+            var version = GetSelectorVisitor($"{type}APIVersion", GetSource(path), out _);
+            Assert.True(version.Match(actual1));
+            Assert.False(version.Match(actual2));
+            Assert.True(version.Match(actual3));
+            Assert.False(version.Match(actual4));
+            Assert.False(version.Match(actual5));
+            Assert.False(version.Match(actual6));
+            Assert.False(version.Match(actual7));
+
+            version = GetSelectorVisitor($"{type}APIVersionWithPrerelease", GetSource(path), out _);
+            Assert.True(version.Match(actual1));
+            Assert.False(version.Match(actual2));
+            Assert.True(version.Match(actual3));
+            Assert.False(version.Match(actual4));
+            Assert.True(version.Match(actual5));
+            Assert.False(version.Match(actual6));
+            Assert.False(version.Match(actual7));
+
+            version = GetSelectorVisitor($"{type}APIVersionAnyVersion", GetSource(path), out _);
             Assert.True(version.Match(actual1));
             Assert.True(version.Match(actual2));
             Assert.True(version.Match(actual3));

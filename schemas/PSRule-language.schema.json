@@ -914,6 +914,9 @@
           "$ref": "#/definitions/expressions/definitions/conditions/definitions/version"
         },
         {
+          "$ref": "#/definitions/expressions/definitions/conditions/definitions/apiVersion"
+        },
+        {
           "$ref": "#/definitions/expressions/definitions/conditions/definitions/hasDefault"
         },
         {
@@ -1279,6 +1282,9 @@
             },
             {
               "$ref": "#/definitions/expressions/definitions/conditions/definitions/version"
+            },
+            {
+              "$ref": "#/definitions/expressions/definitions/conditions/definitions/apiVersion"
             },
             {
               "$ref": "#/definitions/expressions/definitions/conditions/definitions/hasDefault"
@@ -2629,6 +2635,41 @@
               },
               "required": [
                 "version"
+              ],
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/expressions/definitions/properties"
+                }
+              ],
+              "additionalProperties": false,
+              "minProperties": 2
+            },
+            "apiVersion": {
+              "type": "object",
+              "properties": {
+                "apiVersion": {
+                  "type": "string",
+                  "title": "API Version",
+                  "description": "Must be a valid date version. A constraint can optionally be provided to require the date version to be within a range.",
+                  "markdownDescription": "Must be a valid date version. A constraint can optionally be provided to require the date version to be within a range. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#apiversion)",
+                  "default": ""
+                },
+                "includePrerelease": {
+                  "type": "boolean",
+                  "title": "Include pre-release",
+                  "description": "Determines if pre-release versions are included. By default, pre-release versions are not included.",
+                  "markdownDescription": "Determines if pre-release versions are included. By default, pre-release versions are not included. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#apiversion)",
+                  "default": false
+                },
+                "field": {
+                  "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                },
+                "value": {
+                  "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                }
+              },
+              "required": [
+                "apiVersion"
               ],
               "oneOf": [
                 {

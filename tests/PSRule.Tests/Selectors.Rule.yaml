@@ -1282,3 +1282,37 @@ spec:
     startsWith:
     - /scope1/
     - /scope2/
+
+---
+# Synopsis: Test comparison with apiVersion.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlAPIVersion
+spec:
+  if:
+    field: dateVersion
+    apiVersion: '>=2015-10-01'
+
+---
+# Synopsis: Test comparison with apiVersion.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlAPIVersionWithPrerelease
+spec:
+  if:
+    field: dateVersion
+    apiVersion: '>=2015-10-01'
+    includePrerelease: true
+
+---
+# Synopsis: Test comparison with apiVersion.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlAPIVersionAnyVersion
+spec:
+  if:
+    field: dateVersion
+    apiVersion: ''

@@ -9,29 +9,26 @@ using System.Threading;
 namespace PSRule.Data
 {
     /// <summary>
-    /// A semantic version constraint.
+    /// An date version constraint.
     /// </summary>
-    public interface ISemanticVersionConstraint
+    public interface IDateVersionConstraint
     {
         /// <summary>
-        /// Determines if the semantic version meets the requirments of the constraint.
+        /// Determines if the date version meets the requirments of the constraint.
         /// </summary>
-        bool Equals(SemanticVersion.Version version);
+        bool Equals(DateVersion.Version version);
     }
 
     /// <summary>
-    /// A helper for comparing semantic version strings.
+    /// A helper for comparing date version strings.
+    /// An date version is represented as YYYY-MM-DD-prerelease.
     /// </summary>
-    public static class SemanticVersion
+    public static class DateVersion
     {
-        private const char MINOR = '^';
-        private const char PATCH = '~';
         private const char EQUAL = '=';
-        private const char VUPPER = 'V';
-        private const char VLOWER = 'v';
         private const char GREATER = '>';
         private const char LESS = '<';
-        private const char SEPARATOR = '.';
+        private const char DOT = '.';
         private const char DASH = '-';
         private const char PLUS = '+';
         private const char ZERO = '0';
@@ -51,19 +48,9 @@ namespace PSRule.Data
             None = 0,
 
             /// <summary>
-            /// Major.Minor.Patch bits must match.
+            /// YYYY-MM-DD bits must match.
             /// </summary>
             Equals = 1,
-
-            /// <summary>
-            /// Major.Minor bits must match, Patch can equal to or greater.
-            /// </summary>
-            PatchUplift = 2,
-
-            /// <summary>
-            /// Major bit must match, Minor.Patch can be equal to or greater.
-            /// </summary>
-            MinorUplift = 4,
 
             GreaterThan = 8,
 
@@ -86,9 +73,9 @@ namespace PSRule.Data
         }
 
         /// <summary>
-        /// A semantic version constraint.
+        /// An date version constraint.
         /// </summary>
-        public sealed class VersionConstraint : ISemanticVersionConstraint
+        public sealed class VersionConstraint : IDateVersionConstraint
         {
             private List<ConstraintExpression> _Constraints;
 
@@ -130,15 +117,15 @@ namespace PSRule.Data
                 return false;
             }
 
-            internal void Join(int major, int minor, int patch, PR prid, ComparisonOperator flag, JoinOperator join, bool includePrerelease)
+            internal void Join(int year, int month, int day, PR prid, ComparisonOperator flag, JoinOperator join, bool includePrerelease)
             {
                 if (_Constraints == null)
                     _Constraints = new List<ConstraintExpression>();
 
                 _Constraints.Add(new ConstraintExpression(
-                    major,
-                    minor,
-                    patch,
+                    year,
+                    month,
+                    day,
                     prid,
                     flag,
                     join == JoinOperator.None ? JoinOperator.Or : join,
@@ -147,22 +134,22 @@ namespace PSRule.Data
             }
         }
 
-        [DebuggerDisplay("{_Major}.{_Minor}.{_Patch}")]
-        internal sealed class ConstraintExpression : ISemanticVersionConstraint
+        [DebuggerDisplay("{_Year}.{_Month}.{_Day}")]
+        internal sealed class ConstraintExpression : IDateVersionConstraint
         {
             private readonly ComparisonOperator _Flag;
-            private readonly int _Major;
-            private readonly int _Minor;
-            private readonly int _Patch;
+            private readonly int _Year;
+            private readonly int _Month;
+            private readonly int _Day;
             private readonly PR _PRID;
             private readonly bool _IncludePrerelease;
 
-            internal ConstraintExpression(int major, int minor, int patch, PR prid, ComparisonOperator flag, JoinOperator join, bool includePrerelease)
+            internal ConstraintExpression(int year, int month, int day, PR prid, ComparisonOperator flag, JoinOperator join, bool includePrerelease)
             {
                 _Flag = flag == ComparisonOperator.None ? ComparisonOperator.Equals : flag;
-                _Major = major;
-                _Minor = minor;
-                _Patch = patch;
+                _Year = year;
+                _Month = month;
+                _Day = day;
                 _PRID = prid;
                 Join = join;
                 _IncludePrerelease = includePrerelease;
@@ -172,91 +159,59 @@ namespace PSRule.Data
 
             public JoinOperator Join { get; }
 
-            public static bool TryParse(string value, out ISemanticVersionConstraint constraint)
+            public static bool TryParse(string value, out IDateVersionConstraint constraint)
             {
                 return TryParseConstraint(value, out constraint);
             }
 
-            public bool Equals(System.Version version)
-            {
-                return Equals(version.Major, version.Minor, version.Build, null);
-            }
-
             public bool Equals(Version version)
             {
-                return Equals(version.Major, version.Minor, version.Patch, version.Prerelease);
+                return Equals(version.Year, version.Month, version.Day, version.Prerelease);
             }
 
-            public bool Equals(int major, int minor, int patch, PR prid)
+            public bool Equals(int year, int month, int day, PR prid)
             {
                 if (_Flag == ComparisonOperator.Equals)
-                    return EQ(major, minor, patch, prid);
+                    return EQ(year, month, day, prid);
 
                 // Fail when pre-release should not be included
                 if (GuardPRID(prid))
                     return false;
 
-                // Fail when major is less
-                if (GuardMajor(major))
-                    return false;
-
-                // Fail when patch is less
-                if (GuardPatch(minor, patch))
-                    return false;
-
-                // Fail when minor is less
-                if (GuardMinor(minor, patch))
-                    return false;
-
                 // Fail when not greater
-                if (GuardGreater(major, minor, patch, prid))
+                if (GuardGreater(year, month, day, prid))
                     return false;
 
                 // Fail when not greater or equal to
-                if (GuardGreaterOrEqual(major, minor, patch, prid))
+                if (GuardGreaterOrEqual(year, month, day, prid))
                     return false;
 
                 // Fail when not less
-                if (GaurdLess(major, minor, patch, prid))
+                if (GaurdLess(year, month, day, prid))
                     return false;
 
                 // Fail with not less or equal to
-                return !GuardLessOrEqual(major, minor, patch, prid);
+                return !GuardLessOrEqual(year, month, day, prid);
             }
 
-            private bool GuardLessOrEqual(int major, int minor, int patch, PR prid)
+            private bool GuardLessOrEqual(int year, int month, int day, PR prid)
             {
-                return _Flag == (ComparisonOperator.LessThan | ComparisonOperator.Equals) && !(LT(major, minor, patch, prid) || EQ(major, minor, patch, prid));
+                return _Flag == (ComparisonOperator.LessThan | ComparisonOperator.Equals) && !(LT(year, month, day, prid) || EQ(year, month, day, prid));
             }
 
-            private bool GaurdLess(int major, int minor, int patch, PR prid)
+            private bool GaurdLess(int year, int month, int day, PR prid)
             {
-                return _Flag == ComparisonOperator.LessThan && !LT(major, minor, patch, prid);
+                return _Flag == ComparisonOperator.LessThan && !LT(year, month, day, prid);
             }
 
-            private bool GuardGreaterOrEqual(int major, int minor, int patch, PR prid)
+            private bool GuardGreaterOrEqual(int year, int month, int day, PR prid)
             {
-                return _Flag == (ComparisonOperator.GreaterThan | ComparisonOperator.Equals) && !(GT(major, minor, patch, prid) || EQ(major, minor, patch, prid));
+                return _Flag == (ComparisonOperator.GreaterThan | ComparisonOperator.Equals) && !(GT(year, month, day, prid) || EQ(year, month, day, prid));
             }
 
-            private bool GuardGreater(int major, int minor, int patch, PR prid)
+            private bool GuardGreater(int year, int month, int day, PR prid)
             {
-                return _Flag == ComparisonOperator.GreaterThan && !GT(major, minor, patch, prid);
-            }
-
-            private bool GuardMinor(int minor, int patch)
-            {
-                return _Flag == ComparisonOperator.MinorUplift && (minor < _Minor || (minor == _Minor && patch < _Patch));
-            }
-
-            private bool GuardPatch(int minor, int patch)
-            {
-                return _Flag == ComparisonOperator.PatchUplift && (minor != _Minor || patch < _Patch);
-            }
-
-            private bool GuardMajor(int major)
-            {
-                return (_Flag == ComparisonOperator.MinorUplift || _Flag == ComparisonOperator.PatchUplift) && major != _Major;
+                return _Flag == ComparisonOperator.GreaterThan && !GT(year, month, day, prid);
             }
 
             private bool GuardPRID(PR prid)
@@ -264,50 +219,50 @@ namespace PSRule.Data
                 return !_IncludePrerelease && Stable && !IsStable(prid);
             }
 
-            private bool EQ(int major, int minor, int patch, PR prid)
+            private bool EQ(int year, int month, int day, PR prid)
             {
-                return EQCore(major, minor, patch) && PR(prid) == 0;
+                return EQCore(year, month, day) && PR(prid) == 0;
             }
 
-            private bool EQCore(int major, int minor, int patch)
+            private bool EQCore(int year, int month, int day)
             {
-                return (_Major == -1 || _Major == major) &&
-                    (_Minor == -1 || _Minor == minor) &&
-                    (_Patch == -1 || _Patch == patch);
+                return (_Year == -1 || _Year == year) &&
+                    (_Month == -1 || _Month == month) &&
+                    (_Day == -1 || _Day == day);
             }
 
-            private bool GTCore(int major, int minor, int patch)
+            private bool GTCore(int year, int month, int day)
             {
-                return (major > _Major) ||
-                    (major == _Major && minor > _Minor) ||
-                    (major == _Major && minor == _Minor && patch > _Patch);
+                return (year > _Year) ||
+                    (year == _Year && month > _Month) ||
+                    (year == _Year && month == _Month && day > _Day);
             }
 
-            private bool LTCore(int major, int minor, int patch)
+            private bool LTCore(int year, int month, int day)
             {
-                return (major < _Major) ||
-                    (major == _Major && minor < _Minor) ||
-                    (major == _Major && minor == _Minor && patch < _Patch);
+                return (year < _Year) ||
+                    (year == _Year && month < _Month) ||
+                    (year == _Year && month == _Month && day < _Day);
             }
 
             /// <summary>
             /// Greater Than.
             /// </summary>
-            private bool GT(int major, int minor, int patch, PR prid)
+            private bool GT(int year, int month, int day, PR prid)
             {
                 return !IsStable(prid) && !_IncludePrerelease
-                    ? EQCore(major, minor, patch) && PR(prid) < 0
-                    : GTCore(major, minor, patch) || (EQCore(major, minor, patch) && PR(prid) < 0);
+                    ? EQCore(year, month, day) && PR(prid) < 0
+                    : GTCore(year, month, day) || (EQCore(year, month, day) && PR(prid) < 0);
             }
 
             /// <summary>
             /// Less Than.
             /// </summary>
-            private bool LT(int major, int minor, int patch, PR prid)
+            private bool LT(int year, int month, int day, PR prid)
             {
                 return !IsStable(prid) && !_IncludePrerelease
-                    ? EQCore(major, minor, patch) && PR(prid) > 0
-                    : LTCore(major, minor, patch) || (EQCore(major, minor, patch) && PR(prid) > 0);
+                    ? EQCore(year, month, day) && PR(prid) > 0
+                    : LTCore(year, month, day) || (EQCore(year, month, day) && PR(prid) > 0);
             }
 
             /// <summary>
@@ -325,56 +280,42 @@ namespace PSRule.Data
         }
 
         /// <summary>
-        /// A semantic version.
+        /// An date version.
         /// </summary>
         public sealed class Version : IComparable<Version>, IEquatable<Version>
         {
             /// <summary>
-            /// The major part of the version.
+            /// The year part of the version.
             /// </summary>
-            public readonly int Major;
+            public readonly int Year;
 
             /// <summary>
-            /// The minor part of the version.
+            /// The month part of the version.
             /// </summary>
-            public readonly int Minor;
+            public readonly int Month;
 
             /// <summary>
-            /// The patch part of the version.
+            /// The day part of the version.
             /// </summary>
-            public readonly int Patch;
+            public readonly int Day;
 
             /// <summary>
             /// The pre-release part of the version.
             /// </summary>
             public readonly PR Prerelease;
 
-            /// <summary>
-            /// The build part of the version.
-            /// </summary>
-            public readonly string Build;
-
-            internal Version(int major, int minor, int patch, PR prerelease, string build)
+            internal Version(int year, int month, int day, PR prerelease)
             {
-                Major = major;
-                Minor = minor;
-                Patch = patch;
+                Year = year;
+                Month = month;
+                Day = day;
                 Prerelease = prerelease;
-                Build = build;
-            }
-
-            /// <summary>
-            /// Try to parse a semantic version from a string.
-            /// </summary>
-            public static bool TryParse(string value, out Version version)
-            {
-                return TryParseVersion(value, out version);
             }
 
             /// <inheritdoc/>
             public override string ToString()
             {
-                return string.Concat(Major, '.', Minor, '.', Patch);
+                return string.Concat(Year, DASH, Month, DASH, Day);
             }
 
             /// <inheritdoc/>
@@ -389,11 +330,10 @@ namespace PSRule.Data
                 unchecked // Overflow is fine
                 {
                     var hash = 17;
-                    hash = hash * 23 + Major.GetHashCode();
-                    hash = hash * 23 + Minor.GetHashCode();
-                    hash = hash * 23 + Patch.GetHashCode();
+                    hash = hash * 23 + Year.GetHashCode();
+                    hash = hash * 23 + Month.GetHashCode();
+                    hash = hash * 23 + Day.GetHashCode();
                     hash = hash * 23 + (Prerelease != null ? Prerelease.GetHashCode() : 0);
-                    hash = hash * 23 + (Build != null ? Build.GetHashCode() : 0);
                     return hash;
                 }
             }
@@ -404,17 +344,17 @@ namespace PSRule.Data
             public bool Equals(Version other)
             {
                 return other != null &&
-                    Equals(other.Major, other.Minor, other.Patch);
+                    Equals(other.Year, other.Month, other.Day);
             }
 
             /// <summary>
-            /// Compare the version against another version based on major.minor.patch.
+            /// Compare the version against another version based on YYYY-MM-DD.
             /// </summary>
-            public bool Equals(int major, int minor, int patch)
+            public bool Equals(int year, int month, int day)
             {
-                return major == Major &&
-                    minor == Minor &&
-                    patch == Patch;
+                return year == Year &&
+                    month == Month &&
+                    day == Day;
             }
 
             /// <summary>
@@ -425,27 +365,33 @@ namespace PSRule.Data
                 if (other == null)
                     return 1;
 
-                if (Major != other.Major)
-                    return Major > other.Major ? 32 : -32;
+                if (Year != other.Year)
+                    return Year > other.Year ? 32 : -32;
 
-                if (Minor != other.Minor)
-                    return Minor > other.Minor ? 16 : -16;
+                if (Month != other.Month)
+                    return Month > other.Month ? 16 : -16;
 
-                if (Patch != other.Patch)
-                    return Patch > other.Patch ? 8 : -8;
+                if (Day != other.Day)
+                    return Day > other.Day ? 8 : -8;
 
-                return 0;
+                if ((Prerelease == null || Prerelease.Stable) && (other.Prerelease == null || other.Prerelease.Stable))
+                    return 0;
+
+                if (Prerelease != null && !Prerelease.Stable && other.Prerelease != null && !other.Prerelease.Stable)
+                    return Prerelease.CompareTo(other.Prerelease);
+
+                return Prerelease == null || Prerelease.Stable ? 1 : -1;
             }
         }
 
         /// <summary>
-        /// A semantic version pre-release identifier.
+        /// An date version pre-release identifier.
         /// </summary>
         [DebuggerDisplay("{Value}")]
         public sealed class PR
         {
             internal static readonly PR Empty = new PR();
-            private static readonly char[] SEPARATORS = new char[] { SEPARATOR };
+            private static readonly char[] SEPARATORS = new char[] { DOT };
 
             private readonly string[] _Identifiers;
 
@@ -570,11 +516,7 @@ namespace PSRule.Data
                 comparison = ComparisonOperator.None;
                 while (!EOF && IsConstraint(_Current))
                 {
-                    if (_Current == MINOR)
-                        comparison = ComparisonOperator.MinorUplift;
-                    else if (_Current == PATCH)
-                        comparison = ComparisonOperator.PatchUplift;
-                    else if (_Current == EQUAL)
+                    if (_Current == EQUAL)
                         comparison |= ComparisonOperator.Equals;
                     else if (_Current == GREATER)
                         comparison |= ComparisonOperator.GreaterThan;
@@ -604,12 +546,6 @@ namespace PSRule.Data
                 return true;
             }
 
-            private void SkipLeading()
-            {
-                if (!EOF && (_Current == VUPPER || _Current == VLOWER))
-                    Next();
-            }
-
             internal bool TryDigit(out int digit)
             {
                 var pos = _Position;
@@ -625,16 +561,19 @@ namespace PSRule.Data
 
             internal bool TrySegments(out int[] segments)
             {
-                segments = new int[] { -1, -1, -1, -1 };
+                segments = new int[] { -1, -1, -1 };
                 var segmentIndex = 0;
-                SkipLeading();
                 while (!EOF)
                 {
                     if (!IsAllowedChar(_Current))
                         return false;
 
                     if (TryDigit(out var digit))
+                    {
                         segments[segmentIndex++] = digit;
+                        if (segments.Length <= segmentIndex)
+                            return true;
+                    }
 
                     if (IsSeparator(_Current))
                         Next();
@@ -721,7 +660,7 @@ namespace PSRule.Data
             [DebuggerStepThrough()]
             private static bool IsConstraint(char c)
             {
-                return c == MINOR || c == PATCH || c == EQUAL || c == GREATER || c == LESS;
+                return c == EQUAL || c == GREATER || c == LESS;
             }
 
             [DebuggerStepThrough()]
@@ -739,7 +678,7 @@ namespace PSRule.Data
             [DebuggerStepThrough()]
             private static bool IsSeparator(char c)
             {
-                return c == SEPARATOR;
+                return c == DASH;
             }
 
             [DebuggerStepThrough()]
@@ -755,7 +694,7 @@ namespace PSRule.Data
                     return true;
 
                 numeric = false;
-                return char.IsDigit(c) || IsLetter(c) || c == DASH || c == SEPARATOR;
+                return char.IsDigit(c) || IsLetter(c) || c == DASH || c == DOT;
             }
 
             [DebuggerStepThrough()]
@@ -790,7 +729,7 @@ namespace PSRule.Data
         /// <summary>
         /// Try to parse a version constraint from the provided string.
         /// </summary>
-        public static bool TryParseConstraint(string value, out ISemanticVersionConstraint constraint, bool includePrerelease = false)
+        public static bool TryParseConstraint(string value, out IDateVersionConstraint constraint, bool includePrerelease = false)
         {
             var c = new VersionConstraint();
             constraint = c;
@@ -809,8 +748,6 @@ namespace PSRule.Data
                     return false;
 
                 stream.Prerelease(out var prerelease);
-                stream.Build(out _);
-
                 c.Join(segments[0], segments[1], segments[2], prerelease, comparison, stream.GetJoin(), includePrerelease);
             }
             return true;
@@ -832,8 +769,7 @@ namespace PSRule.Data
             if (!stream.Prerelease(out var prerelease))
                 return false;
 
-            stream.Build(out var build);
-            version = new Version(segments[0], segments[1], segments[2], prerelease, build);
+            version = new Version(segments[0], segments[1], segments[2], prerelease);
             return true;
         }
     }
