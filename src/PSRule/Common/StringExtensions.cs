@@ -1,8 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace PSRule
 {
@@ -77,6 +78,32 @@ namespace PSRule
         public static bool Contains(this string source, string value, StringComparison comparison)
         {
             return source?.IndexOf(value, comparison) >= 0;
+        }
+
+        public static string Replace(this string s, string oldString, string newString, bool caseSensitive)
+        {
+            if (string.IsNullOrEmpty(s) || string.IsNullOrEmpty(oldString) || s.Length < oldString.Length)
+                return s;
+
+            if (caseSensitive)
+                return s.Replace(oldString, newString);
+
+            var sb = new StringBuilder(s.Length);
+            var pos = 0;
+            var replaceWithEmpty = string.IsNullOrEmpty(newString);
+            int indexAt;
+            while ((indexAt = s.IndexOf(oldString, pos, StringComparison.OrdinalIgnoreCase)) != -1)
+            {
+                sb.Append(s, pos, indexAt - pos);
+                if (!replaceWithEmpty)
+                    sb.Append(newString);
+
+                pos = indexAt + oldString.Length;
+            }
+            if (pos < s.Length)
+                sb.Append(s, pos, s.Length - pos);
+
+            return sb.ToString();
         }
     }
 }

@@ -3034,6 +3034,21 @@
             },
             {
               "$ref": "#/definitions/fn/definitions/function/definitions/configuration"
+            },
+            {
+              "$ref": "#/definitions/fn/definitions/function/definitions/replace"
+            },
+            {
+              "$ref": "#/definitions/fn/definitions/function/definitions/trim"
+            },
+            {
+              "$ref": "#/definitions/fn/definitions/function/definitions/first"
+            },
+            {
+              "$ref": "#/definitions/fn/definitions/function/definitions/last"
+            },
+            {
+              "$ref": "#/definitions/fn/definitions/function/definitions/split"
             }
           ],
           "definitions": {
@@ -3304,6 +3319,159 @@
               "additionalProperties": false,
               "required": [
                 "configuration"
+              ]
+            },
+            "replace": {
+              "type": "object",
+              "properties": {
+                "replace": {
+                  "type": "object",
+                  "title": "Trim",
+                  "description": "The replace function searches for a string and replaces them with a new string.",
+                  "markdownDescription": "The `replace` function searches for a string and replaces them with a new string.",
+                  "$ref": "#/definitions/fn/definitions/function"
+                },
+                "oldString": {
+                  "type": "string",
+                  "description": "The string to replace.",
+                  "minLength": 1
+                },
+                "newString": {
+                  "type": "string",
+                  "description": "The new string to replace oldString."
+                },
+                "caseSensitive": {
+                  "type": "boolean",
+                  "title": "Case-sensitive",
+                  "description": "Determines if the replace is case-sensitive. By default, a case-insensitive comparison is performed.",
+                  "default": false
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "replace",
+                "oldString",
+                "newString"
+              ]
+            },
+            "trim": {
+              "type": "object",
+              "properties": {
+                "trim": {
+                  "type": "object",
+                  "title": "Trim",
+                  "description": "Trim a string value by removing leading and trailings whitespace.",
+                  "markdownDescription": "Trim a string value by removing leading and trailings whitespace.",
+                  "$ref": "#/definitions/fn/definitions/function"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "trim"
+              ]
+            },
+            "first": {
+              "type": "object",
+              "properties": {
+                "first": {
+                  "oneOf": [
+                    {
+                      "type": "array",
+                      "description": "The first function returns the first element in the array.",
+                      "markdownDescription": "The `first` function returns the first element in the array.",
+                      "items": {
+                        "$ref": "#/definitions/fn/definitions/function"
+                      },
+                      "additionalItems": false,
+                      "minItems": 2
+                    },
+                    {
+                      "type": "object",
+                      "description": "The first function returns the first element of arrays or the first character of a string.",
+                      "markdownDescription": "The `first` function returns the first element of arrays or the first character of a string.",
+                      "$ref": "#/definitions/fn/definitions/function"
+                    }
+                  ]
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "first"
+              ]
+            },
+            "last": {
+              "type": "object",
+              "properties": {
+                "last": {
+                  "oneOf": [
+                    {
+                      "type": "array",
+                      "description": "The last function returns the last element in the array.",
+                      "markdownDescription": "The `last` function returns the last element in the array.",
+                      "items": {
+                        "$ref": "#/definitions/fn/definitions/function"
+                      },
+                      "additionalItems": false,
+                      "minItems": 2
+                    },
+                    {
+                      "type": "object",
+                      "description": "The last function returns the last element of arrays or the last character of a string.",
+                      "markdownDescription": "The `last` function returns the last element of arrays or the last character of a string.",
+                      "$ref": "#/definitions/fn/definitions/function"
+                    }
+                  ]
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "last"
+              ]
+            },
+            "split": {
+              "type": "object",
+              "properties": {
+                "split": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "description": "The split function returns converts a string into an array by spliting based on a delimiter.",
+                      "markdownDescription": "The `split` function returns converts a string into an array by spliting based on a delimiter."
+                    },
+                    {
+                      "type": "object",
+                      "description": "The split function returns converts a string into an array by spliting based on a delimiter.",
+                      "markdownDescription": "The `split` function returns converts a string into an array by spliting based on a delimiter.",
+                      "$ref": "#/definitions/fn/definitions/function"
+                    }
+                  ],
+                  "default": {}
+                },
+                "delimiter": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "minItems": 1,
+                      "additionalItems": false
+                    }
+                  ],
+                  "default": [
+                    ""
+                  ]
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "split",
+                "delimiter"
               ]
             }
           }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json.Linq;
@@ -57,12 +58,78 @@ namespace PSRule
             if (TryInt(expectedValue, convertExpected, out var i1) && TryInt(actualValue, convertActual, out var i2))
                 return i1 == i2;
 
+            if (TryArray(expectedValue, out var a1) && TryArray(actualValue, out var a2))
+                return SequenceEqual(a1, a2);
+
             var expectedBase = GetBaseObject(expectedValue);
             var actualBase = GetBaseObject(actualValue);
             if (expectedBase == null || actualBase == null)
                 return expectedBase == null && actualBase == null;
 
             return expectedBase.Equals(actualBase) || expectedValue.Equals(actualValue);
+        }
+
+        internal static bool SequenceEqual(Array array1, Array array2)
+        {
+            if (array1.Length != array2.Length)
+                return false;
+
+            for (var i = 0; i < array1.Length; i++)
+            {
+                if (!Equal(array1.GetValue(i), array2.GetValue(i)))
+                    return false;
+            }
+            return true;
+        }
+
+        internal static bool Equal(object o1, object o2)
+        {
+            // One null
+            if (o1 == null || o2 == null)
+                return o1 == o2;
+
+            // Arrays
+            if (o1 is Array array1 && o2 is Array array2)
+                return SequenceEqual(array1, array2);
+            else if (o1 is Array || o2 is Array)
+                return false;
+
+            // String and int
+            if (TryString(o1, out var s1) && TryString(o2, out var s2))
+                return s1 == s2;
+            else if (TryString(o1, out _) || TryString(o2, out _))
+                return false;
+            else if (TryLong(o1, false, out var i1) && TryLong(o2, false, out var i2))
+                return i1 == i2;
+            else if (TryLong(o1, false, out var _) || TryLong(o2, false, out var _))
+                return false;
+
+            // JTokens
+            if (o1 is JToken t1 && o2 is JToken t2)
+                return JTokenEquals(t1, t2);
+
+            // Objects
+            return ObjectEquals(o1, o2);
+        }
+
+        private static bool JTokenEquals(JToken t1, JToken t2)
+        {
+            return JToken.DeepEquals(t1, t2);
+        }
+
+        internal static bool ObjectEquals(object o1, object o2)
+        {
+            var objectType = o1.GetType();
+            if (objectType != o2.GetType())
+                return false;
+
+            var props = objectType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
+            for (var i = 0; i < props.Length; i++)
+            {
+                if (!object.Equals(props[i].GetValue(o1), props[i].GetValue(o2)))
+                    return false;
+            }
+            return true;
         }
 
         internal static int Compare(object left, object right)
@@ -162,13 +229,18 @@ namespace PSRule
         internal static bool TryArray(object o, out Array value)
         {
             o = GetBaseObject(o);
-            if (o is Array a)
-            {
-                value = a;
-                return true;
-            }
             value = null;
-            return false;
+            if (o is string) return false;
+            if (o is Array a)
+                value = a;
+
+            else if (o is JArray jArray)
+                value = jArray.Values<object>().ToArray();
+
+            else if (o is IEnumerable e)
+                value = e.OfType<object>().ToArray();
+
+            return value != null;
         }
 
         internal static bool TryConvertStringArray(object o, out string[] value)

@@ -1762,6 +1762,27 @@ namespace PSRule
             Assert.True(example6.Match(actual1));
         }
 
+        [Theory]
+        [InlineData("Yaml", FunctionsYamlFileName)]
+        [InlineData("Json", FunctionsJsonFileName)]
+        public void WithFunctionSpecific(string type, string path)
+        {
+            var example1 = GetSelectorVisitor($"{type}.Fn.Replace", GetSource(path), out _);
+            var example2 = GetSelectorVisitor($"{type}.Fn.Trim", GetSource(path), out _);
+            var example3 = GetSelectorVisitor($"{type}.Fn.First", GetSource(path), out _);
+            var example4 = GetSelectorVisitor($"{type}.Fn.Last", GetSource(path), out _);
+            var example5 = GetSelectorVisitor($"{type}.Fn.Split", GetSource(path), out _);
+            var actual1 = GetObject(
+                (name: "Name", value: "TestObject1")
+            );
+
+            Assert.True(example1.Match(actual1));
+            Assert.True(example2.Match(actual1));
+            Assert.True(example3.Match(actual1));
+            Assert.True(example4.Match(actual1));
+            Assert.True(example5.Match(actual1));
+        }
+
         #endregion Functions
 
         #region Helper methods

@@ -35,6 +35,9 @@ What's changed since pre-release v2.7.0-B0016:
 - New features:
   - Added API version date comparison assertion method and expression by @BernieWhite.
     [#1356](https://github.com/microsoft/PSRule/issues/1356)
+  - Added support for new functions by @BernieWhite.
+    [#1227](https://github.com/microsoft/PSRule/issues/1227)
+    - Added support for `trim`, `replace`, `split`, `first`, and `last`.
 - Bug fixes:
   - Fixes CLI failed to load required assemblies by @BernieWhite.
     [#1361](https://github.com/microsoft/PSRule/issues/1361)

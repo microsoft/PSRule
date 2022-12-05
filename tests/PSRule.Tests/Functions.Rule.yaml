@@ -86,3 +86,82 @@ spec:
         - path: name
         - string: '-'
         - path: name
+
+---
+# Synopsis: A test for the replace function.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.Replace
+spec:
+  if:
+    value:
+      $:
+        replace:
+          string: ' test one '
+        oldString: ' '
+        newString: ''
+    equals: testone
+
+---
+# Synopsis: A test for the trim function.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.Trim
+spec:
+  if:
+    value:
+      $:
+        trim:
+          string: ' test '
+    equals: test
+
+---
+# Synopsis: A test for the first function.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.First
+spec:
+  if:
+    value:
+      $:
+        first:
+        - string: abc
+        - string: def
+    equals: abc
+
+---
+# Synopsis: A test for the last function.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.Last
+spec:
+  if:
+    value:
+      $:
+        last:
+        - string: abc
+        - string: def
+    equals: def
+
+---
+# Synopsis: A test for the split function.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.Split
+spec:
+  if:
+    value:
+      $:
+        split:
+          string: One Two Three
+        delimiter:
+          - ' '
+    equals:
+    - One
+    - Two
+    - Three
