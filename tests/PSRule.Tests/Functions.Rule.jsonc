@@ -1,133 +1,244 @@
 [
-    {
-        // Synopsis: An expression function example.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Selector",
-        "metadata": {
-            "name": "Json.Fn.Example1"
-        },
-        "spec": {
-            "if": {
-                "value": {
-                    "$": {
-                        "substring": {
-                            "path": "name"
-                        },
-                        "length": 7
-                    }
-                },
-                "equals": "TestObj"
-            }
-        }
+  {
+    // Synopsis: An expression function example.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.Example1"
     },
-    {
-        // Synopsis: An expression function example.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Selector",
-        "metadata": {
-            "name": "Json.Fn.Example2"
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "substring": {
+              "path": "name"
+            },
+            "length": 7
+          }
         },
-        "spec": {
-            "if": {
-                "value": {
-                    "$": {
-                        "configuration": "ConfigArray"
-                    }
-                },
-                "count": 5
-            }
-        }
-    },
-    {
-        // Synopsis: An expression function example.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Selector",
-        "metadata": {
-            "name": "Json.Fn.Example3"
-        },
-        "spec": {
-            "if": {
-                "value": {
-                    "$": {
-                        "boolean": true
-                    }
-                },
-                "equals": true
-            }
-        }
-    },
-    {
-        // Synopsis: An expression function example.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Selector",
-        "metadata": {
-            "name": "Json.Fn.Example4"
-        },
-        "spec": {
-            "if": {
-                "value": {
-                    "$": {
-                        "concat": [
-                            {
-                                "path": "name"
-                            },
-                            {
-                                "string": "-"
-                            },
-                            {
-                                "path": "name"
-                            }
-                        ]
-                    }
-                },
-                "equals": "TestObject1-TestObject1"
-            }
-        }
-    },
-    {
-        // Synopsis: An expression function example.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Selector",
-        "metadata": {
-            "name": "Json.Fn.Example5"
-        },
-        "spec": {
-            "if": {
-                "value": {
-                    "$": {
-                        "integer": 6
-                    }
-                },
-                "greater": 5
-            }
-        }
-    },
-    {
-        // Synopsis: An expression function example.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Selector",
-        "metadata": {
-            "name": "Json.Fn.Example6"
-        },
-        "spec": {
-            "if": {
-                "value": "TestObject1-TestObject1",
-                "equals": {
-                    "$": {
-                        "concat": [
-                            {
-                                "path": "name"
-                            },
-                            {
-                                "string": "-"
-                            },
-                            {
-                                "path": "name"
-                            }
-                        ]
-                    }
-                }
-            }
-        }
+        "equals": "TestObj"
+      }
     }
+  },
+  {
+    // Synopsis: An expression function example.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.Example2"
+    },
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "configuration": "ConfigArray"
+          }
+        },
+        "count": 5
+      }
+    }
+  },
+  {
+    // Synopsis: An expression function example.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.Example3"
+    },
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "boolean": true
+          }
+        },
+        "equals": true
+      }
+    }
+  },
+  {
+    // Synopsis: An expression function example.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.Example4"
+    },
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "concat": [
+              {
+                "path": "name"
+              },
+              {
+                "string": "-"
+              },
+              {
+                "path": "name"
+              }
+            ]
+          }
+        },
+        "equals": "TestObject1-TestObject1"
+      }
+    }
+  },
+  {
+    // Synopsis: An expression function example.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.Example5"
+    },
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "integer": 6
+          }
+        },
+        "greater": 5
+      }
+    }
+  },
+  {
+    // Synopsis: An expression function example.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.Example6"
+    },
+    "spec": {
+      "if": {
+        "value": "TestObject1-TestObject1",
+        "equals": {
+          "$": {
+            "concat": [
+              {
+                "path": "name"
+              },
+              {
+                "string": "-"
+              },
+              {
+                "path": "name"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  {
+    // Synopsis: A test for the replace function.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.Replace"
+    },
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "replace": {
+              "string": " test one "
+            },
+            "oldString": " ",
+            "newString": ""
+          }
+        },
+        "equals": "testone"
+      }
+    }
+  },
+  {
+    // Synopsis: A test for the trim function.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.Trim"
+    },
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "trim": {
+              "string": " test "
+            }
+          }
+        },
+        "equals": "test"
+      }
+    }
+  },
+  {
+    // Synopsis: A test for the first function.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.First"
+    },
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "first": [
+              "abc",
+              "def"
+            ]
+          }
+        },
+        "equals": "abc"
+      }
+    }
+  },
+  {
+    // Synopsis: A test for the last function.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.Last"
+    },
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "last": [
+              "abc",
+              "def"
+            ]
+          }
+        },
+        "equals": "def"
+      }
+    }
+  },
+  {
+    // Synopsis: A test for the split function.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.Split"
+    },
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "split": {
+              "string": "One Two Three"
+            },
+            "delimiter": [
+              " "
+            ]
+          }
+        },
+        "equals": [
+          "One",
+          "Two",
+          "Three"
+        ]
+      }
+    }
+  }
 ]

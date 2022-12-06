@@ -237,6 +237,196 @@ namespace PSRule
             Assert.Null(fn(context, properties)(context));
         }
 
+        [Fact]
+        public void Replace()
+        {
+            var context = GetContext();
+            var fn = GetFunction("replace");
+
+            var properties = new LanguageExpression.PropertyBag
+            {
+                { "oldString", "12" },
+                { "newString", "" },
+                { "replace", "Test123" }
+            };
+            Assert.Equal("Test3", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "oldString", "456" },
+                { "newString", "" },
+                { "replace", "Test123" }
+            };
+            Assert.Equal("Test123", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "oldString", "456" },
+                { "newString", "" },
+                { "replace", "" }
+            };
+            Assert.Equal("", fn(context, properties)(context));
+        }
+
+        [Fact]
+        public void Trim()
+        {
+            var context = GetContext();
+            var fn = GetFunction("trim");
+
+            var properties = new LanguageExpression.PropertyBag
+            {
+                { "trim", " test " }
+            };
+            Assert.Equal("test", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "trim", "test" }
+            };
+            Assert.Equal("test", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "trim", "\r\ntest\r\n" }
+            };
+            Assert.Equal("test", fn(context, properties)(context));
+        }
+
+        [Fact]
+        public void First()
+        {
+            var context = GetContext();
+            var fn = GetFunction("first");
+
+            // String
+            var properties = new LanguageExpression.PropertyBag
+            {
+                { "first", "Test123" }
+            };
+            Assert.Equal("T", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "first", "" }
+            };
+            Assert.Null(fn(context, properties)(context));
+
+            // Array
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "first", new string[] { "one", "two", "three" } }
+            };
+            Assert.Equal("one", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "first", new int[] { 1, 2, 3 } }
+            };
+            Assert.Equal(1, fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "first", Array.Empty<object>() }
+            };
+            Assert.Null(fn(context, properties)(context));
+        }
+
+        [Fact]
+        public void Last()
+        {
+            var context = GetContext();
+            var fn = GetFunction("last");
+
+            // String
+            var properties = new LanguageExpression.PropertyBag
+            {
+                { "last", "Test123" }
+            };
+            Assert.Equal("3", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "last", "" }
+            };
+            Assert.Null(fn(context, properties)(context));
+
+            // Array
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "last", new string[] { "one", "two", "three" } }
+            };
+            Assert.Equal("three", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "last", new int[] { 1, 2, 3 } }
+            };
+            Assert.Equal(3, fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "last", Array.Empty<object>() }
+            };
+            Assert.Null(fn(context, properties)(context));
+        }
+
+        [Fact]
+        public void Split()
+        {
+            var context = GetContext();
+            var fn = GetFunction("split");
+
+            var properties = new LanguageExpression.PropertyBag
+            {
+                { "split", "One Two Three" },
+                { "delimiter", " " }
+            };
+            Assert.Equal(new string[] { "One", "Two", "Three" }, fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "split", "One Two Three" },
+                { "delimiter", " Two " }
+            };
+            Assert.Equal(new string[] { "One", "Three" }, fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "split", "One Two Three" },
+                { "delimiter", "/" }
+            };
+            Assert.Equal(new string[] { "One Two Three" }, fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "split", "" },
+                { "delimiter", "/" }
+            };
+            Assert.Equal(new string[] { "" }, fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "split", "One Two Three" },
+                { "delimiter", new string[] { " Two " } }
+            };
+            Assert.Equal(new string[] { "One", "Three" }, fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "split", "One Two Three" },
+                { "delimiter", new string[] { " ", "Two" } }
+            };
+            Assert.Equal(new string[] { "One", "", "", "Three" }, fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "split", null },
+                { "delimiter", new string[] { " ", "Two" } }
+            };
+            Assert.Null(fn(context, properties)(context));
+        }
+
         #region Helper methods
 
         private static ExpressionBuilderFn GetFunction(string name)

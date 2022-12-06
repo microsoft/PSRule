@@ -22,12 +22,17 @@ Functions cover two (2) main scenarios:
 It may be necessary to perform minor transformation before evaluating a condition.
 
 - `boolean` - Convert a value to a boolean.
-- `string` - Convert a value to a string.
-- `integer` - Convert a value to an integer.
 - `concat` - Concatenate multiple values.
-- `substring` - Extract a substring from a string.
 - `configuration` - Get a configuration value.
+- `first` - Return the first element in an array or the first character of a string.
+- `integer` - Convert a value to an integer.
+- `last` - Return the last element in an array or the last character of a string.
 - `path` - Get a value from an object path.
+- `replace` - Replace an old string with a new string.
+- `split` - Split a string into an array by a delimiter.
+- `string` - Convert a value to a string.
+- `substring` - Extract a substring from a string.
+- `trim` - Remove whitespace from the start and end of a string.
 
 ## Supported conditions
 

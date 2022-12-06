@@ -1,8 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Linq;
 using System.Text;
 using System.Threading;
+using PSRule.Common;
 using PSRule.Resources;
 using PSRule.Runtime;
 using static PSRule.Definitions.Expressions.LanguageExpression;
@@ -22,6 +25,15 @@ namespace PSRule.Definitions.Expressions
         private const string CONFIGURATION = "configuration";
         private const string PATH = "path";
         private const string LENGTH = "length";
+        private const string REPLACE = "replace";
+        private const string TRIM = "trim";
+        private const string FIRST = "first";
+        private const string LAST = "last";
+        private const string SPLIT = "split";
+        private const string DELIMITER = "delimiter";
+        private const string OLDSTRING = "oldstring";
+        private const string NEWSTRING = "newstring";
+        private const string CASESENSITIVE = "casesensitive";
 
         /// <summary>
         /// The available built-in functions.
@@ -35,6 +47,11 @@ namespace PSRule.Definitions.Expressions
             new FunctionDescriptor(INTEGER, Integer),
             new FunctionDescriptor(CONCAT, Concat),
             new FunctionDescriptor(SUBSTRING, Substring),
+            new FunctionDescriptor(REPLACE, Replace),
+            new FunctionDescriptor(TRIM, Trim),
+            new FunctionDescriptor(FIRST, First),
+            new FunctionDescriptor(LAST, Last),
+            new FunctionDescriptor(SPLIT, Split),
         };
 
         private static ExpressionFnOuter Boolean(IExpressionContext context, PropertyBag properties)
@@ -141,6 +158,89 @@ namespace PSRule.Definitions.Expressions
                     return s.Substring(0, length.Value);
                 }
                 return null;
+            };
+        }
+
+        private static ExpressionFnOuter Replace(IExpressionContext context, PropertyBag properties)
+        {
+            if (properties == null ||
+                properties.Count == 0 ||
+                !properties.TryGetString(OLDSTRING, out var oldString) ||
+                !properties.TryGetString(NEWSTRING, out var newString) ||
+                !TryProperty(properties, REPLACE, out ExpressionFnOuter next))
+                return null;
+
+            var caseSensitive = properties.TryGetBool(CASESENSITIVE, out var cs) && cs.HasValue && cs.Value;
+            return (context) =>
+            {
+                var value = next(context);
+                if (ExpressionHelpers.TryString(value, out var originalString))
+                    return originalString.Length > 0 && oldString.Length > 0 ? originalString.Replace(oldString, newString, caseSensitive) : originalString;
+
+                return null;
+            };
+        }
+
+        private static ExpressionFnOuter Trim(IExpressionContext context, PropertyBag properties)
+        {
+            if (properties == null ||
+                properties.Count == 0 ||
+                !TryProperty(properties, TRIM, out ExpressionFnOuter next))
+                return null;
+
+            return (context) =>
+            {
+                var value = next(context);
+                return ExpressionHelpers.TryString(value, out var s) ? s.Trim() : null;
+            };
+        }
+
+        private static ExpressionFnOuter First(IExpressionContext context, PropertyBag properties)
+        {
+            if (properties == null ||
+                properties.Count == 0 ||
+                !TryProperty(properties, FIRST, out ExpressionFnOuter next))
+                return null;
+
+            return (context) =>
+            {
+                var value = next(context);
+                if (ExpressionHelpers.TryString(value, out var s))
+                    return s.Length > 0 ? new string(s[0], 1) : null;
+
+                return ExpressionHelpers.TryArray(value, out var array) ? Value(context, array.First()) : null;
+            };
+        }
+
+        private static ExpressionFnOuter Last(IExpressionContext context, PropertyBag properties)
+        {
+            if (properties == null ||
+                properties.Count == 0 ||
+                !TryProperty(properties, LAST, out ExpressionFnOuter next))
+                return null;
+
+            return (context) =>
+            {
+                var value = next(context);
+                if (ExpressionHelpers.TryString(value, out var s))
+                    return s.Length > 0 ? new string(s[s.Length - 1], 1) : null;
+
+                return ExpressionHelpers.TryArray(value, out var array) ? Value(context, array.Last()) : null;
+            };
+        }
+
+        private static ExpressionFnOuter Split(IExpressionContext context, PropertyBag properties)
+        {
+            if (properties == null ||
+                properties.Count == 0 ||
+                !properties.TryGetStringArray(DELIMITER, out var delimiter) ||
+                !TryProperty(properties, SPLIT, out ExpressionFnOuter next))
+                return null;
+
+            return (context) =>
+            {
+                var value = next(context);
+                return ExpressionHelpers.TryString(value, out var s) ? s.Split(delimiter, options: StringSplitOptions.None) : null;
             };
         }
 
