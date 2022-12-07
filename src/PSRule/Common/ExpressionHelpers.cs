@@ -380,9 +380,19 @@ namespace PSRule
                 value = i;
                 return true;
             }
+            else if (o is uint ui)
+            {
+                value = (long)ui;
+                return true;
+            }
             else if (o is long l)
             {
                 value = l;
+                return true;
+            }
+            else if (o is ulong ul && ul <= long.MaxValue)
+            {
+                value = (long)ul;
                 return true;
             }
             else if (o is JToken token && token.Type == JTokenType.Integer)

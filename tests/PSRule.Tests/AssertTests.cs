@@ -771,6 +771,17 @@ namespace PSRule
             Assert.Equal("value", assert.Greater(value, "value", 3).ToResultReason().FirstOrDefault().Path);
             Assert.Equal("jvalue", assert.Greater(value, "jvalue", 4).ToResultReason().FirstOrDefault().Path);
 
+            // ULong
+            value = GetObject((name: "value", value: (ulong)3), (name: "jvalue", value: new JValue((ulong)3)));
+            Assert.True(assert.Greater(value, "value", 2).Result);
+            Assert.False(assert.Greater(value, "value", 3).Result);
+            Assert.False(assert.Greater(value, "value", 4).Result);
+            Assert.True(assert.Greater(value, "value", 0).Result);
+            Assert.True(assert.Greater(value, "value", -1).Result);
+            Assert.False(assert.Greater(value, "jvalue", 4).Result);
+
+            Assert.Equal("value", assert.Greater(value, "value", 3).ToResultReason().FirstOrDefault().Path);
+
             // String
             value = GetObject((name: "value", value: "abc"));
             Assert.True(assert.Greater(value, "value", 2).Result);
@@ -819,6 +830,17 @@ namespace PSRule
             var value = GetObject((name: "value", value: 3), (name: "jvalue", value: new JValue(3)));
 
             // Int
+            Assert.True(assert.GreaterOrEqual(value, "value", 2).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", 3).Result);
+            Assert.False(assert.GreaterOrEqual(value, "value", 4).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", 0).Result);
+            Assert.True(assert.GreaterOrEqual(value, "value", -1).Result);
+            Assert.False(assert.GreaterOrEqual(value, "jvalue", 4).Result);
+
+            Assert.Equal("jvalue", assert.GreaterOrEqual(value, "jvalue", 4).ToResultReason().FirstOrDefault().Path);
+
+            // ULong
+            value = GetObject((name: "value", value: (ulong)3), (name: "jvalue", value: new JValue((ulong)3)));
             Assert.True(assert.GreaterOrEqual(value, "value", 2).Result);
             Assert.True(assert.GreaterOrEqual(value, "value", 3).Result);
             Assert.False(assert.GreaterOrEqual(value, "value", 4).Result);
@@ -885,6 +907,17 @@ namespace PSRule
 
             Assert.Equal("value", assert.Less(value, "value", -1).ToResultReason().FirstOrDefault().Path);
 
+            // ULong
+            value = GetObject((name: "value", value: (ulong)3), (name: "jvalue", value: new JValue((ulong)3)));
+            Assert.False(assert.Less(value, "value", 2).Result);
+            Assert.False(assert.Less(value, "value", 3).Result);
+            Assert.True(assert.Less(value, "value", 4).Result);
+            Assert.False(assert.Less(value, "value", 0).Result);
+            Assert.False(assert.Less(value, "value", -1).Result);
+            Assert.True(assert.Less(value, "jvalue", 4).Result);
+
+            Assert.Equal("value", assert.Less(value, "value", -1).ToResultReason().FirstOrDefault().Path);
+
             // String
             value = GetObject((name: "value", value: "abc"));
             Assert.False(assert.Less(value, "value", 2).Result);
@@ -933,6 +966,17 @@ namespace PSRule
             var value = GetObject((name: "value", value: 3), (name: "jvalue", value: new JValue(3)));
 
             // Int
+            Assert.False(assert.LessOrEqual(value, "value", 2).Result);
+            Assert.True(assert.LessOrEqual(value, "value", 3).Result);
+            Assert.True(assert.LessOrEqual(value, "value", 4).Result);
+            Assert.False(assert.LessOrEqual(value, "value", 0).Result);
+            Assert.False(assert.LessOrEqual(value, "value", -1).Result);
+            Assert.True(assert.LessOrEqual(value, "jvalue", 4).Result);
+
+            Assert.Equal("value", assert.LessOrEqual(value, "value", 0).ToResultReason().FirstOrDefault().Path);
+
+            // ULong
+            value = GetObject((name: "value", value: (ulong)3), (name: "jvalue", value: new JValue((ulong)3)));
             Assert.False(assert.LessOrEqual(value, "value", 2).Result);
             Assert.True(assert.LessOrEqual(value, "value", 3).Result);
             Assert.True(assert.LessOrEqual(value, "value", 4).Result);
