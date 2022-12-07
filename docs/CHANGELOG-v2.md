@@ -30,9 +30,13 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.7.0-B0031:
+
 - Bug fixes:
-  - Fixed loop stuck parsing JSON allOf not rule condition by @BernieWhite.
+  - Fixed loop stuck parsing JSON `allOf` `not` rule condition by @BernieWhite.
     [#1370](https://github.com/microsoft/PSRule/issues/1370)
+  - Fixed handling of uint64 with `LessOrEqual` assertion method by @BernieWhite.
+    [#1366](https://github.com/microsoft/PSRule/issues/1366)
 
 ## v2.7.0-B0031 (pre-release)
 
