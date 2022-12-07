@@ -42,7 +42,7 @@ namespace PSRule
             SkipComments(reader);
             var path = reader.Path;
             if (reader.TokenType != JsonToken.StartObject || !reader.Read())
-                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
 
             string name = null;
             var lineNumber = 0;
@@ -92,7 +92,7 @@ namespace PSRule
                         break;
                 }
                 if (!reader.Read() || reader.TokenType == JsonToken.None)
-                    throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
+                    throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
             }
             if (bindTargetInfo)
             {
@@ -116,7 +116,7 @@ namespace PSRule
         {
             SkipComments(reader);
             if (reader.TokenType != JsonToken.StartArray || !reader.Read())
-                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
 
             var result = new List<PSObject>();
 
@@ -147,7 +147,7 @@ namespace PSRule
                         break;
                 }
                 if (!reader.Read() || reader.TokenType == JsonToken.None)
-                    throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
+                    throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
             }
             return result.ToArray();
         }
@@ -247,7 +247,7 @@ namespace PSRule
         {
             SkipComments(reader);
             if (reader.TokenType != JsonToken.StartObject && reader.TokenType != JsonToken.StartArray)
-                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
 
             var result = new List<PSObject>();
             var isArray = reader.TokenType == JsonToken.StartArray;
@@ -549,9 +549,7 @@ namespace PSRule
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var fieldMap = existingValue as FieldMap ?? new FieldMap();
-
             ReadFieldMap(fieldMap, reader);
-
             return fieldMap;
         }
 
@@ -563,12 +561,9 @@ namespace PSRule
         private static void ReadFieldMap(FieldMap map, JsonReader reader)
         {
             if (reader.TokenType != JsonToken.StartObject || !reader.Read())
-            {
                 throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
-            }
 
             string propertyName = null;
-
             while (reader.TokenType != JsonToken.EndObject)
             {
                 if (reader.TokenType == JsonToken.PropertyName)
@@ -699,6 +694,8 @@ namespace PSRule
                 if (reader.TryConsume(JsonToken.StartObject))
                 {
                     result.Add(MapExpression(reader));
+                    if (type != "if")
+                        reader.Consume(JsonToken.EndObject);
                 }
                 // AllOf and AnyOf
                 else if (reader.TryConsume(JsonToken.StartArray))
@@ -713,6 +710,8 @@ namespace PSRule
                             result.Add(MapExpression(reader));
                             reader.Consume(JsonToken.EndObject);
                         }
+                        if (reader.TokenType == JsonToken.EndObject)
+                            throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
                     }
                     reader.Consume(JsonToken.EndArray);
                     reader.SkipComments(out _);

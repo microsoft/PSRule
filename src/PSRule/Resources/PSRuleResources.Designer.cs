@@ -574,7 +574,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Read JSON failed because the token ({0}) was not expected..
+        ///   Looks up a localized string similar to Read JSON failed because the token ({0}) was not expected at path &apos;{1}&apos;..
         /// </summary>
         internal static string ReadJsonFailedExpectedToken {
             get {

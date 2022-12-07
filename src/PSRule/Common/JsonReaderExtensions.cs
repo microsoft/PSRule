@@ -60,7 +60,7 @@ namespace PSRule
         public static void Consume(this JsonReader reader, JsonToken token)
         {
             if (reader.TokenType != token)
-                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType));
+                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
 
             reader.Read();
         }

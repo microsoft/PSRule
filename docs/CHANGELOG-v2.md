@@ -30,6 +30,10 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+- Bug fixes:
+  - Fixed loop stuck parsing JSON allOf not rule condition by @BernieWhite.
+    [#1370](https://github.com/microsoft/PSRule/issues/1370)
+
 ## v2.7.0-B0031 (pre-release)
 
 What's changed since pre-release v2.7.0-B0016:
@@ -41,9 +45,9 @@ What's changed since pre-release v2.7.0-B0016:
     [#1227](https://github.com/microsoft/PSRule/issues/1227)
     - Added support for `trim`, `replace`, `split`, `first`, and `last`.
 - Bug fixes:
-  - Fixes CLI failed to load required assemblies by @BernieWhite.
+  - Fixed CLI failed to load required assemblies by @BernieWhite.
     [#1361](https://github.com/microsoft/PSRule/issues/1361)
-  - Fixes CLI ignores modules specified in `Include.Modules` by @BernieWhite.
+  - Fixed CLI ignores modules specified in `Include.Modules` by @BernieWhite.
     [#1362](https://github.com/microsoft/PSRule/issues/1362)
 
 ## v2.7.0-B0016 (pre-release)
