@@ -163,3 +163,16 @@ spec:
   condition:
     field: name
     equals: TestObject1
+
+---
+# Synopsis: Rule for unit testing of allOf not.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: YamlRuleAllOfNot
+spec:
+  condition:
+    allOf:
+      - not:
+          field: name
+          equals: TestObject1

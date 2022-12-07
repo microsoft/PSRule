@@ -380,7 +380,7 @@
     <value>Object path not found.</value>
   </data>
   <data name="ReadJsonFailedExpectedToken" xml:space="preserve">
-    <value>Read JSON failed because the token ({0}) was not expected.</value>
+    <value>Read JSON failed because the token ({0}) was not expected at path '{1}'.</value>
   </data>
   <data name="DebugTargetSubselectorMismatch" xml:space="preserve">
     <value>Target failed sub-selector pre-condition.</value>
