@@ -1,82 +1,104 @@
 // Some comments
 [
+  // Some comments
+  {
     // Some comments
-    {
-        // Some comments
-        "TargetName": "TestObject1",
-        "Spec": { // Some comments
-            "": {
-                "Key": "value"
-            },
-            "Properties": {
-                "Value1": 1,
-                "Kind": "Test",
-                "array": [
-                    {
-                        "id": "1"
-                    },
-                    {
-                        "id": "2"
-                    }
-                ],
-                "array2": [
-                    "1",
-                    "2",
-                    "3"
-                ],
-                "array3": [
-                    [
-                        "nested"
-                    ],
-                    [
-                        1,
-                        2,
-                        3
-                    ]
-                ],
-                "from": null
-            }
-        }, // Some comments
-        "_PSRule": {
-            "path": "master.items[0]",
-            "source": [
-                {
-                    "file": "some-file.json",
-                    "line": 1,
-                    "type": "Origin"
-                }
-            ],
-            "issue": [
-                {
-                    "type": "Downstream.Issue",
-                    "name": "Custom.NoNesting",
-                    "message": "A custom downstream issue reporting nesting not allowed."
-                }
+    "TargetName": "TestObject1",
+    "Spec": { // Some comments
+      "": {
+        "Key": "value"
+      },
+      "Properties": {
+        "Value1": 1,
+        "Kind": "Test",
+        "array": [
+          {
+            "id": "1"
+          },
+          {
+            "id": "2"
+          }
+        ],
+        "array2": [
+          "1",
+          "2",
+          "3"
+        ],
+        "array3": [
+          [
+            "nested"
+          ],
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        "from": null
+      },
+      "config": {
+        "example": [
+          {
+            "prop": [
+              {
+                "public": true
+              }
             ]
+          }
+        ]
+      }
+    }, // Some comments
+    "_PSRule": {
+      "path": "master.items[0]",
+      "source": [
+        {
+          "file": "some-file.json",
+          "line": 1,
+          "type": "Origin"
         }
-    },
-    {
-        "TargetName": "TestObject2",
-        "Spec": {
-            "Properties": {
-                "Value2": 2,
-                "Kind": "Test",
-                "array": [
-                    {
-                        "id": "1"
-                    },
-                    {
-                        "id": "2"
-                    },
-                    null
-                ],
-                "array2": [
-                    "1",
-                    "2",
-                    "3"
-                ],
-                "from": "abc"
-            }
+      ],
+      "issue": [
+        {
+          "type": "Downstream.Issue",
+          "name": "Custom.NoNesting",
+          "message": "A custom downstream issue reporting nesting not allowed."
         }
+      ]
     }
+  },
+  {
+    "TargetName": "TestObject2",
+    "Spec": {
+      "Properties": {
+        "Value2": 2,
+        "Kind": "Test",
+        "array": [
+          {
+            "id": "1"
+          },
+          {
+            "id": "2"
+          },
+          null
+        ],
+        "array2": [
+          "1",
+          "2",
+          "3"
+        ],
+        "from": "abc"
+      },
+      "config": {
+        "example": [
+          {
+            "prop": [
+              {
+                "public": false
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
 ]

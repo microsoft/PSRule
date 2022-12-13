@@ -30,6 +30,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.7.0-B0049:
+
+- Bug fixes:
+  - Fixed object path fails to iterate JSON object with wildcard selector by @BernieWhite.
+    [#1376](https://github.com/microsoft/PSRule/issues/1376)
+
 ## v2.7.0-B0049 (pre-release)
 
 What's changed since pre-release v2.7.0-B0031:

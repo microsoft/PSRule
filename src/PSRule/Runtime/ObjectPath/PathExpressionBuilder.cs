@@ -386,6 +386,12 @@ namespace PSRule.Runtime.ObjectPath
             if (IsSimpleType(baseObject))
                 return DEFAULT_EMPTY_ARRAY;
 
+            if (baseObject is JObject jObject)
+                return GetAllField(jObject);
+
+            if (baseObject is JArray jArray)
+                return GetAllIndex(jArray);
+
             return baseObject is IEnumerable ? GetAllIndex(baseObject) : GetAllField(baseObject);
         }
 
@@ -436,6 +442,12 @@ namespace PSRule.Runtime.ObjectPath
             else if (o is PSObject psObject)
             {
                 foreach (var property in psObject.Properties)
+                    yield return property.Value;
+            }
+            // Handle JObject
+            else if (o is JObject jObject)
+            {
+                foreach (var property in jObject.Properties())
                     yield return property.Value;
             }
             // Handle DynamicObjects

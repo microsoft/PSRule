@@ -307,6 +307,32 @@ namespace PSRule
             Assert.False(expression.TryGet(pso, true, out object[] _));
         }
 
+        [Fact]
+        public void WithArrayExpand()
+        {
+            var testObject = GetJsonContent() as JArray;
+            var expression = PathExpression.Create("Spec.config.[*][*].prop[*].public");
+            Assert.True(expression.IsArray);
+            Assert.True(expression.TryGet(testObject[0], true, out object[] actual));
+            Assert.Equal(true, actual[0]);
+            Assert.True(expression.TryGet(testObject[1], true, out actual));
+            Assert.Equal(false, actual[0]);
+
+            expression = PathExpression.Create("Spec.config[*][*].prop[*].public");
+            Assert.True(expression.IsArray);
+            Assert.True(expression.TryGet(testObject[0], true, out actual));
+            Assert.Equal(true, actual[0]);
+            Assert.True(expression.TryGet(testObject[1], true, out actual));
+            Assert.Equal(false, actual[0]);
+
+            expression = PathExpression.Create("Spec.config.[*].[*].prop[*].public");
+            Assert.True(expression.IsArray);
+            Assert.True(expression.TryGet(testObject[0], true, out actual));
+            Assert.Equal(true, actual[0]);
+            Assert.True(expression.TryGet(testObject[1], true, out actual));
+            Assert.Equal(false, actual[0]);
+        }
+
         #region Helper methods
 
         private static object GetJsonContent()
