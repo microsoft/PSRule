@@ -45,6 +45,11 @@ namespace PSRule
 
             var hashtable = rule[0].Tag.ToHashtable();
             Assert.Equal("tag", hashtable["feature"]);
+
+            var block = HostHelper.GetRuleBlockGraph(GetSource(), context).GetAll();
+            var actual = block.FirstOrDefault(b => b.Name == "YamlBasicRule");
+            Assert.NotNull(actual.Info.Annotations);
+            Assert.Equal("test123", actual.Info.Annotations["test_value"]);
         }
 
         /// <summary>
@@ -219,6 +224,11 @@ namespace PSRule
 
             var hashtable = rule[0].Tag.ToHashtable();
             Assert.Equal("tag", hashtable["feature"]);
+
+            var block = HostHelper.GetRuleBlockGraph(GetSource("FromFile.Rule.jsonc"), context).GetAll();
+            var actual = block.FirstOrDefault(b => b.Name == "JsonBasicRule");
+            Assert.NotNull(actual.Info.Annotations);
+            Assert.Equal("test123", actual.Info.Annotations["test_value"]);
         }
 
         /// <summary>

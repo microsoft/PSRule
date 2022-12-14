@@ -20,6 +20,9 @@
           "Value1",
           "Value2"
         ]
+      },
+      "annotations": {
+        "test_value": "test123"
       }
     },
     "spec": {
