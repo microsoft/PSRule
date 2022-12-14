@@ -35,6 +35,8 @@ What's changed since pre-release v2.7.0-B0049:
 - Bug fixes:
   - Fixed object path fails to iterate JSON object with wildcard selector by @BernieWhite.
     [#1376](https://github.com/microsoft/PSRule/issues/1376)
+  - Fixed rule annotations are not included from YAML/ JSON definition by @BernieWhite.
+    [#1387](https://github.com/microsoft/PSRule/issues/1387)
 
 ## v2.7.0-B0049 (pre-release)
 

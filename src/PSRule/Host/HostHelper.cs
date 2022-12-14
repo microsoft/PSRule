@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -543,6 +544,7 @@ namespace PSRule.Host
                         block.Source.Module,
                         synopsis: new InfoString(block.Synopsis)
                     );
+                    MergeAnnotations(info, block.Metadata);
 
                     results.TryAdd(new RuleBlock
                     (
@@ -569,6 +571,19 @@ namespace PSRule.Host
                 context.ExitSourceScope();
             }
             return results;
+        }
+
+        private static void MergeAnnotations(RuleHelpInfo info, ResourceMetadata metadata)
+        {
+            if (info == null || metadata == null || metadata.Annotations == null || metadata.Annotations.Count == 0)
+                return;
+
+            info.Annotations ??= new Hashtable(StringComparer.OrdinalIgnoreCase);
+            foreach (var kv in metadata.Annotations)
+            {
+                if (!info.Annotations.ContainsKey(kv.Key))
+                    info.Annotations[kv.Key] = kv.Value;
+            }
         }
 
         private static RuleHelpInfo[] ToRuleHelp(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
