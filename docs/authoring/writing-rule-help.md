@@ -9,7 +9,7 @@ This scenario covers the following:
 - Writing markdown documentation
 - Localizing documentation files
 
-## Using inline help with YAML and JSON
+## Inline help with YAML and JSON
 
 With authoring rules in YAML and JSON, PSRule provides the following syntax features:
 
@@ -21,42 +21,233 @@ With authoring rules in YAML and JSON, PSRule provides the following syntax feat
 
 ### Synopsis resource comment
 
+Specify the synopsis of the rule with the `Synopsis` comment above the rule properties.
 
+=== "YAML"
+
+    ```yaml hl_lines="2"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+    spec:
+      condition:
+        field: 'configure.supportsHttpsTrafficOnly'
+        equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="3"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS"
+            },
+            "spec": {
+                "condition": {
+                    "field": "configure.supportsHttpsTrafficOnly",
+                    "equals": true
+                }
+            }
+        }
+    ]
+    ```
 
 !!! Note
     The resource comment is not localized.
-    Use markdown documentation for a localized synopsis.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized synopsis.
 
 ### Display name property
 
+Specify the display name of the rule with the `metadata.displayName` property.
 
+=== "YAML"
+
+    ```yaml hl_lines="7"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+      displayName: Require TLS
+    spec:
+      condition:
+        field: 'configure.supportsHttpsTrafficOnly'
+        equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="8"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS",
+                "displayName": "Require TLS"
+            },
+            "spec": {
+                "condition": {
+                    "field": "configure.supportsHttpsTrafficOnly",
+                    "equals": true
+                }
+            }
+        }
+    ]
+    ```
 
 !!! Note
     This property is not localized.
-    Use markdown documentation for a localized display name.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized display name.
 
 ### Description property
 
+Specify the description of the rule with the `metadata.description` property.
+
+=== "YAML"
+
+    ```yaml hl_lines="7"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+      description: The resource should only use TLS.
+    spec:
+      condition:
+        field: 'configure.supportsHttpsTrafficOnly'
+        equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="8"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS",
+                "description": "The resource should only use TLS."
+            },
+            "spec": {
+                "condition": {
+                    "field": "configure.supportsHttpsTrafficOnly",
+                    "equals": true
+                }
+            }
+        }
+    ]
+    ```
 
 !!! Note
     This property is not localized.
-    Use markdown documentation for a localized description.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized description.
 
 ### Link property
 
+Specify the online help URL of the rule with the `metadata.link` property.
+
+=== "YAML"
+
+    ```yaml hl_lines="7"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+      link: https://aka.ms/ps-rule
+    spec:
+      condition:
+        field: 'configure.supportsHttpsTrafficOnly'
+        equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="8"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS",
+                "link": "https://aka.ms/ps-rule"
+            },
+            "spec": {
+                "condition": {
+                    "field": "configure.supportsHttpsTrafficOnly",
+                    "equals": true
+                }
+            }
+        }
+    ]
+    ```
 
 !!! Note
     This property is not localized.
-    Use markdown documentation for a localized online help URL.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized online help URL.
 
 ### Recommend property
 
+Specify the rule recommendation with the `spec.recommend` property.
+
+=== "YAML"
+
+    ```yaml hl_lines="8"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+    spec:
+      recommend: The resource should only use TLS.
+      condition:
+        field: 'configure.supportsHttpsTrafficOnly'
+        equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="10"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS"
+            },
+            "spec": {
+                "recommend": "",
+                "condition": {
+                    "field": "configure.supportsHttpsTrafficOnly",
+                    "equals": true
+                }
+            }
+        }
+    ]
+    ```
 
 !!! Note
     This property is not localized.
-    Use markdown documentation for a localized recommendation.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized recommendation.
 
-## Using inline help with PowerShell
+## Inline help with PowerShell
 
 When authoring rules in PowerShell, PSRule provides the following syntax features:
 
@@ -73,7 +264,7 @@ This is only supported for populating a rule synopsis.
 
 For example:
 
-```powershell
+```powershell title="PowerShell" hl_lines="1"
 # Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Exists "metadata.labels.'app.kubernetes.io/name'"
@@ -92,7 +283,7 @@ Consider using comment metadata and also using markdown documentation for a mult
 
 !!! Note
     The script comment is not localized.
-    Use markdown documentation for a localized synopsis.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized synopsis.
 
 ### Recommend keyword
 
@@ -104,7 +295,7 @@ When packaging rules in a module consider using markdown help instead.
 
 For example:
 
-```powershell
+```powershell title="PowerShell" hl_lines="3"
 # Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Recommend 'Consider setting the recommended label ''app.kubernetes.io/name'' on deployment and service resources.'
@@ -123,7 +314,7 @@ Localized recommendations can set by using the `$LocalizedData`.
 
 For example:
 
-```powershell
+```powershell title="PowerShell" hl_lines="3"
 # Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Recommend $LocalizedData.RecommendNameLabel
@@ -142,7 +333,7 @@ Use `-OutputFormat Wide` to display reason messages.
 
 To set a reason use the `Reason` keyword followed by the reason. For example:
 
-```powershell
+```powershell title="PowerShell" hl_lines="6"
 # Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Recommend $LocalizedData.RecommendNameLabel
@@ -157,7 +348,7 @@ Additionally the reason messages can be localized by using the `$LocalizedData` 
 
 For example:
 
-```powershell
+```powershell title="PowerShell" hl_lines="7"
 # Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Recommend $LocalizedData.RecommendNameLabel
