@@ -125,7 +125,7 @@ namespace PSRule
             return o != null && o.TryTargetInfo(out var targetInfo) ? targetInfo.TargetType : null;
         }
 
-        public static string GetScope(this PSObject o)
+        public static string[] GetScope(this PSObject o)
         {
             return o != null && o.TryTargetInfo(out var targetInfo) ? targetInfo.Scope : null;
         }
@@ -154,7 +154,7 @@ namespace PSRule
             if (TryProperty(value, PROPERTY_TYPE, out string type) && targetInfo.TargetType == null)
                 targetInfo.TargetType = type;
 
-            if (TryProperty(value, PROPERTY_SCOPE, out string scope) && targetInfo.Scope == null)
+            if (TryProperty(value, PROPERTY_SCOPE, out string[] scope) && targetInfo.Scope == null)
                 targetInfo.Scope = scope;
 
             if (TryProperty(value, PROPERTY_PATH, out string path) && targetInfo.Path == null)

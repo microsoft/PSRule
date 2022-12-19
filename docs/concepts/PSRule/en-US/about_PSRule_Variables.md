@@ -172,7 +172,7 @@ The following properties are available for read access:
   See option `Binding.Field` for more information.
 - `Input` - Allows adding additional input paths to the pipeline.
 - `Repository` - Provides access to information about the current repository.
-- `Scope` - The scope of the object currently being processed by the pipeline.
+- `Scope` - Any scopes assigned to the object currently being processed by the pipeline.
 - `Source` - A collection of sources for the object currently being processed on the pipeline.
 - `TargetObject` - The object currently being processed on the pipeline.
 - `TargetName` - The name of the object currently being processed on the pipeline.

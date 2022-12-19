@@ -968,13 +968,17 @@ namespace PSRule.Definitions.Expressions
                 GetCaseSensitive(properties, out var caseSensitive))
             {
                 context.ExpressionTrace(STARTSWITH, operand.Value, propertyValue);
-                if (!ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                if (!ExpressionHelpers.TryStringOrArray(operand.Value, convert, out var value))
                     return NotString(context, operand);
 
-                for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
-                    if (ExpressionHelpers.StartsWith(value, propertyValue[i], caseSensitive))
-                        return Pass();
-
+                for (var i_propertyValue = 0; propertyValue != null && i_propertyValue < propertyValue.Length; i_propertyValue++)
+                {
+                    for (var i_value = 0; i_value < value.Length; i_value++)
+                    {
+                        if (ExpressionHelpers.StartsWith(value[i_value], propertyValue[i_propertyValue], caseSensitive))
+                            return Pass();
+                    }
+                }
                 return Fail(
                     context,
                     operand,
@@ -995,18 +999,21 @@ namespace PSRule.Definitions.Expressions
                 GetCaseSensitive(properties, out var caseSensitive))
             {
                 context.ExpressionTrace(NOTSTARTSWITH, operand.Value, propertyValue);
-                if (ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                if (ExpressionHelpers.TryStringOrArray(operand.Value, convert, out var value))
                 {
-                    for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                    for (var i_propertyValue = 0; propertyValue != null && i_propertyValue < propertyValue.Length; i_propertyValue++)
                     {
-                        if (ExpressionHelpers.StartsWith(value, propertyValue[i], caseSensitive))
-                            return Fail(
-                                context,
-                                operand,
-                                ReasonStrings.Assert_StartsWith,
-                                value,
-                                propertyValue[i]
-                            );
+                        for (var i_value = 0; i_value < value.Length; i_value++)
+                        {
+                            if (ExpressionHelpers.StartsWith(value[i_value], propertyValue[i_propertyValue], caseSensitive))
+                                return Fail(
+                                    context,
+                                    operand,
+                                    ReasonStrings.Assert_StartsWith,
+                                    value[i_value],
+                                    propertyValue[i_propertyValue]
+                                );
+                        }
                     }
                 }
                 return Pass();
@@ -1023,13 +1030,17 @@ namespace PSRule.Definitions.Expressions
                 GetCaseSensitive(properties, out var caseSensitive))
             {
                 context.ExpressionTrace(ENDSWITH, operand.Value, propertyValue);
-                if (!ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                if (!ExpressionHelpers.TryStringOrArray(operand.Value, convert, out var value))
                     return NotString(context, operand);
 
-                for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
-                    if (ExpressionHelpers.EndsWith(value, propertyValue[i], caseSensitive))
-                        return Pass();
-
+                for (var i_propertyValue = 0; propertyValue != null && i_propertyValue < propertyValue.Length; i_propertyValue++)
+                {
+                    for (var i_value = 0; i_value < value.Length; i_value++)
+                    {
+                        if (ExpressionHelpers.EndsWith(value[i_value], propertyValue[i_propertyValue], caseSensitive))
+                            return Pass();
+                    }
+                }
                 return Fail(
                     context,
                     operand,
@@ -1050,18 +1061,21 @@ namespace PSRule.Definitions.Expressions
                 GetCaseSensitive(properties, out var caseSensitive))
             {
                 context.ExpressionTrace(NOTENDSWITH, operand.Value, propertyValue);
-                if (ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                if (ExpressionHelpers.TryStringOrArray(operand.Value, convert, out var value))
                 {
-                    for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                    for (var i_propertyValue = 0; propertyValue != null && i_propertyValue < propertyValue.Length; i_propertyValue++)
                     {
-                        if (ExpressionHelpers.EndsWith(value, propertyValue[i], caseSensitive))
-                            return Fail(
-                                context,
-                                operand,
-                                ReasonStrings.Assert_EndsWith,
-                                value,
-                                propertyValue[i]
-                            );
+                        for (var i_value = 0; i_value < value.Length; i_value++)
+                        {
+                            if (ExpressionHelpers.EndsWith(value[i_value], propertyValue[i_propertyValue], caseSensitive))
+                                return Fail(
+                                    context,
+                                    operand,
+                                    ReasonStrings.Assert_EndsWith,
+                                    value[i_value],
+                                    propertyValue[i_propertyValue]
+                                );
+                        }
                     }
                 }
                 return Pass();
@@ -1078,13 +1092,17 @@ namespace PSRule.Definitions.Expressions
                 GetCaseSensitive(properties, out var caseSensitive))
             {
                 context.ExpressionTrace(CONTAINS, operand.Value, propertyValue);
-                if (!ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                if (!ExpressionHelpers.TryStringOrArray(operand.Value, convert, out var value))
                     return NotString(context, operand);
 
-                for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
-                    if (ExpressionHelpers.Contains(value, propertyValue[i], caseSensitive))
-                        return Pass();
-
+                for (var i_propertyValue = 0; propertyValue != null && i_propertyValue < propertyValue.Length; i_propertyValue++)
+                {
+                    for (var i_value = 0; i_value < value.Length; i_value++)
+                    {
+                        if (ExpressionHelpers.Contains(value[i_value], propertyValue[i_propertyValue], caseSensitive))
+                            return Pass();
+                    }
+                }
                 return Fail(
                     context,
                     operand,
@@ -1105,18 +1123,21 @@ namespace PSRule.Definitions.Expressions
                 GetCaseSensitive(properties, out var caseSensitive))
             {
                 context.ExpressionTrace(NOTCONTAINS, operand.Value, propertyValue);
-                if (ExpressionHelpers.TryString(operand.Value, convert, out var value))
+                if (ExpressionHelpers.TryStringOrArray(operand.Value, convert, out var value))
                 {
-                    for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
+                    for (var i_propertyValue = 0; propertyValue != null && i_propertyValue < propertyValue.Length; i_propertyValue++)
                     {
-                        if (ExpressionHelpers.Contains(value, propertyValue[i], caseSensitive))
-                            return Fail(
-                                context,
-                                operand,
-                                ReasonStrings.Assert_Contains,
-                                value,
-                                propertyValue[i]
-                            );
+                        for (var i_value = 0; i_value < value.Length; i_value++)
+                        {
+                            if (ExpressionHelpers.Contains(value[i_value], propertyValue[i_propertyValue], caseSensitive))
+                                return Fail(
+                                    context,
+                                    operand,
+                                    ReasonStrings.Assert_Contains,
+                                    value[i_value],
+                                    propertyValue[i_propertyValue]
+                                );
+                        }
                     }
                 }
                 return Pass();
@@ -1688,8 +1709,7 @@ namespace PSRule.Definitions.Expressions
                 if (svalue != DOT || context?.Context?.LanguageScope == null)
                     return Invalid(context, svalue);
 
-                if (!context.Context.LanguageScope.TryGetScope(o, out var scope) ||
-                    string.IsNullOrEmpty(scope))
+                if (!context.Context.LanguageScope.TryGetScope(o, out var scope))
                     return Invalid(context, svalue);
 
                 operand = Operand.FromScope(scope);

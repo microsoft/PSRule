@@ -58,7 +58,7 @@ namespace PSRule
         public static bool TryPopStringArray(this IDictionary<string, object> dictionary, string key, out string[] value)
         {
             value = default;
-            return TryPopValue(dictionary, key, out var v) && ExpressionHelpers.TryConvertStringArray(v, out value);
+            return TryPopValue(dictionary, key, out var v) && ExpressionHelpers.TryStringOrArray(v, convert: true, value: out value);
         }
 
         [DebuggerStepThrough]
@@ -140,7 +140,7 @@ namespace PSRule
         public static bool TryGetStringArray(this IDictionary<string, object> dictionary, string key, out string[] value)
         {
             value = null;
-            return dictionary.TryGetValue(key, out var o) && ExpressionHelpers.TryConvertStringArray(o, out value);
+            return dictionary.TryGetValue(key, out var o) && ExpressionHelpers.TryStringOrArray(o, convert: true, value: out value);
         }
 
         [DebuggerStepThrough]

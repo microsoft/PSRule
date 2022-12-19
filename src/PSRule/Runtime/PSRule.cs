@@ -207,7 +207,7 @@ namespace PSRule.Runtime
         /// <summary>
         /// The bound scope of the target object.
         /// </summary>
-        public string Scope => GetContext().TargetObject.Scope;
+        public string[] Scope => GetContext().TargetObject.Scope;
 
         /// <summary>
         /// Attempts to read content from disk.
