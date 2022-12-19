@@ -44,6 +44,8 @@ What's changed since pre-release v2.7.0-B0070:
 - Engineering:
   - Bump Newtonsoft.Json to v13.0.2.
     [#1358](https://github.com/microsoft/PSRule/pull/1358)
+  - Bump System.Drawing.Common to v7.0.0.
+    [#1332](https://github.com/microsoft/PSRule/pull/1332)
 
 ## v2.7.0-B0070 (pre-release)
 
