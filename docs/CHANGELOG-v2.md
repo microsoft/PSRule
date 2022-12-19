@@ -46,6 +46,8 @@ What's changed since pre-release v2.7.0-B0070:
     [#1358](https://github.com/microsoft/PSRule/pull/1358)
   - Bump System.Drawing.Common to v7.0.0.
     [#1332](https://github.com/microsoft/PSRule/pull/1332)
+  - Bump Microsoft.NET.Test.Sdk to v17.4.1.
+    [#1389](https://github.com/microsoft/PSRule/pull/1389)
 
 ## v2.7.0-B0070 (pre-release)
 
