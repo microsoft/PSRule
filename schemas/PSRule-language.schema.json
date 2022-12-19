@@ -30,7 +30,29 @@
           "type": "string",
           "title": "Name",
           "description": "The name of the resource. This must be unique.",
+          "markdownDescription": "The name of the resource. This must be unique.\n\n[See help](https://microsoft.github.io/PSRule/v2/authoring/storing-rules/#naming-rules)",
           "$ref": "#/definitions/resourceName"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description",
+          "description": "A non-localized description of the resource. The description is intended to be a verbose description of the resource. If your resource documentation needs to include background information include it here. For localized documentation define markdown help.",
+          "markdownDescription": "A non-localized description of the resource.\n\nThe description is intended to be a verbose description of the resource. If your resource documentation needs to include background information include it here.\n\nFor localized documentation define markdown help.\n\n[See help](https://microsoft.github.io/PSRule/v2/authoring/writing-rule-help/)",
+          "minLength": 1
+        },
+        "displayName": {
+          "type": "string",
+          "title": "Display name",
+          "description": "A non-localized display name for the resource. For localized documentation define markdown help.",
+          "markdownDescription": "A non-localized display name for the resource. For localized documentation define markdown help.\n\n[See help](https://microsoft.github.io/PSRule/v2/authoring/writing-rule-help/)",
+          "minLength": 1
+        },
+        "link": {
+          "type": "string",
+          "title": "Online help",
+          "description": "A non-localized URL to documentation for the resource. URLs should be prefixed with https://. Relative URLs are not supported.",
+          "markdownDescription": "A non-localized URL to documentation for the resource. URLs should be prefixed with `https://`. Relative URLs are not supported.\n\n[See help](https://microsoft.github.io/PSRule/v2/authoring/writing-rule-help/)",
+          "pattern": "^https://"
         },
         "annotations": {
           "type": "object",
@@ -60,7 +82,8 @@
       },
       "required": [
         "name"
-      ]
+      ],
+      "additionalProperties": false
     },
     "baseline-v1": {
       "type": "object",
@@ -630,6 +653,13 @@
           ],
           "default": "Error"
         },
+        "recommend": {
+          "type": "string",
+          "title": "Recommendation",
+          "description": "A non-localized recommendation for the rule. The recommendation is intended to identify corrective actions that can be taken to address any failures. Avoid using URLs within the recommendation. For localized documentation define markdown help.",
+          "markdownDescription": "A non-localized recommendation for the rule.\n\nThe recommendation is intended to identify corrective actions that can be taken to address any failures. Avoid using URLs within the recommendation.\n\nFor localized documentation define markdown help.\n\n[See help](https://microsoft.github.io/PSRule/v2/authoring/writing-rule-help/)",
+          "minLength": 1
+        },
         "type": {
           "type": "array",
           "title": "Type pre-condition",
@@ -679,7 +709,29 @@
           "type": "string",
           "title": "Name",
           "description": "The name of the resource. This must be unique.",
+          "markdownDescription": "The name of the resource. This must be unique.\n\n[See help](https://microsoft.github.io/PSRule/v2/authoring/storing-rules/#naming-rules)",
           "$ref": "#/definitions/resourceName"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description",
+          "description": "A non-localized description of the resource. The description is intended to be a verbose description of the resource. If your resource documentation needs to include background information include it here. For localized documentation define markdown help.",
+          "markdownDescription": "A non-localized description of the resource.\n\nThe description is intended to be a verbose description of the resource. If your resource documentation needs to include background information include it here.\n\nFor localized documentation define markdown help.\n\n[See help](https://microsoft.github.io/PSRule/v2/authoring/writing-rule-help/)",
+          "minLength": 1
+        },
+        "displayName": {
+          "type": "string",
+          "title": "Display name",
+          "description": "A non-localized display name for the resource. For localized documentation define markdown help.",
+          "markdownDescription": "A non-localized display name for the resource. For localized documentation define markdown help.\n\n[See help](https://microsoft.github.io/PSRule/v2/authoring/writing-rule-help/)",
+          "minLength": 1
+        },
+        "link": {
+          "type": "string",
+          "title": "Online help",
+          "description": "A non-localized URL to documentation for the resource. URLs should be prefixed with https://. Relative URLs are not supported.",
+          "markdownDescription": "A non-localized URL to documentation for the resource. URLs should be prefixed with `https://`. Relative URLs are not supported.\n\n[See help](https://microsoft.github.io/PSRule/v2/authoring/writing-rule-help/)",
+          "pattern": "^https://"
         },
         "ref": {
           "title": "Reference",
@@ -752,7 +804,8 @@
       },
       "required": [
         "name"
-      ]
+      ],
+      "additionalProperties": false
     },
     "selectorExpressionValueMultiString": {
       "oneOf": [

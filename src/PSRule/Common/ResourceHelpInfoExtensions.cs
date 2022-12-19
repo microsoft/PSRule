@@ -13,8 +13,7 @@ namespace PSRule
                 return;
 
             info.Synopsis.Update(other.Synopsis);
-            if (other.Description != null && other.Description.HasValue)
-                info.Description.Text = other.Description.Text;
+            info.Description.Update(other.Description);
         }
     }
 }

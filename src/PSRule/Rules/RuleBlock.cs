@@ -134,6 +134,8 @@ namespace PSRule.Rules
 
         string IRuleV1.Description => Info.Synopsis;
 
+        InfoString IRuleV1.Recommendation => ((IRuleHelpInfoV2)Info)?.Recommendation;
+
         #region IDisposable
 
         public void Dispose()

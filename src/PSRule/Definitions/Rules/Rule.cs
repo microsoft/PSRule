@@ -53,6 +53,11 @@ namespace PSRule.Definitions.Rules
         SeverityLevel Level { get; }
 
         /// <summary>
+        /// A recommendation for the rule.
+        /// </summary>
+        InfoString Recommendation { get; }
+
+        /// <summary>
         /// A short description of the rule.
         /// </summary>
         string Synopsis { get; }
@@ -167,6 +172,9 @@ namespace PSRule.Definitions.Rules
 
         /// <inheritdoc/>
         string IRuleV1.Description => Info.Synopsis.Text;
+
+        /// <inheritdoc/>
+        InfoString IRuleV1.Recommendation => InfoString.Create(Spec?.Recommend);
     }
 
     /// <summary>
@@ -179,6 +187,9 @@ namespace PSRule.Definitions.Rules
 
         /// <inheritdoc/>
         public SeverityLevel? Level { get; set; }
+
+        /// <inheritdoc/>
+        public string Recommend { get; set; }
 
         /// <inheritdoc/>
         public string[] Type { get; set; }

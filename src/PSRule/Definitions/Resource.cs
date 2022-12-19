@@ -414,6 +414,16 @@ namespace PSRule.Definitions
         public string Name { get; set; }
 
         /// <summary>
+        /// A non-localized display name for the resource.
+        /// </summary>
+        public string DisplayName { get; set; }
+
+        /// <summary>
+        /// A non-localized description of the resource.
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
         /// A opaque reference for the resource.
         /// </summary>
         public string Ref { get; set; }
@@ -440,6 +450,11 @@ namespace PSRule.Definitions
         /// </summary>
         [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
         public ResourceLabels Labels { get; set; }
+
+        /// <summary>
+        /// A URL to documentation for the resource.
+        /// </summary>
+        public string Link { get; set; }
     }
 
     /// <summary>

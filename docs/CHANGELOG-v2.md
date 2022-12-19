@@ -39,6 +39,8 @@ What's changed since pre-release v2.7.0-B0070:
     [#1383](https://github.com/microsoft/PSRule/issues/1383)
   - Improve support of string comparisons to support an array of strings by @BernieWhite.
     [#1384](https://github.com/microsoft/PSRule/issues/1384)
+  - Added help properties to rules from YAML/ JSON resources by @BernieWhite.
+    [#1386](https://github.com/microsoft/PSRule/issues/1386)
 
 ## v2.7.0-B0070 (pre-release)
 

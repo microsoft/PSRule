@@ -9,24 +9,262 @@ This scenario covers the following:
 - Writing markdown documentation
 - Localizing documentation files
 
-## Using inline help
+## Inline help with YAML and JSON
+
+With authoring rules in YAML and JSON, PSRule provides the following syntax features:
+
+- Synopsis resource comment.
+- `metadata.displayName` property.
+- `metadata.description` property.
+- `metadata.link` property.
+- `spec.recommend` property.
+
+### Synopsis resource comment
+
+Specify the synopsis of the rule with the `Synopsis` comment above the rule properties.
+
+=== "YAML"
+
+    ```yaml hl_lines="2"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+    spec:
+      condition:
+        field: 'configure.supportsHttpsTrafficOnly'
+        equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="3"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS"
+            },
+            "spec": {
+                "condition": {
+                    "field": "configure.supportsHttpsTrafficOnly",
+                    "equals": true
+                }
+            }
+        }
+    ]
+    ```
+
+!!! Note
+    The resource comment is not localized.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized synopsis.
+
+### Display name property
+
+Specify the display name of the rule with the `metadata.displayName` property.
+
+=== "YAML"
+
+    ```yaml hl_lines="7"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+      displayName: Require TLS
+    spec:
+      condition:
+        field: 'configure.supportsHttpsTrafficOnly'
+        equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="8"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS",
+                "displayName": "Require TLS"
+            },
+            "spec": {
+                "condition": {
+                    "field": "configure.supportsHttpsTrafficOnly",
+                    "equals": true
+                }
+            }
+        }
+    ]
+    ```
+
+!!! Note
+    This property is not localized.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized display name.
+
+### Description property
+
+Specify the description of the rule with the `metadata.description` property.
+
+=== "YAML"
+
+    ```yaml hl_lines="7"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+      description: The resource should only use TLS.
+    spec:
+      condition:
+        field: 'configure.supportsHttpsTrafficOnly'
+        equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="8"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS",
+                "description": "The resource should only use TLS."
+            },
+            "spec": {
+                "condition": {
+                    "field": "configure.supportsHttpsTrafficOnly",
+                    "equals": true
+                }
+            }
+        }
+    ]
+    ```
+
+!!! Note
+    This property is not localized.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized description.
+
+### Link property
+
+Specify the online help URL of the rule with the `metadata.link` property.
+
+=== "YAML"
+
+    ```yaml hl_lines="7"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+      link: https://aka.ms/ps-rule
+    spec:
+      condition:
+        field: 'configure.supportsHttpsTrafficOnly'
+        equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="8"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS",
+                "link": "https://aka.ms/ps-rule"
+            },
+            "spec": {
+                "condition": {
+                    "field": "configure.supportsHttpsTrafficOnly",
+                    "equals": true
+                }
+            }
+        }
+    ]
+    ```
+
+!!! Note
+    This property is not localized.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized online help URL.
+
+### Recommend property
+
+Specify the rule recommendation with the `spec.recommend` property.
+
+=== "YAML"
+
+    ```yaml hl_lines="8"
+    ---
+    # Synopsis: An example rule to require TLS.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: 'Local.YAML.RequireTLS'
+    spec:
+      recommend: The resource should only use TLS.
+      condition:
+        field: 'configure.supportsHttpsTrafficOnly'
+        equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="10"
+    [
+        {
+            // Synopsis: An example rule to require TLS.
+            "apiVersion": "github.com/microsoft/PSRule/v1",
+            "kind": "Rule",
+            "metadata": {
+                "name": "Local.JSON.RequireTLS"
+            },
+            "spec": {
+                "recommend": "",
+                "condition": {
+                    "field": "configure.supportsHttpsTrafficOnly",
+                    "equals": true
+                }
+            }
+        }
+    ]
+    ```
+
+!!! Note
+    This property is not localized.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized recommendation.
+
+## Inline help with PowerShell
 
 When authoring rules in PowerShell, PSRule provides the following syntax features:
 
-- Comment metadata.
+- Synopsis script comment.
 - `Recommend` keyword.
 - `Reason` keyword.
 
 These features are each describe in detail in the following sections.
 
-### Comment metadata
+### Synopsis script comment
 
 Comment metadata can be included directly above a rule block by using the syntax `# Synopsis: <text>`.
 This is only supported for populating a rule synopsis.
 
 For example:
 
-```powershell
+```powershell title="PowerShell" hl_lines="1"
 # Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Exists "metadata.labels.'app.kubernetes.io/name'"
@@ -43,6 +281,10 @@ The synopsis can not break over multiple lines.
 The key limitation of _only_ using comment metadata is that it can not be localized for multiple languages.
 Consider using comment metadata and also using markdown documentation for a multi-language experience.
 
+!!! Note
+    The script comment is not localized.
+    Use [markdown documentation](#writing-markdown-documentation) for a localized synopsis.
+
 ### Recommend keyword
 
 The `Recommend` keyword sets the recommendation for a rule.
@@ -53,7 +295,7 @@ When packaging rules in a module consider using markdown help instead.
 
 For example:
 
-```powershell
+```powershell title="PowerShell" hl_lines="3"
 # Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Recommend 'Consider setting the recommended label ''app.kubernetes.io/name'' on deployment and service resources.'
@@ -72,7 +314,7 @@ Localized recommendations can set by using the `$LocalizedData`.
 
 For example:
 
-```powershell
+```powershell title="PowerShell" hl_lines="3"
 # Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Recommend $LocalizedData.RecommendNameLabel
@@ -91,7 +333,7 @@ Use `-OutputFormat Wide` to display reason messages.
 
 To set a reason use the `Reason` keyword followed by the reason. For example:
 
-```powershell
+```powershell title="PowerShell" hl_lines="6"
 # Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Recommend $LocalizedData.RecommendNameLabel
@@ -106,7 +348,7 @@ Additionally the reason messages can be localized by using the `$LocalizedData` 
 
 For example:
 
-```powershell
+```powershell title="PowerShell" hl_lines="7"
 # Synopsis: Must have the app.kubernetes.io/name label
 Rule 'metadata.Name' -Type 'Deployment', 'Service' {
     Recommend $LocalizedData.RecommendNameLabel
@@ -167,6 +409,8 @@ The basic structure of markdown help is as follows:
 ```
 
 The PSRule [Visual Studio Code extension][extension] includes snippets for writing markdown documentation.
+
+  [extension]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
 
 ### Annotations
 
@@ -259,7 +503,7 @@ Any text following the heading is interpreted by PSRule and included in output.
 The recommendation is displayed when using the `Invoke-PSRule` and `Get-PSRuleHelp` cmdlets.
 
 The _recommendation_ is intended to identify corrective actions that can be taken to address any failures.
-Avoid using URLs within the recommendations.
+Avoid using URLs within the recommendation.
 Use the _links_ section to include references to external sources.
 
 PSRule supports semantic line breaks, and will automatically run together lines into a single paragraph.
@@ -384,5 +628,3 @@ Module file structure:
 
 - [kubernetes.Rule.ps1](writing-rule-help/kubernetes.Rule.ps1) - An example rule for validating name label.
 - [metadata.Name](writing-rule-help/en-US/metadata.Name.md) - An example markdown documentation file.
-
-[extension]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview

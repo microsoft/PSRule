@@ -23,9 +23,13 @@
       },
       "annotations": {
         "test_value": "test123"
-      }
+      },
+      "displayName": "Basic JSON rule",
+      "description": "This is a description of a basic rule.",
+      "link": "https://aka.ms/ps-rule"
     },
     "spec": {
+      "recommend": "A JSON rule recommendation for testing.",
       "condition": {
         "allOf": [
           {
