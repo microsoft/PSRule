@@ -9,17 +9,64 @@ This scenario covers the following:
 - Writing markdown documentation
 - Localizing documentation files
 
-## Using inline help
+## Using inline help with YAML and JSON
+
+With authoring rules in YAML and JSON, PSRule provides the following syntax features:
+
+- Synopsis resource comment.
+- `metadata.displayName` property.
+- `metadata.description` property.
+- `metadata.link` property.
+- `spec.recommend` property.
+
+### Synopsis resource comment
+
+
+
+!!! Note
+    The resource comment is not localized.
+    Use markdown documentation for a localized synopsis.
+
+### Display name property
+
+
+
+!!! Note
+    This property is not localized.
+    Use markdown documentation for a localized display name.
+
+### Description property
+
+
+!!! Note
+    This property is not localized.
+    Use markdown documentation for a localized description.
+
+### Link property
+
+
+!!! Note
+    This property is not localized.
+    Use markdown documentation for a localized online help URL.
+
+### Recommend property
+
+
+!!! Note
+    This property is not localized.
+    Use markdown documentation for a localized recommendation.
+
+## Using inline help with PowerShell
 
 When authoring rules in PowerShell, PSRule provides the following syntax features:
 
-- Comment metadata.
+- Synopsis script comment.
 - `Recommend` keyword.
 - `Reason` keyword.
 
 These features are each describe in detail in the following sections.
 
-### Comment metadata
+### Synopsis script comment
 
 Comment metadata can be included directly above a rule block by using the syntax `# Synopsis: <text>`.
 This is only supported for populating a rule synopsis.
@@ -42,6 +89,10 @@ The synopsis can not break over multiple lines.
 
 The key limitation of _only_ using comment metadata is that it can not be localized for multiple languages.
 Consider using comment metadata and also using markdown documentation for a multi-language experience.
+
+!!! Note
+    The script comment is not localized.
+    Use markdown documentation for a localized synopsis.
 
 ### Recommend keyword
 
@@ -168,6 +219,8 @@ The basic structure of markdown help is as follows:
 
 The PSRule [Visual Studio Code extension][extension] includes snippets for writing markdown documentation.
 
+  [extension]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview
+
 ### Annotations
 
 The annotation front matter at the top of the markdown document, is a set of key value pairs.
@@ -259,7 +312,7 @@ Any text following the heading is interpreted by PSRule and included in output.
 The recommendation is displayed when using the `Invoke-PSRule` and `Get-PSRuleHelp` cmdlets.
 
 The _recommendation_ is intended to identify corrective actions that can be taken to address any failures.
-Avoid using URLs within the recommendations.
+Avoid using URLs within the recommendation.
 Use the _links_ section to include references to external sources.
 
 PSRule supports semantic line breaks, and will automatically run together lines into a single paragraph.
@@ -384,5 +437,3 @@ Module file structure:
 
 - [kubernetes.Rule.ps1](writing-rule-help/kubernetes.Rule.ps1) - An example rule for validating name label.
 - [metadata.Name](writing-rule-help/en-US/metadata.Name.md) - An example markdown documentation file.
-
-[extension]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode-preview

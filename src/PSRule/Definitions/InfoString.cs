@@ -55,5 +55,13 @@ namespace PSRule.Definitions
                     _Markdown = value;
             }
         }
+
+        /// <summary>
+        /// Create an info string when not null or empty.
+        /// </summary>
+        internal static InfoString Create(string text, string markdown = null)
+        {
+            return string.IsNullOrEmpty(text) && string.IsNullOrEmpty(markdown) ? null : new InfoString(text, markdown);
+        }
     }
 }

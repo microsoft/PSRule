@@ -138,6 +138,8 @@ namespace PSRule.Rules
         [Obsolete("Use Source property instead.")]
         string ILanguageBlock.Module => Source.Module;
 
+        InfoString IRuleV1.Recommendation => ((IRuleHelpInfoV2)Info)?.Recommendation;
+
         /// <inheritdoc/>
         [JsonIgnore, YamlIgnore]
         public ResourceId? Ref { get; set; }

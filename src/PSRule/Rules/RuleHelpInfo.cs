@@ -66,6 +66,28 @@ namespace PSRule.Rules
                 !info.Annotations.ContainsKey(ONLINE_HELP_LINK_ANNOTATION) ?
                 null : info.Annotations[ONLINE_HELP_LINK_ANNOTATION].ToString();
         }
+
+        /// <summary>
+        /// Determines if the online help link is set.
+        /// </summary>
+        /// <returns>Returns <c>true</c> when the online help link is set. Otherwise this method returns <c>false</c>.</returns>
+        internal static bool HasOnlineHelp(this IRuleHelpInfoV2 info)
+        {
+            return info != null &&
+                info.Annotations != null &&
+                info.Annotations.ContainsKey(ONLINE_HELP_LINK_ANNOTATION);
+        }
+
+        /// <summary>
+        /// Set the online help link from the <paramref name="url"/> parameter.
+        /// </summary>
+        /// <param name="info">The info object.</param>
+        /// <param name="url">A URL to the online help location.</param>
+        internal static void SetOnlineHelpUrl(this IRuleHelpInfoV2 info, string url)
+        {
+            if (info == null || info.Annotations == null) return;
+            info.Annotations[ONLINE_HELP_LINK_ANNOTATION] = url;
+        }
     }
 
     /// <summary>
@@ -166,12 +188,15 @@ namespace PSRule.Rules
         [JsonProperty(PropertyName = "annotations")]
         public Hashtable Annotations { get; internal set; }
 
+        /// <inheritdoc/>
         [JsonIgnore, YamlIgnore]
         InfoString IRuleHelpInfoV2.Recommendation => _Recommendation;
 
+        /// <inheritdoc/>
         [JsonIgnore, YamlIgnore]
         InfoString IResourceHelpInfo.Synopsis => _Synopsis;
 
+        /// <inheritdoc/>
         [JsonIgnore, YamlIgnore]
         InfoString IResourceHelpInfo.Description => _Description;
 

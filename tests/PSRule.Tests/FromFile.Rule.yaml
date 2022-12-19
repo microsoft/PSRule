@@ -21,7 +21,11 @@ metadata:
     - Value2
   annotations:
     test_value: test123
+  displayName: Basic YAML rule
+  description: This is a description of a basic rule.
+  link: https://aka.ms/ps-rule
 spec:
+  recommend: A YAML rule recommendation for testing.
   condition:
     allOf:
     - field: 'Name'

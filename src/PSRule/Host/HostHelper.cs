@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -466,7 +467,7 @@ namespace PSRule.Host
                         context.WarnDuplicateRuleName(duplicateName);
 
                     context.EnterSourceScope(block.Source);
-                    var info = GetRuleHelpInfo(context, block.Name, block.Synopsis);
+                    var info = GetRuleHelpInfo(context, block);
                     results.TryAdd(new Rule
                     {
                         Id = block.Id,
@@ -538,7 +539,7 @@ namespace PSRule.Host
                     }
 
                     context.EnterSourceScope(block.Source);
-                    var info = GetRuleHelpInfo(context, ruleName, block.Synopsis) ?? new RuleHelpInfo(
+                    var info = GetRuleHelpInfo(context, block) ?? new RuleHelpInfo(
                         ruleName,
                         ruleName,
                         block.Source.Module,
@@ -584,6 +585,8 @@ namespace PSRule.Host
                 if (!info.Annotations.ContainsKey(kv.Key))
                     info.Annotations[kv.Key] = kv.Value;
             }
+            if (!info.HasOnlineHelp())
+                info.SetOnlineHelpUrl(metadata.Link);
         }
 
         private static RuleHelpInfo[] ToRuleHelp(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
@@ -804,28 +807,35 @@ namespace PSRule.Host
             return conventions;
         }
 
-        internal static RuleHelpInfo GetRuleHelpInfo(RunspaceContext context, string name, string defaultSynopsis)
+        internal static RuleHelpInfo GetRuleHelpInfo(RunspaceContext context, string name, string defaultSynopsis, string defaultDisplayName, InfoString defaultDescription, InfoString defaultRecommendation)
         {
             return !TryHelpPath(context, name, out var path, out var culture) || !TryDocument(path, culture, out var document)
                 ? new RuleHelpInfo(
                     name: name,
-                    displayName: name,
+                    displayName: defaultDisplayName ?? name,
                     moduleName: context.Source.File.Module,
-                    synopsis: new InfoString(defaultSynopsis)
+                    synopsis: InfoString.Create(defaultSynopsis),
+                    description: defaultDescription,
+                    recommendation: defaultRecommendation
                 )
                 : new RuleHelpInfo(
                     name: name,
-                    displayName: document.Name ?? name,
+                    displayName: document.Name ?? defaultDisplayName ?? name,
                     moduleName: context.Source.File.Module,
                     synopsis: document.Synopsis ?? new InfoString(defaultSynopsis),
-                    description: document.Description,
-                    recommendation: document.Recommendation ?? document.Synopsis ?? new InfoString(defaultSynopsis)
+                    description: document.Description ?? defaultDescription,
+                    recommendation: document.Recommendation ?? defaultRecommendation ?? document.Synopsis ?? InfoString.Create(defaultSynopsis)
                 )
                 {
                     Notes = document.Notes?.Text,
                     Links = GetLinks(document.Links),
                     Annotations = document.Annotations?.ToHashtable()
                 };
+        }
+
+        private static RuleHelpInfo GetRuleHelpInfo(RunspaceContext context, IRuleV1 rule)
+        {
+            return GetRuleHelpInfo(context, rule.Name, rule.Synopsis, rule.Info.DisplayName, rule.Info.Description, rule.Recommendation);
         }
 
         internal static void UpdateHelpInfo(RunspaceContext context, IResource resource)
