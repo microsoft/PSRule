@@ -243,20 +243,20 @@ namespace PSRule
             return value != null;
         }
 
-        internal static bool TryConvertStringArray(object o, out string[] value)
+        internal static bool TryStringOrArray(object o, bool convert, out string[] value)
         {
             // Handle single string
-            if (TryString(o, convert: true, value: out var s))
+            if (TryString(o, convert, value: out var s))
             {
                 value = new string[] { s };
                 return true;
             }
 
             // Handle multiple strings
-            return TryStringArray(o, out value);
+            return TryStringArray(o, convert, out value);
         }
 
-        internal static bool TryStringArray(object o, out string[] value)
+        internal static bool TryStringArray(object o, bool convert, out string[] value)
         {
             value = null;
             if (o is Array array)
@@ -264,7 +264,7 @@ namespace PSRule
                 value = new string[array.Length];
                 for (var i = 0; i < array.Length; i++)
                 {
-                    if (TryString(array.GetValue(i), out var s))
+                    if (TryString(array.GetValue(i), convert, value: out var s))
                         value[i] = s;
                 }
             }
@@ -273,7 +273,7 @@ namespace PSRule
                 value = new string[jArray.Count];
                 for (var i = 0; i < jArray.Count; i++)
                 {
-                    if (TryString(jArray[i], out var s))
+                    if (TryString(jArray[i], convert, out var s))
                         value[i] = s;
                 }
             }

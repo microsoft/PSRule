@@ -1175,8 +1175,8 @@
             "scope": {
               "type": "string",
               "title": "Scope",
-              "description": "The scope of the object currently being processed by the pipeline.",
-              "markdownDescription": "The scope of the object currently being processed by the pipeline. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#scope)",
+              "description": "Any scopes assigned to the object currently being processed by the pipeline.",
+              "markdownDescription": "Any scopes assigned to the object currently being processed by the pipeline.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#scope)",
               "default": ".",
               "enum": [
                 "."
@@ -1463,12 +1463,15 @@
                 "hasValue": {
                   "type": "boolean",
                   "title": "Has Value",
-                  "description": "Must have a non-empty value.",
-                  "markdownDescription": "Must have a non-empty value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasvalue)",
+                  "description": "When set to true, the operand must have a non-empty value. When set to false the operand must be null or empty.",
+                  "markdownDescription": "When set to `true`, the operand must have a non-empty value. When set to `false` the operand must be `null` or empty.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#hasvalue)",
                   "default": true
                 },
                 "field": {
                   "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                },
+                "scope": {
+                  "$ref": "#/definitions/expressions/definitions/properties/definitions/scope"
                 }
               },
               "required": [

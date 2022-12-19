@@ -132,7 +132,7 @@ namespace PSRule.Runtime
             return new Operand(OperandKind.Value, null, value);
         }
 
-        internal static IOperand FromScope(string scope)
+        internal static IOperand FromScope(string[] scope)
         {
             return new Operand(OperandKind.Scope, scope);
         }

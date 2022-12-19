@@ -449,17 +449,20 @@ namespace PSRule.Runtime
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardNullParam(prefix, nameof(prefix), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
+                GuardStringOrArray(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (prefix == null || prefix.Length == 0)
                 return Pass();
 
             // Assert
-            for (var i = 0; i < prefix.Length; i++)
+            for (var i_prefix = 0; i_prefix < prefix.Length; i_prefix++)
             {
-                if (ExpressionHelpers.StartsWith(value, prefix[i], caseSensitive))
-                    return Pass();
+                for (var i_value = 0; i_value < value.Length; i_value++)
+                {
+                    if (ExpressionHelpers.StartsWith(value[i_value], prefix[i_prefix], caseSensitive))
+                        return Pass();
+                }
             }
             return Fail(Operand.FromPath(field), ReasonStrings.StartsWith, field, FormatArray(prefix));
         }
@@ -483,14 +486,17 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out var fieldValue, out result))
                 return result;
 
-            if (prefix == null || prefix.Length == 0 || GuardString(Operand.FromPath(field), fieldValue, out var value, out _))
+            if (prefix == null || prefix.Length == 0 || GuardStringOrArray(Operand.FromPath(field), fieldValue, out var value, out _))
                 return Pass();
 
             // Assert
-            for (var i = 0; i < prefix.Length; i++)
+            for (var i_prefix = 0; i_prefix < prefix.Length; i_prefix++)
             {
-                if (ExpressionHelpers.StartsWith(value, prefix[i], caseSensitive))
-                    return Fail(Operand.FromPath(field), ReasonStrings.Assert_StartsWith, value, prefix[i]);
+                for (var i_value = 0; i_value < value.Length; i_value++)
+                {
+                    if (ExpressionHelpers.StartsWith(value[i_value], prefix[i_prefix], caseSensitive))
+                        return Fail(Operand.FromPath(field), ReasonStrings.Assert_StartsWith, value, prefix[i_prefix]);
+                }
             }
             return Pass();
         }
@@ -505,17 +511,20 @@ namespace PSRule.Runtime
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardNullParam(suffix, nameof(suffix), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
+                GuardStringOrArray(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (suffix == null || suffix.Length == 0)
                 return Pass();
 
             // Assert
-            for (var i = 0; i < suffix.Length; i++)
+            for (var i_suffix = 0; i_suffix < suffix.Length; i_suffix++)
             {
-                if (ExpressionHelpers.EndsWith(value, suffix[i], caseSensitive))
-                    return Pass();
+                for (var i_value = 0; i_value < value.Length; i_value++)
+                {
+                    if (ExpressionHelpers.EndsWith(value[i_value], suffix[i_suffix], caseSensitive))
+                        return Pass();
+                }
             }
             return Fail(Operand.FromPath(field), ReasonStrings.EndsWith, field, FormatArray(suffix));
         }
@@ -539,14 +548,17 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out var fieldValue, out result))
                 return result;
 
-            if (suffix == null || suffix.Length == 0 || GuardString(Operand.FromPath(field), fieldValue, out var value, out _))
+            if (suffix == null || suffix.Length == 0 || GuardStringOrArray(Operand.FromPath(field), fieldValue, out var value, out _))
                 return Pass();
 
             // Assert
-            for (var i = 0; i < suffix.Length; i++)
+            for (var i_suffix = 0; i_suffix < suffix.Length; i_suffix++)
             {
-                if (ExpressionHelpers.EndsWith(value, suffix[i], caseSensitive))
-                    return Fail(Operand.FromPath(field), ReasonStrings.Assert_EndsWith, value, suffix);
+                for (var i_value = 0; i_value < value.Length; i_value++)
+                {
+                    if (ExpressionHelpers.EndsWith(value[i_value], suffix[i_suffix], caseSensitive))
+                        return Fail(Operand.FromPath(field), ReasonStrings.Assert_EndsWith, value, suffix[i_suffix]);
+                }
             }
             return Pass();
         }
@@ -561,17 +573,20 @@ namespace PSRule.Runtime
                 GuardNullOrEmptyParam(field, nameof(field), out result) ||
                 GuardNullParam(text, nameof(text), out result) ||
                 GuardField(inputObject, field, false, out var fieldValue, out result) ||
-                GuardString(Operand.FromPath(field), fieldValue, out var value, out result))
+                GuardStringOrArray(Operand.FromPath(field), fieldValue, out var value, out result))
                 return result;
 
             if (text == null || text.Length == 0)
                 return Pass();
 
             // Assert
-            for (var i = 0; i < text.Length; i++)
+            for (var i_text = 0; i_text < text.Length; i_text++)
             {
-                if (ExpressionHelpers.Contains(value, text[i], caseSensitive))
-                    return Pass();
+                for (var i_value = 0; i_value < value.Length; i_value++)
+                {
+                    if (ExpressionHelpers.Contains(value[i_value], text[i_text], caseSensitive))
+                        return Pass();
+                }
             }
             return Fail(Operand.FromPath(field), ReasonStrings.Contains, field, FormatArray(text));
         }
@@ -595,14 +610,17 @@ namespace PSRule.Runtime
                 GuardField(inputObject, field, false, out var fieldValue, out result))
                 return result;
 
-            if (text == null || text.Length == 0 || GuardString(Operand.FromPath(field), fieldValue, out var value, out _))
+            if (text == null || text.Length == 0 || GuardStringOrArray(Operand.FromPath(field), fieldValue, out var value, out _))
                 return Pass();
 
             // Assert
-            for (var i = 0; i < text.Length; i++)
+            for (var i_text = 0; i_text < text.Length; i_text++)
             {
-                if (ExpressionHelpers.Contains(value, text[i], caseSensitive))
-                    return Fail(Operand.FromPath(field), ReasonStrings.Assert_Contains, value, text);
+                for (var i_value = 0; i_value < value.Length; i_value++)
+                {
+                    if (ExpressionHelpers.Contains(value[i_value], text[i_text], caseSensitive))
+                        return Fail(Operand.FromPath(field), ReasonStrings.Assert_Contains, value, text[i_text]);
+                }
             }
             return Pass();
         }
@@ -1423,6 +1441,23 @@ namespace PSRule.Runtime
         {
             result = null;
             if (ExpressionHelpers.TryString(fieldValue, out value))
+                return false;
+
+            result = Fail(operand, ReasonStrings.Type, TYPENAME_STRING, GetTypeName(fieldValue), fieldValue);
+            return true;
+        }
+
+        /// <summary>
+        /// Fails if the field value is not a string or an array of strings.
+        /// </summary>
+        /// <returns>Returns true if the field value is not a string or an array of strings.</returns>
+        /// <remarks>
+        /// Reason: The field value '{0}' is not a string.
+        /// </remarks>
+        private bool GuardStringOrArray(IOperand operand, object fieldValue, out string[] value, out AssertResult result)
+        {
+            result = null;
+            if (ExpressionHelpers.TryStringOrArray(fieldValue, convert: false, value: out value))
                 return false;
 
             result = Fail(operand, ReasonStrings.Type, TYPENAME_STRING, GetTypeName(fieldValue), fieldValue);

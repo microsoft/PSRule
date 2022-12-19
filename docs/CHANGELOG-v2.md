@@ -30,6 +30,16 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.7.0-B0070:
+
+- General improvements:
+  - Added support for `hasValue` expression with `scope` by @BernieWhite.
+    [#1382](https://github.com/microsoft/PSRule/issues/1382)
+  - Return target object scope as an array by @BernieWhite.
+    [#1383](https://github.com/microsoft/PSRule/issues/1383)
+  - Improve support of string comparisons to support an array of strings by @BernieWhite.
+    [#1384](https://github.com/microsoft/PSRule/issues/1384)
+
 ## v2.7.0-B0070 (pre-release)
 
 What's changed since pre-release v2.7.0-B0049:

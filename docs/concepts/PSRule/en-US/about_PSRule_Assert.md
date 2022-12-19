@@ -223,7 +223,8 @@ Rule 'MinimumAPIVersionWithFlag' {
 
 ### Contains
 
-The `Contains` assertion method checks the field value contains the specified string.
+The `Contains` assertion method checks the operand contains the specified string.
+If the operand is an array of strings, only one string must contain the specified string.
 Optionally a case-sensitive compare can be used, however case is ignored by default.
 
 The following parameters are accepted:
@@ -284,7 +285,8 @@ Rule 'Count' {
 
 ### EndsWith
 
-The `EndsWith` assertion method checks the field value ends with the specified suffix.
+The `EndsWith` assertion method checks the operand ends with the specified suffix.
+If the operand is an array of strings, only one string must end with the specified suffix.
 Optionally a case-sensitive compare can be used, however case is ignored by default.
 
 The following parameters are accepted:
@@ -1070,8 +1072,9 @@ Rule 'Match' {
 
 ### NotContains
 
-The `NotContains` assertion method checks the field value contains the specified string.
+The `NotContains` assertion method checks the operand contains the specified string.
 This condition fails when any of the specified sub-strings are found.
+If the operand is an array of strings, this condition fails if any of the strings contain the specified string.
 Optionally a case-sensitive compare can be used, however case is ignored by default.
 
 The following parameters are accepted:
@@ -1130,8 +1133,9 @@ Rule 'NotCount' {
 
 ### NotEndsWith
 
-The `NotEndsWith` assertion method checks the field value ends with the specified suffix.
+The `NotEndsWith` assertion method checks the operand ends with the specified suffix.
 This condition fails when any of the specified sub-strings are found at the end of the operand.
+If the operand is an array of strings, this condition fails if any of the strings ends with the specified suffix.
 Optionally a case-sensitive compare can be used, however case is ignored by default.
 
 The following parameters are accepted:
@@ -1313,8 +1317,9 @@ Rule 'NotNull' {
 
 ### NotStartsWith
 
-The `NotStartsWith` assertion method checks the field value starts with the specified prefix.
+The `NotStartsWith` assertion method checks the operand starts with the specified prefix.
 This condition fails when any of the specified sub-strings are found at the start of the operand.
+If the operand is an array of strings, this condition fails if any of the strings start with the specified prefix.
 Optionally a case-sensitive compare can be used, however case is ignored by default.
 
 The following parameters are accepted:
@@ -1507,7 +1512,8 @@ Rule 'Subset' {
 
 ### StartsWith
 
-The `StartsWith` assertion method checks the field value starts with the specified prefix.
+The `StartsWith` assertion method checks the operand starts with the specified prefix.
+If the operand is an array of strings, only one string must start with the specified prefix.
 Optionally a case-sensitive compare can be used, however case is ignored by default.
 
 The following parameters are accepted:

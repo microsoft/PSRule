@@ -62,7 +62,7 @@ namespace PSRule.Pipeline
             _Annotations = new Dictionary<Type, TargetObjectAnnotation>();
         }
 
-        internal TargetObject(PSObject o, string targetName = null, string targetType = null, string scope = null)
+        internal TargetObject(PSObject o, string targetName = null, string targetType = null, string[] scope = null)
             : this(o, null)
         {
             if (targetName != null)
@@ -71,7 +71,7 @@ namespace PSRule.Pipeline
             if (targetType != null)
                 TargetType = targetType;
 
-            if (scope != null)
+            if (scope != null && scope.Length > 0)
                 Scope = scope;
         }
 
@@ -85,7 +85,7 @@ namespace PSRule.Pipeline
 
         internal string TargetType { get; }
 
-        internal string Scope { get; }
+        internal string[] Scope { get; }
 
         internal string Path { get; }
 

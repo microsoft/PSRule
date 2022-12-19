@@ -41,7 +41,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelector(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(97, selector.Length);
+            Assert.Equal(99, selector.Length);
 
             var actual = selector[0];
             var visitor = new SelectorVisitor(context, actual.Id, actual.Source, actual.Spec.If);
@@ -767,6 +767,7 @@ namespace PSRule
             var actual7 = GetObject((name: "value", value: "EFG"));
             var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
             var actual9 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
+            var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
 
             Assert.True(startsWith.Match(actual1));
             Assert.True(startsWith.Match(actual2));
@@ -777,6 +778,7 @@ namespace PSRule
             Assert.False(startsWith.Match(actual7));
             Assert.True(startsWith.Match(actual8));
             Assert.False(startsWith.Match(actual9));
+            Assert.True(startsWith.Match(actual10));
 
             // With name
             var withName = GetSelectorVisitor($"{type}NameStartsWith", GetSource(path), out var context);
@@ -809,6 +811,7 @@ namespace PSRule
             var actual7 = GetObject((name: "value", value: "EFG"));
             var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
             var actual9 = GetObject((name: "value", value: "hij"), (name: "OtherValue", value: TestEnumValue.None));
+            var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
 
             Assert.False(notStartsWith.Match(actual1));
             Assert.False(notStartsWith.Match(actual2));
@@ -819,6 +822,7 @@ namespace PSRule
             Assert.False(notStartsWith.Match(actual7));
             Assert.False(notStartsWith.Match(actual8));
             Assert.True(notStartsWith.Match(actual9));
+            Assert.False(notStartsWith.Match(actual10));
         }
 
         [Theory]
@@ -836,6 +840,7 @@ namespace PSRule
             var actual7 = GetObject((name: "value", value: "EFG"));
             var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
             var actual9 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
+            var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
 
             Assert.True(endsWith.Match(actual1));
             Assert.True(endsWith.Match(actual2));
@@ -846,6 +851,7 @@ namespace PSRule
             Assert.False(endsWith.Match(actual7));
             Assert.True(endsWith.Match(actual8));
             Assert.False(endsWith.Match(actual9));
+            Assert.True(endsWith.Match(actual10));
 
             // With name
             var withName = GetSelectorVisitor($"{type}NameEndsWith", GetSource(path), out var context);
@@ -895,6 +901,7 @@ namespace PSRule
             var actual7 = GetObject((name: "value", value: "EFG"));
             var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
             var actual9 = GetObject((name: "value", value: "hij"), (name: "OtherValue", value: TestEnumValue.None));
+            var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
 
             Assert.False(notEndsWith.Match(actual1));
             Assert.False(notEndsWith.Match(actual2));
@@ -905,6 +912,7 @@ namespace PSRule
             Assert.False(notEndsWith.Match(actual7));
             Assert.False(notEndsWith.Match(actual8));
             Assert.True(notEndsWith.Match(actual9));
+            Assert.False(notEndsWith.Match(actual10));
         }
 
         [Theory]
@@ -922,6 +930,7 @@ namespace PSRule
             var actual7 = GetObject((name: "value", value: "BCD"));
             var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
             var actual9 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
+            var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
 
             Assert.True(contains.Match(actual1));
             Assert.True(contains.Match(actual2));
@@ -932,6 +941,7 @@ namespace PSRule
             Assert.False(contains.Match(actual7));
             Assert.True(contains.Match(actual8));
             Assert.False(contains.Match(actual9));
+            Assert.True(contains.Match(actual10));
 
             // With name
             var withName = GetSelectorVisitor($"{type}NameContains", GetSource(path), out var context);
@@ -964,6 +974,7 @@ namespace PSRule
             var actual7 = GetObject((name: "value", value: "BCD"));
             var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
             var actual9 = GetObject((name: "value", value: "hij"), (name: "OtherValue", value: TestEnumValue.None));
+            var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
 
             Assert.False(notContains.Match(actual1));
             Assert.False(notContains.Match(actual2));
@@ -974,6 +985,7 @@ namespace PSRule
             Assert.False(notContains.Match(actual7));
             Assert.False(notContains.Match(actual8));
             Assert.True(notContains.Match(actual9));
+            Assert.False(notContains.Match(actual10));
         }
 
         [Theory]
@@ -1712,27 +1724,41 @@ namespace PSRule
             );
 
             var equals = GetSelectorVisitor($"{type}ScopeEquals", GetSource(path), out var context);
-            context.EnterTargetObject(new TargetObject(testObject, scope: "/scope1"));
+            context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope1" }));
             Assert.True(equals.Match(testObject));
 
-            context.EnterTargetObject(new TargetObject(testObject, scope: "/scope2"));
+            context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope2" }));
             Assert.False(equals.Match(testObject));
 
             context.EnterTargetObject(new TargetObject(testObject));
             Assert.False(equals.Match(testObject));
 
             var startsWith = GetSelectorVisitor($"{type}ScopeStartsWith", GetSource(path), out context);
-            context.EnterTargetObject(new TargetObject(testObject, scope: "/scope1/"));
+            context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope1/" }));
             Assert.True(startsWith.Match(testObject));
 
-            context.EnterTargetObject(new TargetObject(testObject, scope: "/scope2/"));
+            context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope2/" }));
             Assert.True(startsWith.Match(testObject));
 
-            context.EnterTargetObject(new TargetObject(testObject, scope: "/scope2"));
+            context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope2" }));
             Assert.False(startsWith.Match(testObject));
 
             context.EnterTargetObject(new TargetObject(testObject));
             Assert.False(startsWith.Match(testObject));
+
+            var hasValueFalse = GetSelectorVisitor($"{type}ScopeHasValueFalse", GetSource(path), out context);
+            context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope1" }));
+            Assert.False(hasValueFalse.Match(testObject));
+
+            context.EnterTargetObject(new TargetObject(testObject));
+            Assert.True(hasValueFalse.Match(testObject));
+
+            var hasValueTrue = GetSelectorVisitor($"{type}ScopeHasValueTrue", GetSource(path), out context);
+            context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope1" }));
+            Assert.True(hasValueTrue.Match(testObject));
+
+            context.EnterTargetObject(new TargetObject(testObject));
+            Assert.False(hasValueTrue.Match(testObject));
         }
 
         #endregion Properties

@@ -24,7 +24,7 @@ namespace PSRule
         public static bool TryGetStringArray(this Hashtable hashtable, string key, out string[] value)
         {
             value = null;
-            return hashtable.TryGetValue(key, out var o) && ExpressionHelpers.TryConvertStringArray(o, out value);
+            return hashtable.TryGetValue(key, out var o) && ExpressionHelpers.TryStringOrArray(o, convert: true, value: out value);
         }
 
         [DebuggerStepThrough]

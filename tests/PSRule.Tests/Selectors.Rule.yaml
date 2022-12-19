@@ -1268,7 +1268,8 @@ metadata:
 spec:
   if:
     scope: .
-    equals: /scope1
+    equals:
+    - /scope1
 
 ---
 # Synopsis: Test scope property with startsWith.
@@ -1282,6 +1283,28 @@ spec:
     startsWith:
     - /scope1/
     - /scope2/
+
+---
+# Synopsis: Test scope property with hasValue.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlScopeHasValueFalse
+spec:
+  if:
+    scope: .
+    hasValue: false
+
+---
+# Synopsis: Test scope property with hasValue.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlScopeHasValueTrue
+spec:
+  if:
+    scope: .
+    hasValue: true
 
 ---
 # Synopsis: Test comparison with apiVersion.

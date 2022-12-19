@@ -51,7 +51,7 @@ namespace PSRule.Runtime
         public string TargetType { get; set; }
 
         [JsonProperty(PropertyName = "scope")]
-        public string Scope { get; set; }
+        public string[] Scope { get; set; }
 
         [JsonProperty(PropertyName = "path")]
         public string Path { get; set; }

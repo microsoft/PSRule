@@ -1734,7 +1734,7 @@ spec:
 
 ### Scope
 
-The comparison property `scope` is used with a condition to evaluate the scope of the object.
+The comparison property `scope` is used with a condition to evaluate any scopes assigned to the object.
 The `scope` property must be set to `.`.
 Any other value will cause the condition to evaluate to `false`.
 
