@@ -41,6 +41,9 @@ What's changed since pre-release v2.7.0-B0070:
     [#1384](https://github.com/microsoft/PSRule/issues/1384)
   - Added help properties to rules from YAML/ JSON resources by @BernieWhite.
     [#1386](https://github.com/microsoft/PSRule/issues/1386)
+- Engineering:
+  - Bump Newtonsoft.Json to v13.0.2.
+    [#1358](https://github.com/microsoft/PSRule/pull/1358)
 
 ## v2.7.0-B0070 (pre-release)
 
