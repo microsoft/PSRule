@@ -30,6 +30,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.7.0-B0126 (pre-release)
+
 What's changed since pre-release v2.7.0-B0097:
 
 - Bug fixes:
