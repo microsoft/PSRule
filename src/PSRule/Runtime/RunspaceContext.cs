@@ -576,11 +576,11 @@ namespace PSRule.Runtime
         {
             // TODO: Look at scope caching, and a scope stack.
 
-            if (!source.Exists())
-                throw new FileNotFoundException(PSRuleResources.ScriptNotFound, source.Path);
-
             if (Source != null && Source.File == source)
                 return Source;
+
+            if (!source.Exists())
+                throw new FileNotFoundException(PSRuleResources.ScriptNotFound, source.Path);
 
             _LanguageScopes.UseScope(source.Module);
 
