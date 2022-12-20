@@ -80,7 +80,7 @@ namespace PSRule.Definitions.Expressions
 
         public void Reason(IOperand operand, string text, params object[] args)
         {
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text) || !RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule))
                 return;
 
             _Reason ??= new List<ResultReason>();
@@ -89,7 +89,7 @@ namespace PSRule.Definitions.Expressions
 
         public void Reason(string text, params object[] args)
         {
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text) || !RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule))
                 return;
 
             _Reason ??= new List<ResultReason>();

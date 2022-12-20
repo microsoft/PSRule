@@ -205,11 +205,20 @@ namespace PSRule.Definitions.Expressions
         {
             return (context, o) =>
             {
-                // Evalute sub-selector pre-condition
-                if (!AcceptsSubselector(context, subselector, o))
+                try
                 {
-                    context.Debug(PSRuleResources.DebugTargetSubselectorMismatch);
-                    return null;
+                    context.PushScope(RunspaceScope.Precondition);
+
+                    // Evalute sub-selector pre-condition
+                    if (!AcceptsSubselector(context, subselector, o))
+                    {
+                        context.Debug(PSRuleResources.DebugTargetSubselectorMismatch);
+                        return null;
+                    }
+                }
+                finally
+                {
+                    context.PopScope(RunspaceScope.Precondition);
                 }
                 return fn(context, o);
             };

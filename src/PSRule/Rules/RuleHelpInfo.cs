@@ -85,7 +85,7 @@ namespace PSRule.Rules
         /// <param name="url">A URL to the online help location.</param>
         internal static void SetOnlineHelpUrl(this IRuleHelpInfoV2 info, string url)
         {
-            if (info == null || info.Annotations == null) return;
+            if (info == null || info.Annotations == null || string.IsNullOrEmpty(url)) return;
             info.Annotations[ONLINE_HELP_LINK_ANNOTATION] = url;
         }
     }
