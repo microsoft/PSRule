@@ -30,6 +30,66 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.7.0
+
+What's changed since pre-release v2.6.0:
+
+- New features:
+  - Added API version date comparison assertion method and expression by @BernieWhite.
+    [#1356](https://github.com/microsoft/PSRule/issues/1356)
+  - Added support for new functions by @BernieWhite.
+    [#1227](https://github.com/microsoft/PSRule/issues/1227)
+    - Added support for `trim`, `replace`, `split`, `first`, and `last`.
+- General improvements:
+  - Added support target scope by @BernieWhite.
+    [#1350](https://github.com/microsoft/PSRule/issues/1350)
+  - Added support for `hasValue` expression with `scope` by @BernieWhite.
+    [#1382](https://github.com/microsoft/PSRule/issues/1382)
+  - Return target object scope as an array by @BernieWhite.
+    [#1383](https://github.com/microsoft/PSRule/issues/1383)
+  - Improve support of string comparisons to support an array of strings by @BernieWhite.
+    [#1384](https://github.com/microsoft/PSRule/issues/1384)
+  - Added help properties to rules from YAML/ JSON resources by @BernieWhite.
+    [#1386](https://github.com/microsoft/PSRule/issues/1386)
+- Engineering:
+  - Bump Newtonsoft.Json to v13.0.2.
+    [#1358](https://github.com/microsoft/PSRule/pull/1358)
+  - Bump System.Drawing.Common to v7.0.0.
+    [#1332](https://github.com/microsoft/PSRule/pull/1332)
+  - Bump Microsoft.NET.Test.Sdk to v17.4.1.
+    [#1389](https://github.com/microsoft/PSRule/pull/1389)
+- Bug fixes:
+  - Fixed exception with comments in JSON baselines by @BernieWhite.
+    [#1336](https://github.com/microsoft/PSRule/issues/1336)
+  - Fixed handling of constrained language mode with PowerShell 7.3 by @BernieWhite.
+    [#1348](https://github.com/microsoft/PSRule/issues/1348)
+  - Fixed exception calling `RuleSource` value cannot be null by @BernieWhite.
+    [#1343](https://github.com/microsoft/PSRule/issues/1343)
+  - Fixed null reference for link property by @BernieWhite.
+    [#1393](https://github.com/microsoft/PSRule/issues/1393)
+  - Fixed reason are emitted for pre-condition sub-selectors by @BernieWhite.
+    [#1394](https://github.com/microsoft/PSRule/issues/1394)
+  - Fixed CLI failed to load required assemblies by @BernieWhite.
+    [#1361](https://github.com/microsoft/PSRule/issues/1361)
+  - Fixed CLI ignores modules specified in `Include.Modules` by @BernieWhite.
+    [#1362](https://github.com/microsoft/PSRule/issues/1362)
+  - Fixed job summary directory creation by @BernieWhite.
+    [#1353](https://github.com/microsoft/PSRule/issues/1353)
+  - Fixed same key for ref and name by @BernieWhite
+    [#1354](https://github.com/microsoft/PSRule/issues/1354)
+  - Fixed object path fails to iterate JSON object with wildcard selector by @BernieWhite.
+    [#1376](https://github.com/microsoft/PSRule/issues/1376)
+  - Fixed rule annotations are not included from YAML/ JSON definition by @BernieWhite.
+    [#1378](https://github.com/microsoft/PSRule/issues/1378)
+  - Fixed loop stuck parsing JSON `allOf` `not` rule condition by @BernieWhite.
+    [#1370](https://github.com/microsoft/PSRule/issues/1370)
+  - Fixed handling of uint64 with `LessOrEqual` assertion method by @BernieWhite.
+    [#1366](https://github.com/microsoft/PSRule/issues/1366)
+
+What's changed since pre-release v2.7.0-B0126:
+
+- No additional changes.
+
 ## v2.7.0-B0126 (pre-release)
 
 What's changed since pre-release v2.7.0-B0097:
