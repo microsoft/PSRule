@@ -1829,7 +1829,7 @@ The below example will use the latest PowerShell image released and install the 
 <span class="k">FROM</span><span class="w"> </span><span class="s">mcr.microsoft.com/powershell:7.2-ubuntu-22.04</span>
 <span class="k">SHELL</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pwsh&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-command&quot;</span><span class="p">]</span>
 
-<span class="k">RUN</span><span class="w"> </span>Install-Module -Name <span class="s1">&#39;PSRule&#39;</span>,<span class="s1">&#39;PSRule.Rules.Azure&#39;</span> -Force
+<span class="k">RUN</span><span class="w"> </span>Install-Module<span class="w"> </span>-Name<span class="w"> </span><span class="s1">&#39;PSRule&#39;</span>,<span class="s1">&#39;PSRule.Rules.Azure&#39;</span><span class="w"> </span>-Force
 </code></pre></div>
 <p>The below docker command can be used to create the image locally.</p>
 <div class="highlight"><pre><span></span><code><span class="n">docker</span> <span class="n">build</span> <span class="p">-</span><span class="n">-tag</span> <span class="n">psrule</span><span class="p">:</span><span class="n">latest</span> <span class="p">.</span>
@@ -1847,7 +1847,7 @@ Add the below code to the file.</p>
 <span class="c"># Licensed under the MIT License.</span>
 
 <span class="cm">&lt;#</span>
-<span class="cm">    </span><span class="sd">.SYNOPSIS</span><span class="cm"></span>
+<span class="cm">    </span><span class="sd">.SYNOPSIS</span>
 <span class="cm">        Create a PSRule AzRuleTemplate data file and run the PSRule.Rules.Azure module rules against the output.</span>
 <span class="cm">#&gt;</span>
 

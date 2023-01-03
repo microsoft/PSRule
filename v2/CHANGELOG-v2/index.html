@@ -1131,6 +1131,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#v270" class="md-nav__link">
+    v2.7.0
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v270-b0126-pre-release" class="md-nav__link">
     v2.7.0-B0126 (pre-release)
   </a>
@@ -2223,6 +2230,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#v270" class="md-nav__link">
+    v2.7.0
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v270-b0126-pre-release" class="md-nav__link">
     v2.7.0-B0126 (pre-release)
   </a>
@@ -2733,6 +2747,75 @@
 </li>
 </ul>
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">#</a></h2>
+<h2 id="v270">v2.7.0<a class="headerlink" href="#v270" title="Permanent link">#</a></h2>
+<p>What's changed since pre-release v2.6.0:</p>
+<ul>
+<li>New features:<ul>
+<li>Added API version date comparison assertion method and expression by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1356">#1356</a></li>
+<li>Added support for new functions by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1227">#1227</a><ul>
+<li>Added support for <code>trim</code>, <code>replace</code>, <code>split</code>, <code>first</code>, and <code>last</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>General improvements:<ul>
+<li>Added support target scope by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1350">#1350</a></li>
+<li>Added support for <code>hasValue</code> expression with <code>scope</code> by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1382">#1382</a></li>
+<li>Return target object scope as an array by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1383">#1383</a></li>
+<li>Improve support of string comparisons to support an array of strings by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1384">#1384</a></li>
+<li>Added help properties to rules from YAML/ JSON resources by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1386">#1386</a></li>
+</ul>
+</li>
+<li>Engineering:<ul>
+<li>Bump Newtonsoft.Json to v13.0.2.
+  <a href="https://github.com/microsoft/PSRule/pull/1358">#1358</a></li>
+<li>Bump System.Drawing.Common to v7.0.0.
+  <a href="https://github.com/microsoft/PSRule/pull/1332">#1332</a></li>
+<li>Bump Microsoft.NET.Test.Sdk to v17.4.1.
+  <a href="https://github.com/microsoft/PSRule/pull/1389">#1389</a></li>
+</ul>
+</li>
+<li>Bug fixes:<ul>
+<li>Fixed exception with comments in JSON baselines by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1336">#1336</a></li>
+<li>Fixed handling of constrained language mode with PowerShell 7.3 by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1348">#1348</a></li>
+<li>Fixed exception calling <code>RuleSource</code> value cannot be null by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1343">#1343</a></li>
+<li>Fixed null reference for link property by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1393">#1393</a></li>
+<li>Fixed reason are emitted for pre-condition sub-selectors by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1394">#1394</a></li>
+<li>Fixed CLI failed to load required assemblies by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1361">#1361</a></li>
+<li>Fixed CLI ignores modules specified in <code>Include.Modules</code> by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1362">#1362</a></li>
+<li>Fixed job summary directory creation by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1353">#1353</a></li>
+<li>Fixed same key for ref and name by @BernieWhite
+  <a href="https://github.com/microsoft/PSRule/issues/1354">#1354</a></li>
+<li>Fixed object path fails to iterate JSON object with wildcard selector by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1376">#1376</a></li>
+<li>Fixed rule annotations are not included from YAML/ JSON definition by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1378">#1378</a></li>
+<li>Fixed loop stuck parsing JSON <code>allOf</code> <code>not</code> rule condition by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1370">#1370</a></li>
+<li>Fixed handling of uint64 with <code>LessOrEqual</code> assertion method by @BernieWhite.
+  <a href="https://github.com/microsoft/PSRule/issues/1366">#1366</a></li>
+</ul>
+</li>
+</ul>
+<p>What's changed since pre-release v2.7.0-B0126:</p>
+<ul>
+<li>No additional changes.</li>
+</ul>
 <h2 id="v270-b0126-pre-release">v2.7.0-B0126 (pre-release)<a class="headerlink" href="#v270-b0126-pre-release" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v2.7.0-B0097:</p>
 <ul>
@@ -4113,7 +4196,7 @@
   <small>
     
       Last update:
-      2022-12-21
+      2023-01-04
     
   </small>
 </div>
