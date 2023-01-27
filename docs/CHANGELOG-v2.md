@@ -30,9 +30,15 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since v2.7.0:
+
+- Engineering:
+  - Bump Pester to v5.4.0.
+    [#1414](https://github.com/microsoft/PSRule/pull/1414)
+
 ## v2.7.0
 
-What's changed since pre-release v2.6.0:
+What's changed since v2.6.0:
 
 - New features:
   - Added API version date comparison assertion method and expression by @BernieWhite.

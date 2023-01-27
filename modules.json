@@ -2,7 +2,7 @@
   "dependencies": {},
   "devDependencies": {
     "Pester": {
-      "version": "5.3.3"
+      "version": "5.4.0"
     },
     "platyPS": {
       "version": "0.14.2"
