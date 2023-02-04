@@ -35,6 +35,8 @@ What's changed since v2.7.0:
 - Engineering:
   - Bump Pester to v5.4.0.
     [#1414](https://github.com/microsoft/PSRule/pull/1414)
+  - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.0.
+    [#1374](https://github.com/microsoft/PSRule/pull/1374)
 
 ## v2.7.0
 
