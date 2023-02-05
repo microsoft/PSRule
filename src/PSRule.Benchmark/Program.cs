@@ -44,14 +44,14 @@ namespace PSRule.Benchmark
         private static void RunProfile(CommandLineApplication app)
         {
             var config = ManualConfig.CreateEmpty()
-                .With(ConsoleLogger.Default)
-                .With(DefaultColumnProviders.Instance)
-                .With(EnvironmentAnalyser.Default)
-                .With(OutliersAnalyser.Default)
-                .With(MinIterationTimeAnalyser.Default)
-                .With(MultimodalDistributionAnalyzer.Default)
-                .With(RuntimeErrorAnalyser.Default)
-                .With(ZeroMeasurementAnalyser.Default);
+                .AddLogger(ConsoleLogger.Default)
+                .AddColumnProvider(DefaultColumnProviders.Instance)
+                .AddAnalyser(EnvironmentAnalyser.Default)
+                .AddAnalyser(OutliersAnalyser.Default)
+                .AddAnalyser(MinIterationTimeAnalyser.Default)
+                .AddAnalyser(MultimodalDistributionAnalyzer.Default)
+                .AddAnalyser(RuntimeErrorAnalyser.Default)
+                .AddAnalyser(ZeroMeasurementAnalyser.Default);
 
             app.Command("benchmark", cmd =>
             {

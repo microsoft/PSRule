@@ -39,6 +39,10 @@ What's changed since v2.7.0:
     [#1374](https://github.com/microsoft/PSRule/pull/1374)
     Bump Microsoft.CodeAnalysis.Common to v4.4.0.
     [#1341](https://github.com/microsoft/PSRule/pull/1341)
+  - Bump BenchmarkDotNet to v0.13.4.
+    [#1413](https://github.com/microsoft/PSRule/pull/1413)
+  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.4.
+    [#1413](https://github.com/microsoft/PSRule/pull/1413)
 - Bug fixes:
   - Fixes handling of numerics in tests for that are impacted by regional format by @BernieWhite.
     [#1405](https://github.com/microsoft/PSRule/issues/1405)
