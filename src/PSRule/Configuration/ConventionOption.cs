@@ -12,7 +12,7 @@ namespace PSRule.Configuration
     /// </summary>
     public sealed class ConventionOption : IEquatable<ConventionOption>
     {
-        internal static readonly ConventionOption Default = new ConventionOption
+        internal static readonly ConventionOption Default = new()
         {
 
         };

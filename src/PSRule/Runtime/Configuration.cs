@@ -19,6 +19,7 @@ namespace PSRule.Runtime
             _Context = context;
         }
 
+        /// <inheritdoc/>
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             result = null;
@@ -29,6 +30,11 @@ namespace PSRule.Runtime
             return TryGetValue(binder.Name, out result);
         }
 
+        /// <summary>
+        /// Get the specified configuration key as a string array.
+        /// </summary>
+        /// <param name="configurationKey">A key for the configuration value.</param>
+        /// <returns>Returns an array of strings. If the configuration key does not exist and empty array is returned.</returns>
         public string[] GetStringValues(string configurationKey)
         {
             if (!TryGetValue(configurationKey, out var value) || value == null)
@@ -51,16 +57,34 @@ namespace PSRule.Runtime
             return new string[] { value.ToString() };
         }
 
+        /// <summary>
+        /// Try to the configuration key or use the specified default value if the key does not exist.
+        /// </summary>
+        /// <param name="configurationKey">A key for the configuration value.</param>
+        /// <param name="defaultValue">The default value to use if the configuration key does not exist.</param>
+        /// <returns>Returns the configured value or the default.</returns>
         public object GetValueOrDefault(string configurationKey, object defaultValue)
         {
             return !TryGetValue(configurationKey, out var value) || value == null ? defaultValue : value;
         }
 
+        /// <summary>
+        /// Try to get the configuration key as a <seealso cref="bool"/>.
+        /// </summary>
+        /// <param name="configurationKey">A key for the configuration value.</param>
+        /// <param name="defaultValue">The default value to use if the configuration key does not exist.</param>
+        /// <returns>Returns the configured value or the default.</returns>
         public bool GetBoolOrDefault(string configurationKey, bool defaultValue)
         {
             return !TryGetValue(configurationKey, out var value) || !TryBool(value, out var result) ? defaultValue : result;
         }
 
+        /// <summary>
+        /// Try to get the configuration key as an <seealso cref="int"/>.
+        /// </summary>
+        /// <param name="configurationKey">A key for the configuration value.</param>
+        /// <param name="defaultValue">The default value to use if the configuration key does not exist.</param>
+        /// <returns>Returns the configured value or the default.</returns>
         public int GetIntegerOrDefault(string configurationKey, int defaultValue)
         {
             return !TryGetValue(configurationKey, out var value) || !TryInt(value, out var result) ? defaultValue : result;

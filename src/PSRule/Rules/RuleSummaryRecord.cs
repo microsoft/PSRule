@@ -72,14 +72,23 @@ namespace PSRule.Rules
             }
         }
 
+        /// <summary>
+        /// Tags associated with the rule.
+        /// </summary>
         [DefaultValue(null)]
         [JsonProperty(PropertyName = "tag")]
         public Hashtable Tag { get; internal set; }
 
+        /// <summary>
+        /// Additional information associated with the rule.
+        /// </summary>
         [DefaultValue(null)]
         [JsonProperty(PropertyName = "info")]
         public RuleHelpInfo Info { get; internal set; }
 
+        /// <summary>
+        /// Determines if the overall outcome is successful or a failure.
+        /// </summary>
         public bool IsSuccess()
         {
             return Outcome == RuleOutcome.Pass || Outcome == RuleOutcome.None;

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Linq;
@@ -10,11 +10,17 @@ namespace PSRule.Configuration
     /// </summary>
     public sealed class SuppressionRule
     {
+        /// <summary>
+        /// Create an empty suppression rule.
+        /// </summary>
         public SuppressionRule()
         {
 
         }
 
+        /// <summary>
+        /// Create an instance with specified targets.
+        /// </summary>
         private SuppressionRule(string[] targetNames)
         {
             TargetName = targetNames;
@@ -25,11 +31,17 @@ namespace PSRule.Configuration
         /// </summary>
         public string[] TargetName { get; set; }
 
+        /// <summary>
+        /// Create a suppression rule from a string.
+        /// </summary>
         public static implicit operator SuppressionRule(string value)
         {
             return FromString(value);
         }
 
+        /// <summary>
+        /// Create a suppresion rule from a string array.
+        /// </summary>
         public static implicit operator SuppressionRule(string[] value)
         {
             return FromString(value);
@@ -43,16 +55,9 @@ namespace PSRule.Configuration
         internal static SuppressionRule FromObject(object value)
         {
             if (value is string)
-            {
                 return FromString(value.ToString());
-            }
 
-            if (value.GetType().IsArray)
-            {
-                return FromString(((object[])value).OfType<string>().ToArray());
-            }
-
-            return null;
+            return value.GetType().IsArray ? FromString(((object[])value).OfType<string>().ToArray()) : null;
         }
     }
 }
