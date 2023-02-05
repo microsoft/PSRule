@@ -35,6 +35,9 @@ What's changed since v2.7.0:
 - Engineering:
   - Bump Pester to v5.4.0.
     [#1414](https://github.com/microsoft/PSRule/pull/1414)
+- Bug fixes:
+  - Fixes handling of numerics in tests for that are impacted by regional format by @BernieWhite.
+    [#1405](https://github.com/microsoft/PSRule/issues/1405)
 
 ## v2.7.0
 
