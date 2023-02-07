@@ -15,7 +15,7 @@ namespace PSRule.Configuration
         private const OutcomeLogStream DEFAULT_RULEFAIL = OutcomeLogStream.None;
         private const OutcomeLogStream DEFAULT_RULEPASS = OutcomeLogStream.None;
 
-        internal static readonly LoggingOption Default = new LoggingOption
+        internal static readonly LoggingOption Default = new()
         {
             RuleFail = DEFAULT_RULEFAIL,
             RulePass = DEFAULT_RULEPASS,
@@ -23,6 +23,9 @@ namespace PSRule.Configuration
             LimitDebug = null
         };
 
+        /// <summary>
+        /// Create an empty logging option.
+        /// </summary>
         public LoggingOption()
         {
             LimitDebug = null;
@@ -31,6 +34,10 @@ namespace PSRule.Configuration
             RulePass = null;
         }
 
+        /// <summary>
+        /// Create an logging option by copying an existing instance.
+        /// </summary>
+        /// <param name="option">The option instance to copy.</param>
         public LoggingOption(LoggingOption option)
         {
             if (option == null)

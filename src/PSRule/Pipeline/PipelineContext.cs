@@ -41,8 +41,6 @@ namespace PSRule.Pipeline
         private Runspace _Runspace;
         private SHA1Managed _Hash;
 
-        private Runspace _OrginalRunspace;
-
         // Track whether Dispose has been called.
         private bool _Disposed;
 
@@ -285,15 +283,8 @@ namespace PSRule.Pipeline
             {
                 if (disposing)
                 {
-                    if (_OrginalRunspace != null)
-                        Runspace.DefaultRunspace = _OrginalRunspace;
-
-                    if (_Hash != null)
-                        _Hash.Dispose();
-
-                    if (_Runspace != null)
-                        _Runspace.Dispose();
-
+                    _Hash?.Dispose();
+                    _Runspace?.Dispose();
                     _PathExpressionCache.Clear();
                     LocalizedDataCache.Clear();
                     ExpressionCache.Clear();

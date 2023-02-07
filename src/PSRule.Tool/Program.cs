@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PSRule.Tool
 {
-    class Program
+    static class Program
     {
         /// <summary>
         /// Entry point for CLI tool.

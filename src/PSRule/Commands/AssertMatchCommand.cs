@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
 using PSRule.Pipeline;
@@ -50,9 +51,7 @@ namespace PSRule.Commands
             var regexOption = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
 
             for (var i = 0; i < _Expressions.Length; i++)
-            {
-                _Expressions[i] = new Regex(Expression[i], regexOption);
-            }
+                _Expressions[i] = new Regex(Expression[i], regexOption, TimeSpan.FromSeconds(5));
         }
 
         protected override void ProcessRecord()
@@ -74,9 +73,10 @@ namespace PSRule.Commands
                 caseSensitive: false,
                 value: out object fieldValue))
             {
+                var s = fieldValue.ToString();
                 for (var i = 0; i < _Expressions.Length && !match; i++)
                 {
-                    if (_Expressions[i].IsMatch(fieldValue.ToString()))
+                    if (_Expressions[i].IsMatch(s))
                     {
                         match = true;
                         RunspaceContext.CurrentThread.VerboseConditionMessage(

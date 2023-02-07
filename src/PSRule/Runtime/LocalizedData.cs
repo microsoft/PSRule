@@ -7,12 +7,16 @@ using System.Management.Automation.Language;
 
 namespace PSRule.Runtime
 {
+    /// <summary>
+    /// A PSRule built-in variable that is used to reference localized strings from rules.
+    /// </summary>
     public sealed class LocalizedData : DynamicObject
     {
         private const string DATA_FILENAME = "PSRule-rules.psd1";
 
-        private static readonly Hashtable Empty = new Hashtable();
+        private static readonly Hashtable Empty = new();
 
+        /// <inheritdoc/>
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             var hashtable = TryGetLocalized();
@@ -31,10 +35,10 @@ namespace PSRule.Runtime
             if (path == null)
                 return Empty;
 
-            if (RunspaceContext.CurrentThread.Pipeline.LocalizedDataCache.ContainsKey(path))
-                return RunspaceContext.CurrentThread.Pipeline.LocalizedDataCache[path];
+            if (RunspaceContext.CurrentThread.Pipeline.LocalizedDataCache.TryGetValue(path, out var value))
+                return value;
 
-            var ast = System.Management.Automation.Language.Parser.ParseFile(path, out var tokens, out var errors);
+            var ast = Parser.ParseFile(path, out var tokens, out var errors);
             var data = ast.Find(a => a is HashtableAst, false);
             if (data != null)
             {

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.CommandLine;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PSRule.BuildTool
 {
-    class Program
+    static class Program
     {
         /// <summary>
         /// Entry point for build tool.

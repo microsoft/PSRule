@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -21,7 +22,7 @@ namespace PSRule.Definitions
     {
         private const string ERRORID_INVALIDRESOURCENAME = "PSRule.Parse.InvalidResourceName";
 
-        private static readonly Regex ValidName = new Regex("^[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F][^<>:/\\\\|?*\"'`+@\x00-\x1F]{1,126}[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F]$", RegexOptions.Compiled);
+        private static readonly Regex ValidName = new("^[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F][^<>:/\\\\|?*\"'`+@\x00-\x1F]{1,126}[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F]$", RegexOptions.Compiled, TimeSpan.FromSeconds(5));
 
         private readonly RunspaceContext _Context;
 

@@ -15,7 +15,7 @@ namespace PSRule.Configuration
         private const string[] DEFAULT_MODULE = null;
         private const string[] DEFAULT_PATH = null;
 
-        internal static readonly IncludeOption Default = new IncludeOption
+        internal static readonly IncludeOption Default = new()
         {
             Path = DEFAULT_PATH,
             Module = DEFAULT_MODULE,

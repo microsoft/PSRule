@@ -46,6 +46,9 @@ namespace PSRule
             if (expectedValue == null && actualValue == null)
                 return true;
 
+            if (expectedValue == null || actualValue == null)
+                return false;
+
             if (TryString(expectedValue, out var s1) && TryString(actualValue, convertActual, out var s2))
                 return StringEqual(s1, s2, caseSensitive);
 
@@ -631,7 +634,7 @@ namespace PSRule
             if (!TryPipelineCache(caseSensitive ? CACHE_MATCH_C : CACHE_MATCH, pattern, out Regex expression))
             {
                 var options = caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
-                expression = new Regex(pattern, options);
+                expression = new Regex(pattern, options, TimeSpan.FromSeconds(5));
                 SetPipelineCache(CACHE_MATCH, pattern, expression);
             }
             return expression;
