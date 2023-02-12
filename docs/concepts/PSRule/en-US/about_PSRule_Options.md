@@ -1604,6 +1604,29 @@ Ignores input files that match the path spec when using `-InputPath`.
 If specified, files that match the path spec will not be processed.
 By default, all files are processed.
 
+For example, ignoring file extensions:
+
+```yaml
+input:
+  pathIgnore:
+  # Exclude files with these extensions
+  - '*.md'
+  - '*.png'
+  # Exclude specific configuration files
+  - 'bicepconfig.json'
+```
+
+For example, ignoring all files with exceptions:
+
+```yaml
+input:
+  pathIgnore:
+  # Exclude all files
+  - '*'
+  # Only process deploy.bicep files
+  - '!**/deploy.bicep'
+```
+
 This option can be specified using:
 
 ```powershell
