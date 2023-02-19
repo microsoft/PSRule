@@ -363,12 +363,8 @@ For a list of projects and integrations see [Related projects][10].
 
 ## Changes and versioning
 
-Modules in this repository use [semantic versioning](https://semver.org/) to declare breaking changes.
-For a list of module changes please see the [change log](https://aka.ms/ps-rule/changelog).
-
-> Pre-release module versions are created on major commits and can be installed from the PowerShell Gallery.
-> Pre-release versions should be considered experimental.
-> Modules and change log details for pre-releases will be removed as stable releases are made available.
+This repository uses [semantic versioning](http://semver.org/) to declare breaking changes.
+For details please see the [changes and versioning](https://microsoft.github.io/PSRule/v2/versioning/).
 
 ## Contributing
 
@@ -384,7 +380,7 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 ## Maintainers
 
 - [Bernie White](https://github.com/BernieWhite)
-- [Armaan Mcleod](https://github.com/ArmaanMcleod)
+- [Sam Bell](https://github.com/ms-sambell)
 
 ## License
 
