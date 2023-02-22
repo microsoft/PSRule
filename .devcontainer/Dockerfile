@@ -8,3 +8,5 @@
 
 ARG VARIANT="6.0-bullseye-slim"
 FROM mcr.microsoft.com/vscode/devcontainers/dotnet:0-${VARIANT}
+
+RUN sudo apt-get update && sudo apt-get install python3-pip -y

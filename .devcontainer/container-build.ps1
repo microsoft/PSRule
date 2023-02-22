@@ -5,6 +5,7 @@
 # This is run during container creation.
 
 # Install Python 3 dependencies
+sudo apt update
 sudo apt install python3-pip -y
 sudo python3 -m pip install --upgrade pip
 sudo python3 -m pip install wheel

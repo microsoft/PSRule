@@ -28,7 +28,7 @@ Within the root directory of your IaC repository:
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
-          uses: microsoft/ps-rule@v2.4.2
+          uses: microsoft/ps-rule@v2.7.0
           with:
             modules: 'PSRule.Rules.Azure'
     ```
@@ -169,7 +169,7 @@ To only process files that have changed within a pull request, set the `Input.Ig
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
-          uses: microsoft/ps-rule@v2.4.2
+          uses: microsoft/ps-rule@v2.7.0
           with:
             modules: 'PSRule.Rules.Azure'
           env:
