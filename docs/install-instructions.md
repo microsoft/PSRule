@@ -21,7 +21,7 @@ Install and use PSRule with GitHub Actions by referencing the `microsoft/ps-rule
 
 ```yaml
 - name: Analyze Azure template files
-  uses: microsoft/ps-rule@v2.4.2
+  uses: microsoft/ps-rule@v2.7.0
 ```
 
 This will automatically install compatible versions of all dependencies.
@@ -61,7 +61,13 @@ The following platforms are supported:
 PowerShell 7.x can be installed on MacOS, Linux, and Windows but is not installed by default.
 For a list of platforms that PowerShell 7.2 is supported on and install instructions see [Get PowerShell][3].
 
+!!! Note
+    If you are using Windows PowerShell you may need to bootstrap NuGet before you can install modules.
+    The NuGet package provider is not installed in Windows PowerShell be default.
+    For instructions see [Bootstraping NuGet][6].
+
   [3]: https://github.com/PowerShell/PowerShell#get-powershell
+  [6]: https://learn.microsoft.com/powershell/scripting/gallery/how-to/getting-support/bootstrapping-nuget
 
 ### Getting the modules
 
@@ -188,6 +194,14 @@ After downloading the modules, copy the module directories to devices with restr
     ```
 
     This will save required developments dependencies into the `modules` sub-directory.
+
+!!! Tip
+    If you use additional rules modules such as PSRule for Azure you should also save these for offline use.
+
+!!! Note
+    If you are using Windows PowerShell you may need to bootstrap NuGet before you can install modules.
+    The NuGet package provider is not installed in Windows PowerShell be default.
+    For instructions see [Bootstraping NuGet][6].
 
 *[CI]: continuous integration
 
