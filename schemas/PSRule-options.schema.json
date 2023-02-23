@@ -33,6 +33,27 @@
           "minimum": 1,
           "maximum": 120
         },
+        "AZURE_BICEP_CHECK_TOOL": {
+          "type": "boolean",
+          "title": "Checking Bicep Tool",
+          "description": "This configuration option determines if the Azure Bicep CLI is checked during initialization. By default, this option is disabled. To enable, set this option to true.",
+          "markdownDescription": "This configuration option determines if the Azure Bicep CLI is checked during initialization.  By default, this option is disabled. To enable, set this option to `true`. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/setup-bicep/#checking-bicep-version)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "default": false
+        },
+        "AZURE_BICEP_MINIMUM_VERSION": {
+          "type": "string",
+          "title": "Bicep Minimum Version",
+          "description": "This configuration option determines the minimum version of the Bicep CLI that should be used. If the minimum version is less then the expected version an error is reported. By default, this is 0.4.451.",
+          "markdownDescription": "This configuration option determines the minimum version of the Bicep CLI that should be used. If the minimum version is less then the expected version an error is reported. By default, this is `0.4.451`. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/setup-bicep/#configuring-minimum-version)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "default": "0.4.451"
+        },
+        "AZURE_AKS_CLUSTER_MINIMUM_VERSION": {
+          "type": "string",
+          "title": "AKS cluster minimum version",
+          "description": "This configuration option determines the minimum version of Kubernetes for AKS clusters and node pools. Rules that check the Kubernetes version fail when the version is older than the version specified.",
+          "markdownDescription": "This configuration option determines the minimum version of Kubernetes for AKS clusters and node pools. Rules that check the Kubernetes version fail when the version is older than the version specified. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-rules/#aks-minimum-kubernetes-version)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
+          "default": "1.25.4"
+        },
         "AZURE_PARAMETER_FILE_METADATA_LINK": {
           "type": "boolean",
           "title": "Bicep source expansion",
