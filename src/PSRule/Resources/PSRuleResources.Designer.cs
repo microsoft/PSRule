@@ -556,6 +556,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PSR0001: Unable to read options file &apos;{0}&apos;. Please check the file is valid, indented correctly, and encoded as UTF-8. See https://aka.ms/ps-rule/ts-options. {1}.
+        /// </summary>
+        internal static string PSR0001 {
+            get {
+                return ResourceManager.GetString("PSR0001", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deserialize the file &apos;{0}&apos;: {1}.
         /// </summary>
         internal static string ReadFileFailed {

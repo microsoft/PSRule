@@ -35,6 +35,8 @@ What's changed since v2.7.0:
 - General improvements:
   - Added additional options to schema for PSRule for Azure by @BernieWhite.
     [#1446](https://github.com/microsoft/PSRule/issues/1446)
+  - Improved error message for failing to read options file by @BernieWhite.
+    [#1433](https://github.com/microsoft/PSRule/issues/1433)
 - Engineering:
   - Bump Pester to v5.4.0.
     [#1414](https://github.com/microsoft/PSRule/pull/1414)
