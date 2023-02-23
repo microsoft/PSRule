@@ -40,4 +40,4 @@ updates:
   labels:
   - 'ci-quality'
   reviewers:
-  - 'azure/psrule-rules-azure'
+  - 'azure/psrule'

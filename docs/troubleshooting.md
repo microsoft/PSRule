@@ -62,3 +62,16 @@ if ($Null -eq (Get-InstalledModule -Name PowerShellGet -MinimumVersion 2.2.1 -Er
     Install-Module PowerShellGet -MinimumVersion 2.2.1 -Scope CurrentUser -Force -AllowClobber;
 }
 ```
+
+## PSR0001 - Unable to read options file
+
+When running PSRule you may encounter an error similar to the following:
+
+!!! Error
+
+    PSR0001: Unable to read options file 'ps-rule.yaml'.
+
+This error typically indicates a problem with the YAML syntax in the `ps-rule.yaml` file.
+Double check the file for incorrect indentation or missing punctuation such as `-` and `:` characters.
+
+If you still have an issue, try resaving the file as UTF-8 in an editor such as Visual Studio Code.
