@@ -65,7 +65,7 @@ nav:
       - Sub-selectors: expressions/sub-selectors.md
     - Scenarios:
       - Using within continuous integration: scenarios/validation-pipeline/validation-pipeline.md
-    # - Troubleshooting: troubleshooting.md
+    - Troubleshooting: troubleshooting.md
     - License and contributing: license-contributing.md
     - Related projects: related-projects.md
     - Releases:
