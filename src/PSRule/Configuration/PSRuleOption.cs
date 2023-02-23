@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using PSRule.Definitions.Baselines;
 using PSRule.Pipeline;
 using PSRule.Resources;
+using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -311,18 +312,25 @@ namespace PSRule.Configuration
 
         private static PSRuleOption FromYaml(string path, string yaml)
         {
-            var d = new DeserializerBuilder()
-                .IgnoreUnmatchedProperties()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .WithTypeConverter(new FieldMapYamlTypeConverter())
-                .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
-                .WithTypeConverter(new PSObjectYamlTypeConverter())
-                .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
-                .Build();
+            try
+            {
+                var d = new DeserializerBuilder()
+                    .IgnoreUnmatchedProperties()
+                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                    .WithTypeConverter(new FieldMapYamlTypeConverter())
+                    .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
+                    .WithTypeConverter(new PSObjectYamlTypeConverter())
+                    .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
+                    .Build();
 
-            var option = d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();
-            option._SourcePath = path;
-            return option;
+                var option = d.Deserialize<PSRuleOption>(yaml) ?? new PSRuleOption();
+                option._SourcePath = path;
+                return option;
+            }
+            catch (SemanticErrorException ex)
+            {
+                throw new ConfigurationParseException(path, string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.PSR0001, path, ex.Message), ex);
+            }
         }
 
         /// <summary>

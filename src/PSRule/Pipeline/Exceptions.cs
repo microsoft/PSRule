@@ -329,10 +329,40 @@ namespace PSRule.Pipeline
     }
 
     /// <summary>
+    /// A base class for configuration exceptions.
+    /// </summary>
+    public abstract class ConfigurationException : PipelineException
+    {
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception that is thrown when attempting to read configuration.
+        /// </summary>
+        protected ConfigurationException()
+            : base() { }
+
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception that is thrown when attempting to read configuration.
+        /// </summary>
+        protected ConfigurationException(string message)
+            : base(message) { }
+
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception that is thrown when attempting to read configuration.
+        /// </summary>
+        protected ConfigurationException(string message, Exception innerException)
+            : base(message, innerException) { }
+
+        /// <summary>
+        /// Initialize a new instance of a PSRule exception that is thrown when attempting to read configuration.
+        /// </summary>
+        protected ConfigurationException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
+    }
+
+    /// <summary>
     /// A pipeline configuration exception.
     /// </summary>
     [Serializable]
-    public sealed class PipelineConfigurationException : PipelineException
+    public sealed class PipelineConfigurationException : ConfigurationException
     {
         /// <summary>
         /// Creates a pipeline configuration exception.
@@ -388,6 +418,74 @@ namespace PSRule.Pipeline
 
             base.GetObjectData(info, context);
         }
+    }
+
+    /// <summary>
+    /// A configuration parse exception.
+    /// </summary>
+    [Serializable]
+    public sealed class ConfigurationParseException : ConfigurationException
+    {
+        /// <summary>
+        /// Creates a configuration parse exception.
+        /// </summary>
+        public ConfigurationParseException()
+        {
+        }
+
+        /// <summary>
+        /// Creates a configuration parse exception.
+        /// </summary>
+        /// <param name="path">The path to the options file thay cause the exception.</param>
+        /// <param name="message">The detail of the exception.</param>
+        public ConfigurationParseException(string path, string message)
+            : base(message)
+        {
+            Path = path;
+        }
+
+        /// <summary>
+        /// Creates a configuration parse exception.
+        /// </summary>
+        public ConfigurationParseException(string message)
+            : base(message) { }
+
+        /// <summary>
+        /// Creates a configuration parse exception.
+        /// </summary>
+        public ConfigurationParseException(string message, Exception innerException)
+            : base(message, innerException) { }
+
+        /// <summary>
+        /// Creates a configuration parse exception.
+        /// </summary>
+        /// <param name="path">The path to the options file thay cause the exception</param>
+        /// <param name="message">The detail of the exception.</param>
+        /// <param name="innerException">A nested exception that caused the issue.</param>
+        public ConfigurationParseException(string path, string message, Exception innerException)
+            : base(message, innerException)
+        {
+            Path = path;
+        }
+
+        /// <inheritdoc/>
+        private ConfigurationParseException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
+
+        /// <inheritdoc/>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+                throw new ArgumentNullException(nameof(info));
+
+            base.GetObjectData(info, context);
+        }
+
+        /// <summary>
+        /// The path to the options file used.
+        /// </summary>
+        public string Path { get; }
     }
 
     /// <summary>

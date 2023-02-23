@@ -397,4 +397,7 @@
   <data name="SuppressionGroupExpired" xml:space="preserve">
     <value>Suppression group '{0}' has expired and will be ignored.</value>
   </data>
+  <data name="PSR0001" xml:space="preserve">
+    <value>PSR0001: Unable to read options file '{0}'. Please check the file is valid, indented correctly, and encoded as UTF-8. See https://aka.ms/ps-rule/ts-options. {1}</value>
+  </data>
 </root>

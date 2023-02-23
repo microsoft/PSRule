@@ -35,6 +35,8 @@ What's changed since v2.7.0:
 - General improvements:
   - Added additional options to schema for PSRule for Azure by @BernieWhite.
     [#1446](https://github.com/microsoft/PSRule/issues/1446)
+  - Improved error message for failing to read options file by @BernieWhite.
+    [#1433](https://github.com/microsoft/PSRule/issues/1433)
 - Engineering:
   - Bump Pester to v5.4.0.
     [#1414](https://github.com/microsoft/PSRule/pull/1414)
@@ -42,10 +44,10 @@ What's changed since v2.7.0:
     [#1374](https://github.com/microsoft/PSRule/pull/1374)
     Bump Microsoft.CodeAnalysis.Common to v4.4.0.
     [#1341](https://github.com/microsoft/PSRule/pull/1341)
-  - Bump BenchmarkDotNet to v0.13.4.
-    [#1413](https://github.com/microsoft/PSRule/pull/1413)
-  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.4.
-    [#1413](https://github.com/microsoft/PSRule/pull/1413)
+  - Bump BenchmarkDotNet to v0.13.5.
+    [#1413](https://github.com/microsoft/PSRule/pull/1437)
+  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.5.
+    [#1413](https://github.com/microsoft/PSRule/pull/1437)
 - Bug fixes:
   - Fixes handling of numerics in tests for that are impacted by regional format by @BernieWhite.
     [#1405](https://github.com/microsoft/PSRule/issues/1405)
