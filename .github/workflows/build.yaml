@@ -1,0 +1,143 @@
+#
+# CI Pipeline
+#
+
+# NOTES:
+# This workflow builds and tests module updates.
+
+name: Build
+on:
+  push:
+    branches: [main, 'release/*']
+  pull_request:
+    branches: [main, 'release/*']
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+permissions: {}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+
+      - name: Install dependencies
+        shell: pwsh
+        timeout-minutes: 3
+        run: ./scripts/pipeline-deps.ps1
+
+      - name: Build module
+        shell: pwsh
+        timeout-minutes: 5
+        run: Invoke-Build -Configuration Release -AssertStyle GitHubActions
+
+      - name: Upload module
+        uses: actions/upload-artifact@v3
+        with:
+          name: Module
+          path: ./out/modules/PSRule/*
+          retention-days: 3
+          if-no-files-found: error
+
+      # - name: Upload Test Results
+      #   uses: actions/upload-artifact@v3
+      #   if: always()
+      #   with:
+      #     name: Module.DotNet.TestResults
+      #     path: ./reports/*.trx
+      #     retention-days: 3
+      #     if-no-files-found: error
+
+      - name: Upload PSRule Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Module.PSRule.TestResults
+          path: ./reports/ps-rule*.xml
+          retention-days: 3
+          if-no-files-found: error
+
+  test:
+    name: Test (${{ matrix.rid }}-${{ matrix.shell }})
+    runs-on: ${{ matrix.os }}
+    needs: build
+    permissions:
+      contents: read
+
+    strategy:
+      # Get full test results from all platforms.
+      fail-fast: false
+
+      matrix:
+        os: ['ubuntu-latest']
+        rid: ['linux-x64']
+        shell: ['pwsh']
+        include:
+          - os: windows-latest
+            rid: win-x64
+            shell: pwsh
+          - os: windows-latest
+            rid: win-x64
+            shell: powershell
+          - os: ubuntu-latest
+            rid: linux-x64
+            shell: pwsh
+          - os: ubuntu-latest
+            rid: linux-musl-x64
+            shell: pwsh
+          - os: macos-latest
+            rid: osx-x64
+            shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+
+      - if: ${{ matrix.shell == 'pwsh' }}
+        name: Install dependencies (PowerShell)
+        shell: pwsh
+        timeout-minutes: 3
+        run: ./scripts/pipeline-deps.ps1
+
+      - if: ${{ matrix.shell == 'powershell' }}
+        name: Install dependencies (Windows PowerShell)
+        shell: powershell
+        timeout-minutes: 3
+        run: ./scripts/pipeline-deps.ps1
+
+      - name: Download module
+        uses: actions/download-artifact@v3
+        with:
+          name: Module
+          path: ./out/modules/PSRule
+
+      - if: ${{ matrix.shell == 'pwsh' }}
+        name: Test module (PowerShell)
+        shell: pwsh
+        timeout-minutes: 15
+        run: Invoke-Build TestModule -Configuration Release -AssertStyle GitHubActions
+
+      - if: ${{ matrix.shell == 'powershell' }}
+        name: Test module (Windows PowerShell)
+        shell: powershell
+        timeout-minutes: 30
+        run: Invoke-Build TestModule -Configuration Release -AssertStyle GitHubActions
