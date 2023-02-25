@@ -5,7 +5,7 @@
 # NOTES:
 # This workflow generates and published the documentation site https://microsoft.github.io/PSRule/.
 
-name: Build and deploy docs
+name: Docs
 on:
   push:
     branches:
