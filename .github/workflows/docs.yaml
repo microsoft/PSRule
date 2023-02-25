@@ -9,7 +9,7 @@ name: Build and deploy docs
 on:
   push:
     branches:
-    - main
+      - main
   workflow_dispatch:
 
 permissions: {}
@@ -21,7 +21,6 @@ jobs:
     permissions:
       contents: write
     steps:
-
       - name: Checkout
         uses: actions/checkout@v3
         with:
