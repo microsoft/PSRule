@@ -98,11 +98,17 @@ Describe 'PSRule -- Conventions' -Tag 'Convention' {
         }
 
         It 'Expands input object' {
-            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention.Expansion');
+            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention.Expansion' -Option @{
+                'Binding.PreferTargetInfo' = $True
+            });
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 4;
-            $result[0].TargetName | Should -Be 'TestObject1';
-            $result[1].TargetName | Should -Be 'TestObject2';
+            $result.Length | Should -Be 5;
+            $result[0].TargetName | Should -Be 'TestObject3';
+            $result[0].TargetType | Should -Be 'ExpandCustomObject';
+            $result[1].TargetName | Should -Be 'TestObject1';
+            $result[1].TargetType | Should -Be 'System.Management.Automation.PSCustomObject';
+            $result[2].TargetName | Should -Be 'TestObject2';
+            $result[2].TargetType | Should -Be 'System.Management.Automation.PSCustomObject';
         }
 
         It 'Handles nested exceptions' {

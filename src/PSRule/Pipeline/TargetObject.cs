@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Management.Automation;
 using Newtonsoft.Json.Linq;
 using PSRule.Data;
@@ -65,10 +66,10 @@ namespace PSRule.Pipeline
         internal TargetObject(PSObject o, string targetName = null, string targetType = null, string[] scope = null)
             : this(o, null)
         {
-            if (targetName != null)
+            if (!string.IsNullOrEmpty(targetName))
                 TargetName = targetName;
 
-            if (targetType != null)
+            if (!string.IsNullOrEmpty(targetType))
                 TargetType = targetType;
 
             if (scope != null && scope.Length > 0)
@@ -81,13 +82,13 @@ namespace PSRule.Pipeline
 
         internal TargetIssueCollection Issue { get; private set; }
 
-        internal string TargetName { get; }
+        internal string TargetName { [DebuggerStepThrough] get; }
 
-        internal string TargetType { get; }
+        internal string TargetType { [DebuggerStepThrough] get; }
 
-        internal string[] Scope { get; }
+        internal string[] Scope { [DebuggerStepThrough] get; }
 
-        internal string Path { get; }
+        internal string Path { [DebuggerStepThrough] get; }
 
         internal Hashtable GetData()
         {

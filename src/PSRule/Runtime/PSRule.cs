@@ -291,23 +291,40 @@ namespace PSRule.Runtime
         /// Imports source objects into the pipeline for processing.
         /// </summary>
         /// <remarks>
-        /// This method can only be called from a convention begin block.
+        /// This method can only be called from a convention initialize or begin block.
         /// </remarks>
+        /// <param name="sourceObject">One or more objects to import into the pipeline.</param>
         /// <exception cref="RuntimeScopeException">
-        /// Thrown when accessing this method outside of a convention begin block.
+        /// Thrown when accessing this method outside of a convention initialize or begin block.
         /// </exception>
         public void Import(PSObject[] sourceObject)
+        {
+            ImportWithType(null, sourceObject);
+        }
+
+        /// <summary>
+        /// Imports source objects into the pipeline for processing.
+        /// </summary>
+        /// <remarks>
+        /// This method can only be called from a convention initialize or begin block.
+        /// </remarks>
+        /// <param name="type">The target type to assign to any objects imported into the pipeline.</param>
+        /// <param name="sourceObject">One or more objects to import into the pipeline.</param>
+        /// <exception cref="RuntimeScopeException">
+        /// Thrown when accessing this method outside of a convention initialize or begin block.
+        /// </exception>
+        public void ImportWithType(string type, PSObject[] sourceObject)
         {
             if (sourceObject == null || sourceObject.Length == 0)
                 return;
 
-            RequireScope(RunspaceScope.ConventionBegin);
+            RequireScope(RunspaceScope.ConventionInitialize | RunspaceScope.ConventionBegin);
             for (var i = 0; i < sourceObject.Length; i++)
             {
                 if (sourceObject[i] == null)
                     continue;
 
-                GetContext().Pipeline.Reader.Enqueue(sourceObject[i], skipExpansion: true);
+                GetContext().Pipeline.Reader.Enqueue(sourceObject[i], type, skipExpansion: true);
             }
         }
 
