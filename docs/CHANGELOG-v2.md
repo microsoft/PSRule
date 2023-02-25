@@ -37,6 +37,11 @@ What's changed since v2.7.0:
     [#1446](https://github.com/microsoft/PSRule/issues/1446)
   - Improved error message for failing to read options file by @BernieWhite.
     [#1433](https://github.com/microsoft/PSRule/issues/1433)
+  - Added support for import within initialize block by @BernieWhite.
+    [#1448](https://github.com/microsoft/PSRule/issues/1448)
+  - Added support for direct typing on import by @BernieWhite.
+    [#1449](https://github.com/microsoft/PSRule/issues/1449)
+    - Use the `$PSRule.ImportWithType` method to import an object with a specific type.
 - Engineering:
   - Bump Pester to v5.4.0.
     [#1414](https://github.com/microsoft/PSRule/pull/1414)
