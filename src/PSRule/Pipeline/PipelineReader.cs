@@ -26,12 +26,12 @@ namespace PSRule.Pipeline
 
         public bool IsEmpty => _Queue.IsEmpty;
 
-        public void Enqueue(PSObject sourceObject, bool skipExpansion = false)
+        public void Enqueue(PSObject sourceObject, string targetType = null, bool skipExpansion = false)
         {
             if (sourceObject == null)
                 return;
 
-            var targetObject = new TargetObject(sourceObject);
+            var targetObject = new TargetObject(sourceObject, targetType: targetType);
             if (_Input == null || skipExpansion)
             {
                 EnqueueInternal(targetObject);

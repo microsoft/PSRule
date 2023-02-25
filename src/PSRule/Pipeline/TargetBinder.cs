@@ -29,6 +29,8 @@ namespace PSRule.Pipeline
         string LanguageScope { get; }
 
         ITargetBindingResult Bind(object o);
+
+        ITargetBindingResult Bind(TargetObject o);
     }
 
     internal interface ITargetBindingResult
@@ -221,18 +223,37 @@ namespace PSRule.Pipeline
 
             public string LanguageScope { get; }
 
+            public ITargetBindingResult Bind(TargetObject o)
+            {
+                var targetNamePath = ".";
+                var targetName = _BindingOption.PreferTargetInfo && o.TargetName != null ? o.TargetName : _BindTargetName(_BindingOption.TargetName, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, o.Value, out targetNamePath);
+                var targetTypePath = ".";
+                var targetType = _BindingOption.PreferTargetInfo && o.TargetType != null ? o.TargetType : _BindTargetType(_BindingOption.TargetType, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, o.Value, out targetTypePath);
+                var shouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(targetType));
+
+                // Bind custom fields
+                var field = BindField(_BindField, _BindingOption.Field, !_BindingOption.IgnoreCase, o.Value);
+                return Bind(targetName, targetNamePath, targetType, targetTypePath, field);
+            }
+
             public ITargetBindingResult Bind(object o)
             {
                 var targetName = _BindTargetName(_BindingOption.TargetName, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, o, out var targetNamePath);
                 var targetType = _BindTargetType(_BindingOption.TargetType, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, o, out var targetTypePath);
                 var shouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(targetType));
 
+                // Bind custom fields
+                var field = BindField(_BindField, _BindingOption.Field, !_BindingOption.IgnoreCase, o);
+                return Bind(targetName, targetNamePath, targetType, targetTypePath, field);
+            }
+
+            private ITargetBindingResult Bind(string targetName, string targetNamePath, string targetType, string targetTypePath, Hashtable field)
+            {
+                var shouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(targetType));
+
                 // Use qualified name
                 if (_BindingOption.UseQualifiedName)
                     targetName = string.Concat(targetType, _BindingOption.NameSeparator, targetName);
-
-                // Bind custom fields
-                var field = BindField(_BindField, _BindingOption.Field, !_BindingOption.IgnoreCase, o);
 
                 return new TargetBindingResult
                 (
@@ -254,7 +275,7 @@ namespace PSRule.Pipeline
         public void Bind(TargetObject targetObject)
         {
             foreach (var bindingContext in _BindingContext.Values)
-                _BindingResult[bindingContext.LanguageScope] = bindingContext.Bind(targetObject.Value);
+                _BindingResult[bindingContext.LanguageScope] = bindingContext.Bind(targetObject);
         }
 
         public ITargetBindingContext Using(string languageScope)

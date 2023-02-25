@@ -35,12 +35,19 @@ Export-PSRuleConvention 'Convention3' -If { $Assert.HasFieldValue($TargetObject,
 }
 
 # Synopsis: A convention for unit testing
-Export-PSRuleConvention 'Convention.Expansion' -If { $TargetObject.Name -eq 'TestObject1' } -Begin {
+Export-PSRuleConvention 'Convention.Expansion' -Initialize {
     $newObject = [PSCustomObject]@{
-        Name = 'TestObject2'
+        Name = 'TestObject3'
     };
-    $PSRule.Import($newObject);
-    $PSRule.Import(@($newObject, $newObject));
+    $PSRule.ImportWithType('ExpandCustomObject', @($newObject));
+} -Begin {
+    if ($TargetObject.Name -eq 'TestObject1') {
+        $newObject = [PSCustomObject]@{
+            Name = 'TestObject2'
+        };
+        $PSRule.Import($newObject);
+        $PSRule.Import(@($newObject, $newObject));
+    }
 }
 
 # Synopsis: A convention for unit testing
