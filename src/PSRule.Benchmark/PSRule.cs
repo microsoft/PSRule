@@ -172,7 +172,7 @@ namespace PSRule.Benchmark
             return builder.Build();
         }
 
-        private string GetSourcePath(string fileName)
+        private static string GetSourcePath(string fileName)
         {
             return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), fileName);
         }

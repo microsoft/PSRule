@@ -164,7 +164,7 @@ namespace PSRule.Commands
         private static bool TryStringValue(PSObject o, out string value)
         {
             value = null;
-            if (o == null || !(o.BaseObject is string))
+            if (o == null || o.BaseObject is not string)
                 return false;
             value = o.BaseObject.ToString();
             return true;
