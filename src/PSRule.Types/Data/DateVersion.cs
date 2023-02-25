@@ -119,9 +119,7 @@ namespace PSRule.Data
 
             internal void Join(int year, int month, int day, PR prid, ComparisonOperator flag, JoinOperator join, bool includePrerelease)
             {
-                if (_Constraints == null)
-                    _Constraints = new List<ConstraintExpression>();
-
+                _Constraints ??= new List<ConstraintExpression>();
                 _Constraints.Add(new ConstraintExpression(
                     year,
                     month,
@@ -390,7 +388,7 @@ namespace PSRule.Data
         [DebuggerDisplay("{Value}")]
         public sealed class PR
         {
-            internal static readonly PR Empty = new PR();
+            internal static readonly PR Empty = new();
             private static readonly char[] SEPARATORS = new char[] { DOT };
 
             private readonly string[] _Identifiers;

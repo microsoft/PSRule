@@ -132,9 +132,7 @@ namespace PSRule.Data
 
             internal void Join(int major, int minor, int patch, PR prid, ComparisonOperator flag, JoinOperator join, bool includePrerelease)
             {
-                if (_Constraints == null)
-                    _Constraints = new List<ConstraintExpression>();
-
+                _Constraints ??= new List<ConstraintExpression>();
                 _Constraints.Add(new ConstraintExpression(
                     major,
                     minor,
@@ -431,10 +429,7 @@ namespace PSRule.Data
                 if (Minor != other.Minor)
                     return Minor > other.Minor ? 16 : -16;
 
-                if (Patch != other.Patch)
-                    return Patch > other.Patch ? 8 : -8;
-
-                return 0;
+                return Patch != other.Patch ? Patch > other.Patch ? 8 : -8 : 0;
             }
         }
 
@@ -444,7 +439,7 @@ namespace PSRule.Data
         [DebuggerDisplay("{Value}")]
         public sealed class PR
         {
-            internal static readonly PR Empty = new PR();
+            internal static readonly PR Empty = new();
             private static readonly char[] SEPARATORS = new char[] { SEPARATOR };
 
             private readonly string[] _Identifiers;

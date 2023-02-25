@@ -195,7 +195,7 @@ namespace PSRule.Host
                         context.EnterSourceScope(source: file);
 
                         var scriptAst = System.Management.Automation.Language.Parser.ParseFile(file.Path, out var tokens, out var errors);
-                        var visitor = new RuleLanguageAst(PipelineContext.CurrentThread);
+                        var visitor = new RuleLanguageAst();
                         scriptAst.Visit(visitor);
 
                         if (visitor.Errors != null && visitor.Errors.Count > 0)
