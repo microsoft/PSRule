@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.SuppressionGroups;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -40,6 +41,17 @@ namespace PSRule
             context.Writer.WriteWarning(PSRuleResources.RuleNotFound);
         }
 
+        /// <summary>
+        /// The option '{0}' is deprecated and will be removed with PSRule v3. See http://aka.ms/ps-rule/deprecations for more detail.
+        /// </summary>
+        internal static void WarnDeprecatedOption(this RunspaceContext context, string option)
+        {
+            if (context.Writer == null || !context.Writer.ShouldWriteWarning())
+                return;
+
+            context.Writer.WriteWarning(PSRuleResources.DeprecatedOption, option);
+        }
+
         internal static void WarnDuplicateRuleName(this RunspaceContext context, string ruleName)
         {
             if (context == null || context.Writer == null || !context.Writer.ShouldWriteWarning())
@@ -64,6 +76,15 @@ namespace PSRule
 
             var action = context.Pipeline.Option.Execution.SuppressionGroupExpired.GetValueOrDefault(ExecutionOption.Default.SuppressionGroupExpired.Value);
             context.Throw(action, PSRuleResources.SuppressionGroupExpired, suppressionGroupId.Value);
+        }
+
+        internal static void RuleExcluded(this RunspaceContext context, ResourceId ruleId)
+        {
+            if (context == null || context.Pipeline == null)
+                return;
+
+            var action = context.Pipeline.Option.Execution.RuleExcluded.GetValueOrDefault(ExecutionOption.Default.RuleExcluded.Value);
+            context.Throw(action, PSRuleResources.SuppressionGroupExpired, ruleId.Value);
         }
 
         internal static void Throw(this RunspaceContext context, ExecutionActionPreference action, string message, params object[] args)

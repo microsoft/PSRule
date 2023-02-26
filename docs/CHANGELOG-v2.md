@@ -6,14 +6,14 @@ discussion: false
 
 See [upgrade notes][1] for helpful information when upgrading from previous versions.
 
-  [1]: https://microsoft.github.io/PSRule/latest/upgrade-notes/
+  [1]: https://aka.ms/ps-rule/upgrade
 
 **Important notes**:
 
 - Several properties of rule and language block elements will be removed from v3.
   See [deprecations][2] for details.
 
-  [2]: https://microsoft.github.io/PSRule/latest/deprecations/#deprecations-for-v3
+  [2]: https://aka.ms/ps-rule/deprecations#deprecations-for-v3
 
 **Experimental features**:
 
@@ -33,6 +33,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 What's changed since v2.7.0:
 
 - General improvements:
+  - **Important change**: Replaced `SuppressedRuleWarning` execution option with `RuleSuppressed` by @BernieWhite.
+    [#1456](https://github.com/microsoft/PSRule/issues/1456)
+    - Improved options for output of suppressed rules with `RuleSuppressed` option.
+    - Deprecated `SuppressedRuleWarning` option, which will be removed in v3.
+  - Added support for logging excluded rules by @BernieWhite.
+    [#1432](https://github.com/microsoft/PSRule/issues/1432)
   - Added additional options to schema for PSRule for Azure by @BernieWhite.
     [#1446](https://github.com/microsoft/PSRule/issues/1446)
   - Improved error message for failing to read options file by @BernieWhite.

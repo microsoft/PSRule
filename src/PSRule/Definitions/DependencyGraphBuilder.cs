@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using PSRule.Pipeline;
 using PSRule.Resources;
+using PSRule.Rules;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions
@@ -40,6 +41,8 @@ namespace PSRule.Definitions
 
                 if (filter == null || filter(item))
                     Include(index, item, parentId: null);
+                else if (item is RuleBlock)
+                    _Context.RuleExcluded(item.Id);
             }
         }
 
