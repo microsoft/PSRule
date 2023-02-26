@@ -219,7 +219,7 @@ namespace PSRule.Configuration
         /// <summary>
         /// Determines if a warning is raised when a rule is suppressed.
         /// </summary>
-        [DefaultValue(null), Obsolete("Use RuleSuppressed instead. See http://aka.ms/ps-rule/deprecations for more detail.")]
+        [DefaultValue(null), Obsolete("Use RuleSuppressed instead. See https://aka.ms/ps-rule/deprecations for more detail.")]
         public bool? SuppressedRuleWarning { get; set; }
 
         /// <summary>

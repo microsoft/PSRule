@@ -1197,7 +1197,7 @@ function New-PSRuleOption {
         # Sets the Execution.SuppressedRuleWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressedRuleWarning')]
-        [System.Obsolete('Use ExecutionRuleSuppressed instead. See http://aka.ms/ps-rule/deprecations for more detail.')]
+        [System.Obsolete('Use ExecutionRuleSuppressed instead. See https://aka.ms/ps-rule/deprecations for more detail.')]
         [System.Boolean]$SuppressedRuleWarning = $True,
 
         # Sets the Execution.SuppressionGroupExpired option
@@ -1507,7 +1507,7 @@ function Set-PSRuleOption {
         # Sets the Execution.SuppressedRuleWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressedRuleWarning')]
-        [System.Obsolete('Use ExecutionRuleSuppressed instead. See http://aka.ms/ps-rule/deprecations for more detail.')]
+        [System.Obsolete('Use ExecutionRuleSuppressed instead. See https://aka.ms/ps-rule/deprecations for more detail.')]
         [System.Boolean]$SuppressedRuleWarning = $True,
 
         # Sets the Execution.SuppressionGroupExpired option
