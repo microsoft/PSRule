@@ -19,14 +19,51 @@ It is shipped as a PowerShell module which makes it easy to install and distribu
 
 Install and use PSRule with GitHub Actions by referencing the `microsoft/ps-rule` action.
 
-```yaml
-- name: Analyze Azure template files
-  uses: microsoft/ps-rule@v2.7.0
-```
+=== "Specific version"
+
+    ```yaml title="GitHub Actions"
+    - name: Analyze with PSRule
+      uses: microsoft/ps-rule@v2.7.0
+    ```
+
+=== "Latest stable v2"
+
+    ```yaml title="GitHub Actions"
+    - name: Analyze with PSRule
+      uses: microsoft/ps-rule@v2
+    ```
+
+=== "Latest stable"
+
+    ```yaml title="GitHub Actions"
+    - name: Analyze with PSRule
+      uses: microsoft/ps-rule@latest
+    ```
 
 This will automatically install compatible versions of all dependencies.
 
   [1]: https://github.com/marketplace/actions/psrule
+
+### Working with Dependabot
+
+You can use [Dependabot][7] to automatically upgrade your PSRule action if you use a specific version.
+When new versions a released Dependabot will automatically add a pull request (PR) for you to review and merge.
+
+```yaml title=".github/dependabot.yaml"
+#
+# Dependabot configuration
+#
+version: 2
+updates:
+
+  # Maintain GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+```
+
+  [7]: https://docs.github.com/code-security/dependabot/working-with-dependabot
 
 ## With Azure Pipelines
 
