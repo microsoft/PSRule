@@ -1030,6 +1030,9 @@ variables:
 
 ### Execution.SuppressedRuleWarning
 
+This option has been deprecated and will be removed from v3 in favor of `ruleSuppressed`.
+Use `ruleSuppressed` instead.
+
 When evaluating rules, it is possible to output suppressed rules as warnings.
 
 Suppressed rules will:
@@ -1131,6 +1134,120 @@ env:
 # Azure Pipelines: Using environment variable
 variables:
 - name: PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED
+  value: Error
+```
+
+### Execution.RuleExcluded
+
+Determines how to handle excluded rules.
+Regardless of the value, excluded rules are ignored.
+By defaut, a rule is excluded silently, however this behaviour can be modified by this option.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Ignore`.
+- `Ignore` (1) - Continue to execute silently.
+  This is the default.
+- `Warn` (2) - Continue to execute but log a warning.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+```powershell
+# PowerShell: Using the ExecutionRuleExcluded parameter
+$option = New-PSRuleOption -ExecutionRuleExcluded 'Warn';
+```
+
+```powershell
+# PowerShell: Using the Execution.RuleExcluded hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.RuleExcluded' = 'Warn' };
+```
+
+```powershell
+# PowerShell: Using the ExecutionRuleExcluded parameter to set YAML
+Set-PSRuleOption -ExecutionRuleExcluded 'Warn';
+```
+
+```yaml
+# YAML: Using the execution/ruleExcluded property
+execution:
+  ruleExcluded: Warn
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_RULEEXCLUDED=Warn
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_RULEEXCLUDED: Warn
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_RULEEXCLUDED
+  value: Warn
+```
+
+### Execution.RuleSuppressed
+
+Determines how to handle suppressed rules.
+Regardless of the value, a suppressed rule is ignored.
+By defaut, a warning is generated, however this behaviour can be modified by this option.
+
+This option replaces `suppressedRuleWarning`.
+You do not need to configure both options.
+If `suppressedRuleWarning` is configured, it will override `ruleSuppressed` with `Warn` or `Ignore` until removal in PSRule v3.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Warn`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+  This is the default.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+```powershell
+# PowerShell: Using the ExecutionRuleSuppressed parameter
+$option = New-PSRuleOption -ExecutionRuleSuppressed 'Error';
+```
+
+```powershell
+# PowerShell: Using the Execution.RuleSuppressed hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.RuleSuppressed' = 'Error' };
+```
+
+```powershell
+# PowerShell: Using the ExecutionRuleSuppressed parameter to set YAML
+Set-PSRuleOption -ExecutionRuleSuppressed 'Error';
+```
+
+```yaml
+# YAML: Using the execution/ruleSuppressed property
+execution:
+  ruleSuppressed: Error
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_RULESUPPRESSED=Error
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_RULESUPPRESSED: Error
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_RULESUPPRESSED
   value: Error
 ```
 
@@ -3210,7 +3327,7 @@ rule:
 
 ## NOTE
 
-An online version of this document is available at https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/.
+An online version of this document is available at <https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/>.
 
 ## SEE ALSO
 

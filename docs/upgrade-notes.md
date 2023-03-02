@@ -158,7 +158,7 @@ Rules sources in the current working directory are only included if `-Path .` or
 
 The old behavior:
 
-```powershell
+```powershell title="PowerShell"
 Set-Location docs\scenarios\azure-resources
 Get-PSRule
 
@@ -174,7 +174,7 @@ storageAccounts.UseEncryption                                  Use at-rest stora
 
 The new behavior:
 
-```powershell
+```powershell title="PowerShell"
 Set-Location docs\scenarios\azure-resources
 Get-PSRule
 
@@ -217,7 +217,7 @@ Detect uses the following logic:
 To force usage of the `Client` output style set the `Output.Style` option.
 For example:
 
-```yaml
+```yaml title="ps-rule.yaml"
 # YAML: Using the output/style property
 output:
   style: Client
@@ -228,13 +228,13 @@ output:
 export PSRULE_OUTPUT_STYLE=Client
 ```
 
-```yaml
+```yaml title="GitHub Actions"
 # GitHub Actions: Using environment variable
 env:
   PSRULE_OUTPUT_STYLE: Client
 ```
 
-```yaml
+```yaml title="Azure Pipelines"
 # Azure Pipelines: Using environment variable
 variables:
 - name: PSRULE_OUTPUT_STYLE
@@ -255,7 +255,7 @@ Previously in PSRule _v0.22.0_ and prior the `$Rule` automatic variable had the 
 
 For example:
 
-```powershell
+```powershell title="PowerShell rules"
 Rule 'Rule1' {
     $Rule.TargetName -eq 'Name1';
     $Rule.TargetType -eq '.json';
@@ -269,7 +269,7 @@ Rules referencing the deprecated properties of `$Rule` must be updated.
 
 For example:
 
-```powershell
+```powershell title="PowerShell rules"
 Rule 'Rule1' {
     $PSRule.TargetName -eq 'Name1';
     $PSRule.TargetType -eq '.json';

@@ -7,6 +7,30 @@ discussion: false
 
 ## Deprecations for v3
 
+### Execution options
+
+PSRule provides a number of execution options that control logging of certain events.
+In many cases these options turn a warning on or off.
+
+These options are deprecated but replaced to provide more choice to when configuring logging options.
+Now you can configure the following:
+
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+  This is the default.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+The following execution options have been deprecated and will be removed from _v3_.
+
+- `Execution.SuppressedRuleWarning` is replaced with `Execution.RuleSuppressed`.
+  Set `Execution.RuleSuppressed` to `Warn` to log a warning from _v2.8.0_.
+  If both options are set, `Execution.SuppressedRuleWarning` takes precedence until _v3_.
+
+!!! Tip
+    You do not need to configure both options.
+    If you have the deprecated option configured, switch to the new option.
+
 ### Rule output object
 
 Several properties of the rule object have been renamed to improve consistency with other objects.

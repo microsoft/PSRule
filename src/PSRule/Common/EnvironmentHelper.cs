@@ -46,7 +46,7 @@ namespace PSRule
         private const string PATH_ENV = "PATH";
         private const string DEFAULT_CREDENTIAL_USERNAME = "na";
 
-        public static readonly EnvironmentHelper Default = new EnvironmentHelper();
+        public static readonly EnvironmentHelper Default = new();
 
         internal bool TryString(string key, out string value)
         {

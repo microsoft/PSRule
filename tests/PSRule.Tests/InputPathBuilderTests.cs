@@ -34,21 +34,21 @@ namespace PSRule
             actual = builder.Build();
             Assert.True(actual.Length > 100);
 
-            builder.Add("./.azure-pipelines/*.yaml");
+            builder.Add("./.github/*.yaml");
             actual = builder.Build();
-            Assert.True(actual.Length == 1);
+            Assert.Single(actual);
 
-            builder.Add("./.azure-pipelines/**/*.yaml");
+            builder.Add("./.github/**/*.yaml");
             actual = builder.Build();
-            Assert.True(actual.Length == 3);
+            Assert.Equal(7, actual.Length);
 
-            builder.Add("./.azure-pipelines/");
+            builder.Add("./.github/");
             actual = builder.Build();
-            Assert.True(actual.Length == 4);
+            Assert.Equal(13, actual.Length);
 
-            builder.Add(".azure-pipelines/");
+            builder.Add(".github/");
             actual = builder.Build();
-            Assert.True(actual.Length == 4);
+            Assert.Equal(13, actual.Length);
 
             builder.Add("./*.json");
             actual = builder.Build();

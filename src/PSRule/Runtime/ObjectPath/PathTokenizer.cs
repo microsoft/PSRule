@@ -68,28 +68,28 @@ namespace PSRule.Runtime.ObjectPath
             private const char UNDERSCORE = '_';
             private const char PLUS = '+';
 
-            private readonly string Path;
-            private readonly int Last;
+            private readonly string _Path;
+            private readonly int _Last;
 
             public PathStream(string path)
             {
-                Path = path;
-                Last = Path.Length - 1;
+                _Path = path;
+                _Last = _Path.Length - 1;
             }
 
             public bool EOF(int position)
             {
-                return position > Last;
+                return position > _Last;
             }
 
             public char Current(int pos)
             {
-                return pos > Last ? NULL : Path[pos];
+                return pos > _Last ? NULL : _Path[pos];
             }
 
             public bool Current(int pos, char c)
             {
-                return pos <= Last && Path[pos] == c;
+                return pos <= _Last && _Path[pos] == c;
             }
 
             /// <summary>
@@ -98,7 +98,7 @@ namespace PSRule.Runtime.ObjectPath
             /// <returns>Return true when more characters follow.</returns>
             public void Next(ref int position)
             {
-                if (position <= Last)
+                if (position <= _Last)
                     position++;
             }
 
@@ -135,10 +135,10 @@ namespace PSRule.Runtime.ObjectPath
             /// </summary>
             internal bool TryConsumeFilter(ref int position, ITokenWriter tokens)
             {
-                if (Current(position) != INDEX_OPEN || position + 5 >= Last || Path[position + 1] != QUERY)
+                if (Current(position) != INDEX_OPEN || position + 5 >= _Last || _Path[position + 1] != QUERY)
                     return false;
 
-                var groupOpen = Path[position + 2] == GROUP_OPEN;
+                var groupOpen = _Path[position + 2] == GROUP_OPEN;
                 var pos = groupOpen ? position + 3 : position + 2;
                 tokens.Add(new PathToken(PathTokenType.StartFilter));
                 if (groupOpen)
@@ -302,7 +302,7 @@ namespace PSRule.Runtime.ObjectPath
 
             private char ConsumeChar(ref int position)
             {
-                return position > Last ? NULL : Path[position++];
+                return position > _Last ? NULL : _Path[position++];
             }
 
             /// <summary>
@@ -389,7 +389,7 @@ namespace PSRule.Runtime.ObjectPath
 
             private bool TryConsumeIndexSelector(ref int position, ITokenWriter tokens)
             {
-                if (!(Current(position) == INDEX_OPEN && Current(position + 1) != QUERY && position + 1 < Last))
+                if (!(Current(position) == INDEX_OPEN && Current(position + 1) != QUERY && position + 1 < _Last))
                     return false;
 
                 // Move past "["
@@ -411,7 +411,7 @@ namespace PSRule.Runtime.ObjectPath
 
                 var pos = SkipPadding(position);
                 var slice = new int?[] { null, null, null };
-                for (var i = 0; i <= 2 && pos <= Last && Path[pos] != INDEX_CLOSE; i++)
+                for (var i = 0; i <= 2 && pos <= _Last && _Path[pos] != INDEX_CLOSE; i++)
                 {
                     if (WhileNumeric(pos, out var end) && end > pos)
                     {
@@ -440,11 +440,11 @@ namespace PSRule.Runtime.ObjectPath
             private bool TryConsumeUnionIndexSelector(ref int position, ITokenWriter tokens)
             {
                 var pos = SkipPadding(position);
-                if (pos + 2 >= Last || !WhileNumeric(pos, out var end) || end == pos)
+                if (pos + 2 >= _Last || !WhileNumeric(pos, out var end) || end == pos)
                     return false;
 
                 var members = new List<int>();
-                while (pos <= Last && Path[pos] != INDEX_CLOSE)
+                while (pos <= _Last && _Path[pos] != INDEX_CLOSE)
                 {
                     pos = SkipPadding(pos);
                     if (!WhileNumeric(pos, out end) || !int.TryParse(Substring(pos, end), out var member))
@@ -463,11 +463,11 @@ namespace PSRule.Runtime.ObjectPath
             private bool TryConsumeUnionQuotedMemberSelector(ref int position, ITokenWriter tokens)
             {
                 var pos = SkipPadding(position);
-                if (pos + 3 >= Last || !IsQuoted(Path[pos]))
+                if (pos + 3 >= _Last || !IsQuoted(_Path[pos]))
                     return false;
 
                 var members = new List<string>();
-                while (pos <= Last && Path[pos] != INDEX_CLOSE)
+                while (pos <= _Last && _Path[pos] != INDEX_CLOSE)
                 {
                     pos = SkipPadding(pos);
                     var member = CaptureMemberName(ref pos);
@@ -490,7 +490,7 @@ namespace PSRule.Runtime.ObjectPath
             private bool TryConsumeStringIndex(ref int position, ITokenWriter tokens)
             {
                 var pos = SkipPadding(position);
-                if (pos + 3 >= Last || !IsQuoted(Path[pos]))
+                if (pos + 3 >= _Last || !IsQuoted(_Path[pos]))
                     return false;
 
                 var field = CaptureMemberName(ref pos);
@@ -508,11 +508,11 @@ namespace PSRule.Runtime.ObjectPath
             private bool TryConsumeIndexWildSelector(ref int position, ITokenWriter tokens)
             {
                 var pos = SkipPadding(position);
-                if (pos >= Last || Path[pos] != ANY)
+                if (pos >= _Last || _Path[pos] != ANY)
                     return false;
 
                 pos = SkipPadding(pos + 1);
-                if (pos > Last || Path[pos] != INDEX_CLOSE)
+                if (pos > _Last || _Path[pos] != INDEX_CLOSE)
                     return false;
 
                 pos++;
@@ -531,7 +531,7 @@ namespace PSRule.Runtime.ObjectPath
                     return false;
 
                 pos = SkipPadding(end);
-                if (pos > Last || Path[pos] != INDEX_CLOSE)
+                if (pos > _Last || _Path[pos] != INDEX_CLOSE)
                     return false;
 
                 tokens.Add(new PathToken(PathTokenType.IndexSelector, index));
@@ -568,7 +568,7 @@ namespace PSRule.Runtime.ObjectPath
 
             private bool IsSequence(int position, string sequence)
             {
-                return position + sequence.Length <= Last && string.Compare(Path, position, sequence, 0, sequence.Length, StringComparison.OrdinalIgnoreCase) == 0;
+                return position + sequence.Length <= _Last && string.Compare(_Path, position, sequence, 0, sequence.Length, StringComparison.OrdinalIgnoreCase) == 0;
             }
 
             private bool IsMemberName(int position)
@@ -583,7 +583,7 @@ namespace PSRule.Runtime.ObjectPath
             /// </summary>
             private int SkipPadding(int pos)
             {
-                while (pos < Last && char.IsWhiteSpace(Path[pos]))
+                while (pos < _Last && char.IsWhiteSpace(_Path[pos]))
                     pos++;
 
                 return pos;
@@ -591,7 +591,7 @@ namespace PSRule.Runtime.ObjectPath
 
             private string Substring(int pos, int end)
             {
-                return pos == end ? null : Path.Substring(pos, end - pos);
+                return pos == end ? null : _Path.Substring(pos, end - pos);
             }
 
             /// <summary>
@@ -600,11 +600,11 @@ namespace PSRule.Runtime.ObjectPath
             private bool WhileMemberName(ref int position, out string value)
             {
                 value = null;
-                if (position >= Last)
+                if (position >= _Last)
                     return false;
 
-                var end = Path[position] == ROOTREF ? position + 1 : position;
-                while (end <= Last && IsMemberNameCharacter(Path[end]) && (end != position || Path[end] != DASH))
+                var end = _Path[position] == ROOTREF ? position + 1 : position;
+                while (end <= _Last && IsMemberNameCharacter(_Path[end]) && (end != position || _Path[end] != DASH))
                     end++;
 
                 if (end > position && Current(end - 1) == DASH)
@@ -624,14 +624,14 @@ namespace PSRule.Runtime.ObjectPath
             private bool WhileNumeric(int position, out int end)
             {
                 end = position;
-                if (position >= Last)
+                if (position >= _Last)
                     return false;
 
                 var i = position;
-                if (i <= Last && Path[i] == DASH)
+                if (i <= _Last && _Path[i] == DASH)
                     i++;
 
-                while (i <= Last && (char.IsDigit(Path[i]) || (Path[i] == DASH && i + 1 < Last && char.IsDigit(Path[i + 1]))))
+                while (i <= _Last && (char.IsDigit(_Path[i]) || (_Path[i] == DASH && i + 1 < _Last && char.IsDigit(_Path[i + 1]))))
                     end = ++i;
 
                 return end > position;
@@ -643,13 +643,13 @@ namespace PSRule.Runtime.ObjectPath
             private bool UntilQuote(ref int position, out string value)
             {
                 value = null;
-                if (position >= Last || !IsQuoted(Path[position]))
+                if (position >= _Last || !IsQuoted(_Path[position]))
                     return false;
 
-                var endQuote = Path[position];
+                var endQuote = _Path[position];
                 var pos = position + 1;
                 var end = pos;
-                while (end <= Last && Path[end] != endQuote)
+                while (end <= _Last && _Path[end] != endQuote)
                     end++;
 
                 if (pos == end)
@@ -662,8 +662,8 @@ namespace PSRule.Runtime.ObjectPath
 
             private bool AnyUntilIndexClose(int position, char c)
             {
-                for (var i = position; i <= Last && Path[i] != INDEX_CLOSE; i++)
-                    if (Path[i] == c)
+                for (var i = position; i <= _Last && _Path[i] != INDEX_CLOSE; i++)
+                    if (_Path[i] == c)
                         return true;
 
                 return false;

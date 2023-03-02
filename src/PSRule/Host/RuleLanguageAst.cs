@@ -29,7 +29,7 @@ namespace PSRule.Host
 
         internal List<ErrorRecord> Errors;
 
-        internal RuleLanguageAst(PipelineContext context)
+        internal RuleLanguageAst()
         {
             _Comparer = StringComparer.OrdinalIgnoreCase;
         }

@@ -22,7 +22,7 @@ jobs:
   steps:
 
   # Install pipeline dependencies
-  - powershell: ./.azure-pipelines/pipeline-deps.ps1
+  - powershell: ./scripts/pipeline-deps.ps1
     displayName: 'Install dependencies'
 
   # Download module

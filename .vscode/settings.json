@@ -10,9 +10,14 @@
     "out/": true,
     "reports/": true
   },
+  "files.insertFinalNewline": true,
   "editor.insertSpaces": true,
-  "editor.tabSize": 4,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.formatOnSave": true,
   "yaml.format.singleQuote": true,
+  "yaml.format.bracketSpacing": true,
+  "yaml.format.enable": true,
   "yaml.schemas": {
     "./schemas/PSRule-options.schema.json": [
       "/tests/PSRule.Tests/PSRule.*.yml",
@@ -36,22 +41,7 @@
       "url": "./schemas/PSRule-resources.schema.json"
     }
   ],
-  "[xml]": {
-    "editor.tabSize": 2,
-    "editor.formatOnSave": true
-  },
-  "[yaml]": {
-    "editor.tabSize": 2,
-    "files.insertFinalNewline": true
-  },
-  "[markdown]": {
-    "editor.tabSize": 2,
-    "files.insertFinalNewline": true
-  },
   "[json]": {
-    "editor.formatOnSave": true,
-    "editor.detectIndentation": false,
-    "editor.tabSize": 2,
     "editor.tabCompletion": "on",
     "editor.quickSuggestions": {
       "strings": true
@@ -59,13 +49,9 @@
     "editor.suggest.insertMode": "replace",
     "gitlens.codeLens.scopes": [
       "document"
-    ],
-    "files.insertFinalNewline": true
+    ]
   },
   "[jsonc]": {
-    "editor.formatOnSave": true,
-    "editor.detectIndentation": false,
-    "editor.tabSize": 2,
     "editor.tabCompletion": "on",
     "editor.quickSuggestions": {
       "strings": true
@@ -73,8 +59,11 @@
     "editor.suggest.insertMode": "replace",
     "gitlens.codeLens.scopes": [
       "document"
-    ],
-    "files.insertFinalNewline": true
+    ]
+  },
+  "[powershell]": {
+    "editor.formatOnSave": false,
+    "editor.tabSize": 4
   },
   "files.associations": {
     "**/.azure-pipelines/*.yaml": "azure-pipelines",
@@ -106,8 +95,7 @@
     "xunit"
   ],
   "[csharp]": {
-    "editor.formatOnSave": true,
-    "files.insertFinalNewline": true
+    "editor.tabSize": 4
   },
   "omnisharp.enableImportCompletion": true,
   "omnisharp.organizeImportsOnFormat": true,

@@ -19,7 +19,7 @@ Rule 'Rule1' {
 }
 ";
             var scriptAst = ScriptBlock.Create(content).Ast;
-            var visitor = new RuleLanguageAst(null);
+            var visitor = new RuleLanguageAst();
             scriptAst.Visit(visitor);
 
             Assert.Null(visitor.Errors);
@@ -33,7 +33,7 @@ Rule 'Rule1' {
 }
 ";
             scriptAst = ScriptBlock.Create(content).Ast;
-            visitor = new RuleLanguageAst(null);
+            visitor = new RuleLanguageAst();
             scriptAst.Visit(visitor);
 
             Assert.Single(visitor.Errors);
@@ -72,7 +72,7 @@ Rule -Name 'Rule3' -Body {
 ";
 
             var scriptAst = ScriptBlock.Create(content).Ast;
-            var visitor = new RuleLanguageAst(null);
+            var visitor = new RuleLanguageAst();
             scriptAst.Visit(visitor);
 
             Assert.NotNull(visitor.Errors);

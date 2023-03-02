@@ -74,7 +74,7 @@ namespace PSRule.Runtime
 
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
-        private readonly bool _SuppressedRuleWarning;
+        private readonly ExecutionActionPreference _SuppressedRuleWarning;
         private readonly bool _InvariantCultureWarning;
         private readonly OutcomeLogStream _FailStream;
         private readonly OutcomeLogStream _PassStream;
@@ -108,7 +108,14 @@ namespace PSRule.Runtime
 
             _InconclusiveWarning = Pipeline.Option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning.Value;
             _NotProcessedWarning = Pipeline.Option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning.Value;
-            _SuppressedRuleWarning = Pipeline.Option.Execution.SuppressedRuleWarning ?? ExecutionOption.Default.SuppressedRuleWarning.Value;
+
+#pragma warning disable CS0612 // Type or member is obsolete
+            if (Pipeline.Option.Execution.SuppressedRuleWarning.HasValue)
+                _SuppressedRuleWarning = Pipeline.Option.Execution.SuppressedRuleWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
+            else
+                _SuppressedRuleWarning = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed.Value);
+#pragma warning restore CS0612 // Type or member is obsolete
+
             _InvariantCultureWarning = Pipeline.Option.Execution.InvariantCultureWarning ?? ExecutionOption.Default.InvariantCultureWarning.Value;
             _FailStream = Pipeline.Option.Logging.RuleFail ?? LoggingOption.Default.RuleFail.Value;
             _PassStream = Pipeline.Option.Logging.RulePass ?? LoggingOption.Default.RulePass.Value;
@@ -240,44 +247,36 @@ namespace PSRule.Runtime
             Writer.WriteWarning(PSRuleResources.ObjectNotProcessed, Binding.TargetName);
         }
 
-        public void WarnRuleSuppressed(string ruleId)
+        public void RuleSuppressed(string ruleId)
         {
-            if (Writer == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
-            {
-                return;
-            }
-
-            Writer.WriteWarning(PSRuleResources.RuleSuppressed, ruleId, Binding.TargetName);
+            this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressed, ruleId, Binding.TargetName);
         }
 
         public void WarnRuleCountSuppressed(int ruleCount)
         {
-            if (Writer == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
-                return;
-
-            Writer.WriteWarning(PSRuleResources.RuleCountSuppressed, ruleCount, Binding.TargetName);
+            this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleCountSuppressed, ruleCount, Binding.TargetName);
         }
 
-        public void WarnRuleSuppressionGroup(string ruleId, ISuppressionInfo suppression)
+        public void RuleSuppressionGroup(string ruleId, ISuppressionInfo suppression)
         {
-            if (Writer == null || suppression == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
+            if (suppression == null)
                 return;
 
             if (suppression.Synopsis != null && suppression.Synopsis.HasValue)
-                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroupExtended, ruleId, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
+                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroupExtended, ruleId, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
             else
-                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroup, ruleId, suppression.Id, Binding.TargetName);
+                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroup, ruleId, suppression.Id, Binding.TargetName);
         }
 
-        public void WarnRuleSuppressionGroupCount(ISuppressionInfo suppression, int count)
+        public void RuleSuppressionGroupCount(ISuppressionInfo suppression, int count)
         {
-            if (Writer == null || suppression == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
+            if (suppression == null)
                 return;
 
             if (suppression.Synopsis != null && suppression.Synopsis.HasValue)
-                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroupExtendedCount, count, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
+                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroupExtendedCount, count, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
             else
-                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroupCount, count, suppression.Id, Binding.TargetName);
+                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroupCount, count, suppression.Id, Binding.TargetName);
         }
 
         public void ErrorInvaildRuleResult()
@@ -566,9 +565,7 @@ namespace PSRule.Runtime
 
         private string GetLogPrefix()
         {
-            if (_LogPrefix == null)
-                _LogPrefix = $"[PSRule][R][{_ObjectNumber}][{RuleRecord?.RuleId}]";
-
+            _LogPrefix ??= $"[PSRule][R][{_ObjectNumber}][{RuleRecord?.RuleId}]";
             return _LogPrefix ?? string.Empty;
         }
 
@@ -660,8 +657,7 @@ namespace PSRule.Runtime
                 extent: ruleBlock.Extent
             );
 
-            if (Writer != null)
-                Writer.EnterScope(ruleBlock.Name);
+            Writer?.EnterScope(ruleBlock.Name);
 
             // Starts rule execution timer
             _RuleTimer.Restart();
@@ -681,8 +677,7 @@ namespace PSRule.Runtime
                 for (var i = 0; i < _Reason.Count; i++)
                     RuleRecord._Detail.Add(_Reason[i]);
 
-            if (Writer != null)
-                Writer.ExitScope();
+            Writer?.ExitScope();
 
             _LogPrefix = null;
             RuleRecord = null;

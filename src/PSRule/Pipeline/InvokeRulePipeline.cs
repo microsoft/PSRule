@@ -36,6 +36,11 @@ namespace PSRule.Pipeline
             if (RuleCount == 0)
                 Context.WarnRuleNotFound();
 
+#pragma warning disable CS0612 // Type or member is obsolete
+            if (context.Option.Execution.SuppressedRuleWarning.HasValue)
+                Context.WarnDeprecatedOption("Execution.SuppressedRuleWarning");
+#pragma warning restore CS0612 // Type or member is obsolete
+
             _Outcome = outcome;
             _IsSummary = context.Option.Output.As.Value == ResultFormat.Summary;
             _Summary = _IsSummary ? new Dictionary<string, RuleSummaryRecord>() : null;
@@ -119,14 +124,14 @@ namespace PSRule.Pipeline
                             suppressedRuleCounter++;
 
                             if (!_IsSummary)
-                                Context.WarnRuleSuppressed(ruleId: ruleRecord.RuleId);
+                                Context.RuleSuppressed(ruleId: ruleRecord.RuleId);
                         }
                         // Check for suppression group
                         else if (_SuppressionGroupFilter.TrySuppressionGroup(ruleId: ruleRecord.RuleId, targetObject, out var suppression))
                         {
                             ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
                             if (!_IsSummary)
-                                Context.WarnRuleSuppressionGroup(ruleId: ruleRecord.RuleId, suppression);
+                                Context.RuleSuppressionGroup(ruleId: ruleRecord.RuleId, suppression);
                             else
                                 suppressionGroupCounter[suppression] = suppressionGroupCounter.TryGetValue(suppression, out var count) ? ++count : 1;
                         }
@@ -171,7 +176,7 @@ namespace PSRule.Pipeline
                         Context.WarnRuleCountSuppressed(ruleCount: suppressedRuleCounter);
 
                     foreach (var keyValuePair in suppressionGroupCounter)
-                        Context.WarnRuleSuppressionGroupCount(suppression: keyValuePair.Key, count: keyValuePair.Value);
+                        Context.RuleSuppressionGroupCount(suppression: keyValuePair.Key, count: keyValuePair.Value);
                 }
                 return result;
             }
