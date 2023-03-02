@@ -58,6 +58,8 @@ execution:
   notProcessedWarning: false
   suppressedRuleWarning: false
   suppressionGroupExpired: Debug
+  ruleExcluded: Warn
+  ruleSuppressed: Error
 
 # Configure input options
 input:

@@ -18,12 +18,13 @@ namespace PSRule.Configuration
         private const LanguageMode DEFAULT_LANGUAGEMODE = Configuration.LanguageMode.FullLanguage;
         private const bool DEFAULT_INCONCLUSIVEWARNING = true;
         private const bool DEFAULT_NOTPROCESSEDWARNING = true;
-        private const bool DEFAULT_SUPPRESSEDRULEWARNING = true;
         private const bool DEFAULT_ALIASREFERENCEWARNING = true;
         private const bool DEFAULT_INVARIANTCULTUREWARNING = true;
         private const ExecutionActionPreference DEFAULT_DUPLICATERESOURCEID = ExecutionActionPreference.Error;
         private const SessionState DEFAULT_INITIALSESSIONSTATE = SessionState.BuiltIn;
         private const ExecutionActionPreference DEFAULT_SUPPRESSIONGROUPEXPIRED = ExecutionActionPreference.Warn;
+        private const ExecutionActionPreference DEFAULT_RULEEXCLUDED = ExecutionActionPreference.Ignore;
+        private const ExecutionActionPreference DEFAULT_RULESUPPRESSED = ExecutionActionPreference.Warn;
 
         internal static readonly ExecutionOption Default = new()
         {
@@ -34,8 +35,9 @@ namespace PSRule.Configuration
             InvariantCultureWarning = DEFAULT_INVARIANTCULTUREWARNING,
             InitialSessionState = DEFAULT_INITIALSESSIONSTATE,
             NotProcessedWarning = DEFAULT_NOTPROCESSEDWARNING,
-            SuppressedRuleWarning = DEFAULT_SUPPRESSEDRULEWARNING,
             SuppressionGroupExpired = DEFAULT_SUPPRESSIONGROUPEXPIRED,
+            RuleExcluded = DEFAULT_RULEEXCLUDED,
+            RuleSuppressed = DEFAULT_RULESUPPRESSED,
         };
 
         /// <summary>
@@ -50,8 +52,12 @@ namespace PSRule.Configuration
             InvariantCultureWarning = null;
             InitialSessionState = null;
             NotProcessedWarning = null;
+#pragma warning disable CS0612 // Type or member is obsolete
             SuppressedRuleWarning = null;
+#pragma warning restore CS0612 // Type or member is obsolete
             SuppressionGroupExpired = null;
+            RuleExcluded = null;
+            RuleSuppressed = null;
         }
 
         /// <summary>
@@ -70,8 +76,12 @@ namespace PSRule.Configuration
             InvariantCultureWarning = option.InvariantCultureWarning;
             InitialSessionState = option.InitialSessionState;
             NotProcessedWarning = option.NotProcessedWarning;
+#pragma warning disable CS0612 // Type or member is obsolete
             SuppressedRuleWarning = option.SuppressedRuleWarning;
+#pragma warning restore CS0612 // Type or member is obsolete
             SuppressionGroupExpired = option.SuppressionGroupExpired;
+            RuleExcluded = option.RuleExcluded;
+            RuleSuppressed = option.RuleSuppressed;
         }
 
         /// <inheritdoc/>
@@ -83,6 +93,7 @@ namespace PSRule.Configuration
         /// <inheritdoc/>
         public bool Equals(ExecutionOption other)
         {
+#pragma warning disable CS0612 // Type or member is obsolete
             return other != null &&
                 AliasReferenceWarning == other.AliasReferenceWarning &&
                 DuplicateResourceId == other.DuplicateResourceId &&
@@ -91,8 +102,11 @@ namespace PSRule.Configuration
                 InvariantCultureWarning == other.InvariantCultureWarning &&
                 InitialSessionState == other.InitialSessionState &&
                 NotProcessedWarning == other.NotProcessedWarning &&
-                SuppressedRuleWarning == other.NotProcessedWarning &&
-                SuppressionGroupExpired == other.SuppressionGroupExpired;
+                SuppressedRuleWarning == other.SuppressedRuleWarning &&
+                SuppressionGroupExpired == other.SuppressionGroupExpired &&
+                RuleExcluded == other.RuleExcluded &&
+                RuleSuppressed == other.RuleSuppressed;
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         /// <inheritdoc/>
@@ -108,8 +122,12 @@ namespace PSRule.Configuration
                 hash = hash * 23 + (InvariantCultureWarning.HasValue ? InvariantCultureWarning.Value.GetHashCode() : 0);
                 hash = hash * 23 + (InitialSessionState.HasValue ? InitialSessionState.Value.GetHashCode() : 0);
                 hash = hash * 23 + (NotProcessedWarning.HasValue ? NotProcessedWarning.Value.GetHashCode() : 0);
+#pragma warning disable CS0612 // Type or member is obsolete
                 hash = hash * 23 + (SuppressedRuleWarning.HasValue ? SuppressedRuleWarning.Value.GetHashCode() : 0);
+#pragma warning restore CS0612 // Type or member is obsolete
                 hash = hash * 23 + (SuppressionGroupExpired.HasValue ? SuppressionGroupExpired.Value.GetHashCode() : 0);
+                hash = hash * 23 + (RuleExcluded.HasValue ? RuleExcluded.Value.GetHashCode() : 0);
+                hash = hash * 23 + (RuleSuppressed.HasValue ? RuleSuppressed.Value.GetHashCode() : 0);
                 return hash;
             }
         }
@@ -120,6 +138,7 @@ namespace PSRule.Configuration
         /// </summary>
         internal static ExecutionOption Combine(ExecutionOption o1, ExecutionOption o2)
         {
+#pragma warning disable CS0612 // Type or member is obsolete
             var result = new ExecutionOption(o1)
             {
                 AliasReferenceWarning = o1.AliasReferenceWarning ?? o2.AliasReferenceWarning,
@@ -130,7 +149,11 @@ namespace PSRule.Configuration
                 SuppressedRuleWarning = o1.SuppressedRuleWarning ?? o2.SuppressedRuleWarning,
                 InvariantCultureWarning = o1.InvariantCultureWarning ?? o2.InvariantCultureWarning,
                 InitialSessionState = o1.InitialSessionState ?? o2.InitialSessionState,
+                SuppressionGroupExpired = o1.SuppressionGroupExpired ?? o2.SuppressionGroupExpired,
+                RuleExcluded = o1.RuleExcluded ?? o2.RuleExcluded,
+                RuleSuppressed = o1.RuleSuppressed ?? o2.RuleSuppressed,
             };
+#pragma warning restore CS0612 // Type or member is obsolete
             return result;
         }
 
@@ -196,8 +219,33 @@ namespace PSRule.Configuration
         /// <summary>
         /// Determines if a warning is raised when a rule is suppressed.
         /// </summary>
-        [DefaultValue(null)]
+        [DefaultValue(null), Obsolete("Use RuleSuppressed instead. See https://aka.ms/ps-rule/deprecations for more detail.")]
         public bool? SuppressedRuleWarning { get; set; }
+
+        /// <summary>
+        /// Determines how to handle rules that are excluded.
+        /// By default, a excluded rules do not generated any output.
+        /// When set to Error, an error is thrown.
+        /// When set to Warn, a warning is generated.
+        /// When set to Debug, a message is written to the debug log.
+        /// </summary>
+        [DefaultValue(null)]
+        public ExecutionActionPreference? RuleExcluded { get; set; }
+
+        /// <summary>
+        /// Determines how to handle rules that are suppressed.
+        /// This option replaces <seealso cref="SuppressedRuleWarning"/>.
+        /// By default, a warning is generated.
+        /// When set to Error, an error is thrown.
+        /// When set to Debug, a message is written to the debug log.
+        /// When set to Ignore, no output will be displayed.
+        /// </summary>
+        /// <remarks>
+        /// If <seealso cref="SuppressedRuleWarning"/> is <c>true</c> this option will be overridden to <c>Warn</c>.
+        /// If <seealso cref="SuppressedRuleWarning"/> is <c>false</c> this option will be overridden to <c>Ignore</c>.
+        /// </remarks>
+        [DefaultValue(null)]
+        public ExecutionActionPreference? RuleSuppressed { get; set; }
 
         internal void Load(EnvironmentHelper env)
         {
@@ -223,10 +271,18 @@ namespace PSRule.Configuration
                 NotProcessedWarning = bvalue;
 
             if (env.TryBool("PSRULE_EXECUTION_SUPPRESSEDRULEWARNING", out bvalue))
+#pragma warning disable CS0612 // Type or member is obsolete
                 SuppressedRuleWarning = bvalue;
+#pragma warning restore CS0612 // Type or member is obsolete
 
             if (env.TryEnum("PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED", out ExecutionActionPreference suppressionGroupExpired))
                 SuppressionGroupExpired = suppressionGroupExpired;
+
+            if (env.TryEnum("PSRULE_EXECUTION_RULEEXCLUDED", out ExecutionActionPreference ruleExcluded))
+                RuleExcluded = ruleExcluded;
+
+            if (env.TryEnum("PSRULE_EXECUTION_RULESUPPRESSED", out ExecutionActionPreference ruleSuppressed))
+                RuleSuppressed = ruleSuppressed;
         }
 
         internal void Load(Dictionary<string, object> index)
@@ -253,10 +309,18 @@ namespace PSRule.Configuration
                 NotProcessedWarning = bvalue;
 
             if (index.TryPopBool("Execution.SuppressedRuleWarning", out bvalue))
+#pragma warning disable CS0612 // Type or member is obsolete
                 SuppressedRuleWarning = bvalue;
+#pragma warning restore CS0612 // Type or member is obsolete
 
             if (index.TryPopEnum("Execution.SuppressionGroupExpired", out ExecutionActionPreference suppressionGroupExpired))
                 SuppressionGroupExpired = suppressionGroupExpired;
+
+            if (index.TryPopEnum("Execution.RuleExcluded", out ExecutionActionPreference ruleExcluded))
+                RuleExcluded = ruleExcluded;
+
+            if (index.TryPopEnum("Execution.RuleSuppressed", out ExecutionActionPreference ruleSuppressed))
+                RuleSuppressed = ruleSuppressed;
         }
     }
 }

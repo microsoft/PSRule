@@ -19,18 +19,19 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
  [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>] [-AliasReferenceWarning <Boolean>]
  [-DuplicateResourceId <ExecutionActionPreference>] [-InconclusiveWarning <Boolean>]
- [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>] [-InvariantCultureWarning <Boolean>]
- [-InitialSessionState <SessionState>] [-IncludeModule <String[]>] [-IncludePath <String[]>]
- [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>] [-InputIgnoreObjectSource <Boolean>]
- [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>]
- [-InputPathIgnore <String[]>] [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>]
- [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
- [-OutputJobSummaryPath <String>] [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>]
- [-RepositoryBaseRef <String>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-NotProcessedWarning <Boolean>]
+ [-SuppressedRuleWarning <Boolean>] [-SuppressionGroupExpired <ExecutionActionPreference>]
+ [-ExecutionRuleExcluded <ExecutionActionPreference>] [-ExecutionRuleSuppressed <ExecutionActionPreference>]
+ [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-InputIgnoreObjectSource <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>]
+ [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputPathIgnore <String[]>]
+ [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
+ [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
+ [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-RepositoryBaseRef <String>]
+ [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -946,6 +947,57 @@ The `Execution.InitialSessionState` option determines how the initial session st
 Type: SessionState
 Parameter Sets: (All)
 Aliases: ExecutionInitialSessionState
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionRuleExcluded
+
+Sets the option `Execution.RuleExcluded`.
+The `Execution.RuleExcluded` option determines how to handle excluded rules.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionRuleSuppressed
+
+Sets the option `Execution.RuleSuppressed`.
+The `Execution.RuleSuppressed` option determines how to handle suppressed rules.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SuppressionGroupExpired
+
+Sets the option `Execution.SuppressionGroupExpired`.
+The `Execution.SuppressionGroupExpired` option determines how to handle expired suppression groups.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases: ExecutionSuppressionGroupExpired
 
 Required: False
 Position: Named
