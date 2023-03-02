@@ -9,6 +9,9 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    
+    <!-- Fix for older Newtonsoft.Json used by Sarif.Sdk -->
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
@@ -112,6 +115,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ViewStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="app.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
