@@ -35,6 +35,8 @@ What's changed since pre-release v2.8.0-B0034:
 - Engineering:
   - Bump Newtonsoft.Json to v13.0.3.
     [#1467](https://github.com/microsoft/PSRule/pull/1467)
+  - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.1.
+    [#1468](https://github.com/microsoft/PSRule/pull/1468)
 
 ## v2.8.0-B0034 (pre-release)
 
