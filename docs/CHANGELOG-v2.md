@@ -30,6 +30,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.8.0-B0034:
+
+- Engineering:
+  - Bump Newtonsoft.Json to v13.0.3.
+    [#1467](https://github.com/microsoft/PSRule/pull/1467)
+
 ## v2.8.0-B0034 (pre-release)
 
 What's changed since v2.7.0:
