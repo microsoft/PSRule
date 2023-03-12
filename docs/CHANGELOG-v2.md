@@ -30,6 +30,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.8.0-B0076 (pre-release)
+
 What's changed since pre-release v2.8.0-B0034:
 
 - Engineering:
