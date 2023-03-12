@@ -70,7 +70,7 @@ namespace PSRule.Definitions.Expressions
         internal void PushScope(RunspaceScope scope)
         {
             RunspaceContext.CurrentThread.PushScope(scope);
-            RunspaceContext.CurrentThread.EnterSourceScope(Source);
+            RunspaceContext.CurrentThread.EnterLanguageScope(Source);
         }
 
         internal void PopScope(RunspaceScope scope)

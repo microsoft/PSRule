@@ -9,6 +9,7 @@ using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security.Cryptography;
+using System.Text;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
@@ -102,12 +103,18 @@ namespace PSRule.Pipeline
         internal sealed class SourceScope
         {
             public readonly SourceFile File;
-            public readonly string[] SourceContentCache;
 
-            public SourceScope(SourceFile source, string[] content)
+            public SourceScope(SourceFile source)
             {
                 File = source;
-                SourceContentCache = content;
+            }
+
+            public string[] SourceContentCache
+            {
+                get
+                {
+                    return System.IO.File.ReadAllLines(File.Path, Encoding.UTF8);
+                }
             }
         }
 
@@ -243,7 +250,7 @@ namespace PSRule.Pipeline
         internal void Begin(RunspaceContext runspaceContext)
         {
             ReportIssue(runspaceContext);
-            Baseline.Init(runspaceContext);
+            Baseline.CheckObsolete(runspaceContext);
         }
 
         /// <summary>

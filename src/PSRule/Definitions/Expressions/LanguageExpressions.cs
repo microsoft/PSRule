@@ -243,7 +243,7 @@ namespace PSRule.Definitions.Expressions
             return (context, o) =>
             {
                 if (RunspaceContext.CurrentThread != null)
-                    RunspaceContext.CurrentThread.EnterSourceScope(context.Source);
+                    RunspaceContext.CurrentThread.EnterLanguageScope(context.Source);
 
                 return fn(context, o);
             };
@@ -323,10 +323,7 @@ namespace PSRule.Definitions.Expressions
             if (type == null)
                 return true;
 
-            var comparer = RunspaceContext.CurrentThread.Pipeline.Baseline.GetTargetBinding().IgnoreCase
-                ? StringComparer.OrdinalIgnoreCase
-                : StringComparer.Ordinal;
-
+            var comparer = RunspaceContext.CurrentThread.LanguageScope.Binding.GetComparer();
             var targetType = RunspaceContext.CurrentThread.RuleRecord.TargetType;
             for (var i = 0; i < type.Length; i++)
             {
@@ -361,10 +358,7 @@ namespace PSRule.Definitions.Expressions
 
             var context = RunspaceContext.CurrentThread;
 
-            var stringComparer = context.Pipeline.Baseline.GetTargetBinding().IgnoreCase
-                ? StringComparer.OrdinalIgnoreCase
-                : StringComparer.Ordinal;
-
+            var stringComparer = context.LanguageScope.Binding.GetComparer();
             var resourceIdComparer = ResourceIdEqualityComparer.Default;
 
             var ruleRecord = context.RuleRecord;

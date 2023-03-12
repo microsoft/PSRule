@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using PSRule.Configuration;
+using PSRule.Runtime;
 using static PSRule.Pipeline.TargetBinder;
 
 namespace PSRule.Pipeline
@@ -95,11 +96,11 @@ namespace PSRule.Pipeline
         }
 
         /// <summary>
-        /// Add a target binding context.
+        /// Add a target binding context from language scope. Current this only use for tests.
         /// </summary>
-        public void With(string languageScope, IBindingOption bindingOption)
+        internal void With(ILanguageScope languageScope)
         {
-            _BindingContext.Add(new TargetBindingContext(languageScope, bindingOption, _BindTargetName, _BindTargetType, _BindField, _TypeFilter));
+            With(new TargetBindingContext(languageScope.Name, languageScope.Binding, _BindTargetName, _BindTargetType, _BindField, _TypeFilter));
         }
     }
 

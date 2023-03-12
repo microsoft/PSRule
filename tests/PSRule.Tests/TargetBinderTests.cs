@@ -115,17 +115,23 @@ namespace PSRule
                 obsolete: false
             ));
 
-            option.UseScope("Module1");
-            builder.With("Module1", option.GetTargetBinding());
+            var scopes = new Runtime.LanguageScopeSet(null);
 
-            option.UseScope("Module2");
-            builder.With("Module2", option.GetTargetBinding());
+            scopes.Import("Module1", out var module1);
+            option.UpdateLanguageScope(module1);
+            builder.With(module1);
 
-            option.UseScope("Module3");
-            builder.With("Module3", option.GetTargetBinding());
+            scopes.Import("Module2", out var module2);
+            option.UpdateLanguageScope(module2);
+            builder.With(module2);
 
-            option.UseScope(null);
-            builder.With(".", option.GetTargetBinding());
+            scopes.Import("Module3", out var module3);
+            option.UpdateLanguageScope(module3);
+            builder.With(module3);
+
+            scopes.Import(".", out var local);
+            option.UpdateLanguageScope(local);
+            builder.With(local);
             return builder.Build();
         }
 

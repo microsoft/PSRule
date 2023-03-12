@@ -39,7 +39,7 @@ namespace PSRule
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
             context.Init(GetSource(path));
             context.Begin();
-            var selector = HostHelper.GetSelector(GetSource(path), context).ToArray();
+            var selector = HostHelper.GetSelectorForTests(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
             Assert.Equal(99, selector.Length);
 
@@ -1838,11 +1838,11 @@ namespace PSRule
 
         private static SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
         {
-            var builder = new OptionContextBuilder(GetOption(), null, null, null);
+            var builder = new OptionContextBuilder(GetOption());
             context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, builder.Build(), null), null);
             context.Init(source);
             context.Begin();
-            var selector = HostHelper.GetSelector(source, context).ToArray().FirstOrDefault(s => s.Name == name);
+            var selector = HostHelper.GetSelectorForTests(source, context).ToArray().FirstOrDefault(s => s.Name == name);
             return new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
         }
 

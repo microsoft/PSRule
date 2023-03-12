@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using PSRule.Definitions;
+using PSRule.Pipeline;
 
 namespace PSRule.Runtime
 {
@@ -17,6 +19,13 @@ namespace PSRule.Runtime
         /// </summary>
         string Name { get; }
 
+        IBindingOption Binding { get; }
+
+        /// <summary>
+        /// Get an ordered culture preference list which will be tries for finding help.
+        /// </summary>
+        string[] Culture { get; }
+
         /// <summary>
         /// Adds one or more configuration values to the scope.
         /// </summary>
@@ -29,6 +38,13 @@ namespace PSRule.Runtime
 
         void WithFilter(IResourceFilter resourceFilter);
 
+        void WithBinding(IBindingOption bindingOption);
+
+        void WithCulture(string[] strings);
+
+        /// <summary>
+        /// Get a filter for a specific resource kind.
+        /// </summary>
         IResourceFilter GetFilter(ResourceKind kind);
 
         /// <summary>
@@ -48,6 +64,7 @@ namespace PSRule.Runtime
         bool TryGetScope(object o, out string[] scope);
     }
 
+    [DebuggerDisplay("{Name}")]
     internal sealed class LanguageScope : ILanguageScope
     {
         private const string STANDALONE_SCOPENAME = ".";
@@ -69,24 +86,46 @@ namespace PSRule.Runtime
         }
 
         /// <inheritdoc/>
-        public string Name { get; }
+        public string Name { [DebuggerStepThrough] get; }
 
+        /// <inheritdoc/>
+        public IBindingOption Binding { [DebuggerStepThrough] get; [DebuggerStepThrough] private set; }
+
+        /// <inheritdoc/>
+        public string[] Culture { [DebuggerStepThrough] get; [DebuggerStepThrough] private set; }
+
+        /// <inheritdoc/>
         public void Configure(Dictionary<string, object> configuration)
         {
             _Configuration.AddUnique(configuration);
         }
 
+        /// <inheritdoc/>
         public bool TryConfigurationValue(string key, out object value)
         {
             value = null;
             return !string.IsNullOrEmpty(key) && _Configuration.TryGetValue(key, out value);
         }
 
+        /// <inheritdoc/>
         public void WithFilter(IResourceFilter resourceFilter)
         {
             _Filter[resourceFilter.Kind] = resourceFilter;
         }
 
+        /// <inheritdoc/>
+        public void WithBinding(IBindingOption bindingOption)
+        {
+            Binding = bindingOption;
+        }
+
+        /// <inheritdoc/>
+        public void WithCulture(string[] culture)
+        {
+            Culture = culture;
+        }
+
+        /// <inheritdoc/>
         public IResourceFilter GetFilter(ResourceKind kind)
         {
             return _Filter.TryGetValue(kind, out var filter) ? filter : null;
@@ -194,6 +233,9 @@ namespace PSRule.Runtime
         }
     }
 
+    /// <summary>
+    /// A collection of <see cref="ILanguageScope"/>.
+    /// </summary>
     internal sealed class LanguageScopeSet : IDisposable
     {
         private readonly RunspaceContext _Context;
@@ -217,41 +259,7 @@ namespace PSRule.Runtime
             }
         }
 
-        internal void Add(ILanguageScope languageScope)
-        {
-            _Scopes.Add(languageScope.Name, languageScope);
-        }
-
-        internal IEnumerable<ILanguageScope> Get()
-        {
-            return _Scopes.Values;
-        }
-
-        internal void UseScope(string name)
-        {
-            if (_Scopes.TryGetValue(GetScopeName(name), out var scope))
-                _Current = scope;
-        }
-
-        internal bool TryScope(string name, out ILanguageScope scope)
-        {
-            return _Scopes.TryGetValue(GetScopeName(name), out scope);
-        }
-
-        internal bool Import(string name, out ILanguageScope scope)
-        {
-            if (_Scopes.TryGetValue(GetScopeName(name), out scope))
-                return false;
-
-            scope = new LanguageScope(_Context, name);
-            Add(scope);
-            return true;
-        }
-
-        private static string GetScopeName(string name)
-        {
-            return LanguageScope.Normalize(name);
-        }
+        #region IDisposable
 
         private void Dispose(bool disposing)
         {
@@ -277,6 +285,50 @@ namespace PSRule.Runtime
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        #endregion IDisposable
+
+        internal void Add(ILanguageScope languageScope)
+        {
+            _Scopes.Add(languageScope.Name, languageScope);
+        }
+
+        internal IEnumerable<ILanguageScope> Get()
+        {
+            return _Scopes.Values;
+        }
+
+        /// <summary>
+        /// Switch to a specific language scope by name.
+        /// </summary>
+        /// <param name="name">The name of the language scope to switch to.</param>
+        internal void UseScope(string name)
+        {
+            if (!_Scopes.TryGetValue(GetScopeName(name), out var scope))
+                throw new Exception($"The specified scope '{name}' was not found.");
+
+            _Current = scope;
+        }
+
+        internal bool TryScope(string name, out ILanguageScope scope)
+        {
+            return _Scopes.TryGetValue(GetScopeName(name), out scope);
+        }
+
+        internal bool Import(string name, out ILanguageScope scope)
+        {
+            if (_Scopes.TryGetValue(GetScopeName(name), out scope))
+                return false;
+
+            scope = new LanguageScope(_Context, name);
+            Add(scope);
+            return true;
+        }
+
+        private static string GetScopeName(string name)
+        {
+            return LanguageScope.Normalize(name);
         }
     }
 }

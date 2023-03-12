@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Management.Automation;
 using PSRule.Definitions;
 using PSRule.Pipeline;
@@ -58,7 +57,7 @@ namespace PSRule.Commands
                     try
                     {
                         context.PushScope(RunspaceScope.Precondition);
-                        context.EnterSourceScope(Source);
+                        context.EnterLanguageScope(Source);
                         var ifResult = RuleConditionHelper.Create(If.Invoke());
                         if (!ifResult.AllOf())
                         {
@@ -76,7 +75,7 @@ namespace PSRule.Commands
                 {
                     // Evaluate script block
                     context.PushScope(RunspaceScope.Rule);
-                    context.EnterSourceScope(Source);
+                    context.EnterLanguageScope(Source);
                     var invokeResult = RuleConditionHelper.Create(Body.Invoke());
                     WriteObject(invokeResult);
                 }
@@ -103,7 +102,7 @@ namespace PSRule.Commands
             if (Type == null)
                 return true;
 
-            var comparer = RunspaceContext.CurrentThread.Pipeline.Baseline.GetTargetBinding().IgnoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+            var comparer = RunspaceContext.CurrentThread.LanguageScope.Binding.GetComparer();
             var targetType = RunspaceContext.CurrentThread.RuleRecord.TargetType;
             for (var i = 0; i < Type.Length; i++)
             {

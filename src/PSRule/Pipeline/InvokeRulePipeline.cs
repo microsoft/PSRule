@@ -104,6 +104,7 @@ namespace PSRule.Pipeline
                 foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
                 {
                     // Enter rule block scope
+                    Context.EnterLanguageScope(ruleBlockTarget.Value.Source);
                     var ruleRecord = Context.EnterRuleBlock(ruleBlock: ruleBlockTarget.Value);
                     ruleCounter++;
 
@@ -164,6 +165,7 @@ namespace PSRule.Pipeline
                     {
                         // Exit rule block scope
                         Context.ExitRuleBlock();
+                        Context.ExitLanguageScope(ruleBlockTarget.Value.Source);
                     }
                 }
 

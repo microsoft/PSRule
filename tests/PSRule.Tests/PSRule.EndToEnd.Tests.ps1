@@ -202,8 +202,8 @@ Describe 'Scenarios -- rule-module' -Tag 'EndToEnd', 'rule-module' {
                 'Microsoft.Web/sites'
                 'Microsoft.Web/sites/slots'
             )
-            $result.Field.SubscriptionId | Should -Be '00000000-0000-0000-0000-000000000000';
-            $result.Field.ResourceGroupName | Should -Be 'test-rg';
+            $result.Field.SubscriptionId | Should -BeIn '00000000-0000-0000-0000-000000000000';
+            $result.Field.ResourceGroupName | Should -BeIn 'test-rg';
         }
     }
 }
