@@ -24,7 +24,7 @@ namespace PSRule
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, GetOptionContext(), null), null);
             context.Init(GetSource(path));
             context.Begin();
-            var suppressionGroup = HostHelper.GetSuppressionGroup(GetSource(path), context).ToArray();
+            var suppressionGroup = HostHelper.GetSuppressionGroupForTests(GetSource(path), context).ToArray();
             Assert.NotNull(suppressionGroup);
             Assert.Equal(5, suppressionGroup.Length);
 
@@ -91,7 +91,7 @@ namespace PSRule
 
         private static OptionContext GetOptionContext()
         {
-            return new OptionContextBuilder(GetOption(), null, null, null).Build();
+            return new OptionContextBuilder(GetOption()).Build();
         }
 
         private static Source[] GetSource(string path)

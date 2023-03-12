@@ -1,11 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Threading;
 using PSRule.Configuration;
 using PSRule.Definitions;
-using PSRule.Definitions.SuppressionGroups;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -15,14 +13,6 @@ namespace PSRule
     internal static class RunspaceContextDiagnosticExtensions
     {
         private const string WARN_KEY_PROPERTY = "Property";
-
-        internal static void WarnResourceObsolete(this RunspaceContext context, ResourceKind kind, string id)
-        {
-            if (context.Writer == null || !context.Writer.ShouldWriteWarning())
-                return;
-
-            context.Writer.WriteWarning(PSRuleResources.ResourceObsolete, Enum.GetName(typeof(ResourceKind), kind), id);
-        }
 
         internal static void WarnPropertyObsolete(this RunspaceContext context, string variableName, string propertyName)
         {
