@@ -64,36 +64,37 @@ namespace PSRule.Definitions.Conventions
 
         public override void Initialize(RunspaceContext context, IEnumerable input)
         {
-            InvokeConventionBlock(_Initialize, input);
+            InvokeConventionBlock(context, Source, _Initialize, input);
         }
 
         public override void Begin(RunspaceContext context, IEnumerable input)
         {
-            InvokeConventionBlock(_Begin, input);
+            InvokeConventionBlock(context, Source, _Begin, input);
         }
 
         public override void Process(RunspaceContext context, IEnumerable input)
         {
-            InvokeConventionBlock(_Process, input);
+            InvokeConventionBlock(context, Source, _Process, input);
         }
 
         public override void End(RunspaceContext context, IEnumerable input)
         {
-            InvokeConventionBlock(_End, input);
+            InvokeConventionBlock(context, Source, _End, input);
         }
 
-        private static void InvokeConventionBlock(LanguageScriptBlock block, IEnumerable input)
+        private static void InvokeConventionBlock(RunspaceContext context, SourceFile source, LanguageScriptBlock block, IEnumerable input)
         {
             if (block == null)
                 return;
 
             try
             {
+                context.EnterLanguageScope(source);
                 block.Invoke();
             }
             finally
             {
-
+                context.ExitLanguageScope(source);
             }
         }
 

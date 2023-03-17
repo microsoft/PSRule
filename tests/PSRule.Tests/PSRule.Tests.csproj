@@ -39,6 +39,9 @@
     <None Update="Dockerfile">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="en\PSRule-rules.psd1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="en\SuppressWithNonProdTag.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
