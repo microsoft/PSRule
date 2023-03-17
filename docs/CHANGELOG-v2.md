@@ -30,6 +30,14 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.8.0-B0076:
+
+- Bug fixes:
+  - Fixed LocalizedData is not exposed to if pre-conditions by @BernieWhite.
+    [#1083](https://github.com/microsoft/PSRule/issues/1083)
+  - Fixed LocalizedData is not exposed to conventions by @BernieWhite.
+    [#1477](https://github.com/microsoft/PSRule/issues/1477)
+
 ## v2.8.0-B0076 (pre-release)
 
 What's changed since pre-release v2.8.0-B0034:
