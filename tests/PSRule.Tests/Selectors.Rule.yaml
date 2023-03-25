@@ -13,15 +13,15 @@ spec:
   if:
     # Additional comments
     allOf:
-    # Additional comments
-    - field: Name
       # Additional comments
-      equals: TargetObject1
-      # Additional comments
-    - field: Value
-      # Additional comments
-      equals: value1
-      # Additional comments
+      - field: Name
+        # Additional comments
+        equals: TargetObject1
+        # Additional comments
+      - field: Value
+        # Additional comments
+        equals: value1
+        # Additional comments
 
 ---
 # Synopsis: A selector to match objects using a specific JSON schema
@@ -54,10 +54,10 @@ metadata:
 spec:
   if:
     anyOf:
-    - field: 'AlternateName'
-      exists: true
-    - field: 'Name'
-      exists: true
+      - field: 'AlternateName'
+        exists: true
+      - field: 'Name'
+        exists: true
 
 ---
 # Synopsis: Test AllOf
@@ -68,10 +68,10 @@ metadata:
 spec:
   if:
     allOf:
-    - field: 'AlternateName'
-      exists: true
-    - field: 'Name'
-      exists: true
+      - field: 'AlternateName'
+        exists: true
+      - field: 'Name'
+        exists: true
 
 ---
 # Synopsis: Test Not
@@ -83,10 +83,10 @@ spec:
   if:
     not:
       anyOf:
-      - field: 'AlternateName'
-        exists: true
-      - field: 'Name'
-        exists: true
+        - field: 'AlternateName'
+          exists: true
+        - field: 'Name'
+          exists: true
 
 ---
 # Synopsis: Test custom value is in
@@ -98,8 +98,8 @@ spec:
   if:
     field: 'CustomValue'
     in:
-    - 'Value1'
-    - 'Value2'
+      - 'Value1'
+      - 'Value2'
 
 ---
 # Synopsis: Test exists true
@@ -132,19 +132,19 @@ metadata:
 spec:
   if:
     allOf:
-    - field: 'ValueString'
-      equals: 'abc'
-      caseSensitive: true
-    - field: 'ValueInt'
-      equals: 123
-    - field: 'ValueBool'
-      equals: true
-    - anyOf:
-      - field: 'ValueEnum'
-        exists: false
-      - field: 'ValueEnum'
-        equals: 'All'
-        convert: true
+      - field: 'ValueString'
+        equals: 'abc'
+        caseSensitive: true
+      - field: 'ValueInt'
+        equals: 123
+      - field: 'ValueBool'
+        equals: true
+      - anyOf:
+          - field: 'ValueEnum'
+            exists: false
+          - field: 'ValueEnum'
+            equals: 'All'
+            convert: true
 
 ---
 # Synopsis: Test notEquals
@@ -155,19 +155,19 @@ metadata:
 spec:
   if:
     allOf:
-    - field: 'ValueString'
-      notEquals: 'abc'
-      caseSensitive: true
-    - field: 'ValueInt'
-      notEquals: 123
-    - field: 'ValueBool'
-      notEquals: true
-    - anyOf:
-      - field: 'ValueEnum'
-        exists: false
-      - field: 'ValueEnum'
-        notEquals: 'All'
-        convert: true
+      - field: 'ValueString'
+        notEquals: 'abc'
+        caseSensitive: true
+      - field: 'ValueInt'
+        notEquals: 123
+      - field: 'ValueBool'
+        notEquals: true
+      - anyOf:
+          - field: 'ValueEnum'
+            exists: false
+          - field: 'ValueEnum'
+            notEquals: 'All'
+            convert: true
 
 ---
 # Synopsis: Test hasValue true
@@ -203,6 +203,18 @@ spec:
     match: '^(abc|efg)$'
 
 ---
+# Synopsis: Test match
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlMatchCaseSensitive
+spec:
+  if:
+    field: 'Value'
+    match: '^(abc|efg)$'
+    caseSensitive: true
+
+---
 # Synopsis: Test notMatch
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Selector
@@ -214,6 +226,18 @@ spec:
     notMatch: '^(abc|efg)$'
 
 ---
+# Synopsis: Test notMatch
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlNotMatchCaseSensitive
+spec:
+  if:
+    field: 'Value'
+    notMatch: '^(abc|efg)$'
+    caseSensitive: true
+
+---
 # Synopsis: Test in
 apiVersion: github.com/microsoft/PSRule/v1
 kind: Selector
@@ -223,8 +247,8 @@ spec:
   if:
     field: 'Value'
     in:
-    - 'Value1'
-    - 'Value2'
+      - 'Value1'
+      - 'Value2'
 
 ---
 # Synopsis: Test notIn
@@ -236,8 +260,8 @@ spec:
   if:
     field: 'Value'
     notIn:
-    - 'Value1'
-    - 'Value2'
+      - 'Value1'
+      - 'Value2'
 
 ---
 # Synopsis: Test less
@@ -248,11 +272,11 @@ metadata:
 spec:
   if:
     anyOf:
-    - field: 'Value'
-      less: 3
-    - field: 'ValueStr'
-      less: 0
-      convert: true
+      - field: 'Value'
+        less: 3
+      - field: 'ValueStr'
+        less: 0
+        convert: true
 
 ---
 # Synopsis: Test lessOrEquals
@@ -263,11 +287,11 @@ metadata:
 spec:
   if:
     anyOf:
-    - field: 'Value'
-      lessOrEquals: 3
-    - field: 'ValueStr'
-      lessOrEquals: 0
-      convert: true
+      - field: 'Value'
+        lessOrEquals: 3
+      - field: 'ValueStr'
+        lessOrEquals: 0
+        convert: true
 
 ---
 # Synopsis: Test greater
@@ -278,11 +302,11 @@ metadata:
 spec:
   if:
     anyOf:
-    - field: 'Value'
-      greater: 3
-    - field: 'ValueStr'
-      greater: -1
-      convert: true
+      - field: 'Value'
+        greater: 3
+      - field: 'ValueStr'
+        greater: -1
+        convert: true
 
 ---
 # Synopsis: Test greaterOrEquals
@@ -293,11 +317,11 @@ metadata:
 spec:
   if:
     anyOf:
-    - field: 'Value'
-      greaterOrEquals: 3
-    - field: 'ValueStr'
-      greaterOrEquals: -1
-      convert: true
+      - field: 'Value'
+        greaterOrEquals: 3
+      - field: 'ValueStr'
+        greaterOrEquals: -1
+        convert: true
 
 ---
 # Synopsis: Test startsWith
@@ -308,22 +332,22 @@ metadata:
 spec:
   if:
     allOf:
-    - anyOf:
+      - anyOf:
+          - field: 'Value'
+            startsWith: 'a'
+          - field: 'Value'
+            startsWith: 'e'
+            caseSensitive: true
       - field: 'Value'
-        startsWith: 'a'
-      - field: 'Value'
-        startsWith: 'e'
-        caseSensitive: true
-    - field: 'Value'
-      startsWith:
-      - 'a'
-      - 'e'
-    - anyOf:
-      - field: 'OtherValue'
-        exists: false
-      - field: 'OtherValue'
-        startsWith: 'a'
-        convert: true
+        startsWith:
+          - 'a'
+          - 'e'
+      - anyOf:
+          - field: 'OtherValue'
+            exists: false
+          - field: 'OtherValue'
+            startsWith: 'a'
+            convert: true
 
 ---
 # Synopsis: Test notStartsWith
@@ -334,22 +358,22 @@ metadata:
 spec:
   if:
     allOf:
-    - anyOf:
+      - anyOf:
+          - field: 'Value'
+            notStartsWith: 'a'
+          - field: 'Value'
+            notStartsWith: 'e'
+            caseSensitive: true
       - field: 'Value'
-        notStartsWith: 'a'
-      - field: 'Value'
-        notStartsWith: 'e'
-        caseSensitive: true
-    - field: 'Value'
-      notStartsWith:
-      - 'a'
-      - 'e'
-    - anyOf:
-      - field: 'OtherValue'
-        exists: false
-      - field: 'OtherValue'
-        notStartsWith: 'a'
-        convert: true
+        notStartsWith:
+          - 'a'
+          - 'e'
+      - anyOf:
+          - field: 'OtherValue'
+            exists: false
+          - field: 'OtherValue'
+            notStartsWith: 'a'
+            convert: true
 
 ---
 # Synopsis: Test endsWith
@@ -360,22 +384,22 @@ metadata:
 spec:
   if:
     allOf:
-    - anyOf:
+      - anyOf:
+          - field: 'Value'
+            endsWith: 'c'
+          - field: 'Value'
+            endsWith: 'g'
+            caseSensitive: true
       - field: 'Value'
-        endsWith: 'c'
-      - field: 'Value'
-        endsWith: 'g'
-        caseSensitive: true
-    - field: 'Value'
-      endsWith:
-      - 'c'
-      - 'g'
-    - anyOf:
-      - field: 'OtherValue'
-        exists: false
-      - field: 'OtherValue'
-        endsWith: 'l'
-        convert: true
+        endsWith:
+          - 'c'
+          - 'g'
+      - anyOf:
+          - field: 'OtherValue'
+            exists: false
+          - field: 'OtherValue'
+            endsWith: 'l'
+            convert: true
 
 ---
 # Synopsis: Test notEndsWith
@@ -386,22 +410,22 @@ metadata:
 spec:
   if:
     allOf:
-    - anyOf:
+      - anyOf:
+          - field: 'Value'
+            notEndsWith: 'c'
+          - field: 'Value'
+            notEndsWith: 'g'
+            caseSensitive: true
       - field: 'Value'
-        notEndsWith: 'c'
-      - field: 'Value'
-        notEndsWith: 'g'
-        caseSensitive: true
-    - field: 'Value'
-      notEndsWith:
-      - 'c'
-      - 'g'
-    - anyOf:
-      - field: 'OtherValue'
-        exists: false
-      - field: 'OtherValue'
-        notEndsWith: 'l'
-        convert: true
+        notEndsWith:
+          - 'c'
+          - 'g'
+      - anyOf:
+          - field: 'OtherValue'
+            exists: false
+          - field: 'OtherValue'
+            notEndsWith: 'l'
+            convert: true
 
 ---
 # Synopsis: Test contains
@@ -412,22 +436,22 @@ metadata:
 spec:
   if:
     allOf:
-    - anyOf:
+      - anyOf:
+          - field: 'Value'
+            contains: 'ab'
+          - field: 'Value'
+            contains: 'bc'
+            caseSensitive: true
       - field: 'Value'
-        contains: 'ab'
-      - field: 'Value'
-        contains: 'bc'
-        caseSensitive: true
-    - field: 'Value'
-      contains:
-      - 'ab'
-      - 'bc'
-    - anyOf:
-      - field: 'OtherValue'
-        exists: false
-      - field: 'OtherValue'
-        contains: 'l'
-        convert: true
+        contains:
+          - 'ab'
+          - 'bc'
+      - anyOf:
+          - field: 'OtherValue'
+            exists: false
+          - field: 'OtherValue'
+            contains: 'l'
+            convert: true
 
 ---
 # Synopsis: Test notContains
@@ -438,22 +462,22 @@ metadata:
 spec:
   if:
     allOf:
-    - anyOf:
+      - anyOf:
+          - field: 'Value'
+            notContains: 'ab'
+          - field: 'Value'
+            notContains: 'bc'
+            caseSensitive: true
       - field: 'Value'
-        notContains: 'ab'
-      - field: 'Value'
-        notContains: 'bc'
-        caseSensitive: true
-    - field: 'Value'
-      notContains:
-      - 'ab'
-      - 'bc'
-    - anyOf:
-      - field: 'OtherValue'
-        exists: false
-      - field: 'OtherValue'
-        notContains: 'l'
-        convert: true
+        notContains:
+          - 'ab'
+          - 'bc'
+      - anyOf:
+          - field: 'OtherValue'
+            exists: false
+          - field: 'OtherValue'
+            notContains: 'l'
+            convert: true
 
 ---
 # Synopsis: Test like
@@ -464,22 +488,22 @@ metadata:
 spec:
   if:
     allOf:
-    - anyOf:
+      - anyOf:
+          - field: 'Value'
+            like: 'ab*'
+          - field: 'Value'
+            like: '*f*'
+            caseSensitive: true
       - field: 'Value'
-        like: 'ab*'
-      - field: 'Value'
-        like: '*f*'
-        caseSensitive: true
-    - field: 'Value'
-      like:
-      - 'ab*'
-      - '*f*'
-    - anyOf:
-      - field: 'OtherValue'
-        exists: false
-      - field: 'OtherValue'
-        like: '12*'
-        convert: true
+        like:
+          - 'ab*'
+          - '*f*'
+      - anyOf:
+          - field: 'OtherValue'
+            exists: false
+          - field: 'OtherValue'
+            like: '12*'
+            convert: true
 
 ---
 # Synopsis: Test notLike
@@ -490,22 +514,22 @@ metadata:
 spec:
   if:
     allOf:
-    - anyOf:
+      - anyOf:
+          - field: 'Value'
+            notLike: 'ab*'
+          - field: 'Value'
+            notLike: '*f*'
+            caseSensitive: true
       - field: 'Value'
-        notLike: 'ab*'
-      - field: 'Value'
-        notLike: '*f*'
-        caseSensitive: true
-    - field: 'Value'
-      notLike:
-      - 'ab*'
-      - '*f*'
-    - anyOf:
-      - field: 'OtherValue'
-        exists: false
-      - field: 'OtherValue'
-        notLike: '12*'
-        convert: true
+        notLike:
+          - 'ab*'
+          - '*f*'
+      - anyOf:
+          - field: 'OtherValue'
+            exists: false
+          - field: 'OtherValue'
+            notLike: '12*'
+            convert: true
 
 ---
 # Synopsis: Test isString
@@ -789,8 +813,8 @@ spec:
   if:
     field: 'Value'
     setOf:
-    - 'cluster-autoscaler'
-    - 'kube-apiserver'
+      - 'cluster-autoscaler'
+      - 'kube-apiserver'
     caseSensitive: true
 
 ---
@@ -803,8 +827,8 @@ spec:
   if:
     field: 'Value'
     subset:
-    - 'cluster-autoscaler'
-    - 'kube-apiserver'
+      - 'cluster-autoscaler'
+      - 'kube-apiserver'
     caseSensitive: true
     unique: true
 
@@ -840,8 +864,8 @@ spec:
   if:
     field: '.'
     hasSchema:
-    - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
-    - https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#
+      - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
+      - https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#
 
 ---
 # Synopsis: Test hasSchema ignoring scheme
@@ -853,8 +877,8 @@ spec:
   if:
     field: '.'
     hasSchema:
-    - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
-    - https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#
+      - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
+      - https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#
     ignoreScheme: true
 
 ---
@@ -867,8 +891,8 @@ spec:
   if:
     field: '.'
     hasSchema:
-    - https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#
-    - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
+      - https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#
+      - https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#
     caseSensitive: true
 
 ---
@@ -925,13 +949,13 @@ metadata:
 spec:
   if:
     allOf:
-    - field: 'integerValue'
-      hasDefault: 100
-    - field: 'boolValue'
-      hasDefault: true
-    - field: 'stringValue'
-      hasDefault: 'testValue'
-      caseSensitive: true
+      - field: 'integerValue'
+        hasDefault: 100
+      - field: 'boolValue'
+        hasDefault: true
+      - field: 'stringValue'
+        hasDefault: 'testValue'
+        caseSensitive: true
 
 #region With type tests
 
@@ -1015,7 +1039,7 @@ spec:
   if:
     name: '.'
     in:
-    - 'TargetObject1'
+      - 'TargetObject1'
 
 ---
 # Synopsis: Test notIn with name
@@ -1027,7 +1051,7 @@ spec:
   if:
     name: '.'
     notIn:
-    - 'TargetObject1'
+      - 'TargetObject1'
 
 ---
 # Synopsis: Test startsWith with name
@@ -1039,7 +1063,7 @@ spec:
   if:
     name: '.'
     startsWith:
-    - '1'
+      - '1'
 
 ---
 # Synopsis: Test endsWith with name
@@ -1051,7 +1075,7 @@ spec:
   if:
     name: '.'
     endsWith:
-    - '1'
+      - '1'
 
 ---
 # Synopsis: Test contains with name
@@ -1063,7 +1087,7 @@ spec:
   if:
     name: '.'
     contains:
-    - '.1.'
+      - '.1.'
 
 ---
 # Synopsis: Test isString with name
@@ -1165,7 +1189,7 @@ spec:
   if:
     source: 'Template'
     withinPath:
-      - "deployments/path/"
+      - 'deployments/path/'
 
 ---
 # Synopsis: Test withinPath with field
@@ -1177,8 +1201,8 @@ spec:
   if:
     field: 'FullName'
     withinPath:
-      - "policy/"
-      - "security/"
+      - 'policy/'
+      - 'security/'
 
 ---
 # Synopsis: Test withinPath with source and case sensitive
@@ -1190,7 +1214,7 @@ spec:
   if:
     source: 'Template'
     withinPath:
-      - "Deployments/Path/"
+      - 'Deployments/Path/'
     caseSensitive: true
 
 ---
@@ -1203,8 +1227,8 @@ spec:
   if:
     field: 'FullName'
     withinPath:
-      - "POLICY/"
-      - "SECURITY/"
+      - 'POLICY/'
+      - 'SECURITY/'
     caseSensitive: true
 
 ---
@@ -1217,7 +1241,7 @@ spec:
   if:
     source: 'Template'
     notWithinPath:
-      - "deployments/path/"
+      - 'deployments/path/'
 
 ---
 # Synopsis: Test notWithinPath with field
@@ -1229,8 +1253,8 @@ spec:
   if:
     field: 'FullName'
     notWithinPath:
-      - "policy/"
-      - "security/"
+      - 'policy/'
+      - 'security/'
 
 ---
 # Synopsis: Test notWithinPath with source and case sensitive
@@ -1242,7 +1266,7 @@ spec:
   if:
     source: 'Template'
     notWithinPath:
-      - "Deployments/Path/"
+      - 'Deployments/Path/'
     caseSensitive: true
 
 ---
@@ -1255,8 +1279,8 @@ spec:
   if:
     field: 'FullName'
     notWithinPath:
-      - "POLICY/"
-      - "SECURITY/"
+      - 'POLICY/'
+      - 'SECURITY/'
     caseSensitive: true
 
 ---
@@ -1269,7 +1293,7 @@ spec:
   if:
     scope: .
     equals:
-    - /scope1
+      - /scope1
 
 ---
 # Synopsis: Test scope property with startsWith.
@@ -1281,8 +1305,8 @@ spec:
   if:
     scope: .
     startsWith:
-    - /scope1/
-    - /scope2/
+      - /scope1/
+      - /scope2/
 
 ---
 # Synopsis: Test scope property with hasValue.

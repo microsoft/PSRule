@@ -32,6 +32,9 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v2.8.0-B0121:
 
+- General improvements:
+  - Added support for case sensitivity matching with `match` and `notMatch` expressions by @BernieWhite.
+    [#1480](https://github.com/microsoft/PSRule/issues/1480)
 - Bug fixes:
   - Fixed no output with using job summary with as summary by @BernieWhite.
     [#1483](https://github.com/microsoft/PSRule/issues/1483)

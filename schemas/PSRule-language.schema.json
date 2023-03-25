@@ -1546,6 +1546,13 @@
                   "markdownDescription": "Must match the regular expression. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#match)",
                   "default": ""
                 },
+                "caseSensitive": {
+                  "type": "boolean",
+                  "title": "Case sensitive",
+                  "description": "Determines if the regular expression uses case-sensitive matching.",
+                  "markdownDescription": "Determines if the regular expression uses case-sensitive matching. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#match)",
+                  "default": false
+                },
                 "field": {
                   "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
                 },
@@ -1583,6 +1590,13 @@
                   "description": "Must not match the regular expression.",
                   "markdownDescription": "Must not match the regular expression. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notmatch)",
                   "default": ""
+                },
+                "caseSensitive": {
+                  "type": "boolean",
+                  "title": "Case sensitive",
+                  "description": "Determines if the regular expression uses case-sensitive matching.",
+                  "markdownDescription": "Determines if the regular expression uses case-sensitive matching. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notmatch)",
+                  "default": false
                 },
                 "field": {
                   "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
