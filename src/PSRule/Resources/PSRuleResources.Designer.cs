@@ -574,6 +574,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PSR0002: Summary results are not supported with Job Summaries. See https://aka.ms/ps-rule/troubleshooting..
+        /// </summary>
+        internal static string PSR0002 {
+            get {
+                return ResourceManager.GetString("PSR0002", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deserialize the file &apos;{0}&apos;: {1}.
         /// </summary>
         internal static string ReadFileFailed {

@@ -40,6 +40,9 @@ namespace PSRule.Pipeline.Output
             _JobSummary = JobSummaryFormat.Default;
             _Stream = stream;
             _Source = source;
+
+            if (Option.Output.As == ResultFormat.Summary && inner != null)
+                inner.WriteError(new PipelineConfigurationException("Output.As", PSRuleResources.PSR0002), "PSRule.Output.AsOutputSerialization", System.Management.Automation.ErrorCategory.InvalidOperation);
         }
 
         public override void Begin()

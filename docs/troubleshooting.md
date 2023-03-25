@@ -75,3 +75,16 @@ This error typically indicates a problem with the YAML syntax in the `ps-rule.ya
 Double check the file for incorrect indentation or missing punctuation such as `-` and `:` characters.
 
 If you still have an issue, try resaving the file as UTF-8 in an editor such as Visual Studio Code.
+
+## PSR0002 - Summary results are not supported with Job Summaries
+
+!!! Error
+
+    PSR0002: Summary results are not supported with Job Summaries.
+
+Currently using the `Output.As` with the `Summary` option is not supported with job summaries.
+Choose to use one or the other.
+
+If you have a specific use case your would like to enable, please start a [discussion][3].
+
+  [3]: https://github.com/microsoft/PSRule/discussions
