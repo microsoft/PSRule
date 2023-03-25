@@ -642,12 +642,15 @@ namespace PSRule.Definitions.Expressions
         internal static bool Match(ExpressionContext context, ExpressionInfo info, object[] args, object o)
         {
             var properties = GetProperties(args);
-            return !TryPropertyAny(properties, MATCH, out var propertyValue) || !TryOperand(context, MATCH, o, properties, out var operand)
-                ? Invalid(context, MATCH)
-                : Condition(
+            if (!TryPropertyAny(properties, MATCH, out var propertyValue) ||
+                !TryOperand(context, MATCH, o, properties, out var operand) ||
+                !GetCaseSensitive(properties, out var caseSensitive))
+                return Invalid(context, MATCH);
+
+            return Condition(
                     context,
                     operand,
-                    ExpressionHelpers.Match(propertyValue, operand.Value, caseSensitive: false),
+                    ExpressionHelpers.Match(propertyValue, operand.Value, caseSensitive),
                     ReasonStrings.Assert_DoesNotMatch,
                     operand.Value,
                     propertyValue
@@ -663,13 +666,14 @@ namespace PSRule.Definitions.Expressions
             if (TryFieldNotExists(context, o, properties))
                 return PassPathNotFound(context, NOTMATCH);
 
-            if (!TryOperand(context, NOTMATCH, o, properties, out var operand))
+            if (!TryOperand(context, NOTMATCH, o, properties, out var operand) ||
+                !GetCaseSensitive(properties, out var caseSensitive))
                 return Invalid(context, NOTMATCH);
 
             return Condition(
                 context,
                 operand,
-                !ExpressionHelpers.Match(propertyValue, operand.Value, caseSensitive: false),
+                !ExpressionHelpers.Match(propertyValue, operand.Value, caseSensitive),
                 ReasonStrings.Assert_Matches,
                 operand.Value,
                 propertyValue
