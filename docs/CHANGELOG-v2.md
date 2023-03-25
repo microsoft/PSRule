@@ -30,6 +30,13 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.8.0-B0121:
+
+- Bug fixes:
+  - Fixed no output with using job summary with as summary by @BernieWhite.
+    [#1483](https://github.com/microsoft/PSRule/issues/1483)
+    - Fixed output and added error for unsupported scenarios.
+
 ## v2.8.0-B0121 (pre-release)
 
 What's changed since pre-release v2.8.0-B0076:
