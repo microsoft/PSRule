@@ -30,6 +30,60 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.8.0
+
+What's changed since release v2.7.0:
+
+- General improvements:
+  - **Important change**: Replaced `SuppressedRuleWarning` execution option with `RuleSuppressed` by @BernieWhite.
+    [#1456](https://github.com/microsoft/PSRule/issues/1456)
+    - Improved options for output of suppressed rules with `RuleSuppressed` option.
+    - Deprecated `SuppressedRuleWarning` option, which will be removed in v3.
+  - Added support for logging excluded rules by @BernieWhite.
+    [#1432](https://github.com/microsoft/PSRule/issues/1432)
+  - Added additional options to schema for PSRule for Azure by @BernieWhite.
+    [#1446](https://github.com/microsoft/PSRule/issues/1446)
+  - Improved error message for failing to read options file by @BernieWhite.
+    [#1433](https://github.com/microsoft/PSRule/issues/1433)
+  - Added support for import within initialize block by @BernieWhite.
+    [#1448](https://github.com/microsoft/PSRule/issues/1448)
+  - Added support for direct typing on import by @BernieWhite.
+    [#1449](https://github.com/microsoft/PSRule/issues/1449)
+    - Use the `$PSRule.ImportWithType` method to import an object with a specific type.
+  - Added support for case sensitivity matching with `match` and `notMatch` expressions by @BernieWhite.
+    [#1480](https://github.com/microsoft/PSRule/issues/1480)
+- Engineering:
+  - Bump Pester to v5.4.0.
+    [#1414](https://github.com/microsoft/PSRule/pull/1414)
+    Bump Microsoft.CodeAnalysis.Common to v4.4.0.
+    [#1341](https://github.com/microsoft/PSRule/pull/1341)
+  - Bump BenchmarkDotNet to v0.13.5.
+    [#1413](https://github.com/microsoft/PSRule/pull/1437)
+  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.5.
+    [#1413](https://github.com/microsoft/PSRule/pull/1437)
+  - Bump Microsoft.NET.Test.Sdk to v17.5.0.
+    [#1442](https://github.com/microsoft/PSRule/pull/1442)
+  - Bump Newtonsoft.Json to v13.0.3.
+    [#1467](https://github.com/microsoft/PSRule/pull/1467)
+  - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.1.
+    [#1468](https://github.com/microsoft/PSRule/pull/1468)
+- Bug fixes:
+  - Fixes handling of numerics in tests for that are impacted by regional format by @BernieWhite.
+    [#1405](https://github.com/microsoft/PSRule/issues/1405)
+  - Fixed no output with using job summary with as summary by @BernieWhite.
+    [#1483](https://github.com/microsoft/PSRule/issues/1483)
+    - Fixed output and added error for unsupported scenarios.
+  - Fixed LocalizedData is not exposed to if pre-conditions by @BernieWhite.
+    [#1083](https://github.com/microsoft/PSRule/issues/1083)
+  - Fixed LocalizedData is not exposed to conventions by @BernieWhite.
+    [#1477](https://github.com/microsoft/PSRule/issues/1477)
+  - Fixed problem binding when not set locally by @BernieWhite.
+    [#1473](https://github.com/microsoft/PSRule/issues/1473)
+
+What's changed since pre-release v2.8.0-B0171:
+
+- No additional changes.
+
 ## v2.8.0-B0171 (pre-release)
 
 What's changed since pre-release v2.8.0-B0121:
