@@ -30,6 +30,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since release v2.8.0:
+
+- General improvements:
+  - Improved schema display names by @BernieWhite.
+    [#1488](https://github.com/microsoft/PSRule/issues/1488)
+
 ## v2.8.0
 
 What's changed since release v2.7.0:
