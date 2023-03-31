@@ -30,6 +30,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since release v2.8.0:
+
+- Bug fixes:
+  - Fixed wrong message for excluded rules by @BernieWhite.
+    [#1493](https://github.com/microsoft/PSRule/issues/1493)
+
 ## v2.8.0
 
 What's changed since release v2.7.0:

@@ -74,7 +74,7 @@ namespace PSRule
                 return;
 
             var action = context.Pipeline.Option.Execution.RuleExcluded.GetValueOrDefault(ExecutionOption.Default.RuleExcluded.Value);
-            context.Throw(action, PSRuleResources.SuppressionGroupExpired, ruleId.Value);
+            context.Throw(action, PSRuleResources.RuleExcluded, ruleId.Value);
         }
 
         internal static void Throw(this RunspaceContext context, ExecutionActionPreference action, string message, params object[] args)
