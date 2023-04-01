@@ -406,4 +406,7 @@
   <data name="PSR0002" xml:space="preserve">
     <value>PSR0002: Summary results are not supported with Job Summaries. See https://aka.ms/ps-rule/troubleshooting.</value>
   </data>
+  <data name="RuleExcluded" xml:space="preserve">
+    <value>Rule '{0}' was excluded from run.</value>
+  </data>
 </root>
