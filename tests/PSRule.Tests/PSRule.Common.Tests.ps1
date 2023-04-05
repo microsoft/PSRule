@@ -985,10 +985,11 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             # Multiple objects
             $result = @($testObject | Invoke-PSRule @invokeParams -TargetType 'TestType' -Outcome All);
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 1;
+            $result.Length | Should -Be 2;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].TargetType | Should -Be 'TestType';
             $result[0].Outcome | Should -Be 'Pass';
+            $result[1].Outcome | Should -Be 'None';
 
             # Mutliple types
             $result = @($testObject | Invoke-PSRule @invokeParams -TargetType 'TestType','NotTestType');

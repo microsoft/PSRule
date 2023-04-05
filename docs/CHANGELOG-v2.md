@@ -35,6 +35,8 @@ What's changed since release v2.8.0:
 - Bug fixes:
   - Fixed wrong message for excluded rules by @BernieWhite.
     [#1493](https://github.com/microsoft/PSRule/issues/1493)
+  - Fixed job summary reports completed time by @BernieWhite.
+    [#1492](https://github.com/microsoft/PSRule/issues/1492)
 
 ## v2.8.0
 
