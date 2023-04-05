@@ -158,13 +158,14 @@ namespace PSRule.Pipeline
                             ruleBlockTarget.Fail();
 
                         AddToSummary(ruleBlock: ruleBlockTarget.Value, outcome: ruleRecord.Outcome);
-                        if (ShouldOutput(ruleRecord.Outcome))
-                            result.Add(ruleRecord);
                     }
                     finally
                     {
                         // Exit rule block scope
                         Context.ExitRuleBlock();
+                        if (ShouldOutput(ruleRecord.Outcome))
+                            result.Add(ruleRecord);
+
                         Context.ExitLanguageScope(ruleBlockTarget.Value.Source);
                     }
                 }
@@ -198,7 +199,7 @@ namespace PSRule.Pipeline
         /// </summary>
         private void AddToSummary(RuleBlock ruleBlock, RuleOutcome outcome)
         {
-            if (!_IsSummary)
+            if (!_IsSummary || ruleBlock == null)
                 return;
 
             if (!_Summary.TryGetValue(ruleBlock.Id.Value, out var s))

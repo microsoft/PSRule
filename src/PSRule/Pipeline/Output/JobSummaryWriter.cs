@@ -173,7 +173,6 @@ namespace PSRule.Pipeline.Output
         {
             var count = o?.Length;
             var overall = RuleOutcome.None;
-            long time = 0;
             var pass = 0;
             var fail = 0;
             var total = 0;
@@ -181,18 +180,18 @@ namespace PSRule.Pipeline.Output
             for (var i = 0; o != null && i < o.Length; i++)
             {
                 overall = o[i].Outcome.GetWorstCase(overall);
-                time += o[i].Time;
                 pass += o[i].Pass;
                 fail += o[i].Fail;
                 error += o[i].Error;
                 total += o[i].Total;
             }
+            var elapsed = PipelineContext.CurrentThread?.RunTime.Elapsed ?? TimeSpan.FromSeconds(0);
             WriteLine(Summaries.JobSummary_FinalResultMessage,
                 OutcomeEmoji(overall),
                 Enum.GetName(typeof(RuleOutcome), overall),
                 pass + fail + error,
                 count,
-                TimeSpan.FromMilliseconds(time)
+                elapsed
             );
             WriteLine();
         }
