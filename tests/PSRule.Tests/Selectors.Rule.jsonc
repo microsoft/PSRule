@@ -296,6 +296,21 @@
     }
   },
   {
+    // Synopsis: Test match
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "JsonMatchCaseSensitive"
+    },
+    "spec": {
+      "if": {
+        "field": "Value",
+        "match": "^(abc|efg)$",
+        "caseSensitive": true
+      }
+    }
+  },
+  {
     // Synopsis: Test notMatch
     "apiVersion": "github.com/microsoft/PSRule/v1",
     "kind": "Selector",
@@ -306,6 +321,21 @@
       "if": {
         "field": "Value",
         "notMatch": "^(abc|efg)$"
+      }
+    }
+  },
+  {
+    // Synopsis: Test notMatch
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "JsonNotMatchCaseSensitive"
+    },
+    "spec": {
+      "if": {
+        "field": "Value",
+        "notMatch": "^(abc|efg)$",
+        "caseSensitive": true
       }
     }
   },

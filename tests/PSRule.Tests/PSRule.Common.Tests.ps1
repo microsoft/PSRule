@@ -985,10 +985,11 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             # Multiple objects
             $result = @($testObject | Invoke-PSRule @invokeParams -TargetType 'TestType' -Outcome All);
             $result | Should -Not -BeNullOrEmpty;
-            $result.Length | Should -Be 1;
+            $result.Length | Should -Be 2;
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].TargetType | Should -Be 'TestType';
             $result[0].Outcome | Should -Be 'Pass';
+            $result[1].Outcome | Should -Be 'None';
 
             # Mutliple types
             $result = @($testObject | Invoke-PSRule @invokeParams -TargetType 'TestType','NotTestType');
@@ -1212,7 +1213,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Detail' {
             It 'Show Warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $True -OutputAs Detail -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Warn -OutputAs Detail -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1226,7 +1227,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $False -OutputAs Detail -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Ignore -OutputAs Detail -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1237,7 +1238,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Summary' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $True -OutputAs Summary -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Warn -OutputAs Summary -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1249,7 +1250,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -SuppressedRuleWarning $False -OutputAs Summary -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Ignore -OutputAs Summary -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1293,7 +1294,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Detail' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Detail -InvariantCultureWarning $False -OutputCulture 'en-US';
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Detail -InvariantCultureWarning $False -OutputCulture 'en-US';
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile1', 'FromFile2', 'WithTag2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1317,7 +1318,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'Show warnings for all rules when rule property is null or empty' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Detail -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Detail -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams2 -Option $option -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1329,7 +1330,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Detail -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Ignore -OutputAs Detail -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile1', 'FromFile2', 'WithTag2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1340,7 +1341,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Summary' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Summary -InvariantCultureWarning $False -SuppressionGroupExpired Ignore -OutputCulture 'en-US';
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Summary -InvariantCultureWarning $False -SuppressionGroupExpired Ignore -OutputCulture 'en-US';
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile3', 'FromFile5', 'WithTag3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1358,7 +1359,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'Show warnings for all rules when rule property is null or empty' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $True -OutputAs Summary -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Summary -InvariantCultureWarning $False;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams2 -Option $option -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1372,7 +1373,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressedRuleWarning $False -OutputAs Summary -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Ignore -OutputAs Summary -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile3', 'FromFile5', 'WithTag3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 

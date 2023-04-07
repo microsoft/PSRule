@@ -2,7 +2,7 @@
 
 See [upgrade notes][1] for helpful information when upgrading from previous versions.
 
-  [1]: https://microsoft.github.io/PSRule/latest/upgrade-notes/
+  [1]: https://aka.ms/ps-rule/upgrade
 
 ## Current release
 

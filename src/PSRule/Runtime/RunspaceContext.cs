@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Language;
-using System.Text;
 using System.Threading;
 using PSRule.Configuration;
 using PSRule.Definitions;
@@ -18,6 +18,9 @@ using static PSRule.Pipeline.PipelineContext;
 
 namespace PSRule.Runtime
 {
+    /// <summary>
+    /// The available language scope types.
+    /// </summary>
     [Flags]
     internal enum RunspaceScope
     {
@@ -54,7 +57,7 @@ namespace PSRule.Runtime
     /// <summary>
     /// A context for a PSRule runspace.
     /// </summary>
-    internal sealed class RunspaceContext : IDisposable
+    internal sealed class RunspaceContext : IDisposable, ILogger
     {
         private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
         private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
@@ -74,10 +77,14 @@ namespace PSRule.Runtime
 
         private readonly bool _InconclusiveWarning;
         private readonly bool _NotProcessedWarning;
-        private readonly bool _SuppressedRuleWarning;
+        private readonly ExecutionActionPreference _SuppressedRuleWarning;
         private readonly bool _InvariantCultureWarning;
         private readonly OutcomeLogStream _FailStream;
         private readonly OutcomeLogStream _PassStream;
+
+        /// <summary>
+        /// Track the current runspace scope.
+        /// </summary>
         private readonly Stack<RunspaceScope> _Scope;
 
         /// <summary>
@@ -95,6 +102,10 @@ namespace PSRule.Runtime
         private readonly Stopwatch _RuleTimer;
         private readonly List<ResultReason> _Reason;
         private readonly List<IConvention> _Conventions;
+
+        /// <summary>
+        /// A collection of languages scopes for this pipeline.
+        /// </summary>
         private readonly LanguageScopeSet _LanguageScopes;
 
         // Track whether Dispose has been called.
@@ -108,7 +119,14 @@ namespace PSRule.Runtime
 
             _InconclusiveWarning = Pipeline.Option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning.Value;
             _NotProcessedWarning = Pipeline.Option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning.Value;
-            _SuppressedRuleWarning = Pipeline.Option.Execution.SuppressedRuleWarning ?? ExecutionOption.Default.SuppressedRuleWarning.Value;
+
+#pragma warning disable CS0612 // Type or member is obsolete
+            if (Pipeline.Option.Execution.SuppressedRuleWarning.HasValue)
+                _SuppressedRuleWarning = Pipeline.Option.Execution.SuppressedRuleWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
+            else
+                _SuppressedRuleWarning = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed.Value);
+#pragma warning restore CS0612 // Type or member is obsolete
+
             _InvariantCultureWarning = Pipeline.Option.Execution.InvariantCultureWarning ?? ExecutionOption.Default.InvariantCultureWarning.Value;
             _FailStream = Pipeline.Option.Logging.RuleFail ?? LoggingOption.Default.RuleFail.Value;
             _PassStream = Pipeline.Option.Logging.RulePass ?? LoggingOption.Default.RulePass.Value;
@@ -134,6 +152,7 @@ namespace PSRule.Runtime
 
         internal ILanguageScope LanguageScope
         {
+            [DebuggerStepThrough]
             get
             {
                 return _LanguageScopes.Current;
@@ -240,44 +259,36 @@ namespace PSRule.Runtime
             Writer.WriteWarning(PSRuleResources.ObjectNotProcessed, Binding.TargetName);
         }
 
-        public void WarnRuleSuppressed(string ruleId)
+        public void RuleSuppressed(string ruleId)
         {
-            if (Writer == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
-            {
-                return;
-            }
-
-            Writer.WriteWarning(PSRuleResources.RuleSuppressed, ruleId, Binding.TargetName);
+            this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressed, ruleId, Binding.TargetName);
         }
 
         public void WarnRuleCountSuppressed(int ruleCount)
         {
-            if (Writer == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
-                return;
-
-            Writer.WriteWarning(PSRuleResources.RuleCountSuppressed, ruleCount, Binding.TargetName);
+            this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleCountSuppressed, ruleCount, Binding.TargetName);
         }
 
-        public void WarnRuleSuppressionGroup(string ruleId, ISuppressionInfo suppression)
+        public void RuleSuppressionGroup(string ruleId, ISuppressionInfo suppression)
         {
-            if (Writer == null || suppression == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
+            if (suppression == null)
                 return;
 
             if (suppression.Synopsis != null && suppression.Synopsis.HasValue)
-                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroupExtended, ruleId, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
+                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroupExtended, ruleId, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
             else
-                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroup, ruleId, suppression.Id, Binding.TargetName);
+                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroup, ruleId, suppression.Id, Binding.TargetName);
         }
 
-        public void WarnRuleSuppressionGroupCount(ISuppressionInfo suppression, int count)
+        public void RuleSuppressionGroupCount(ISuppressionInfo suppression, int count)
         {
-            if (Writer == null || suppression == null || !Writer.ShouldWriteWarning() || !_SuppressedRuleWarning)
+            if (suppression == null)
                 return;
 
             if (suppression.Synopsis != null && suppression.Synopsis.HasValue)
-                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroupExtendedCount, count, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
+                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroupExtendedCount, count, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
             else
-                Writer.WriteWarning(PSRuleResources.RuleSuppressionGroupCount, count, suppression.Id, Binding.TargetName);
+                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroupCount, count, suppression.Id, Binding.TargetName);
         }
 
         public void ErrorInvaildRuleResult()
@@ -566,31 +577,28 @@ namespace PSRule.Runtime
 
         private string GetLogPrefix()
         {
-            if (_LogPrefix == null)
-                _LogPrefix = $"[PSRule][R][{_ObjectNumber}][{RuleRecord?.RuleId}]";
-
+            _LogPrefix ??= $"[PSRule][R][{_ObjectNumber}][{RuleRecord?.RuleId}]";
             return _LogPrefix ?? string.Empty;
         }
 
-        internal SourceScope EnterSourceScope(SourceFile source)
+        internal void EnterLanguageScope(SourceFile file)
         {
             // TODO: Look at scope caching, and a scope stack.
 
-            if (Source != null && Source.File == source)
-                return Source;
+            if (Source != null && Source.File == file)
+                return;
 
-            if (!source.Exists())
-                throw new FileNotFoundException(PSRuleResources.ScriptNotFound, source.Path);
+            if (!file.Exists())
+                throw new FileNotFoundException(PSRuleResources.ScriptNotFound, file.Path);
 
-            _LanguageScopes.UseScope(source.Module);
+            _LanguageScopes.UseScope(file.Module);
 
             // Change scope
-            Pipeline.Baseline.UseScope(moduleName: source.Module);
-            Source = new SourceScope(source, File.ReadAllLines(source.Path, Encoding.UTF8));
-            return Source;
+            //Pipeline.Baseline.ResetScope(moduleName: source.Module);
+            Source = new SourceScope(file);
         }
 
-        internal void ExitSourceScope()
+        internal void ExitLanguageScope(SourceFile file)
         {
             // Look at scope poping and validation.
 
@@ -660,8 +668,7 @@ namespace PSRule.Runtime
                 extent: ruleBlock.Extent
             );
 
-            if (Writer != null)
-                Writer.EnterScope(ruleBlock.Name);
+            Writer?.EnterScope(ruleBlock.Name);
 
             // Starts rule execution timer
             _RuleTimer.Restart();
@@ -681,8 +688,7 @@ namespace PSRule.Runtime
                 for (var i = 0; i < _Reason.Count; i++)
                     RuleRecord._Detail.Add(_Reason[i]);
 
-            if (Writer != null)
-                Writer.ExitScope();
+            Writer?.ExitScope();
 
             _LogPrefix = null;
             RuleRecord = null;
@@ -698,16 +704,16 @@ namespace PSRule.Runtime
 
         internal void AddService(string id, object service)
         {
-            ResourceHelper.ParseIdString(_LanguageScopes.Current.Name, id, out var scopeName, out var name);
-            if (!StringComparer.OrdinalIgnoreCase.Equals(_LanguageScopes.Current.Name, scopeName))
+            ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
+            if (!StringComparer.OrdinalIgnoreCase.Equals(LanguageScope.Name, scopeName))
                 return;
 
-            _LanguageScopes.Current.AddService(name, service);
+            LanguageScope.AddService(name, service);
         }
 
         internal object GetService(string id)
         {
-            ResourceHelper.ParseIdString(_LanguageScopes.Current.Name, id, out var scopeName, out var name);
+            ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
             return !_LanguageScopes.TryScope(scopeName, out var scope) ? null : scope.GetService(name);
         }
 
@@ -769,9 +775,34 @@ namespace PSRule.Runtime
         public void Init(Source[] source)
         {
             InitLanguageScopes(source);
-            Host.HostHelper.ImportResource(source, this);
+            var resources = Host.HostHelper.ImportResource(source, this).OfType<IResource>();
+
+            // Process module configurations first
+            foreach (var resource in resources.Where(r => r.Kind == ResourceKind.ModuleConfig).ToArray())
+                Pipeline.Import(this, resource);
+
             foreach (var languageScope in _LanguageScopes.Get())
-                Pipeline.Baseline.BuildScope(languageScope);
+                Pipeline.Baseline.UpdateLanguageScope(languageScope);
+
+            foreach (var resource in resources)
+            {
+                EnterLanguageScope(resource.Source);
+                try
+                {
+                    Host.HostHelper.UpdateHelpInfo(this, resource);
+                }
+                finally
+                {
+                    ExitLanguageScope(resource.Source);
+                }
+            }
+
+            // Process other resources
+            foreach (var resource in resources.Where(r => r.Kind != ResourceKind.ModuleConfig).ToArray())
+                Pipeline.Import(this, resource);
+
+            foreach (var languageScope in _LanguageScopes.Get())
+                Pipeline.Baseline.UpdateLanguageScope(languageScope);
         }
 
         private void InitLanguageScopes(Source[] source)
@@ -796,8 +827,7 @@ namespace PSRule.Runtime
 
             foreach (var languageScope in _LanguageScopes.Get())
             {
-                var targetBinding = Pipeline.Baseline.GetTargetBinding();
-                builder.With(new TargetBinder.TargetBindingContext(languageScope.Name, targetBinding, Pipeline.BindTargetName, Pipeline.BindTargetType, Pipeline.BindField, _TypeFilter));
+                builder.With(new TargetBinder.TargetBindingContext(languageScope.Name, languageScope.Binding, Pipeline.BindTargetName, Pipeline.BindTargetType, Pipeline.BindField, _TypeFilter));
             }
             TargetBinder = builder.Build();
             RunConventionInitialize();
@@ -815,7 +845,8 @@ namespace PSRule.Runtime
             if (string.IsNullOrEmpty(Source.File.HelpPath))
                 return null;
 
-            var cultures = Pipeline.Baseline.GetCulture();
+            //var cultures = Pipeline.Baseline.GetCulture();
+            var cultures = LanguageScope.Culture;
             if (!_RaisedUsingInvariantCulture &&
                 (cultures == null || cultures.Length == 0) &&
                 _InvariantCultureWarning)
@@ -872,6 +903,31 @@ namespace PSRule.Runtime
         }
 
         #endregion Configuration
+
+        #region ILogger
+
+        /// <inheritdoc/>
+        public bool ShouldLog(LogLevel level)
+        {
+            return Writer != null && (
+                (level == LogLevel.Warning && Writer.ShouldWriteWarning()) ||
+                (level == LogLevel.Error && Writer.ShouldWriteError()) ||
+                (level == LogLevel.Info && Writer.ShouldWriteInformation()) ||
+                (level == LogLevel.Verbose && Writer.ShouldWriteVerbose()) ||
+                (level == LogLevel.Debug && Writer.ShouldWriteDebug())
+            );
+        }
+
+        /// <inheritdoc/>
+        public void Warning(string message, params object[] args)
+        {
+            if (Writer == null || string.IsNullOrEmpty(message))
+                return;
+
+            Writer.WriteWarning(message, args);
+        }
+
+        #endregion ILogger
 
         #region IDisposable
 

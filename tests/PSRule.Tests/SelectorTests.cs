@@ -39,9 +39,9 @@ namespace PSRule
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
             context.Init(GetSource(path));
             context.Begin();
-            var selector = HostHelper.GetSelector(GetSource(path), context).ToArray();
+            var selector = HostHelper.GetSelectorForTests(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(99, selector.Length);
+            Assert.Equal(101, selector.Length);
 
             var actual = selector[0];
             var visitor = new SelectorVisitor(context, actual.Id, actual.Source, actual.Spec.If);
@@ -262,18 +262,26 @@ namespace PSRule
 
             // With name
             var withName = GetSelectorVisitor($"{type}NameMatch", GetSource(path), out var context);
-            var actual6 = GetObject(
+            actual1 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
-            var actual7 = GetObject(
+            actual2 = GetObject(
                (name: "Name", value: "TargetObject2")
             );
 
-            context.EnterTargetObject(new TargetObject(actual6));
-            Assert.True(withName.Match(actual6));
+            context.EnterTargetObject(new TargetObject(actual1));
+            Assert.True(withName.Match(actual1));
 
-            context.EnterTargetObject(new TargetObject(actual7));
-            Assert.False(withName.Match(actual7));
+            context.EnterTargetObject(new TargetObject(actual2));
+            Assert.False(withName.Match(actual2));
+
+            // With case-sensitivity
+            var withCaseSensitivity = GetSelectorVisitor($"{type}MatchCaseSensitive", GetSource(path), out _);
+            actual1 = GetObject((name: "value", value: "abc"));
+            actual2 = GetObject((name: "value", value: "aBc"));
+
+            Assert.True(withCaseSensitivity.Match(actual1));
+            Assert.False(withCaseSensitivity.Match(actual2));
         }
 
         [Theory]
@@ -294,18 +302,26 @@ namespace PSRule
 
             // With name
             var withName = GetSelectorVisitor($"{type}NameNotMatch", GetSource(path), out var context);
-            var actual6 = GetObject(
+            actual1 = GetObject(
                (name: "Name", value: "TargetObject1")
             );
-            var actual7 = GetObject(
+            actual2 = GetObject(
                (name: "Name", value: "TargetObject2")
             );
 
-            context.EnterTargetObject(new TargetObject(actual6));
-            Assert.False(withName.Match(actual6));
+            context.EnterTargetObject(new TargetObject(actual1));
+            Assert.False(withName.Match(actual1));
 
-            context.EnterTargetObject(new TargetObject(actual7));
-            Assert.True(withName.Match(actual7));
+            context.EnterTargetObject(new TargetObject(actual2));
+            Assert.True(withName.Match(actual2));
+
+            // With case-sensitivity
+            var withCaseSensitivity = GetSelectorVisitor($"{type}NotMatchCaseSensitive", GetSource(path), out _);
+            actual1 = GetObject((name: "value", value: "abc"));
+            actual2 = GetObject((name: "value", value: "aBc"));
+
+            Assert.False(withCaseSensitivity.Match(actual1));
+            Assert.True(withCaseSensitivity.Match(actual2));
         }
 
         [Theory]
@@ -1838,11 +1854,11 @@ namespace PSRule
 
         private static SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
         {
-            var builder = new OptionContextBuilder(GetOption(), null, null, null);
+            var builder = new OptionContextBuilder(GetOption());
             context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, builder.Build(), null), null);
             context.Init(source);
             context.Begin();
-            var selector = HostHelper.GetSelector(source, context).ToArray().FirstOrDefault(s => s.Name == name);
+            var selector = HostHelper.GetSelectorForTests(source, context).ToArray().FirstOrDefault(s => s.Name == name);
             return new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
         }
 

@@ -69,3 +69,19 @@ Rule 'ConventionTest' {
     $store = $PSRule.GetService('Store');
     $Assert.HasFieldValue($store, 'Name', 'TestObject1');
 }
+
+# Synopsis: A convention for unit testing localized data.
+Export-PSRuleConvention 'Convention.WithLocalizedData' -Initialize {
+    Write-Information -MessageData ($LocalizedData.WithLocalizedDataMessage -f 'Initialize')
+} -Begin {
+    Write-Information -MessageData ($LocalizedData.WithLocalizedDataMessage -f 'Begin')
+} -Process {
+    Write-Information -MessageData ($LocalizedData.WithLocalizedDataMessage -f 'Process')
+} -End {
+    Write-Information -MessageData ($LocalizedData.WithLocalizedDataMessage -f 'End')
+}
+
+# Syopsis: Test localized data in pre-condition.
+Rule 'WithLocalizedDataPrecondition' -If { Write-Information -MessageData ($LocalizedData.WithLocalizedDataMessage -f 'Precondition'); $True; } {
+    $Assert.Pass();
+}

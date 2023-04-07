@@ -51,7 +51,7 @@ namespace PSRule
             context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContext(), null), null);
             context.Init(source);
             context.Begin();
-            var selector = HostHelper.GetSelector(source, context).ToArray().FirstOrDefault(s => s.Name == name);
+            var selector = HostHelper.GetSelectorForTests(source, context).ToArray().FirstOrDefault(s => s.Name == name);
             return new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
         }
 

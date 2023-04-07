@@ -61,6 +61,32 @@ namespace PSRule
             Assert.Equal(11, actual2);
         }
 
+        /// <summary>
+        /// Test that localized data is accessible to conventions at each block.
+        /// </summary>
+        [Fact]
+        public void WithLocalizedData()
+        {
+            var testObject1 = new TestObject { Name = "TestObject1" };
+            var option = GetOption();
+            option.Rule.Include = new string[] { "WithLocalizedDataPrecondition" };
+            option.Convention.Include = new string[] { "Convention.WithLocalizedData" };
+            var writer = new TestWriter(option);
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
+            var pipeline = builder.Build(writer);
+
+            Assert.NotNull(pipeline);
+            pipeline.Begin();
+            pipeline.Process(PSObject.AsPSObject(testObject1));
+            pipeline.End();
+            Assert.NotEmpty(writer.Information);
+            Assert.Equal("LocalizedMessage for en. Format=Initialize.", writer.Information[0] as string);
+            Assert.Equal("LocalizedMessage for en. Format=Begin.", writer.Information[1] as string);
+            Assert.Equal("LocalizedMessage for en. Format=Precondition.", writer.Information[2] as string);
+            Assert.Equal("LocalizedMessage for en. Format=Process.", writer.Information[3] as string);
+            Assert.Equal("LocalizedMessage for en. Format=End.", writer.Information[4] as string);
+        }
+
         #region Helper methods
 
         private static Source[] GetSource()
@@ -70,9 +96,11 @@ namespace PSRule
             return builder.Build();
         }
 
-        private PSRuleOption GetOption(string path = null)
+        private static PSRuleOption GetOption(string path = null)
         {
-            return path == null ? new PSRuleOption() : PSRuleOption.FromFile(path);
+            var option = path == null ? new PSRuleOption() : PSRuleOption.FromFile(path);
+            option.Output.Culture = new[] { "en-US" };
+            return option;
         }
 
         private static string GetSourcePath(string fileName)

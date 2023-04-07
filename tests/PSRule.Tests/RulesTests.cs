@@ -78,7 +78,7 @@ namespace PSRule
             var subselector1 = GetRuleVisitor(context, "YamlRuleWithPrecondition", GetSource("FromFileSubSelector.Rule.yaml"));
             var subselector2 = GetRuleVisitor(context, "YamlRuleWithSubselector", GetSource("FromFileSubSelector.Rule.yaml"));
             var subselector3 = GetRuleVisitor(context, "YamlRuleWithSubselectorReordered", GetSource("FromFileSubSelector.Rule.yaml"));
-            context.EnterSourceScope(subselector1.Source);
+            context.EnterLanguageScope(subselector1.Source);
 
             var actual1 = GetObject((name: "kind", value: "test"), (name: "resources", value: new string[] { "abc", "abc" }));
             var actual2 = GetObject((name: "resources", value: new string[] { "abc", "123", "abc" }));
@@ -122,7 +122,7 @@ namespace PSRule
             var yamlFalse = GetRuleVisitor(context, "RuleYamlFalse");
             var customType = GetRuleVisitor(context, "RuleYamlWithCustomType");
             var withSelector = GetRuleVisitor(context, "RuleYamlWithSelector");
-            context.EnterSourceScope(yamlTrue.Source);
+            context.EnterLanguageScope(yamlTrue.Source);
 
             var actual1 = GetObject((name: "value", value: 3));
             var actual2 = GetObject((name: "notValue", value: 3));
@@ -182,7 +182,7 @@ namespace PSRule
             context.Begin();
             ImportSelectors(context);
             var yamlObjectPath = GetRuleVisitor(context, "YamlObjectPath");
-            context.EnterSourceScope(yamlObjectPath.Source);
+            context.EnterLanguageScope(yamlObjectPath.Source);
 
             var actual = GetObject(GetSourcePath("ObjectFromFile3.json"));
 
@@ -261,7 +261,7 @@ namespace PSRule
             var subselector1 = GetRuleVisitor(context, "JsonRuleWithPrecondition", GetSource("FromFileSubSelector.Rule.jsonc"));
             var subselector2 = GetRuleVisitor(context, "JsonRuleWithSubselector", GetSource("FromFileSubSelector.Rule.jsonc"));
             var subselector3 = GetRuleVisitor(context, "JsonRuleWithSubselectorReordered", GetSource("FromFileSubSelector.Rule.jsonc"));
-            context.EnterSourceScope(subselector1.Source);
+            context.EnterLanguageScope(subselector1.Source);
 
             var actual1 = GetObject((name: "kind", value: "test"), (name: "resources", value: new string[] { "abc", "abc" }));
             var actual2 = GetObject((name: "resources", value: new string[] { "abc", "123", "abc" }));
@@ -332,7 +332,7 @@ namespace PSRule
 
         private static void ImportSelectors(RunspaceContext context, Source[] source = null)
         {
-            var selectors = HostHelper.GetSelector(source ?? GetSource(), context).ToArray();
+            var selectors = HostHelper.GetSelectorForTests(source ?? GetSource(), context).ToArray();
             foreach (var selector in selectors)
                 context.Pipeline.Import(context, selector);
         }

@@ -12,6 +12,7 @@ namespace PSRule
     {
         internal List<ErrorRecord> Errors = new();
         internal List<string> Warnings = new();
+        internal List<object> Information = new();
         internal List<object> Output = new();
 
         public TestWriter(PSRuleOption option)
@@ -50,6 +51,16 @@ namespace PSRule
             {
                 Output.Add(sendToPipeline);
             }
+        }
+
+        public override bool ShouldWriteInformation()
+        {
+            return true;
+        }
+
+        public override void WriteInformation(InformationRecord informationRecord)
+        {
+            Information.Add(informationRecord.MessageData);
         }
     }
 }

@@ -703,7 +703,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
     Context 'Read Execution.SuppressedRuleWarning' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
-            $option.Execution.SuppressedRuleWarning | Should -Be $True;
+            $option.Execution.SuppressedRuleWarning | Should -Be $Null;
         }
 
         It 'from Hashtable' {
@@ -779,10 +779,99 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
                 Remove-Item 'Env:PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED' -Force;
             }
         }
+    }
+
+    Context 'Read Execution.RuleExcluded' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.RuleExcluded | Should -Be 'Ignore'
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.RuleExcluded' = 'error' };
+            $option.Execution.RuleExcluded | Should -Be 'Error';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.RuleExcluded' = 'Error' };
+            $option.Execution.RuleExcluded | Should -Be 'Error';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.RuleExcluded | Should -Be 'Warn';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_RULEEXCLUDED = 'error';
+                $option = New-PSRuleOption;
+                $option.Execution.RuleExcluded | Should -Be 'Error';
+
+                # With enum
+                $Env:PSRULE_EXECUTION_RULEEXCLUDED = 'Error';
+                $option = New-PSRuleOption;
+                $option.Execution.RuleExcluded | Should -Be 'Error';
+
+                # With int
+                $Env:PSRULE_EXECUTION_RULEEXCLUDED = '3';
+                $option = New-PSRuleOption;
+                $option.Execution.RuleExcluded | Should -Be 'Error';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_RULEEXCLUDED' -Force;
+            }
+        }
 
         It 'from parameter' {
-            $option = New-PSRuleOption -SuppressionGroupExpired 'Error' -Path $emptyOptionsFilePath;
-            $option.Execution.SuppressionGroupExpired | Should -Be 'Error';
+            $option = New-PSRuleOption -ExecutionRuleExcluded 'Error' -Path $emptyOptionsFilePath;
+            $option.Execution.RuleExcluded | Should -Be 'Error';
+        }
+    }
+
+    Context 'Read Execution.RuleSuppressed' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.RuleSuppressed | Should -Be 'Warn'
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.RuleSuppressed' = 'error' };
+            $option.Execution.RuleSuppressed | Should -Be 'Error';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.RuleSuppressed' = 'Error' };
+            $option.Execution.RuleSuppressed | Should -Be 'Error';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.RuleSuppressed | Should -Be 'Error';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_RULESUPPRESSED = 'error';
+                $option = New-PSRuleOption;
+                $option.Execution.RuleSuppressed | Should -Be 'Error';
+
+                # With enum
+                $Env:PSRULE_EXECUTION_RULESUPPRESSED = 'Error';
+                $option = New-PSRuleOption;
+                $option.Execution.RuleSuppressed | Should -Be 'Error';
+
+                # With int
+                $Env:PSRULE_EXECUTION_RULESUPPRESSED = '3';
+                $option = New-PSRuleOption;
+                $option.Execution.RuleSuppressed | Should -Be 'Error';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_RULESUPPRESSED' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -ExecutionRuleSuppressed 'Error' -Path $emptyOptionsFilePath;
+            $option.Execution.RuleSuppressed | Should -Be 'Error';
         }
     }
 

@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
 using PSRule.Pipeline;
@@ -123,6 +124,23 @@ namespace PSRule
             Assert.Equal(RuleOutcome.Fail, actual.Outcome);
             Assert.Equal("item.Name", actual.Detail.Reason.First().Path);
             Assert.Equal("resources[1].item.Name", actual.Detail.Reason.First().FullPath);
+        }
+
+        [Fact]
+        public void InvokePipelineWithExclude()
+        {
+            var option = GetOption(ruleExcludedAction: ExecutionActionPreference.Warn);
+            option.Rule.Include = new string[] { "FromFile1" };
+            option.Rule.Exclude = new string[] { "FromFile2" };
+            var builder = PipelineBuilder.Invoke(GetSource(), option, null);
+            var writer = new TestWriter(GetOption());
+            var pipeline = builder.Build(writer);
+
+            Assert.NotNull(pipeline);
+            pipeline.Begin();
+            pipeline.End();
+
+            Assert.Contains(writer.Warnings, (string s) => { return s == string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.RuleExcluded, ".\\FromFile2"); });
         }
 
         [Fact]
@@ -298,9 +316,11 @@ namespace PSRule
             return builder.Build();
         }
 
-        private PSRuleOption GetOption(string path = null)
+        private static PSRuleOption GetOption(string path = null, ExecutionActionPreference ruleExcludedAction = ExecutionActionPreference.None)
         {
-            return path == null ? new PSRuleOption() : PSRuleOption.FromFile(path);
+            var option = path == null ? new PSRuleOption() : PSRuleOption.FromFile(path);
+            option.Execution.RuleExcluded = ruleExcludedAction;
+            return option;
         }
 
         private static string GetSourcePath(string fileName)

@@ -21,7 +21,7 @@ namespace PSRule
         public void ReadModuleConfig(string path)
         {
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
-            var configuration = HostHelper.GetModuleConfig(GetSource(path), context).ToArray();
+            var configuration = HostHelper.GetModuleConfigForTests(GetSource(path), context).ToArray();
             Assert.NotNull(configuration);
             Assert.Equal("Configuration1", configuration[0].Name);
         }

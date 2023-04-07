@@ -7,7 +7,6 @@ using System.Management.Automation;
 using System.Management.Automation.Language;
 using System.Threading;
 using PSRule.Definitions;
-using PSRule.Pipeline;
 using PSRule.Resources;
 
 namespace PSRule.Host

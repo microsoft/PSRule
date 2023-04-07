@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Threading;
 using PSRule.Configuration;
 using PSRule.Definitions;
@@ -14,14 +13,6 @@ namespace PSRule
     internal static class RunspaceContextDiagnosticExtensions
     {
         private const string WARN_KEY_PROPERTY = "Property";
-
-        internal static void WarnResourceObsolete(this RunspaceContext context, ResourceKind kind, string id)
-        {
-            if (context.Writer == null || !context.Writer.ShouldWriteWarning())
-                return;
-
-            context.Writer.WriteWarning(PSRuleResources.ResourceObsolete, Enum.GetName(typeof(ResourceKind), kind), id);
-        }
 
         internal static void WarnPropertyObsolete(this RunspaceContext context, string variableName, string propertyName)
         {
@@ -38,6 +29,17 @@ namespace PSRule
                 return;
 
             context.Writer.WriteWarning(PSRuleResources.RuleNotFound);
+        }
+
+        /// <summary>
+        /// The option '{0}' is deprecated and will be removed with PSRule v3. See http://aka.ms/ps-rule/deprecations for more detail.
+        /// </summary>
+        internal static void WarnDeprecatedOption(this RunspaceContext context, string option)
+        {
+            if (context.Writer == null || !context.Writer.ShouldWriteWarning())
+                return;
+
+            context.Writer.WriteWarning(PSRuleResources.DeprecatedOption, option);
         }
 
         internal static void WarnDuplicateRuleName(this RunspaceContext context, string ruleName)
@@ -64,6 +66,15 @@ namespace PSRule
 
             var action = context.Pipeline.Option.Execution.SuppressionGroupExpired.GetValueOrDefault(ExecutionOption.Default.SuppressionGroupExpired.Value);
             context.Throw(action, PSRuleResources.SuppressionGroupExpired, suppressionGroupId.Value);
+        }
+
+        internal static void RuleExcluded(this RunspaceContext context, ResourceId ruleId)
+        {
+            if (context == null || context.Pipeline == null)
+                return;
+
+            var action = context.Pipeline.Option.Execution.RuleExcluded.GetValueOrDefault(ExecutionOption.Default.RuleExcluded.Value);
+            context.Throw(action, PSRuleResources.RuleExcluded, ruleId.Value);
         }
 
         internal static void Throw(this RunspaceContext context, ExecutionActionPreference action, string message, params object[] args)

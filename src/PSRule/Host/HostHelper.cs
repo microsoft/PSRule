@@ -76,7 +76,7 @@ namespace PSRule.Host
         /// <summary>
         /// Read YAML/JSON objects and return module configurations.
         /// </summary>
-        internal static IEnumerable<ModuleConfigV1> GetModuleConfig(Source[] source, RunspaceContext context)
+        internal static IEnumerable<ModuleConfigV1> GetModuleConfigForTests(Source[] source, RunspaceContext context)
         {
             return ToModuleConfigV1(GetYamlJsonLanguageBlocks(source, context), context);
         }
@@ -84,7 +84,7 @@ namespace PSRule.Host
         /// <summary>
         /// Read YAML/JSON objects and return selectors.
         /// </summary>
-        internal static IEnumerable<SelectorV1> GetSelector(Source[] source, RunspaceContext context)
+        internal static IEnumerable<SelectorV1> GetSelectorForTests(Source[] source, RunspaceContext context)
         {
             return ToSelectorV1(GetYamlJsonLanguageBlocks(source, context), context);
         }
@@ -92,18 +92,14 @@ namespace PSRule.Host
         /// <summary>
         /// Read YAML/JSON objects and return suppression groups.
         /// </summary>
-        internal static IEnumerable<SuppressionGroupV1> GetSuppressionGroup(Source[] source, RunspaceContext context)
+        internal static IEnumerable<SuppressionGroupV1> GetSuppressionGroupForTests(Source[] source, RunspaceContext context)
         {
             return ToSuppressionGroupV1(GetYamlJsonLanguageBlocks(source, context), context);
         }
 
-        internal static void ImportResource(Source[] source, RunspaceContext context)
+        internal static IEnumerable<ILanguageBlock> ImportResource(Source[] source, RunspaceContext context)
         {
-            if (source == null || source.Length == 0)
-                return;
-
-            var results = GetYamlJsonLanguageBlocks(source, context);
-            Import(results.ToArray(), context);
+            return source == null || source.Length == 0 ? Array.Empty<ILanguageBlock>() : GetYamlJsonLanguageBlocks(source, context);
         }
 
         /// <summary>
@@ -192,39 +188,45 @@ namespace PSRule.Host
 
                         ps.Commands.Clear();
                         context.VerboseRuleDiscovery(path: file.Path);
-                        context.EnterSourceScope(source: file);
-
-                        var scriptAst = System.Management.Automation.Language.Parser.ParseFile(file.Path, out var tokens, out var errors);
-                        var visitor = new RuleLanguageAst();
-                        scriptAst.Visit(visitor);
-
-                        if (visitor.Errors != null && visitor.Errors.Count > 0)
+                        context.EnterLanguageScope(file);
+                        try
                         {
-                            foreach (var record in visitor.Errors)
-                                context.WriteError(record);
+                            var scriptAst = System.Management.Automation.Language.Parser.ParseFile(file.Path, out var tokens, out var errors);
+                            var visitor = new RuleLanguageAst();
+                            scriptAst.Visit(visitor);
 
-                            continue;
+                            if (visitor.Errors != null && visitor.Errors.Count > 0)
+                            {
+                                foreach (var record in visitor.Errors)
+                                    context.WriteError(record);
+
+                                continue;
+                            }
+                            if (errors != null && errors.Length > 0)
+                            {
+                                foreach (var error in errors)
+                                    context.WriteError(error);
+
+                                continue;
+                            }
+
+                            // Invoke script
+                            ps.AddScript(string.Concat("& '", file.Path, "'"), true);
+                            var invokeResults = ps.Invoke();
+
+                            // Discovery has errors so skip this file
+                            if (ps.HadErrors)
+                                continue;
+
+                            foreach (var ir in invokeResults)
+                            {
+                                if (ir.BaseObject is ILanguageBlock block)
+                                    results.Add(block);
+                            }
                         }
-                        if (errors != null && errors.Length > 0)
+                        finally
                         {
-                            foreach (var error in errors)
-                                context.WriteError(error);
-
-                            continue;
-                        }
-
-                        // Invoke script
-                        ps.AddScript(string.Concat("& '", file.Path, "'"), true);
-                        var invokeResults = ps.Invoke();
-
-                        // Discovery has errors so skip this file
-                        if (ps.HadErrors)
-                            continue;
-
-                        foreach (var ir in invokeResults)
-                        {
-                            if (ir.BaseObject is ILanguageBlock block)
-                                results.Add(block);
+                            context.ExitLanguageScope(file);
                         }
                     }
                 }
@@ -233,7 +235,6 @@ namespace PSRule.Host
             {
                 context.Writer.ExitScope();
                 context.PopScope(RunspaceScope.Source);
-                context.ExitSourceScope();
                 ps.Runspace = null;
                 ps.Dispose();
             }
@@ -271,22 +272,25 @@ namespace PSRule.Host
                             continue;
 
                         context.VerboseRuleDiscovery(path: file.Path);
-                        context.EnterSourceScope(source: file);
-
-                        using var reader = new StreamReader(file.Path);
-                        var parser = new Parser(reader);
-                        parser.TryConsume<StreamStart>(out _);
-                        while (parser.Current is DocumentStart)
+                        context.EnterLanguageScope(file);
+                        try
                         {
-                            var item = d.Deserialize<ResourceObject>(parser);
-                            if (item == null || item.Block == null)
-                                continue;
-
-                            if (item.Visit(visitor))
+                            using var reader = new StreamReader(file.Path);
+                            var parser = new Parser(reader);
+                            parser.TryConsume<StreamStart>(out _);
+                            while (parser.Current is DocumentStart)
                             {
-                                UpdateHelpInfo(context, item.Block);
-                                result.Add(item.Block);
+                                var item = d.Deserialize<ResourceObject>(parser);
+                                if (item == null || item.Block == null)
+                                    continue;
+
+                                if (item.Visit(visitor))
+                                    result.Add(item.Block);
                             }
+                        }
+                        finally
+                        {
+                            context.ExitLanguageScope(file);
                         }
                     }
                 }
@@ -295,7 +299,6 @@ namespace PSRule.Host
             {
                 context.Writer?.ExitScope();
                 context.PopScope(RunspaceScope.Resource);
-                context.ExitSourceScope();
             }
             return result.Count == 0 ? Array.Empty<ILanguageBlock>() : result.ToArray();
         }
@@ -325,11 +328,13 @@ namespace PSRule.Host
                 {
                     foreach (var file in source.File)
                     {
-                        if (file.Type == SourceType.Json)
-                        {
-                            context.VerboseRuleDiscovery(file.Path);
-                            context.EnterSourceScope(file);
+                        if (file.Type != SourceType.Json)
+                            continue;
 
+                        context.VerboseRuleDiscovery(file.Path);
+                        context.EnterLanguageScope(file);
+                        try
+                        {
                             using var reader = new JsonTextReader(new StreamReader(file.Path));
 
                             // Consume lines until start of array
@@ -341,15 +346,16 @@ namespace PSRule.Host
                                 {
                                     var value = deserializer.Deserialize<ResourceObject>(reader);
                                     if (value?.Block != null && value.Visit(visitor))
-                                    {
-                                        UpdateHelpInfo(context, value.Block);
                                         result.Add(value.Block);
-                                    }
 
                                     // Consume all end objects at the end of each resource
                                     while (reader.TryConsume(JsonToken.EndObject)) { }
                                 }
                             }
+                        }
+                        finally
+                        {
+                            context.ExitLanguageScope(file);
                         }
                     }
                 }
@@ -358,7 +364,6 @@ namespace PSRule.Host
             {
                 context.Writer?.ExitScope();
                 context.PopScope(RunspaceScope.Resource);
-                context.ExitSourceScope();
             }
             return result.Count == 0 ? Array.Empty<ILanguageBlock>() : result.ToArray();
         }
@@ -371,7 +376,7 @@ namespace PSRule.Host
 
             try
             {
-                context.EnterSourceScope(ruleBlock.Source);
+                context.EnterLanguageScope(ruleBlock.Source);
                 var invokeResult = condition.If();
                 if (invokeResult == null)
                 {
@@ -423,49 +428,50 @@ namespace PSRule.Host
             var knownRuleNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var knownRuleIds = new HashSet<ResourceId>(ResourceIdEqualityComparer.Default);
 
-            try
+
+            foreach (var block in blocks.OfType<RuleBlock>())
             {
-                foreach (var block in blocks.OfType<RuleBlock>())
+                if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
                 {
-                    if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
-                    {
-                        context.DuplicateResourceId(block.Id, duplicateId.Value);
-                        continue;
-                    }
-
-                    if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
-                        context.WarnDuplicateRuleName(duplicateName);
-
-                    results.TryAdd(new Rule
-                    {
-                        Id = block.Id,
-                        Ref = block.Ref,
-                        Alias = block.Alias,
-                        Source = block.Source,
-                        Tag = block.Tag,
-                        Level = block.Level,
-                        Info = block.Info,
-                        DependsOn = block.DependsOn,
-                        Flags = block.Flags,
-                        Extent = block.Extent,
-                        Labels = block.Labels,
-                    });
-                    knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
-                    knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
+                    context.DuplicateResourceId(block.Id, duplicateId.Value);
+                    continue;
                 }
 
-                foreach (var block in blocks.OfType<RuleV1>())
+                if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
+                    context.WarnDuplicateRuleName(duplicateName);
+
+                results.TryAdd(new Rule
                 {
-                    if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
-                    {
-                        context.DuplicateResourceId(block.Id, duplicateId.Value);
-                        continue;
-                    }
+                    Id = block.Id,
+                    Ref = block.Ref,
+                    Alias = block.Alias,
+                    Source = block.Source,
+                    Tag = block.Tag,
+                    Level = block.Level,
+                    Info = block.Info,
+                    DependsOn = block.DependsOn,
+                    Flags = block.Flags,
+                    Extent = block.Extent,
+                    Labels = block.Labels,
+                });
+                knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
+                knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
+            }
 
-                    if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
-                        context.WarnDuplicateRuleName(duplicateName);
+            foreach (var block in blocks.OfType<RuleV1>())
+            {
+                if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
+                {
+                    context.DuplicateResourceId(block.Id, duplicateId.Value);
+                    continue;
+                }
 
-                    context.EnterSourceScope(block.Source);
+                if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
+                    context.WarnDuplicateRuleName(duplicateName);
+
+                context.EnterLanguageScope(block.Source);
+                try
+                {
                     var info = GetRuleHelpInfo(context, block);
                     results.TryAdd(new Rule
                     {
@@ -484,10 +490,10 @@ namespace PSRule.Host
                     knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
                     knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
                 }
-            }
-            finally
-            {
-                context.ExitSourceScope();
+                finally
+                {
+                    context.ExitLanguageScope(block.Source);
+                }
             }
             return results;
         }
@@ -501,43 +507,43 @@ namespace PSRule.Host
             var knownRuleNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var knownRuleIds = new HashSet<ResourceId>(ResourceIdEqualityComparer.Default);
 
-            try
+            foreach (var block in blocks.OfType<RuleBlock>())
             {
-                foreach (var block in blocks.OfType<RuleBlock>())
+                if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
                 {
-                    if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
-                    {
-                        context.DuplicateResourceId(block.Id, duplicateId.Value);
+                    context.DuplicateResourceId(block.Id, duplicateId.Value);
+                    continue;
+                }
+                if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
+                {
+                    context.WarnDuplicateRuleName(duplicateName);
+                    if (skipDuplicateName)
                         continue;
-                    }
-                    if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
-                    {
-                        context.WarnDuplicateRuleName(duplicateName);
-                        if (skipDuplicateName)
-                            continue;
-                    }
-
-                    results.TryAdd(block);
-                    knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
-                    knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
                 }
 
-                foreach (var block in blocks.OfType<RuleV1>())
-                {
-                    var ruleName = block.Name;
-                    if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
-                    {
-                        context.DuplicateResourceId(block.Id, duplicateId.Value);
-                        continue;
-                    }
-                    if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
-                    {
-                        context.WarnDuplicateRuleName(duplicateName);
-                        if (skipDuplicateName)
-                            continue;
-                    }
+                results.TryAdd(block);
+                knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
+                knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
+            }
 
-                    context.EnterSourceScope(block.Source);
+            foreach (var block in blocks.OfType<RuleV1>())
+            {
+                var ruleName = block.Name;
+                if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
+                {
+                    context.DuplicateResourceId(block.Id, duplicateId.Value);
+                    continue;
+                }
+                if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
+                {
+                    context.WarnDuplicateRuleName(duplicateName);
+                    if (skipDuplicateName)
+                        continue;
+                }
+
+                context.EnterLanguageScope(block.Source);
+                try
+                {
                     var info = GetRuleHelpInfo(context, block) ?? new RuleHelpInfo(
                         ruleName,
                         ruleName,
@@ -565,10 +571,10 @@ namespace PSRule.Host
                     knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
                     knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
                 }
-            }
-            finally
-            {
-                context.ExitSourceScope();
+                finally
+                {
+                    context.ExitLanguageScope(block.Source);
+                }
             }
             return results;
         }
@@ -592,9 +598,11 @@ namespace PSRule.Host
         {
             // Index rules by RuleId
             var results = new Dictionary<string, RuleHelpInfo>(StringComparer.OrdinalIgnoreCase);
-            try
+
+            foreach (var block in blocks.OfType<RuleBlock>())
             {
-                foreach (var block in blocks.OfType<RuleBlock>())
+                context.EnterLanguageScope(block.Source);
+                try
                 {
                     // Ignore rule blocks that don't match
                     if (!Match(context, block))
@@ -603,10 +611,11 @@ namespace PSRule.Host
                     if (!results.ContainsKey(block.Id.Value))
                         results[block.Id.Value] = block.Info;
                 }
-            }
-            finally
-            {
-                context.ExitSourceScope();
+                finally
+                {
+                    context.ExitLanguageScope(block.Source);
+                }
+
             }
             return results.Values.ToArray();
         }
@@ -618,9 +627,11 @@ namespace PSRule.Host
 
             // Index baselines by BaselineId
             var results = new Dictionary<string, Baseline>(StringComparer.OrdinalIgnoreCase);
-            try
+
+            foreach (var block in blocks.OfType<Baseline>().ToArray())
             {
-                foreach (var block in blocks.OfType<Baseline>().ToArray())
+                context.EnterLanguageScope(block.Source);
+                try
                 {
                     // Ignore baselines that don't match
                     if (!Match(context, block))
@@ -628,11 +639,12 @@ namespace PSRule.Host
 
                     if (!results.ContainsKey(block.BaselineId))
                         results[block.BaselineId] = block;
+
                 }
-            }
-            finally
-            {
-                context.ExitSourceScope();
+                finally
+                {
+                    context.ExitLanguageScope(block.Source);
+                }
             }
             return results.Values.ToArray();
         }
@@ -644,23 +656,25 @@ namespace PSRule.Host
 
             // Index suppression groups by Id
             var results = new Dictionary<string, SuppressionGroupV1>(StringComparer.OrdinalIgnoreCase);
-            try
+
+            foreach (var block in blocks.OfType<SuppressionGroupV1>().ToArray())
             {
-                foreach (var block in blocks.OfType<SuppressionGroupV1>().ToArray())
+                context.EnterLanguageScope(block.Source);
+                try
                 {
                     // Ignore suppression groups that don't match
                     if (!Match(context, block))
                         continue;
 
+                    UpdateHelpInfo(context, block);
                     if (!results.ContainsKey(block.Id.Value))
                         results[block.Id.Value] = block;
                 }
+                finally
+                {
+                    context.ExitLanguageScope(block.Source);
+                }
             }
-            finally
-            {
-                context.ExitSourceScope();
-            }
-
             return results.Values.ToArray();
         }
 
@@ -671,17 +685,10 @@ namespace PSRule.Host
 
             // Index configurations by Name
             var results = new Dictionary<string, ModuleConfigV1>(StringComparer.OrdinalIgnoreCase);
-            try
+            foreach (var block in blocks.OfType<ModuleConfigV1>().ToArray())
             {
-                foreach (var block in blocks.OfType<ModuleConfigV1>().ToArray())
-                {
-                    if (!results.ContainsKey(block.Name))
-                        results[block.Name] = block;
-                }
-            }
-            finally
-            {
-                context.ExitSourceScope();
+                if (!results.ContainsKey(block.Name))
+                    results[block.Name] = block;
             }
             return results.Values.ToArray();
         }
@@ -694,9 +701,11 @@ namespace PSRule.Host
             // Index by Id
             var index = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var results = new List<IConvention>(blocks.Length);
-            try
+
+            foreach (var block in blocks.OfType<ScriptBlockConvention>().ToArray())
             {
-                foreach (var block in blocks.OfType<ScriptBlockConvention>().ToArray())
+                context.EnterLanguageScope(block.Source);
+                try
                 {
                     // Ignore blocks that don't match
                     if (!Match(context, block))
@@ -704,11 +713,12 @@ namespace PSRule.Host
 
                     if (!index.Contains(block.Id.Value))
                         results.Add(block);
+
                 }
-            }
-            finally
-            {
-                context.ExitSourceScope();
+                finally
+                {
+                    context.ExitLanguageScope(block.Source);
+                }
             }
             return Sort(context, results.ToArray());
         }
@@ -720,9 +730,11 @@ namespace PSRule.Host
 
             // Index selectors by Id
             var results = new Dictionary<string, SelectorV1>(StringComparer.OrdinalIgnoreCase);
-            try
+
+            foreach (var block in blocks.OfType<SelectorV1>().ToArray())
             {
-                foreach (var block in blocks.OfType<SelectorV1>().ToArray())
+                context.EnterLanguageScope(block.Source);
+                try
                 {
                     // Ignore selectors that don't match
                     if (!Match(context, block))
@@ -731,25 +743,12 @@ namespace PSRule.Host
                     if (!results.ContainsKey(block.Id.Value))
                         results[block.Id.Value] = block;
                 }
-            }
-            finally
-            {
-                context.ExitSourceScope();
+                finally
+                {
+                    context.ExitLanguageScope(block.Source);
+                }
             }
             return results.Values.ToArray();
-        }
-
-        private static void Import(ILanguageBlock[] blocks, RunspaceContext context)
-        {
-            var resources = blocks.OfType<IResource>();
-
-            // Process module configurations first
-            foreach (var resource in resources.Where(r => r.Kind == ResourceKind.ModuleConfig).ToArray())
-                context.Pipeline.Import(context, resource);
-
-            // Process other resources
-            foreach (var resource in resources.Where(r => r.Kind != ResourceKind.ModuleConfig).ToArray())
-                context.Pipeline.Import(context, resource);
         }
 
         private static void Import(IConvention[] blocks, RunspaceContext context)
@@ -760,42 +759,37 @@ namespace PSRule.Host
 
         private static bool Match(RunspaceContext context, RuleBlock resource)
         {
-            context.EnterSourceScope(resource.Source);
             var filter = context.LanguageScope.GetFilter(ResourceKind.Rule);
             return filter == null || filter.Match(resource);
         }
 
         private static bool Match(RunspaceContext context, IRuleV1 resource)
         {
-            context.EnterSourceScope(resource.Source);
+            context.EnterLanguageScope(resource.Source);
             var filter = context.LanguageScope.GetFilter(ResourceKind.Rule);
             return filter == null || filter.Match(resource);
         }
 
         private static bool Match(RunspaceContext context, Baseline resource)
         {
-            context.EnterSourceScope(resource.Source);
             var filter = context.LanguageScope.GetFilter(ResourceKind.Baseline);
             return filter == null || filter.Match(resource);
         }
 
         private static bool Match(RunspaceContext context, ScriptBlockConvention block)
         {
-            context.EnterSourceScope(block.Source);
             var filter = context.LanguageScope.GetFilter(ResourceKind.Convention);
             return filter == null || filter.Match(block);
         }
 
         private static bool Match(RunspaceContext context, SelectorV1 resource)
         {
-            context.EnterSourceScope(source: resource.Source);
             var filter = context.LanguageScope.GetFilter(ResourceKind.Selector);
             return filter == null || filter.Match(resource);
         }
 
         private static bool Match(RunspaceContext context, SuppressionGroupV1 suppressionGroup)
         {
-            context.EnterSourceScope(source: suppressionGroup.Source);
             var filter = context.LanguageScope.GetFilter(ResourceKind.SuppressionGroup);
             return filter == null || filter.Match(suppressionGroup);
         }

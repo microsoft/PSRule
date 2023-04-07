@@ -186,7 +186,7 @@ namespace PSRule
 
         #region Helper methods
 
-        private Baseline[] GetBaselines(Source[] source)
+        private static Baseline[] GetBaselines(Source[] source)
         {
             var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
             context.Init(source);
@@ -195,26 +195,30 @@ namespace PSRule
             return baseline;
         }
 
-        private PSRuleOption GetOption()
+        private static PSRuleOption GetOption()
         {
             return new PSRuleOption();
         }
 
-        private Source[] GetSource(string path)
+        private static Source[] GetSource(string path)
         {
             var builder = new SourcePipelineBuilder(null, null);
             builder.Directory(GetSourcePath(path));
             return builder.Build();
         }
 
-        private Source[] GetSourceInModule(string path, string moduleName, SourceType type)
+        private static Source[] GetSourceInModule(string path, string moduleName, SourceType type)
         {
             var file = new SourceFile(GetSourcePath(path), moduleName, type, null);
-            var source = new Source(AppDomain.CurrentDomain.BaseDirectory, new SourceFile[] { file });
+            var source = new Source(
+                module: new Source.ModuleInfo(AppDomain.CurrentDomain.BaseDirectory, moduleName, "1.0.0", null, "4de0fd26-6aae-401f-a943-b49f082f141e", "Microsoft", null),
+                file: new SourceFile[] { file },
+                dependency: false
+            );
             return new Source[] { source };
         }
 
-        private string GetSourcePath(string fileName)
+        private static string GetSourcePath(string fileName)
         {
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
         }

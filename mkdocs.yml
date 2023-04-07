@@ -10,7 +10,7 @@ repo_url: https://github.com/microsoft/PSRule
 edit_uri: blob/main/docs/
 
 extra_css:
-- assets/stylesheets/extra.css
+  - assets/stylesheets/extra.css
 
 theme:
   language: en
@@ -26,87 +26,88 @@ theme:
   icon:
     repo: fontawesome/brands/github
   features:
-  - navigation.instant
-  - navigation.indexes
-  - navigation.sections:
-      level: 1
-  - navigation.tabs
-  - content.code.annotate
-  - content.tabs.link
+    - navigation.instant
+    - navigation.indexes
+    - navigation.sections:
+        level: 1
+    - navigation.tabs
+    - content.code.annotate
+    - content.tabs.link
+    - content.code.copy
 
 nav:
   - Home: index.md
   - Getting started:
-    - Overview:
-      - About: about.md
-      - Features: features.md
-      - FAQ: faq.md
-    - Installation: install-instructions.md
-    - Quickstarts:
-      - Create a standalone rule: quickstart/standalone-rule.md
-    - Authoring rules:
-      - Testing infrastructure: authoring/testing-infrastructure.md
-      - Using expressions: authoring/using-expressions.md
-      - Storing and naming rules: authoring/storing-rules.md
-      - Packaging rules in a module: authoring/packaging-rules.md
-      - Writing rule help: authoring/writing-rule-help.md
-    - Running rules:
-      - Creating your pipeline: creating-your-pipeline.md
-      - Validating locally: validating-locally.md
-      - Analysis output: analysis-output.md
-    - Tutorials:
-      - Validate Azure resource configuration: scenarios/azure-resources/azure-resources.md
-      - Azure resource tagging example: scenarios/azure-tags/azure-tags.md
-      - Kubernetes resource validation example: scenarios/kubernetes-resources/kubernetes-resources.md
-      - Using PSRule from a Container: scenarios/containers/container-execution.md
-    - Concepts:
-      - Functions: expressions/functions.md
-      - Grouping rules: concepts/grouping-rules.md
-      - Sub-selectors: expressions/sub-selectors.md
-    - Scenarios:
-      - Using within continuous integration: scenarios/validation-pipeline/validation-pipeline.md
-    - Troubleshooting: troubleshooting.md
-    - License and contributing: license-contributing.md
-    - Related projects: related-projects.md
-    - Releases:
-      - Change log:
-        - v2: 'CHANGELOG-v2.md'
-        - v1: 'CHANGELOG-v1.md'
-        - v0: 'CHANGELOG-v0.md'
-      - Upgrade notes: upgrade-notes.md
-      - Deprecations: deprecations.md
-      - Changes and versioning: versioning.md
-    - Support: support.md
-  # - Setup:
-  #   - Configuring options: setup/configuring-options.md
-  #   - Configuring rule defaults: setup/configuring-rules.md
-  #   - Configuring expansion: setup/configuring-expansion.md
+      - Overview:
+          - About: about.md
+          - Features: features.md
+          - FAQ: faq.md
+      - Installation: install-instructions.md
+      - Quickstarts:
+          - Create a standalone rule: quickstart/standalone-rule.md
+      - Authoring rules:
+          - Testing infrastructure: authoring/testing-infrastructure.md
+          - Using expressions: authoring/using-expressions.md
+          - Storing and naming rules: authoring/storing-rules.md
+          - Packaging rules in a module: authoring/packaging-rules.md
+          - Writing rule help: authoring/writing-rule-help.md
+      - Running rules:
+          - Creating your pipeline: creating-your-pipeline.md
+          - Validating locally: validating-locally.md
+          - Analysis output: analysis-output.md
+      - Tutorials:
+          - Validate Azure resource configuration: scenarios/azure-resources/azure-resources.md
+          - Azure resource tagging example: scenarios/azure-tags/azure-tags.md
+          - Kubernetes resource validation example: scenarios/kubernetes-resources/kubernetes-resources.md
+          - Using PSRule from a Container: scenarios/containers/container-execution.md
+      - Concepts:
+          - Functions: expressions/functions.md
+          - Grouping rules: concepts/grouping-rules.md
+          - Sub-selectors: expressions/sub-selectors.md
+      - Scenarios:
+          - Using within continuous integration: scenarios/validation-pipeline/validation-pipeline.md
+      - Troubleshooting: troubleshooting.md
+      - License and contributing: license-contributing.md
+      - Related projects: related-projects.md
+      - Releases:
+          - Change log:
+              - v2: 'CHANGELOG-v2.md'
+              - v1: 'CHANGELOG-v1.md'
+              - v0: 'CHANGELOG-v0.md'
+          - Upgrade notes: upgrade-notes.md
+          - Deprecations: deprecations.md
+          - Changes and versioning: versioning.md
+      - Support: support.md
+    # - Setup:
+    #   - Configuring options: setup/configuring-options.md
+    #   - Configuring rule defaults: setup/configuring-rules.md
+    #   - Configuring expansion: setup/configuring-expansion.md
   - Reference:
-    - Commands:
-      - Assert-PSRule: commands/PSRule/en-US/Assert-PSRule.md
-      - Export-PSRuleBaseline: commands/PSRule/en-US/Export-PSRuleBaseline.md
-      - Get-PSRule: commands/PSRule/en-US/Get-PSRule.md
-      - Get-PSRuleBaseline: commands/PSRule/en-US/Get-PSRuleBaseline.md
-      - Get-PSRuleHelp: commands/PSRule/en-US/Get-PSRuleHelp.md
-      - Get-PSRuleTarget: commands/PSRule/en-US/Get-PSRuleTarget.md
-      - Invoke-PSRule: commands/PSRule/en-US/Invoke-PSRule.md
-      - New-PSRuleOption: commands/PSRule/en-US/New-PSRuleOption.md
-      - Set-PSRuleOption: commands/PSRule/en-US/Set-PSRuleOption.md
-      - Test-PSRuleTarget: commands/PSRule/en-US/Test-PSRuleTarget.md
-    - Assertion methods: concepts/PSRule/en-US/about_PSRule_Assert.md
-    - Baselines: concepts/PSRule/en-US/about_PSRule_Baseline.md
-    - Badges: concepts/PSRule/en-US/about_PSRule_Badges.md
-    - Conventions: concepts/PSRule/en-US/about_PSRule_Conventions.md
-    - Documentation: concepts/PSRule/en-US/about_PSRule_Docs.md
-    - Expressions: concepts/PSRule/en-US/about_PSRule_Expressions.md
-    - Keywords: keywords/PSRule/en-US/about_PSRule_Keywords.md
-    - Options: concepts/PSRule/en-US/about_PSRule_Options.md
-    - Rules: concepts/PSRule/en-US/about_PSRule_Rules.md
-    - Selectors: concepts/PSRule/en-US/about_PSRule_Selectors.md
-    - Suppression Groups: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
-    - Variables: concepts/PSRule/en-US/about_PSRule_Variables.md
+      - Commands:
+          - Assert-PSRule: commands/PSRule/en-US/Assert-PSRule.md
+          - Export-PSRuleBaseline: commands/PSRule/en-US/Export-PSRuleBaseline.md
+          - Get-PSRule: commands/PSRule/en-US/Get-PSRule.md
+          - Get-PSRuleBaseline: commands/PSRule/en-US/Get-PSRuleBaseline.md
+          - Get-PSRuleHelp: commands/PSRule/en-US/Get-PSRuleHelp.md
+          - Get-PSRuleTarget: commands/PSRule/en-US/Get-PSRuleTarget.md
+          - Invoke-PSRule: commands/PSRule/en-US/Invoke-PSRule.md
+          - New-PSRuleOption: commands/PSRule/en-US/New-PSRuleOption.md
+          - Set-PSRuleOption: commands/PSRule/en-US/Set-PSRuleOption.md
+          - Test-PSRuleTarget: commands/PSRule/en-US/Test-PSRuleTarget.md
+      - Assertion methods: concepts/PSRule/en-US/about_PSRule_Assert.md
+      - Baselines: concepts/PSRule/en-US/about_PSRule_Baseline.md
+      - Badges: concepts/PSRule/en-US/about_PSRule_Badges.md
+      - Conventions: concepts/PSRule/en-US/about_PSRule_Conventions.md
+      - Documentation: concepts/PSRule/en-US/about_PSRule_Docs.md
+      - Expressions: concepts/PSRule/en-US/about_PSRule_Expressions.md
+      - Keywords: keywords/PSRule/en-US/about_PSRule_Keywords.md
+      - Options: concepts/PSRule/en-US/about_PSRule_Options.md
+      - Rules: concepts/PSRule/en-US/about_PSRule_Rules.md
+      - Selectors: concepts/PSRule/en-US/about_PSRule_Selectors.md
+      - Suppression Groups: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
+      - Variables: concepts/PSRule/en-US/about_PSRule_Variables.md
   - Addons:
-    - Additional modules: addon-modules.md
+      - Additional modules: addon-modules.md
 
 markdown_extensions:
   - admonition
@@ -135,14 +136,14 @@ markdown_extensions:
       separator: '-'
 
 plugins:
-- mkdocs-simple-hooks:
-    hooks:
-      on_page_markdown: "docs.hooks:replace_maml"
-- search
-- git-revision-date
-- redirects:
-    redirect_maps:
-      'authoring/writing-rules.md': 'authoring/testing-infrastructure.md'
+  - mkdocs-simple-hooks:
+      hooks:
+        on_page_markdown: 'docs.hooks:replace_maml'
+  - search
+  - git-revision-date
+  - redirects:
+      redirect_maps:
+        'authoring/writing-rules.md': 'authoring/testing-infrastructure.md'
 
 extra:
   version:

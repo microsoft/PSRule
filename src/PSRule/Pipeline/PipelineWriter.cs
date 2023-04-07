@@ -344,7 +344,10 @@ namespace PSRule.Pipeline
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
             if (sendToPipeline is InvokeResult && Option.Output.As == ResultFormat.Summary)
+            {
+                base.WriteObject(sendToPipeline, enumerateCollection);
                 return;
+            }
 
             if (sendToPipeline is InvokeResult result)
             {
@@ -393,7 +396,10 @@ namespace PSRule.Pipeline
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
             if (sendToPipeline is InvokeResult && Option.Output.As == ResultFormat.Summary)
+            {
+                base.WriteObject(sendToPipeline, enumerateCollection);
                 return;
+            }
 
             if (sendToPipeline is InvokeResult result)
             {

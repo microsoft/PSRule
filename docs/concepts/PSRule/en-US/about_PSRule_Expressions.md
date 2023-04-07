@@ -1215,10 +1215,14 @@ spec:
 
 The `match` condition can be used to compare if a field matches a supplied regular expression.
 
+- `caseSensitive` - Optionally, a case sensitive-comparison can be performed.
+  By default, case-insensitive comparison is performed.
+
 Syntax:
 
 ```yaml
 match: <string>
+caseSensitive: <boolean>
 ```
 
 For example:
@@ -1606,10 +1610,14 @@ spec:
 
 The `notMatch` condition can be used to compare if a field does not matches a supplied regular expression.
 
+- `caseSensitive` - Optionally, a case sensitive-comparison can be performed.
+  By default, case-insensitive comparison is performed.
+
 Syntax:
 
 ```yaml
 notMatch: <string>
+caseSensitive: <boolean>
 ```
 
 For example:
@@ -1702,6 +1710,13 @@ The following properties are accepted:
 
 - `caseSensitive` - Optionally, a case-sensitive comparison can be performed for string values.
   By default, case-insensitive comparison is performed.
+
+Syntax:
+
+```yaml
+notWithinPath: <array>
+caseSensitive: <boolean>
+```
 
 For example:
 
@@ -2045,6 +2060,13 @@ The following properties are accepted:
 - `caseSensitive` - Optionally, a case-sensitive comparison can be performed for string values.
   By default, case-insensitive comparison is performed.
 
+Syntax:
+
+```yaml
+withinPath: <array>
+caseSensitive: <boolean>
+```
+
 For example:
 
 ```yaml
@@ -2076,7 +2098,7 @@ spec:
 
 ## NOTE
 
-An online version of this document is available at https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/.
+An online version of this document is available at <https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/>.
 
 ## SEE ALSO
 

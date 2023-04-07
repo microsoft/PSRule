@@ -14,23 +14,9 @@ using PSRule.Runtime;
 
 namespace PSRule.Pipeline
 {
-    internal interface IBindingOption
-    {
-        FieldMap[] Field { get; }
-
-        bool IgnoreCase { get; }
-
-        string NameSeparator { get; }
-
-        bool PreferTargetInfo { get; }
-
-        string[] TargetName { get; }
-
-        string[] TargetType { get; }
-
-        bool UseQualifiedName { get; }
-    }
-
+    /// <summary>
+    /// Returns options based on the executing scope of the rule or resource.
+    /// </summary>
     internal sealed class OptionContext
     {
         private readonly Dictionary<string, BaselineScope> _ModuleBaselineScope;
@@ -47,11 +33,11 @@ namespace PSRule.Pipeline
         private BaselineScope _ModuleBaseline;
         private ConfigScope _ModuleConfig;
 
-        private BindingOption _Binding;
-        private RuleFilter _Filter;
-        private Dictionary<string, object> _Configuration;
-        private string[] _Culture;
-        private ConventionFilter _ConventionFilter;
+        //private BindingOption _Binding;
+        //private RuleFilter _Filter;
+        //private Dictionary<string, object> _Configuration;
+        //private string[] _Culture;
+        //private ConventionFilter _ConventionFilter;
 
         internal OptionContext()
         {
@@ -60,6 +46,8 @@ namespace PSRule.Pipeline
             _ConventionOrder = new List<string>();
             _DefaultCulture = GetDefaultCulture();
         }
+
+        #region Helper classes
 
         internal enum ScopeType
         {
@@ -258,87 +246,46 @@ namespace PSRule.Pipeline
             }
         }
 
+        #endregion Helper classes
+
         public bool ContainsBaseline(string baselineId)
         {
             return _ModuleBaselineScope.ContainsKey(baselineId);
         }
 
-        public void UseScope(string moduleName)
+        /// <summary>
+        /// Update a language scope from scoped options.
+        /// </summary>
+        /// <param name="languageScope">The specific language scope.</param>
+        /// <exception cref="ArgumentNullException">Returned when the language scope is null.</exception>
+        public void UpdateLanguageScope(ILanguageScope languageScope)
         {
-            _ModuleConfig = !string.IsNullOrEmpty(moduleName) && _ModuleConfigScope.TryGetValue(moduleName, out var configScope) ? configScope : null;
-            _ModuleBaseline = !string.IsNullOrEmpty(moduleName) && _ModuleBaselineScope.TryGetValue(moduleName, out var baselineScope) ? baselineScope : null;
-            _Binding = null;
-            _Configuration = null;
-            _Filter = null;
-            _Culture = null;
-            _ConventionFilter = null;
+            if (languageScope == null)
+                throw new ArgumentNullException(nameof(languageScope));
+
+            ResetScope(languageScope.Name);
+            languageScope.Configure(GetConfiguration());
+            languageScope.WithFilter(GetRuleFilter());
+            languageScope.WithFilter(GetConventionFilter());
+            languageScope.WithBinding(GetTargetBinding());
+            languageScope.WithCulture(GetCulture());
         }
 
-        private IResourceFilter GetRuleFilter()
+        /// <summary>
+        /// Check for any obsolete resources and log warnings.
+        /// </summary>
+        internal void CheckObsolete(ILogger logger)
         {
-            if (_Filter != null)
-                return _Filter;
+            if (logger == null)
+                return;
 
-            var include = _Parameter?.Include ?? _Explicit?.Include ?? _WorkspaceBaseline?.Include ?? _ModuleBaseline?.Include;
-            var exclude = _Explicit?.Exclude ?? _WorkspaceBaseline?.Exclude ?? _ModuleBaseline?.Exclude;
-            var tag = _Parameter?.Tag ?? _Explicit?.Tag ?? _WorkspaceBaseline?.Tag ?? _ModuleBaseline?.Tag;
-            var labels = _Parameter?.Labels ?? _Explicit?.Labels ?? _WorkspaceBaseline?.Labels ?? _ModuleBaseline?.Labels;
-            var includeLocal = _Explicit?.IncludeLocal ?? _WorkspaceBaseline?.IncludeLocal ?? _ModuleBaseline?.IncludeLocal;
-            return _Filter = new RuleFilter(include, tag, exclude, includeLocal, labels);
-        }
-
-        private IResourceFilter GetConventionFilter()
-        {
-            if (_ConventionFilter != null)
-                return _ConventionFilter;
-
-            var include = new List<string>();
-            for (var i = 0; _Parameter?.Convention?.Include != null && i < _Parameter.Convention.Include.Length; i++)
-                include.Add(_Parameter.Convention.Include[i]);
-
-            for (var i = 0; _WorkspaceConfig?.Convention?.Include != null && i < _WorkspaceConfig.Convention.Include.Length; i++)
-                include.Add(_WorkspaceConfig.Convention.Include[i]);
-
-            for (var i = 0; _ModuleConfig?.Convention?.Include != null && i < _ModuleConfig.Convention.Include.Length; i++)
-                include.Add(ResourceHelper.GetIdString(_ModuleConfig.ModuleName, _ModuleConfig.Convention.Include[i]));
-
-            return _ConventionFilter = new ConventionFilter(include.ToArray());
-        }
-
-        public IBindingOption GetTargetBinding()
-        {
-            if (_Binding != null)
-                return _Binding;
-
-            var field = new FieldMap[] { _Explicit?.Field, _WorkspaceBaseline?.Field, _ModuleBaseline?.Field, _ModuleConfig?.Field };
-            var ignoreCase = _Explicit?.IgnoreCase ?? _WorkspaceBaseline?.IgnoreCase ?? _ModuleBaseline?.IgnoreCase ?? _ModuleConfig?.IgnoreCase ?? Configuration.BindingOption.Default.IgnoreCase.Value;
-            var nameSeparator = _Explicit?.NameSeparator ?? _WorkspaceBaseline?.NameSeparator ?? _ModuleBaseline?.NameSeparator ?? _ModuleConfig?.NameSeparator ?? Configuration.BindingOption.Default.NameSeparator;
-            var preferTargetInfo = _Explicit?.PreferTargetInfo ?? _WorkspaceBaseline?.PreferTargetInfo ?? _ModuleBaseline?.PreferTargetInfo ?? _ModuleConfig?.PreferTargetInfo ?? Configuration.BindingOption.Default.PreferTargetInfo.Value;
-            var targetName = _Explicit?.TargetName ?? _WorkspaceBaseline?.TargetName ?? _ModuleBaseline?.TargetName ?? _ModuleConfig?.TargetName;
-            var targetType = _Explicit?.TargetType ?? _WorkspaceBaseline?.TargetType ?? _ModuleBaseline?.TargetType ?? _ModuleConfig?.TargetType;
-            var useQualifiedName = _Explicit?.UseQualifiedName ?? _WorkspaceBaseline?.UseQualifiedName ?? _ModuleBaseline?.UseQualifiedName ?? _ModuleConfig?.UseQualifiedName ?? Configuration.BindingOption.Default.UseQualifiedName.Value;
-            return _Binding = new BindingOption(field, ignoreCase, preferTargetInfo, nameSeparator, targetName, targetType, useQualifiedName);
-        }
-
-        public Dictionary<string, object> GetConfiguration()
-        {
-            return _Configuration ??= AddConfiguration();
-        }
-
-        public string[] GetCulture()
-        {
-            return _Culture ??= _WorkspaceConfig?.Culture ?? _ModuleConfig?.Culture ?? _DefaultCulture;
-        }
-
-        internal void Init(RunspaceContext context)
-        {
             foreach (var baseline in _ModuleBaselineScope.Values)
             {
                 if (baseline.Obsolete)
-                    context.WarnResourceObsolete(ResourceKind.Baseline, baseline.Id);
+                    logger.WarnResourceObsolete(ResourceKind.Baseline, baseline.Id);
             }
             if (_Explicit != null && _Explicit.Obsolete)
-                context.WarnResourceObsolete(ResourceKind.Baseline, _Explicit.Id);
+                logger.WarnResourceObsolete(ResourceKind.Baseline, _Explicit.Id);
         }
 
         internal void Add(BaselineScope scope)
@@ -394,6 +341,8 @@ namespace PSRule.Pipeline
             return index > -1 ? index : int.MaxValue;
         }
 
+        #region Private methods
+
         private static string[] GetConventions(string scope, string[] include)
         {
             if (include == null || include.Length == 0)
@@ -405,16 +354,64 @@ namespace PSRule.Pipeline
             return include;
         }
 
-        internal void BuildScope(ILanguageScope languageScope)
+        private void ResetScope(string moduleName)
         {
-            UseScope(languageScope.Name);
-            var configuration = GetConfiguration();
-            languageScope.Configure(configuration);
-            languageScope.WithFilter(GetRuleFilter());
-            languageScope.WithFilter(GetConventionFilter());
+            _ModuleConfig = !string.IsNullOrEmpty(moduleName) && _ModuleConfigScope.TryGetValue(moduleName, out var configScope) ? configScope : null;
+            _ModuleBaseline = !string.IsNullOrEmpty(moduleName) && _ModuleBaselineScope.TryGetValue(moduleName, out var baselineScope) ? baselineScope : null;
+            //_Binding = null;
+            //_Configuration = null;
+            //_Filter = null;
+            //_Culture = null;
+            //_ConventionFilter = null;
         }
 
-        private Dictionary<string, object> AddConfiguration()
+        private IResourceFilter GetRuleFilter()
+        {
+            // if (_Filter != null)
+            //     return _Filter;
+
+            var include = _Parameter?.Include ?? _Explicit?.Include ?? _WorkspaceBaseline?.Include ?? _ModuleBaseline?.Include;
+            var exclude = _Explicit?.Exclude ?? _WorkspaceBaseline?.Exclude ?? _ModuleBaseline?.Exclude;
+            var tag = _Parameter?.Tag ?? _Explicit?.Tag ?? _WorkspaceBaseline?.Tag ?? _ModuleBaseline?.Tag;
+            var labels = _Parameter?.Labels ?? _Explicit?.Labels ?? _WorkspaceBaseline?.Labels ?? _ModuleBaseline?.Labels;
+            var includeLocal = _Explicit?.IncludeLocal ?? _WorkspaceBaseline?.IncludeLocal ?? _ModuleBaseline?.IncludeLocal;
+            return new RuleFilter(include, tag, exclude, includeLocal, labels);
+        }
+
+        private IResourceFilter GetConventionFilter()
+        {
+            // if (_ConventionFilter != null)
+            //     return _ConventionFilter;
+
+            var include = new List<string>();
+            for (var i = 0; _Parameter?.Convention?.Include != null && i < _Parameter.Convention.Include.Length; i++)
+                include.Add(_Parameter.Convention.Include[i]);
+
+            for (var i = 0; _WorkspaceConfig?.Convention?.Include != null && i < _WorkspaceConfig.Convention.Include.Length; i++)
+                include.Add(_WorkspaceConfig.Convention.Include[i]);
+
+            for (var i = 0; _ModuleConfig?.Convention?.Include != null && i < _ModuleConfig.Convention.Include.Length; i++)
+                include.Add(ResourceHelper.GetIdString(_ModuleConfig.ModuleName, _ModuleConfig.Convention.Include[i]));
+
+            return new ConventionFilter(include.ToArray());
+        }
+
+        private IBindingOption GetTargetBinding()
+        {
+            // if (_Binding != null)
+            //     return _Binding;
+
+            var field = new FieldMap[] { _Explicit?.Field, _WorkspaceBaseline?.Field, _ModuleBaseline?.Field, _ModuleConfig?.Field };
+            var ignoreCase = _Explicit?.IgnoreCase ?? _WorkspaceBaseline?.IgnoreCase ?? _ModuleBaseline?.IgnoreCase ?? _ModuleConfig?.IgnoreCase ?? Configuration.BindingOption.Default.IgnoreCase.Value;
+            var nameSeparator = _Explicit?.NameSeparator ?? _WorkspaceBaseline?.NameSeparator ?? _ModuleBaseline?.NameSeparator ?? _ModuleConfig?.NameSeparator ?? Configuration.BindingOption.Default.NameSeparator;
+            var preferTargetInfo = _Explicit?.PreferTargetInfo ?? _WorkspaceBaseline?.PreferTargetInfo ?? _ModuleBaseline?.PreferTargetInfo ?? _ModuleConfig?.PreferTargetInfo ?? Configuration.BindingOption.Default.PreferTargetInfo.Value;
+            var targetName = _Explicit?.TargetName ?? _WorkspaceBaseline?.TargetName ?? _ModuleBaseline?.TargetName ?? _ModuleConfig?.TargetName;
+            var targetType = _Explicit?.TargetType ?? _WorkspaceBaseline?.TargetType ?? _ModuleBaseline?.TargetType ?? _ModuleConfig?.TargetType;
+            var useQualifiedName = _Explicit?.UseQualifiedName ?? _WorkspaceBaseline?.UseQualifiedName ?? _ModuleBaseline?.UseQualifiedName ?? _ModuleConfig?.UseQualifiedName ?? Configuration.BindingOption.Default.UseQualifiedName.Value;
+            return new BindingOption(field, ignoreCase, preferTargetInfo, nameSeparator, targetName, targetType, useQualifiedName);
+        }
+
+        private Dictionary<string, object> GetConfiguration()
         {
             var result = new Dictionary<string, object>();
             if (_Explicit != null && _Explicit.Configuration.Count > 0)
@@ -430,6 +427,15 @@ namespace PSRule.Pipeline
                 result.AddUnique(_ModuleConfig.Configuration);
 
             return result;
+        }
+
+        /// <summary>
+        /// Get an ordered culture preference list.
+        /// </summary>
+        /// <returns>An ordered array of cultures to be tried for help.</returns>
+        private string[] GetCulture()
+        {
+            return _WorkspaceConfig?.Culture ?? _ModuleConfig?.Culture ?? _DefaultCulture;
         }
 
         private static string[] GetDefaultCulture()
@@ -451,51 +457,7 @@ namespace PSRule.Pipeline
             }
             return result.ToArray();
         }
-    }
 
-    internal sealed class OptionContextBuilder
-    {
-        private readonly OptionContext _OptionContext;
-
-        internal OptionContextBuilder()
-        {
-            _OptionContext = new OptionContext();
-        }
-
-        internal OptionContextBuilder(PSRuleOption option, string[] include, Hashtable tag, string[] convention)
-            : this()
-        {
-            Parameter(include, tag, convention);
-            Workspace(option);
-        }
-
-        internal OptionContext Build()
-        {
-            return _OptionContext;
-        }
-
-        private void Parameter(string[] include, Hashtable tag, string[] convention)
-        {
-            _OptionContext.Add(new OptionContext.BaselineScope(
-                type: OptionContext.ScopeType.Parameter,
-                include: include,
-                tag: tag,
-                convention: convention));
-        }
-
-        private void Workspace(PSRuleOption option)
-        {
-            _OptionContext.Add(new OptionContext.BaselineScope(
-                type: OptionContext.ScopeType.Workspace,
-                baselineId: null,
-                moduleName: null,
-                option: option,
-                obsolete: false));
-
-            _OptionContext.Add(new OptionContext.ConfigScope(
-                type: OptionContext.ScopeType.Workspace,
-                moduleName: null,
-                option: option));
-        }
+        #endregion Private methods
     }
 }

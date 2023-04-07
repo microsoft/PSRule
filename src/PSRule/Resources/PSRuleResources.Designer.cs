@@ -205,6 +205,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The option &apos;{0}&apos; is deprecated and will be removed with PSRule v3. See http://aka.ms/ps-rule/deprecations for more detail..
+        /// </summary>
+        internal static string DeprecatedOption {
+            get {
+                return ResourceManager.GetString("DeprecatedOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The resource &apos;{0}&apos; is using a duplicate resource identifier. A resource with the identifier &apos;{1}&apos; already exists. Each resource must have a unique name, ref, and aliases. See https://aka.ms/ps-rule/naming for guidance on naming within PSRule..
         /// </summary>
         internal static string DuplicateResourceId {
@@ -565,6 +574,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PSR0002: Summary results are not supported with Job Summaries. See https://aka.ms/ps-rule/troubleshooting..
+        /// </summary>
+        internal static string PSR0002 {
+            get {
+                return ResourceManager.GetString("PSR0002", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deserialize the file &apos;{0}&apos;: {1}.
         /// </summary>
         internal static string ReadFileFailed {
@@ -624,6 +642,15 @@ namespace PSRule.Resources {
         internal static string RuleErrorPipelineException {
             get {
                 return ResourceManager.GetString("RuleErrorPipelineException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rule &apos;{0}&apos; was excluded from run..
+        /// </summary>
+        internal static string RuleExcluded {
+            get {
+                return ResourceManager.GetString("RuleExcluded", resourceCulture);
             }
         }
         

@@ -12,11 +12,11 @@
 name: Analyze
 on:
   push:
-    branches: [ main, 'release/*' ]
+    branches: [main, 'release/*']
   pull_request:
-    branches: [ main, 'release/*' ]
+    branches: [main, 'release/*']
   schedule:
-  - cron: '24 22 * * 0' # At 10:24 PM, on Sunday each week
+    - cron: '24 22 * * 0' # At 10:24 PM, on Sunday each week
   workflow_dispatch:
 
 permissions: {}
@@ -29,22 +29,21 @@ jobs:
       contents: read
       security-events: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Run PSRule analysis
+        uses: microsoft/ps-rule@main
+        with:
+          modules: PSRule.Rules.MSFT.OSS
+          prerelease: true
+          outputFormat: Sarif
+          outputPath: reports/ps-rule-results.sarif
 
-    - name: Run PSRule analysis
-      uses: microsoft/ps-rule@main
-      with:
-        modules: PSRule.Rules.MSFT.OSS
-        prerelease: true
-        outputFormat: Sarif
-        outputPath: reports/ps-rule-results.sarif
-
-    - name: Upload results to security tab
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: reports/ps-rule-results.sarif
+      - name: Upload results to security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: reports/ps-rule-results.sarif
 
   devskim:
     name: Analyze with DevSkim
@@ -54,7 +53,6 @@ jobs:
       contents: read
       security-events: write
     steps:
-
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -76,17 +74,16 @@ jobs:
       contents: read
       security-events: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: 'csharp'
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: 'csharp'
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
-
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2

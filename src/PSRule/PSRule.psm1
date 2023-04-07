@@ -106,7 +106,7 @@ function Invoke-PSRule {
         }
 
         # Get an options object
-        $Option = New-PSRuleOption @optionParams;
+        $Option = New-PSRuleOption @optionParams -WarningAction SilentlyContinue;
 
         # Discover scripts in the specified paths
         $sourceParams = @{ };
@@ -264,7 +264,7 @@ function Test-PSRuleTarget {
         }
 
         # Get an options object
-        $Option = New-PSRuleOption @optionParams;
+        $Option = New-PSRuleOption @optionParams -WarningAction SilentlyContinue;
 
         # Discover scripts in the specified paths
         $sourceParams = @{ };
@@ -383,7 +383,7 @@ function Get-PSRuleTarget {
         }
 
         # Get an options object
-        $Option = New-PSRuleOption @optionParams;
+        $Option = New-PSRuleOption @optionParams -WarningAction SilentlyContinue;
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
@@ -537,7 +537,7 @@ function Assert-PSRule {
         }
 
         # Get an options object
-        $Option = New-PSRuleOption @optionParams;
+        $Option = New-PSRuleOption @optionParams -WarningAction SilentlyContinue;
 
         # Discover scripts in the specified paths
         $sourceParams = @{ };
@@ -688,7 +688,7 @@ function Get-PSRule {
         }
 
         # Get an options object
-        $Option = New-PSRuleOption @optionParams;
+        $Option = New-PSRuleOption @optionParams -WarningAction SilentlyContinue;
 
         # Discover scripts in the specified paths
         $sourceParams = @{ };
@@ -808,7 +808,7 @@ function Get-PSRuleBaseline {
         }
 
         # Get an options object
-        $Option = New-PSRuleOption @optionParams;
+        $Option = New-PSRuleOption @optionParams -WarningAction SilentlyContinue;
 
         # Discover scripts in the specified paths
         $sourceParams = @{ };
@@ -916,7 +916,7 @@ function Export-PSRuleBaseline {
         }
 
         # Get an options object
-        $Option = New-PSRuleOption @optionParams;
+        $Option = New-PSRuleOption @optionParams -WarningAction SilentlyContinue;
 
         # Discover scripts in the specified paths
         $sourceParams = @{ };
@@ -1022,7 +1022,7 @@ function Get-PSRuleHelp {
         }
 
         # Get an options object
-        $Option = New-PSRuleOption @optionParams;
+        $Option = New-PSRuleOption @optionParams -WarningAction SilentlyContinue;
 
         # Discover scripts in the specified paths
         $sourceParams = @{ };
@@ -1197,12 +1197,21 @@ function New-PSRuleOption {
         # Sets the Execution.SuppressedRuleWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressedRuleWarning')]
+        [System.Obsolete('Use ExecutionRuleSuppressed instead. See https://aka.ms/ps-rule/deprecations for more detail.')]
         [System.Boolean]$SuppressedRuleWarning = $True,
 
         # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressionGroupExpired')]
         [PSRule.Configuration.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.RuleExcluded option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleExcluded = [PSRule.Configuration.ExecutionActionPreference]::Ignore,
+
+        # Sets the Execution.RuleSuppressed option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Configuration.ExecutionActionPreference]::Warn,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -1498,12 +1507,21 @@ function Set-PSRuleOption {
         # Sets the Execution.SuppressedRuleWarning option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressedRuleWarning')]
+        [System.Obsolete('Use ExecutionRuleSuppressed instead. See https://aka.ms/ps-rule/deprecations for more detail.')]
         [System.Boolean]$SuppressedRuleWarning = $True,
 
         # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressionGroupExpired')]
         [PSRule.Configuration.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.RuleExcluded option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleExcluded = [PSRule.Configuration.ExecutionActionPreference]::Ignore,
+
+        # Sets the Execution.RuleSuppressed option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Configuration.ExecutionActionPreference]::Warn,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -2253,6 +2271,14 @@ function SetOptions {
         [Alias('ExecutionSuppressionGroupExpired')]
         [PSRule.Configuration.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Configuration.ExecutionActionPreference]::Warn,
 
+        # Sets the Execution.RuleExcluded option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleExcluded = [PSRule.Configuration.ExecutionActionPreference]::Ignore,
+
+        # Sets the Execution.RuleSuppressed option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -2463,6 +2489,16 @@ function SetOptions {
         # Sets option Execution.SuppressionGroupExpired
         if ($PSBoundParameters.ContainsKey('SuppressionGroupExpired')) {
             $Option.Execution.SuppressionGroupExpired = $SuppressionGroupExpired;
+        }
+
+        # Sets option Execution.RuleExcluded
+        if ($PSBoundParameters.ContainsKey('ExecutionRuleExcluded')) {
+            $Option.Execution.RuleExcluded = $ExecutionRuleExcluded;
+        }
+
+        # Sets option Execution.RuleSuppressed
+        if ($PSBoundParameters.ContainsKey('ExecutionRuleSuppressed')) {
+            $Option.Execution.RuleSuppressed = $ExecutionRuleSuppressed;
         }
 
         # Sets option Include.Module
