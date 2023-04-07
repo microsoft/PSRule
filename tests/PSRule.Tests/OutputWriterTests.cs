@@ -313,20 +313,20 @@ namespace PSRule
             var option = GetOption();
             var output = new TestWriter(option);
             var result = new InvokeResult();
+            var context = PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null);
             result.Add(GetPass());
             result.Add(GetFail());
             result.Add(GetFail("rid-003", SeverityLevel.Warning, ruleId: "TestModule\\Rule-003"));
             var writer = new JobSummaryWriter(output, option, null, outputPath: "reports/summary.md", stream: stream);
             writer.Begin();
             writer.WriteObject(result, false);
-            var currentThread = PipelineContext.CurrentThread;
-            currentThread.RunTime.Stop();
+            context.RunTime.Stop();
             writer.End();
 
             stream.Seek(0, SeekOrigin.Begin);
             using var reader = new StreamReader(stream);
             var s = reader.ReadToEnd().Replace(Environment.NewLine, "\r\n");
-            Assert.Equal($"# PSRule result summary\r\n\r\n❌ PSRule completed with an overall result of 'Fail' with 3 rule(s) and 1 target(s) in {currentThread.RunTime.Elapsed}.\r\n\r\n## Analysis\r\n\r\nThe following results were reported with fail or error results.\r\n\r\nName | Target name | Synopsis\r\n---- | ----------- | --------\r\nrule-002 | TestObject1 | This is rule 002.\r\nRule-003 | TestObject1 | This is rule 002.\r\n", s);
+            Assert.Equal($"# PSRule result summary\r\n\r\n❌ PSRule completed with an overall result of 'Fail' with 3 rule(s) and 1 target(s) in {context.RunTime.Elapsed}.\r\n\r\n## Analysis\r\n\r\nThe following results were reported with fail or error results.\r\n\r\nName | Target name | Synopsis\r\n---- | ----------- | --------\r\nrule-002 | TestObject1 | This is rule 002.\r\nRule-003 | TestObject1 | This is rule 002.\r\n", s);
         }
 
         #region Helper methods
