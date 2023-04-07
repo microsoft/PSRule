@@ -646,6 +646,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rule &apos;{0}&apos; was excluded from run..
+        /// </summary>
+        internal static string RuleExcluded {
+            get {
+                return ResourceManager.GetString("RuleExcluded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One or more rules reported failure..
         /// </summary>
         internal static string RuleFailPipelineException {
