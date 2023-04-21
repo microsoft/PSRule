@@ -30,11 +30,24 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
-What's changed since release v2.8.0:
+What's changed since release v2.8.1:
 
 - General improvements:
   - Improved schema display names by @BernieWhite.
     [#1488](https://github.com/microsoft/PSRule/issues/1488)
+- Engineering:
+    Bump Microsoft.CodeAnalysis.Common to v4.5.0.
+    [#1455](https://github.com/microsoft/PSRule/pull/1455)
+
+## v2.8.1
+
+What's changed since release v2.8.0:
+
+- Bug fixes:
+  - Fixed wrong message for excluded rules by @BernieWhite.
+    [#1493](https://github.com/microsoft/PSRule/issues/1493)
+  - Fixed job summary reports completed time by @BernieWhite.
+    [#1492](https://github.com/microsoft/PSRule/issues/1492)
 
 ## v2.8.0
 
