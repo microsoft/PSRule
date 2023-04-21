@@ -35,6 +35,9 @@ What's changed since release v2.8.1:
 - General improvements:
   - Improved schema display names by @BernieWhite.
     [#1488](https://github.com/microsoft/PSRule/issues/1488)
+- Engineering:
+    Bump Microsoft.CodeAnalysis.Common to v4.5.0.
+    [#1455](https://github.com/microsoft/PSRule/pull/1455)
 
 ## v2.8.1
 
