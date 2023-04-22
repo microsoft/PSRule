@@ -409,4 +409,7 @@
   <data name="RuleExcluded" xml:space="preserve">
     <value>Rule '{0}' was excluded from run.</value>
   </data>
+  <data name="ReadInputFailed" xml:space="preserve">
+    <value>Failed to read the path '{0}': {1}</value>
+  </data>
 </root>

@@ -59,7 +59,7 @@ namespace PSRule.Pipeline
                 path = files;
             }
 
-            var builder = new InputPathBuilder(GetOutput(), PSRuleOption.GetWorkingPath(), "*", GetInputFilter(), required);
+            var builder = new InputPathBuilder(PrepareWriter(), PSRuleOption.GetWorkingPath(), "*", GetInputFilter(), required);
             builder.Add(path);
             _InputPath = builder;
         }

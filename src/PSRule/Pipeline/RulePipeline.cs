@@ -20,6 +20,7 @@ namespace PSRule.Pipeline
 
         protected RulePipeline(PipelineContext context, Source[] source, PipelineReader reader, IPipelineWriter writer)
         {
+            Result = new DefaultPipelineResult(writer);
             Pipeline = context;
             Context = new RunspaceContext(Pipeline, writer);
             Source = source;
@@ -31,6 +32,12 @@ namespace PSRule.Pipeline
         }
 
         #region IPipeline
+
+        /// <inheritdoc/>
+        IPipelineResult IPipeline.Result => Result;
+
+        /// <inheritdoc/>
+        public DefaultPipelineResult Result { get; }
 
         /// <inheritdoc/>
         public virtual void Begin()

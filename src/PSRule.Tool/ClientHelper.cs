@@ -13,8 +13,26 @@ namespace PSRule.Tool
 {
     internal sealed class ClientHelper
     {
-        public static void RunAnalyze(AnalyzerOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
+        private const string PUBLISHER = "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US";
+
+        /// <summary>
+        /// A generic error.
+        /// </summary>
+        private const int ERROR_GENERIC = 1;
+
+        /// <summary>
+        /// Failed to install a module.
+        /// </summary>
+        private const int ERROR_MODUILE_FAILEDTOINSTALL = 500;
+
+        /// <summary>
+        /// One or more failures occurred.
+        /// </summary>
+        private const int ERROR_BREAK_ON_FAILURE = 100;
+
+        public static int RunAnalyze(AnalyzerOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
         {
+            var exitCode = 0;
             var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
             var option = GetOption(host);
             var inputPath = operationOptions.InputPath == null || operationOptions.InputPath.Length == 0 ?
@@ -27,7 +45,7 @@ namespace PSRule.Tool
             var builder = CommandLineBuilder.Assert(operationOptions.Module, option, host);
             builder.Baseline(BaselineOption.FromString(operationOptions.Baseline));
             builder.InputPath(inputPath);
-            builder.UnblockPublisher("CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US");
+            builder.UnblockPublisher(PUBLISHER);
 
             using var pipeline = builder.Build();
             if (pipeline != null)
@@ -35,11 +53,15 @@ namespace PSRule.Tool
                 pipeline.Begin();
                 pipeline.Process(null);
                 pipeline.End();
+                if (pipeline.Result.HadFailures)
+                    exitCode = ERROR_BREAK_ON_FAILURE;
             }
+            return host.HadErrors || pipeline == null ? ERROR_GENERIC : exitCode;
         }
 
-        public static void RunRestore(RestoreOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
+        public static int RunRestore(RestoreOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
         {
+            var exitCode = 0;
             var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
             var option = GetOption(host);
             var requires = option.Requires.ToArray();
@@ -55,6 +77,7 @@ namespace PSRule.Tool
 
                 if (pwsh.HadErrors)
                 {
+                    exitCode = ERROR_MODUILE_FAILEDTOINSTALL;
                     invocation.Console.Error.Write($"Failed to install {requires[i].Module}.");
                     foreach (var error in pwsh.Streams.Error)
                     {
@@ -62,6 +85,7 @@ namespace PSRule.Tool
                     }
                 }
             }
+            return exitCode;
         }
 
         private static string GetVersion(PowerShell pwsh, ModuleConstraint constraint)

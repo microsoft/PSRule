@@ -18,6 +18,11 @@ namespace PSRule.Pipeline
         bool InSession { get; }
 
         /// <summary>
+        /// Determines if the pipeline encountered any errors.
+        /// </summary>
+        bool HadErrors { get; }
+
+        /// <summary>
         /// Get the value of a PowerShell preference variable.
         /// </summary>
         ActionPreference GetPreferenceVariable(string variableName);
@@ -125,6 +130,9 @@ namespace PSRule.Pipeline
         public virtual bool InSession => false;
 
         /// <inheritdoc/>
+        public virtual bool HadErrors { get; protected set; }
+
+        /// <inheritdoc/>
         public virtual void Debug(string text)
         {
 
@@ -133,7 +141,7 @@ namespace PSRule.Pipeline
         /// <inheritdoc/>
         public virtual void Error(ErrorRecord errorRecord)
         {
-
+            HadErrors = true;
         }
 
         /// <inheritdoc/>
@@ -208,10 +216,11 @@ namespace PSRule.Pipeline
         internal readonly PSCmdlet CmdletContext;
         internal readonly EngineIntrinsics ExecutionContext;
 
-        /// <summary>
-        /// Determine if running in a remote session.
-        /// </summary>
+        /// <inheritdoc/>
         public bool InSession { get; }
+
+        /// <inheritdoc/>
+        public bool HadErrors { get; private set; }
 
         /// <summary>
         /// Create an instance of a PowerShell-based host context.
@@ -254,6 +263,7 @@ namespace PSRule.Pipeline
         public void Error(ErrorRecord errorRecord)
         {
             CmdletContext.WriteError(errorRecord);
+            HadErrors = true;
         }
 
         /// <inheritdoc/>

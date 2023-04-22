@@ -16,10 +16,15 @@ namespace PSRule.Pipeline
 
         protected string ScopeName { get; private set; }
 
+        public bool HadErrors { get; private set; }
+
+        public bool HadFailures { get; private set; }
+
         #region Logging
 
         public void WriteError(ErrorRecord errorRecord)
         {
+            HadErrors = true;
             if (!ShouldWriteError() || errorRecord == null)
                 return;
 

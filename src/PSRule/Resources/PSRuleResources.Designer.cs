@@ -592,6 +592,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to read the path &apos;{0}&apos;: {1}.
+        /// </summary>
+        internal static string ReadInputFailed {
+            get {
+                return ResourceManager.GetString("ReadInputFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Read JSON failed..
         /// </summary>
         internal static string ReadJsonFailed {

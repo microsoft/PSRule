@@ -198,6 +198,11 @@ namespace PSRule.Pipeline
     public interface IPipeline : IDisposable
     {
         /// <summary>
+        /// Get the pipeline result.
+        /// </summary>
+        IPipelineResult Result { get; }
+
+        /// <summary>
         /// Initalize the pipeline and results. Call this method once prior to calling Process.
         /// </summary>
         void Begin();
@@ -213,6 +218,60 @@ namespace PSRule.Pipeline
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Matches PowerShell pipeline.")]
         void End();
+    }
+
+    /// <summary>
+    /// A result from the pipeline.
+    /// </summary>
+    public interface IPipelineResult
+    {
+        /// <summary>
+        /// Determines if any errors were reported.
+        /// </summary>
+        public bool HadErrors { get; }
+
+        /// <summary>
+        /// Determines if an failures were reported.
+        /// </summary>
+        public bool HadFailures { get; }
+    }
+
+    internal sealed class DefaultPipelineResult : IPipelineResult
+    {
+        private readonly IPipelineWriter _Writer;
+        private bool _HadErrors;
+        private bool _HadFailures;
+
+        public DefaultPipelineResult(IPipelineWriter writer)
+        {
+            _Writer = writer;
+        }
+
+        /// <inheritdoc/>
+        public bool HadErrors
+        {
+            get
+            {
+                return _HadErrors || (_Writer != null && _Writer.HadErrors);
+            }
+            set
+            {
+                _HadErrors = value;
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool HadFailures
+        {
+            get
+            {
+                return _HadFailures || (_Writer != null && _Writer.HadFailures);
+            }
+            set
+            {
+                _HadFailures = value;
+            }
+        }
     }
 
     internal abstract class PipelineBuilderBase : IPipelineBuilder
@@ -232,6 +291,7 @@ namespace PSRule.Pipeline
         private BaselineOption _Baseline;
         private string[] _Convention;
         private PathFilter _InputFilter;
+        private PipelineWriter _Writer;
 
         private readonly HostPipelineWriter _Output;
 
@@ -411,8 +471,11 @@ namespace PSRule.Pipeline
 
         protected virtual PipelineWriter PrepareWriter()
         {
+            if (_Writer != null)
+                return _Writer;
+
             var output = GetOutput();
-            return Option.Output.Format switch
+            _Writer = Option.Output.Format switch
             {
                 OutputFormat.Csv => new CsvOutputWriter(output, Option, ShouldProcess),
                 OutputFormat.Json => new JsonOutputWriter(output, Option, ShouldProcess),
@@ -423,6 +486,7 @@ namespace PSRule.Pipeline
                 OutputFormat.Sarif => new SarifOutputWriter(Source, output, Option, ShouldProcess),
                 _ => output,
             };
+            return _Writer;
         }
 
         protected virtual PipelineWriter GetOutput(bool writeHost = false)

@@ -18,6 +18,16 @@ namespace PSRule.Pipeline
     public interface IPipelineWriter : IDisposable
     {
         /// <summary>
+        /// Determines if any errors were reported.
+        /// </summary>
+        bool HadErrors { get; }
+
+        /// <summary>
+        /// Determines if an failures were reported.
+        /// </summary>
+        bool HadFailures { get; }
+
+        /// <summary>
         /// Write a verbose message.
         /// </summary>
         void WriteVerbose(string message);
@@ -117,12 +127,44 @@ namespace PSRule.Pipeline
         protected readonly PSRuleOption Option;
 
         private bool _IsDisposed;
+        private bool _HadErrors;
+        private bool _HadFailures;
 
         protected PipelineWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
         {
             _Writer = inner;
             _ShouldProcess = shouldProcess;
             Option = option;
+        }
+
+        bool IPipelineWriter.HadErrors => HadErrors;
+
+        bool IPipelineWriter.HadFailures => HadFailures;
+
+        /// <inheritdoc/>
+        public virtual bool HadErrors
+        {
+            get
+            {
+                return _HadErrors || (_Writer != null && _Writer.HadErrors);
+            }
+            set
+            {
+                _HadErrors = value;
+            }
+        }
+
+        /// <inheritdoc/>
+        public virtual bool HadFailures
+        {
+            get
+            {
+                return _HadFailures || (_Writer != null && _Writer.HadFailures);
+            }
+            set
+            {
+                _HadFailures = value;
+            }
         }
 
         /// <inheritdoc/>

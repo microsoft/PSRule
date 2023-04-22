@@ -87,6 +87,7 @@ namespace PSRule.Pipeline
 
             public override void WriteError(ErrorRecord errorRecord)
             {
+                HadErrors = true;
                 var errorPreference = _HostContext.GetPreferenceVariable(ErrorPreference);
                 if (errorPreference == ActionPreference.Ignore || errorPreference == ActionPreference.SilentlyContinue)
                     return;
@@ -109,6 +110,7 @@ namespace PSRule.Pipeline
                 {
                     if (_ErrorCount > 0)
                     {
+                        HadErrors = true;
                         base.WriteError(new ErrorRecord(
                             new FailPipelineException(PSRuleResources.RuleErrorPipelineException),
                             "PSRule.Error",
@@ -117,6 +119,7 @@ namespace PSRule.Pipeline
                     }
                     else if (_FailCount > 0 && _Level == SeverityLevel.Error)
                     {
+                        HadFailures = true;
                         base.WriteError(new ErrorRecord(
                             new FailPipelineException(PSRuleResources.RuleFailPipelineException),
                             "PSRule.Fail",
@@ -125,6 +128,7 @@ namespace PSRule.Pipeline
                     }
                     else if (_PSError)
                     {
+                        HadErrors = true;
                         base.WriteError(new ErrorRecord(
                             new FailPipelineException(PSRuleResources.ErrorPipelineException),
                             "PSRule.Error",
@@ -132,10 +136,16 @@ namespace PSRule.Pipeline
                             null));
                     }
                     if (_FailCount > 0 && _Level == SeverityLevel.Warning)
+                    {
+                        HadFailures = true;
                         base.WriteWarning(PSRuleResources.RuleFailPipelineException);
+                    }
 
                     if (_FailCount > 0 && _Level == SeverityLevel.Information)
+                    {
+                        HadFailures = true;
                         base.WriteHost(new HostInformationMessage() { Message = PSRuleResources.RuleFailPipelineException });
+                    }
 
                     if (_Results != null && _HostContext != null)
                         _HostContext.SetVariable(_ResultVariableName, _Results.ToArray());
