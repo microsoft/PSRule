@@ -151,11 +151,15 @@ namespace PSRule.Pipeline
                         }
                         else if (ruleRecord.Outcome == RuleOutcome.Fail)
                         {
+                            Result.HadFailures = true;
                             ruleBlockTarget.Fail();
                             Context.Fail();
                         }
                         else if (ruleRecord.Outcome == RuleOutcome.Error)
+                        {
+                            Result.HadErrors = true;
                             ruleBlockTarget.Fail();
+                        }
 
                         AddToSummary(ruleBlock: ruleBlockTarget.Value, outcome: ruleRecord.Outcome);
                     }

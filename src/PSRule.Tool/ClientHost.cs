@@ -39,6 +39,7 @@ namespace PSRule.Tool
         public override void Error(ErrorRecord errorRecord)
         {
             _Invocation.Console.Error.WriteLine(errorRecord.Exception.Message);
+            base.Error(errorRecord);
         }
 
         public override void Warning(string text)
