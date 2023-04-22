@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -58,6 +59,9 @@ namespace PSRule.Pipeline
         /// </summary>
         public int Count => _Files.Count;
 
+        /// <summary>
+        /// Add an array of paths to the builder.
+        /// </summary>
         public void Add(string[] path)
         {
             if (path == null || path.Length == 0)
@@ -67,12 +71,22 @@ namespace PSRule.Pipeline
                 Add(path[i]);
         }
 
+        /// <summary>
+        /// Add a path to the builder.
+        /// </summary>
         public void Add(string path)
         {
             if (string.IsNullOrEmpty(path))
                 return;
 
-            FindFiles(path);
+            try
+            {
+                FindFiles(path);
+            }
+            catch (Exception ex)
+            {
+                _Logger.ErrorReadInputFailed(path, ex);
+            }
         }
 
         public InputFileInfo[] Build()

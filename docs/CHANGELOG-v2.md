@@ -38,6 +38,9 @@ What's changed since release v2.8.1:
 - Engineering:
     Bump Microsoft.CodeAnalysis.Common to v4.5.0.
     [#1455](https://github.com/microsoft/PSRule/pull/1455)
+- Bug fixes:
+  - Fixed tool output on access denied to path @BernieWhite.
+    [#1490](https://github.com/microsoft/PSRule/issues/1490)
 
 ## v2.8.1
 

@@ -88,6 +88,18 @@ namespace PSRule.Pipeline
             );
         }
 
+        internal static void ErrorReadInputFailed(this IPipelineWriter writer, string path, Exception innerException)
+        {
+            if (writer == null || !writer.ShouldWriteError())
+                return;
+
+            writer.WriteError(
+                new PipelineSerializationException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ReadInputFailed, path, innerException.Message), path, innerException),
+                "PSRule.ReadInputFailed",
+                ErrorCategory.ReadError
+            );
+        }
+
         internal static void VerboseInputAdded(this IPipelineWriter writer, string path)
         {
             if (writer == null || !writer.ShouldWriteVerbose() || string.IsNullOrEmpty(path))
