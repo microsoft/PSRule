@@ -94,7 +94,7 @@ namespace PSRule.Tool
                     Debug = invocation.ParseResult.GetValueForOption(_Debug),
                 };
                 var client = new ClientContext();
-                ClientHelper.RunAnalyze(option, client, invocation);
+                invocation.ExitCode = ClientHelper.RunAnalyze(option, client, invocation);
             });
             Command.AddCommand(cmd);
         }
@@ -113,7 +113,7 @@ namespace PSRule.Tool
                     Debug = invocation.ParseResult.GetValueForOption(_Debug),
                 };
                 var client = new ClientContext();
-                ClientHelper.RunRestore(option, client, invocation);
+                invocation.ExitCode = ClientHelper.RunRestore(option, client, invocation);
             });
             Command.AddCommand(cmd);
         }
