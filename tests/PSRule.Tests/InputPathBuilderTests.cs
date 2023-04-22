@@ -3,6 +3,8 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Speech.Recognition;
 using PSRule.Pipeline;
 using Xunit;
 
@@ -57,6 +59,14 @@ namespace PSRule
             builder.Add("src/");
             actual = builder.Build();
             Assert.True(actual.Length > 100);
+
+            // Check error handling
+            var writer = new TestWriter(new Configuration.PSRuleOption());
+            builder = new InputPathBuilder(writer, GetWorkingPath(), "*", null, null);
+            builder.Add("ZZ://not/path");
+            actual = builder.Build();
+            Assert.Empty(actual);
+            Assert.True(writer.Errors.Count(r => r.FullyQualifiedErrorId == "PSRule.ReadInputFailed") == 1);
         }
 
         [Fact]
@@ -79,9 +89,13 @@ namespace PSRule
             Assert.True(actual.Length > 100);
         }
 
+        #region Helper methods
+
         private static string GetWorkingPath()
         {
             return Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../.."));
         }
+
+        #endregion Helper methods
     }
 }
