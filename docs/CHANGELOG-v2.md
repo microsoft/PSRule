@@ -36,6 +36,8 @@ What's changed since release v2.8.1:
   - Improved schema display names by @BernieWhite.
     [#1488](https://github.com/microsoft/PSRule/issues/1488)
 - Engineering:
+  - Bump Pester to v5.4.1.
+    [#1510](https://github.com/microsoft/PSRule/pull/1510)
   - Bump Microsoft.CodeAnalysis.Common to v4.5.0.
     [#1455](https://github.com/microsoft/PSRule/pull/1455)
 - Bug fixes:
