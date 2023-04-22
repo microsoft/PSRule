@@ -4,7 +4,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Speech.Recognition;
 using PSRule.Pipeline;
 using Xunit;
 

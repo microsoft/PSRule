@@ -36,11 +36,13 @@ What's changed since release v2.8.1:
   - Improved schema display names by @BernieWhite.
     [#1488](https://github.com/microsoft/PSRule/issues/1488)
 - Engineering:
-    Bump Microsoft.CodeAnalysis.Common to v4.5.0.
+  - Bump Microsoft.CodeAnalysis.Common to v4.5.0.
     [#1455](https://github.com/microsoft/PSRule/pull/1455)
 - Bug fixes:
-  - Fixed tool output on access denied to path @BernieWhite.
+  - Fixed tool output on access denied to path by @BernieWhite.
     [#1490](https://github.com/microsoft/PSRule/issues/1490)
+  - Fixed tool exit code on error or failure by @BernieWhite.
+    [#1491](https://github.com/microsoft/PSRule/issues/1491)
 
 ## v2.8.1
 
