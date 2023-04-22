@@ -10,31 +10,32 @@ repository:
   baseRef: main
 
 output:
+  sarifProblemsOnly: false
   culture:
-  - 'en-US'
+    - 'en-US'
 
 input:
   pathIgnore:
-  - '.vscode/'
-  - '.github/workflows/'
-  - '*.md'
-  - '*.Designer.cs'
-  - '*.resx'
-  - '*.sln'
-  - '*.txt'
-  - '*.html'
-  - '*.ico'
-  - '*.png'
-  - 'ps-docs.yaml'
-  - 'ps-project.yaml'
-  - 'ps-rule.yaml'
-  - 'mkdocs.yml'
-  - '**/.editorconfig'
-  - '.markdownlint.json'
-  - '.github/dependabot.yml'
+    - '.vscode/'
+    - '.github/workflows/'
+    - '*.md'
+    - '*.Designer.cs'
+    - '*.resx'
+    - '*.sln'
+    - '*.txt'
+    - '*.html'
+    - '*.ico'
+    - '*.png'
+    - 'ps-docs.yaml'
+    - 'ps-project.yaml'
+    - 'ps-rule.yaml'
+    - 'mkdocs.yml'
+    - '**/.editorconfig'
+    - '.markdownlint.json'
+    - '.github/dependabot.yml'
 
-  # Bug #1269: There is an issue preventing #1259 from being merged. Ignore this until bug is fixed.
-  - 'docs/scenarios/containers/dockerfile'
+    # Bug #1269: There is an issue preventing #1259 from being merged. Ignore this until bug is fixed.
+    - 'docs/scenarios/containers/dockerfile'
 
 include:
   path: []
