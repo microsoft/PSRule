@@ -26,7 +26,7 @@ PSRule works great and integrates with popular continuous integration (CI) syste
 - [Maintainers](#maintainers)
 - [License](#license)
 
-### Features of PSRule include:
+### Features of PSRule include
 
 - [DevOps][2] - Built to support DevOps culture and tools.
 - [Extensible][3] - Define tests using YAML, JSON, or PowerShell format.
@@ -290,15 +290,19 @@ The following conceptual topics exist in the `PSRule` module:
   - [Binding.UseQualifiedName](https://aka.ms/ps-rule/options#bindingusequalifiedname)
   - [Configuration](https://aka.ms/ps-rule/options#configuration)
   - [Convention.Include](https://aka.ms/ps-rule/options#conventioninclude)
+  - [Execution.AliasReference](https://aka.ms/ps-rule/options#executionaliasreference)
   - [Execution.AliasReferenceWarning](https://aka.ms/ps-rule/options#executionaliasreferencewarning)
   - [Execution.DuplicateResourceId](https://aka.ms/ps-rule/options#executionduplicateresourceid)
   - [Execution.LanguageMode](https://aka.ms/ps-rule/options#executionlanguagemode)
   - [Execution.InconclusiveWarning](https://aka.ms/ps-rule/options#executioninconclusivewarning)
+  - [Execution.InvariantCulture](https://aka.ms/ps-rule/options#executioninvariantculture)
   - [Execution.InvariantCultureWarning](https://aka.ms/ps-rule/options#executioninvariantculturewarning)
   - [Execution.InitialSessionState](https://aka.ms/ps-rule/options#executioninitialsessionstate)
   - [Execution.NotProcessedWarning](https://aka.ms/ps-rule/options#executionnotprocessedwarning)
+  - [Execution.RuleInconclusive](https://aka.ms/ps-rule/options#executionruleinconclusive)
   - [Execution.SuppressedRuleWarning](https://aka.ms/ps-rule/options#executionsuppressedrulewarning)
   - [Execution.SuppressionGroupExpired](https://aka.ms/ps-rule/options#executionsuppressiongroupexpired)
+  - [Execution.UnprocessedObject](https://aka.ms/ps-rule/options#executionunprocessedobject)
   - [Include.Module](https://aka.ms/ps-rule/options#includemodule)
   - [Include.Path](https://aka.ms/ps-rule/options#includepath)
   - [Input.Format](https://aka.ms/ps-rule/options#inputformat)

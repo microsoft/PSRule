@@ -75,10 +75,10 @@ namespace PSRule.Runtime
         internal RuleBlock RuleBlock;
         internal ITargetBindingResult Binding;
 
-        private readonly bool _InconclusiveWarning;
-        private readonly bool _NotProcessedWarning;
-        private readonly ExecutionActionPreference _SuppressedRuleWarning;
-        private readonly bool _InvariantCultureWarning;
+        private readonly ExecutionActionPreference _RuleInconclusive;
+        private readonly ExecutionActionPreference _UnprocessedObject;
+        private readonly ExecutionActionPreference _RuleSuppressed;
+        private readonly ExecutionActionPreference _InvariantCulture;
         private readonly OutcomeLogStream _FailStream;
         private readonly OutcomeLogStream _PassStream;
 
@@ -117,17 +117,30 @@ namespace PSRule.Runtime
             CurrentThread = this;
             Pipeline = pipeline;
 
-            _InconclusiveWarning = Pipeline.Option.Execution.InconclusiveWarning ?? ExecutionOption.Default.InconclusiveWarning.Value;
-            _NotProcessedWarning = Pipeline.Option.Execution.NotProcessedWarning ?? ExecutionOption.Default.NotProcessedWarning.Value;
+#pragma warning disable CS0618 // Type or member is obsolete
 
-#pragma warning disable CS0612 // Type or member is obsolete
-            if (Pipeline.Option.Execution.SuppressedRuleWarning.HasValue)
-                _SuppressedRuleWarning = Pipeline.Option.Execution.SuppressedRuleWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
+            if (Pipeline.Option.Execution.InconclusiveWarning.HasValue)
+                _RuleInconclusive = Pipeline.Option.Execution.InconclusiveWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
             else
-                _SuppressedRuleWarning = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed.Value);
-#pragma warning restore CS0612 // Type or member is obsolete
+                _RuleInconclusive = Pipeline.Option.Execution.RuleInconclusive.GetValueOrDefault(ExecutionOption.Default.RuleInconclusive.Value);
 
-            _InvariantCultureWarning = Pipeline.Option.Execution.InvariantCultureWarning ?? ExecutionOption.Default.InvariantCultureWarning.Value;
+            if (Pipeline.Option.Execution.NotProcessedWarning.HasValue)
+                _UnprocessedObject = Pipeline.Option.Execution.NotProcessedWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
+            else
+                _UnprocessedObject = Pipeline.Option.Execution.UnprocessedObject.GetValueOrDefault(ExecutionOption.Default.UnprocessedObject.Value);
+
+            if (Pipeline.Option.Execution.SuppressedRuleWarning.HasValue)
+                _RuleSuppressed = Pipeline.Option.Execution.SuppressedRuleWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
+            else
+                _RuleSuppressed = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed.Value);
+
+            if (Pipeline.Option.Execution.InvariantCultureWarning.HasValue)
+                _InvariantCulture = Pipeline.Option.Execution.InvariantCultureWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
+            else
+                _InvariantCulture = Pipeline.Option.Execution.InvariantCulture.GetValueOrDefault(ExecutionOption.Default.InvariantCulture.Value);
+
+#pragma warning restore CS0618 // Type or member is obsolete
+
             _FailStream = Pipeline.Option.Logging.RuleFail ?? LoggingOption.Default.RuleFail.Value;
             _PassStream = Pipeline.Option.Logging.RulePass ?? LoggingOption.Default.RulePass.Value;
             _WarnOnce = new HashSet<string>();
@@ -245,28 +258,22 @@ namespace PSRule.Runtime
 
         public void WarnRuleInconclusive(string ruleId)
         {
-            if (Writer == null || !Writer.ShouldWriteWarning() || !_InconclusiveWarning)
-                return;
-
-            Writer.WriteWarning(PSRuleResources.RuleInconclusive, ruleId, Binding.TargetName);
+            this.Throw(_RuleInconclusive, PSRuleResources.RuleInconclusive, ruleId, Binding.TargetName);
         }
 
         public void WarnObjectNotProcessed()
         {
-            if (Writer == null || !Writer.ShouldWriteWarning() || !_NotProcessedWarning)
-                return;
-
-            Writer.WriteWarning(PSRuleResources.ObjectNotProcessed, Binding.TargetName);
+            this.Throw(_UnprocessedObject, PSRuleResources.ObjectNotProcessed, Binding.TargetName);
         }
 
         public void RuleSuppressed(string ruleId)
         {
-            this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressed, ruleId, Binding.TargetName);
+            this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressed, ruleId, Binding.TargetName);
         }
 
         public void WarnRuleCountSuppressed(int ruleCount)
         {
-            this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleCountSuppressed, ruleCount, Binding.TargetName);
+            this.Throw(_RuleSuppressed, PSRuleResources.RuleCountSuppressed, ruleCount, Binding.TargetName);
         }
 
         public void RuleSuppressionGroup(string ruleId, ISuppressionInfo suppression)
@@ -275,9 +282,9 @@ namespace PSRule.Runtime
                 return;
 
             if (suppression.Synopsis != null && suppression.Synopsis.HasValue)
-                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroupExtended, ruleId, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
+                this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroupExtended, ruleId, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
             else
-                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroup, ruleId, suppression.Id, Binding.TargetName);
+                this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroup, ruleId, suppression.Id, Binding.TargetName);
         }
 
         public void RuleSuppressionGroupCount(ISuppressionInfo suppression, int count)
@@ -286,9 +293,9 @@ namespace PSRule.Runtime
                 return;
 
             if (suppression.Synopsis != null && suppression.Synopsis.HasValue)
-                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroupExtendedCount, count, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
+                this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroupExtendedCount, count, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
             else
-                this.Throw(_SuppressedRuleWarning, PSRuleResources.RuleSuppressionGroupCount, count, suppression.Id, Binding.TargetName);
+                this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroupCount, count, suppression.Id, Binding.TargetName);
         }
 
         public void ErrorInvaildRuleResult()
@@ -845,13 +852,10 @@ namespace PSRule.Runtime
             if (string.IsNullOrEmpty(Source.File.HelpPath))
                 return null;
 
-            //var cultures = Pipeline.Baseline.GetCulture();
             var cultures = LanguageScope.Culture;
-            if (!_RaisedUsingInvariantCulture &&
-                (cultures == null || cultures.Length == 0) &&
-                _InvariantCultureWarning)
+            if (!_RaisedUsingInvariantCulture && (cultures == null || cultures.Length == 0))
             {
-                Writer.WarnUsingInvariantCulture();
+                this.Throw(_InvariantCulture, PSRuleResources.UsingInvariantCulture);
                 _RaisedUsingInvariantCulture = true;
                 return null;
             }

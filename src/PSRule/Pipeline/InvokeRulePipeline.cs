@@ -36,10 +36,18 @@ namespace PSRule.Pipeline
             if (RuleCount == 0)
                 Context.WarnRuleNotFound();
 
-#pragma warning disable CS0612 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
             if (context.Option.Execution.SuppressedRuleWarning.HasValue)
                 Context.WarnDeprecatedOption("Execution.SuppressedRuleWarning");
-#pragma warning restore CS0612 // Type or member is obsolete
+            if (context.Option.Execution.AliasReferenceWarning.HasValue)
+                Context.WarnDeprecatedOption("Execution.AliasReferenceWarning");
+            if (context.Option.Execution.InconclusiveWarning.HasValue)
+                Context.WarnDeprecatedOption("Execution.InconclusiveWarning");
+            if (context.Option.Execution.InvariantCultureWarning.HasValue)
+                Context.WarnDeprecatedOption("Execution.InvariantCultureWarning");
+            if (context.Option.Execution.NotProcessedWarning.HasValue)
+                Context.WarnDeprecatedOption("Execution.NotProcessedWarning");
+#pragma warning restore CS0618 // Type or member is obsolete
 
             _Outcome = outcome;
             _IsSummary = context.Option.Output.As.Value == ResultFormat.Summary;

@@ -5,4 +5,4 @@ output:
   jsonIndent: 1
 
 execution:
-  invariantCultureWarning: false
+  invariantCulture: Ignore

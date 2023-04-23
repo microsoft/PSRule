@@ -7,10 +7,10 @@ repository:
 # Configure baseline
 rule:
   include:
-  - rule1
+    - rule1
   includeLocal: true
   exclude:
-  - rule3
+    - rule3
   tag:
     key1: value1
 
@@ -18,48 +18,52 @@ rule:
 configuration:
   option1: option
   option2: 2
-  option3: [ 'option3a', 'option3b' ]
+  option3: ['option3a', 'option3b']
   option4:
-  - location: 'East US'
-    zones: [ "1", "2", "3" ]
-  - location: 'Australia South East'
-    zones: [ ]
+    - location: 'East US'
+      zones: ['1', '2', '3']
+    - location: 'Australia South East'
+      zones: []
   option5:
-  - option5a
-  - option5b
+    - option5a
+    - option5b
 
 # Configure conventions
 convention:
   include:
-  - 'Convention1'
+    - 'Convention1'
 
 # Configure binding
 binding:
   field:
     id:
-    - resourceId
+      - resourceId
   ignoreCase: false
   nameSeparator: '::'
   preferTargetInfo: true
   targetName:
-  - ResourceName
+    - ResourceName
   targetType:
-  - ResourceType
+    - ResourceType
   useQualifiedName: true
 
 # Configure execution options
 execution:
+  aliasReference: Ignore
   aliasReferenceWarning: false
   duplicateResourceId: Warn
   languageMode: ConstrainedLanguage
   inconclusiveWarning: false
+  invariantCulture: Ignore
   invariantCultureWarning: false
   initialSessionState: Minimal
   notProcessedWarning: false
   suppressedRuleWarning: false
   suppressionGroupExpired: Debug
   ruleExcluded: Warn
+  ruleInconclusive: Ignore
   ruleSuppressed: Error
+  unprocessedObject: Ignore
 
 # Configure input options
 input:
@@ -69,17 +73,17 @@ input:
   ignoreRepositoryCommon: false
   objectPath: items
   pathIgnore:
-  - '*.Designer.cs'
+    - '*.Designer.cs'
   targetType:
-  - virtualMachine
+    - virtualMachine
   ignoreUnchangedPath: true
 
 # Configure logging options
 logging:
   limitDebug:
-  - TestRule2
+    - TestRule2
   limitVerbose:
-  - TestRule2
+    - TestRule2
   ruleFail: Warning
   rulePass: Warning
 
@@ -87,7 +91,7 @@ logging:
 output:
   as: Summary
   banner: Minimal
-  culture: [ 'en-CC' ]
+  culture: ['en-CC']
   encoding: UTF7
   footer: RuleCount
   format: Json
@@ -101,6 +105,6 @@ output:
 suppression:
   SuppressionTest1:
     targetName:
-    - TestObject1
-    - TestObject3
-  SuppressionTest2: [ 'TestObject1', 'TestObject3' ]
+      - TestObject1
+      - TestObject3
+  SuppressionTest2: ['TestObject1', 'TestObject3']

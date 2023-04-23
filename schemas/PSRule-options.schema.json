@@ -283,10 +283,11 @@
       "properties": {
         "aliasReferenceWarning": {
           "type": "boolean",
-          "title": "Warn on resource aliases",
+          "title": "Warn on resource aliases | DEPRECATED",
           "description": "Enable or disable warnings when an alias to a resource is used. The default is true.",
           "markdownDescription": "Enable or disable warnings when an alias to a resource is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionaliasreferencewarning)",
-          "default": true
+          "default": true,
+          "deprecated": true
         },
         "duplicateResourceId": {
           "type": "string",
@@ -314,17 +315,19 @@
         },
         "inconclusiveWarning": {
           "type": "boolean",
-          "title": "Warn on inconclusive rules",
+          "title": "Warn on inconclusive rules | DEPRECATED",
           "description": "Enable or disable warnings for inconclusive rules. The default is true.",
           "markdownDescription": "Enable or disable warnings for inconclusive rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninconclusivewarning)",
-          "default": true
+          "default": true,
+          "deprecated": true
         },
         "invariantCultureWarning": {
           "type": "boolean",
-          "title": "Warn on invariant culture",
+          "title": "Warn on invariant culture | DEPRECATED",
           "description": "Enable or disable warning when invariant culture is used. The default is true.",
           "markdownDescription": "Enable or disable warning when invariant culture is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninvariantculturewarning)",
-          "default": true
+          "default": true,
+          "deprecated": true
         },
         "initialSessionState": {
           "type": "string",
@@ -339,10 +342,11 @@
         },
         "notProcessedWarning": {
           "type": "boolean",
-          "title": "Warn on unprocessed objects",
+          "title": "Warn on unprocessed objects | DEPRECATED",
           "description": "Enable or disable warnings for objects that are not processed by any rule. The default is true.",
           "markdownDescription": "Enable or disable warnings for objects that are not processed by any rule. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionnotprocessedwarning)",
-          "default": true
+          "default": true,
+          "deprecated": true
         },
         "suppressedRuleWarning": {
           "type": "boolean",
@@ -369,7 +373,7 @@
           "type": "string",
           "title": "Rule excluded",
           "description": "Determines how to handle excluded rules. Regardless of the value, excluded rules are ignored. By default, rules are excluded silently. When set to Error, an error is thrown. When set to Warn, a warning is generated. When set to Debug, a message is written to the debug log.",
-          "markdownDescription": "Determines how to handle excluded rules.\n\nRegardless of the value, excluded rules are ignored. By default, rules are excluded silently.\n\n- When set to `Error`, an error is thrown.\n- When set to `Warn`, a warning is generated.\n- When set to `Debug`, a message is written to the debug log.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionruleexecluded)",
+          "markdownDescription": "Determines how to handle excluded rules.\n\nRegardless of the value, excluded rules are ignored. By default, rules are excluded silently.\n\n- When set to `Error`, an error is thrown.\n- When set to `Warn`, a warning is generated.\n- When set to `Debug`, a message is written to the debug log.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionruleexcluded)",
           "enum": [
             "Ignore",
             "Warn",
@@ -383,6 +387,58 @@
           "title": "Rule suppressed",
           "description": "Determines how to handle suppressed rules. Regardless of the value, a suppressed rule is ignored. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed. This option replaces suppressedRuleWarning. You do not need to configure both options. If suppressedRuleWarning is configured, it will override ruleSuppressed with Warn or Ignore until removal in PSRule v3.",
           "markdownDescription": "Determines how to handle suppressed rules.\n\nRegardless of the value, a suppressed rule is ignored. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\nThis option replaces `suppressedRuleWarning`. You do not need to configure both options. If `suppressedRuleWarning` is configured, it will override `ruleSuppressed` with `Warn` or `Ignore` until removal in PSRule v3.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionrulesuppressed)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Warn"
+        },
+        "aliasReference": {
+          "type": "string",
+          "title": "Alias references",
+          "description": "Determines how to handle when an alias to a resource is used. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed. This option replaces aliasReferenceWarning. You do not need to configure both options. If aliasReferenceWarning is configured, it will override aliasReference with Warn or Ignore until removal in PSRule v3.",
+          "markdownDescription": "Determines how to handle when an alias to a resource is used. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\nThis option replaces `aliasReferenceWarning`. You do not need to configure both options. If `aliasReferenceWarning` is configured, it will override `aliasReference` with `Warn` or `Ignore` until removal in PSRule v3.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionaliasreference)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Warn"
+        },
+        "ruleInconclusive": {
+          "type": "string",
+          "title": "Inconclusive rules",
+          "description": "Determines how to handle rules that generate inconclusive results. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed. This option replaces inconclusiveWarning. You do not need to configure both options. If inconclusiveWarning is configured, it will override ruleInconclusive with Warn or Ignore until removal in PSRule v3.",
+          "markdownDescription": "Determines how to handle rules that generate inconclusive results. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\nThis option replaces `inconclusiveWarning`. You do not need to configure both options. If `inconclusiveWarning` is configured, it will override `ruleInconclusive` with `Warn` or `Ignore` until removal in PSRule v3.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionruleinconclusive)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Warn"
+        },
+        "invariantCulture": {
+          "type": "string",
+          "title": "Invariant culture",
+          "description": "Determines how to report when an invariant culture is used. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed. This option replaces invariantCultureWarning. You do not need to configure both options. If invariantCultureWarning is configured, it will override invariantCulture with Warn or Ignore until removal in PSRule v3.",
+          "markdownDescription": "Determines how to report when an invariant culture is used. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\nThis option replaces `invariantCultureWarning`. You do not need to configure both options. If `invariantCultureWarning` is configured, it will override `invariantCulture` with `Warn` or `Ignore` until removal in PSRule v3.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninvariantculture)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Warn"
+        },
+        "unprocessedObject": {
+          "type": "string",
+          "title": "Unprocessed object",
+          "description": "Determines how to report objects that are not processed by any rule. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed. This option replaces notProcessedWarning. You do not need to configure both options. If notProcessedWarning is configured, it will override unprocessedObject with Warn or Ignore until removal in PSRule v3.",
+          "markdownDescription": "Determines how to report objects that are not processed by any rule. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\nThis option replaces `notProcessedWarning`. You do not need to configure both options. If `notProcessedWarning` is configured, it will override `unprocessedObject` with `Warn` or `Ignore` until removal in PSRule v3.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionunprocessedobject)",
           "enum": [
             "Ignore",
             "Warn",
