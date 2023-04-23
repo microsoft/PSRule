@@ -105,8 +105,7 @@ Export-PSRuleConvention 'ExampleConvention' -Process {
 Conventions can be included by name within options in addition to using the `-Convention` parameter.
 To specify a convention within YAML options use the following:
 
-```yaml
-# Example ps-docs.yaml
+```yaml title="ps-rule.yaml"
 convention:
   include:
   - 'ExampleConvention1'
@@ -123,8 +122,7 @@ To use a convention included in a module use the `-Convention` parameter or opti
 A module can automatically include a convention by specifying the convention by name in module configuration.
 For example:
 
-```yaml
-# Example Config.Rule.yaml
+```yaml title="Config.Rule.yaml"
 ---
 apiVersion: github.com/microsoft/PSRule/v1
 kind: ModuleConfig
@@ -155,7 +153,7 @@ When conventions are specified from multiple locations PSRule orders conventions
 
 ## NOTE
 
-An online version of this document is available at https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Conventions/.
+An online version of this document is available at <https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Conventions/>.
 
 ## SEE ALSO
 
