@@ -10,7 +10,6 @@ repository:
   baseRef: main
 
 output:
-  sarifProblemsOnly: false
   culture:
     - 'en-US'
 
