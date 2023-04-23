@@ -28,7 +28,7 @@ Within the root directory of your IaC repository:
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
-          uses: microsoft/ps-rule@v2.7.0
+          uses: microsoft/ps-rule@v2.8.1
           with:
             modules: 'PSRule.Rules.Azure'
     ```
@@ -138,9 +138,6 @@ To prevent a rule executing you can either:
     Meaningful comments help during peer review within a Pull Request (PR).
     Also consider including a date if the exclusions or suppressions are temporary.
 
-  [3]: concepts/PSRule/en-US/about_PSRule_Options.md#ruleexclude
-  [4]: concepts/PSRule/en-US/about_PSRule_Options.md#suppression
-  [5]: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
   [6]: addon-modules.md
   [7]: authoring/packaging-rules.md
 
@@ -169,7 +166,7 @@ To only process files that have changed within a pull request, set the `Input.Ig
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
-          uses: microsoft/ps-rule@v2.7.0
+          uses: microsoft/ps-rule@v2.8.1
           with:
             modules: 'PSRule.Rules.Azure'
           env:
