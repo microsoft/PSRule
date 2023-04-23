@@ -22,7 +22,11 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-NotProcessedWarning <Boolean>]
  [-SuppressedRuleWarning <Boolean>] [-SuppressionGroupExpired <ExecutionActionPreference>]
  [-ExecutionRuleExcluded <ExecutionActionPreference>] [-ExecutionRuleSuppressed <ExecutionActionPreference>]
- [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-ExecutionRuleInconclusive <ExecutionActionPreference>]
+ [-ExecutionInvariantCulture <ExecutionActionPreference>]
+ [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
+ [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
  [-InputIgnoreObjectSource <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>]
  [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputPathIgnore <String[]>]
  [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
@@ -345,6 +349,78 @@ Aliases: ExecutionSuppressedRuleWarning
 Required: False
 Position: Named
 Default value: True
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionAliasReference
+
+Sets the `Execution.AliasReference` option.
+Determines how to handle when an alias to a resource is used.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionInvariantCulture
+
+Sets the `Execution.InvariantCulture` option.
+Determines how to report when an invariant culture is used.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionRuleInconclusive
+
+Sets the `Execution.RuleInconclusive` option.
+Determines how to handle rules that generate inconclusive results.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionUnprocessedObject
+
+Sets the `Execution.UnprocessedObject` option.
+Determines how to report objects that are not processed by any rule.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

@@ -10,6 +10,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 **Important notes**:
 
+- Several options have been renamed and the old names will be removed in v3.
+  See [deprecations][2] for details.
 - Several properties of rule and language block elements will be removed from v3.
   See [deprecations][2] for details.
 
@@ -29,6 +31,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
   [5]: creating-your-pipeline.md#processing-changed-files-only
 
 ## Unreleased
+
+## v2.9.0-B0013 (pre-release)
 
 What's changed since release v2.8.1:
 

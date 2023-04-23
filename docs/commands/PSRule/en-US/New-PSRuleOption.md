@@ -25,16 +25,20 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-InconclusiveWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>]
  [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
  [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
- [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-IncludeModule <String[]>] [-IncludePath <String[]>]
- [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>]
- [-InputIgnoreObjectSource <Boolean>] [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>]
- [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
- [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
- [-OutputJobSummaryPath <String>] [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>]
- [-RepositoryBaseRef <String>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-ExecutionRuleInconclusive <ExecutionActionPreference>]
+ [-ExecutionInvariantCulture <ExecutionActionPreference>]
+ [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
+ [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
+ [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
+ [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
+ [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-RepositoryBaseRef <String>]
+ [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ### FromOption
@@ -49,16 +53,20 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-InconclusiveWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>]
  [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
  [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
- [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-IncludeModule <String[]>] [-IncludePath <String[]>]
- [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>]
- [-InputIgnoreObjectSource <Boolean>] [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>]
- [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
- [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
- [-OutputJobSummaryPath <String>] [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>]
- [-RepositoryBaseRef <String>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-ExecutionRuleInconclusive <ExecutionActionPreference>]
+ [-ExecutionInvariantCulture <ExecutionActionPreference>]
+ [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
+ [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
+ [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
+ [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
+ [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-RepositoryBaseRef <String>]
+ [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ### FromDefault
@@ -72,16 +80,20 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-InconclusiveWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>]
  [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
  [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
- [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-IncludeModule <String[]>] [-IncludePath <String[]>]
- [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>]
- [-InputIgnoreObjectSource <Boolean>] [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>]
- [-InputTargetType <String[]>] [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>]
- [-LoggingLimitVerbose <String[]>] [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>]
- [-OutputAs <ResultFormat>] [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>]
- [-OutputEncoding <OutputEncoding>] [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>]
- [-OutputJobSummaryPath <String>] [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>]
- [-OutputPath <String>] [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>]
- [-RepositoryBaseRef <String>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-ExecutionRuleInconclusive <ExecutionActionPreference>]
+ [-ExecutionInvariantCulture <ExecutionActionPreference>]
+ [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
+ [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
+ [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
+ [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
+ [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
+ [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
+ [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
+ [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-RepositoryBaseRef <String>]
+ [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -458,6 +470,78 @@ Aliases: ExecutionSuppressedRuleWarning
 Required: False
 Position: Named
 Default value: True
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionAliasReference
+
+Sets the `Execution.AliasReference` option.
+Determines how to handle when an alias to a resource is used.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionInvariantCulture
+
+Sets the `Execution.InvariantCulture` option.
+Determines how to report when an invariant culture is used.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionRuleInconclusive
+
+Sets the `Execution.RuleInconclusive` option.
+Determines how to handle rules that generate inconclusive results.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionUnprocessedObject
+
+Sets the `Execution.UnprocessedObject` option.
+Determines how to report objects that are not processed by any rule.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
