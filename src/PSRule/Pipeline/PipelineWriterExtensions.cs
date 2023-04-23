@@ -32,14 +32,6 @@ namespace PSRule.Pipeline
             logger.WriteDebug(new DebugRecord(message));
         }
 
-        internal static void WarnUsingInvariantCulture(this IPipelineWriter writer)
-        {
-            if (writer == null || !writer.ShouldWriteWarning())
-                return;
-
-            writer.WriteWarning(PSRuleResources.UsingInvariantCulture);
-        }
-
         internal static void WarnRulePathNotFound(this IPipelineWriter writer)
         {
             if (writer == null || !writer.ShouldWriteWarning())

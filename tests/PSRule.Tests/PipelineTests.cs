@@ -175,7 +175,7 @@ namespace PSRule
         {
             PSRuleOption.UseCurrentCulture(CultureInfo.InvariantCulture);
             var option = new PSRuleOption();
-            option.Execution.InvariantCultureWarning = false;
+            option.Execution.InvariantCulture = ExecutionActionPreference.Ignore;
             var context = PipelineContext.New(option, null, null, null, null, null, new OptionContext(), null);
             var writer = new TestWriter(option);
             var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null, null), writer, false);

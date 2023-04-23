@@ -102,18 +102,24 @@ namespace PSRule
 
         internal static void WarnAliasReference(this RunspaceContext context, ResourceKind kind, string resourceId, string targetId, string alias)
         {
-            if (context.Writer == null || !context.Writer.ShouldWriteWarning() || !context.Pipeline.Option.Execution.AliasReferenceWarning.GetValueOrDefault(ExecutionOption.Default.AliasReferenceWarning.Value))
-                return;
+#pragma warning disable CS0618 // Type or member is obsolete
+            var action = context.Pipeline.Option.Execution.AliasReference.GetValueOrDefault(ExecutionOption.Default.AliasReference.Value);
+            if (context.Pipeline.Option.Execution.AliasReferenceWarning.HasValue)
+                action = context.Pipeline.Option.Execution.AliasReferenceWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
+#pragma warning restore CS0618 // Type or member is obsolete
 
-            context.Writer.WriteWarning(PSRuleResources.AliasReference, kind.ToString(), resourceId, targetId, alias);
+            Throw(context, action, PSRuleResources.AliasReference, kind.ToString(), resourceId, targetId, alias);
         }
 
         internal static void WarnAliasSuppression(this RunspaceContext context, string targetId, string alias)
         {
-            if (context.Writer == null || !context.Writer.ShouldWriteWarning() || !context.Pipeline.Option.Execution.AliasReferenceWarning.GetValueOrDefault(ExecutionOption.Default.AliasReferenceWarning.Value))
-                return;
+#pragma warning disable CS0618 // Type or member is obsolete
+            var action = context.Pipeline.Option.Execution.AliasReference.GetValueOrDefault(ExecutionOption.Default.AliasReference.Value);
+            if (context.Pipeline.Option.Execution.AliasReferenceWarning.HasValue)
+                action = context.Pipeline.Option.Execution.AliasReferenceWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
+#pragma warning restore CS0618 // Type or member is obsolete
 
-            context.Writer.WriteWarning(PSRuleResources.AliasSuppression, targetId, alias);
+            Throw(context, action, PSRuleResources.AliasSuppression, targetId, alias);
         }
     }
 }

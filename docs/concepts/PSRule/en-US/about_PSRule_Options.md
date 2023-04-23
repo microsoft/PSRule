@@ -14,15 +14,19 @@ This topic describes what options are available, when to and how to use them.
 The following workspace options are available for use:
 
 - [Convention.Include](#conventioninclude)
+- [Execution.AliasReference](#executionaliasreference)
 - [Execution.AliasReferenceWarning](#executionaliasreferencewarning)
 - [Execution.DuplicateResourceId](#executionduplicateresourceid)
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
+- [Execution.InvariantCulture](#executioninvariantculture)
 - [Execution.InvariantCultureWarning](#executioninvariantculturewarning)
 - [Execution.InitialSessionState](#executioninitialsessionstate)
 - [Execution.NotProcessedWarning](#executionnotprocessedwarning)
+- [Execution.RuleInconclusive](#executionruleinconclusive)
 - [Execution.SuppressedRuleWarning](#executionsuppressedrulewarning)
 - [Execution.SuppressionGroupExpired](#executionsuppressiongroupexpired)
+- [Execution.UnprocessedObject](#executionunprocessedobject)
 - [Include.Module](#includemodule)
 - [Include.Path](#includepath)
 - [Input.Format](#inputformat)
@@ -673,7 +677,68 @@ variables:
   value: 'Convention1;Convention2'
 ```
 
+### Execution.AliasReference
+
+Determines how to handle when an alias to a resource is used.
+By defaut, a warning is generated, however this behaviour can be modified by this option.
+
+This option replaces `AliasReferenceWarning`.
+You do not need to configure both options.
+If `AliasReferenceWarning` is configured, it will override `AliasReference` with `Warn` or `Ignore` until removal in PSRule v3.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Warn`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+  This is the default.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+```powershell
+# PowerShell: Using the ExecutionAliasReference parameter
+$option = New-PSRuleOption -ExecutionAliasReference 'Error';
+```
+
+```powershell
+# PowerShell: Using the Execution.AliasReference hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.AliasReference' = 'Error' };
+```
+
+```powershell
+# PowerShell: Using the ExecutionAliasReference parameter to set YAML
+Set-PSRuleOption -ExecutionAliasReference 'Error';
+```
+
+```yaml
+# YAML: Using the execution/aliasReference property
+execution:
+  aliasReference: Error
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_ALIASREFERENCE=Error
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_ALIASREFERENCE: Error
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_ALIASREFERENCE
+  value: Error
+```
+
 ### Execution.AliasReferenceWarning
+
+This option has been deprecated and will be removed from v3 in favor of `aliasReference`.
+Use `aliasReference` instead.
 
 Rules may define one or more aliases.
 These aliases are alternative names to identify the rule.
@@ -828,6 +893,9 @@ variables:
 
 ### Execution.InconclusiveWarning
 
+This option has been deprecated and will be removed from v3 in favor of `ruleInconclusive`.
+Use `ruleInconclusive` instead.
+
 When defining rules, it is possible not return a valid `$True` or `$False` result within the definition script block.
 
 Rule authors should not intentionally avoid returning a result, however a possible cause for not returning a result may be a rule logic error.
@@ -882,7 +950,68 @@ variables:
   value: false
 ```
 
+### Execution.InvariantCulture
+
+Determines how to report when an invariant culture is used.
+By defaut, a warning is generated, however this behaviour can be modified by this option.
+
+This option replaces `InvariantCultureWarning`.
+You do not need to configure both options.
+If `InvariantCultureWarning` is configured, it will override `InvariantCulture` with `Warn` or `Ignore` until removal in PSRule v3.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Warn`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+  This is the default.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+```powershell
+# PowerShell: Using the ExecutionInvariantCulture parameter
+$option = New-PSRuleOption -ExecutionInvariantCulture 'Error';
+```
+
+```powershell
+# PowerShell: Using the Execution.InvariantCulture hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.InvariantCulture' = 'Error' };
+```
+
+```powershell
+# PowerShell: Using the ExecutionInvariantCulture parameter to set YAML
+Set-PSRuleOption -ExecutionInvariantCulture 'Error';
+```
+
+```yaml
+# YAML: Using the execution/invariantCulture property
+execution:
+  invariantCulture: Error
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_INVARIANTCULTURE=Error
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_INVARIANTCULTURE: Error
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_INVARIANTCULTURE
+  value: Error
+```
+
 ### Execution.InvariantCultureWarning
+
+This option has been deprecated and will be removed from v3 in favor of `invariantCulture`.
+Use `invariantCulture` instead.
 
 When evaluating rules inside a CI host, if invariant culture is used, a warning is shown by default.
 You can suppress this warning if you set the culture with `-Culture` or the `Output.Culture` option.
@@ -979,6 +1108,9 @@ variables:
 
 ### Execution.NotProcessedWarning
 
+This option has been deprecated and will be removed from v3 in favor of `unprocessedObject`.
+Use `unprocessedObject` instead.
+
 When evaluating rules, it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.
 In this case the object has not been processed by any rule.
 
@@ -1026,6 +1158,64 @@ env:
 variables:
 - name: PSRULE_EXECUTION_NOTPROCESSEDWARNING
   value: false
+```
+
+### Execution.RuleInconclusive
+
+Determines how to handle rules that generate inconclusive results.
+By defaut, a warning is generated, however this behaviour can be modified by this option.
+
+This option replaces `InconclusiveWarning`.
+You do not need to configure both options.
+If `InconclusiveWarning` is configured, it will override `RuleInconclusive` with `Warn` or `Ignore` until removal in PSRule v3.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Warn`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+  This is the default.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+```powershell
+# PowerShell: Using the ExecutionRuleInconclusive parameter
+$option = New-PSRuleOption -ExecutionRuleInconclusive 'Error';
+```
+
+```powershell
+# PowerShell: Using the Execution.RuleInconclusive hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.RuleInconclusive' = 'Error' };
+```
+
+```powershell
+# PowerShell: Using the ExecutionRuleInconclusive parameter to set YAML
+Set-PSRuleOption -ExecutionRuleInconclusive 'Error';
+```
+
+```yaml
+# YAML: Using the execution/ruleInconclusive property
+execution:
+  ruleInconclusive: Error
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_RULEINCONCLUSIVE=Error
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_RULEINCONCLUSIVE: Error
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_RULEINCONCLUSIVE
+  value: Error
 ```
 
 ### Execution.SuppressedRuleWarning
@@ -1248,6 +1438,64 @@ env:
 # Azure Pipelines: Using environment variable
 variables:
 - name: PSRULE_EXECUTION_RULESUPPRESSED
+  value: Error
+```
+
+### Execution.UnprocessedObject
+
+Determines how to report objects that are not processed by any rule.
+By defaut, a warning is generated, however this behaviour can be modified by this option.
+
+This option replaces `NotProcessedWarning`.
+You do not need to configure both options.
+If `NotProcessedWarning` is configured, it will override `UnprocessedObject` with `Warn` or `Ignore` until removal in PSRule v3.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Warn`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+  This is the default.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+```powershell
+# PowerShell: Using the ExecutionUnprocessedObject parameter
+$option = New-PSRuleOption -ExecutionUnprocessedObject 'Error';
+```
+
+```powershell
+# PowerShell: Using the Execution.UnprocessedObject hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.UnprocessedObject' = 'Error' };
+```
+
+```powershell
+# PowerShell: Using the ExecutionUnprocessedObject parameter to set YAML
+Set-PSRuleOption -ExecutionUnprocessedObject 'Error';
+```
+
+```yaml
+# YAML: Using the execution/unprocessedObject property
+execution:
+  unprocessedObject: Error
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_UNPROCESSEDOBJECT=Error
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_UNPROCESSEDOBJECT: Error
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_UNPROCESSEDOBJECT
   value: Error
 ```
 
@@ -3256,13 +3504,14 @@ convention:
 
 # Configure execution options
 execution:
-  aliasReferenceWarning: true
+  aliasReference: Warn
   duplicateResourceId: Error
+  invariantCulture: Warn
   languageMode: FullLanguage
-  inconclusiveWarning: true
-  notProcessedWarning: true
-  suppressedRuleWarning: true
+  ruleInconclusive: Warn
+  ruleSuppressed: Warn
   suppressionGroupExpired: Warn
+  unprocessedObject: Warn
 
 # Configure include options
 include:

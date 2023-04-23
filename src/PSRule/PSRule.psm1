@@ -1213,6 +1213,22 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Configuration.ExecutionActionPreference]::Warn,
 
+        # Sets the Execution.AliasReference option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionAliasReference = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.RuleInconclusive option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleInconclusive = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.InvariantCulture option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionInvariantCulture = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.UnprocessedObject option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionUnprocessedObject = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -1522,6 +1538,22 @@ function Set-PSRuleOption {
         # Sets the Execution.RuleSuppressed option
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.AliasReference option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionAliasReference = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.RuleInconclusive option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleInconclusive = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.InvariantCulture option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionInvariantCulture = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.UnprocessedObject option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionUnprocessedObject = [PSRule.Configuration.ExecutionActionPreference]::Warn,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -2279,6 +2311,22 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Configuration.ExecutionActionPreference]::Warn,
 
+        # Sets the Execution.AliasReference option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionAliasReference = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.RuleInconclusive option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleInconclusive = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.InvariantCulture option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionInvariantCulture = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.UnprocessedObject option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Configuration.ExecutionActionPreference]$ExecutionUnprocessedObject = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
         [String[]]$IncludeModule,
@@ -2499,6 +2547,26 @@ function SetOptions {
         # Sets option Execution.RuleSuppressed
         if ($PSBoundParameters.ContainsKey('ExecutionRuleSuppressed')) {
             $Option.Execution.RuleSuppressed = $ExecutionRuleSuppressed;
+        }
+
+        # Sets option Execution.AliasReference
+        if ($PSBoundParameters.ContainsKey('ExecutionAliasReference')) {
+            $Option.Execution.AliasReference = $ExecutionAliasReference;
+        }
+
+        # Sets option Execution.RuleInconclusive
+        if ($PSBoundParameters.ContainsKey('ExecutionRuleInconclusive')) {
+            $Option.Execution.RuleInconclusive = $ExecutionRuleInconclusive;
+        }
+
+        # Sets option Execution.InvariantCulture
+        if ($PSBoundParameters.ContainsKey('ExecutionInvariantCulture')) {
+            $Option.Execution.InvariantCulture = $ExecutionInvariantCulture;
+        }
+
+        # Sets option Execution.UnprocessedObject
+        if ($PSBoundParameters.ContainsKey('ExecutionUnprocessedObject')) {
+            $Option.Execution.UnprocessedObject = $ExecutionUnprocessedObject;
         }
 
         # Sets option Include.Module

@@ -36,7 +36,7 @@ Describe 'PSRule -- Reason keyword' -Tag 'Reason' {
         }
 
         It 'Sets reason' {
-            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $option = @{ 'Execution.RuleInconclusive' = 'Ignore' };
             $result = @($testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'ReasonTest','ReasonTest2','ReasonTest3' -Outcome All);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 3;

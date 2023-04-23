@@ -100,7 +100,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
 
         It 'Returns inconclusive' {
-            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $option = @{ 'Execution.RuleInconclusive' = 'Ignore' };
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile3' -Outcome All -Option $option;
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -Be $False;
@@ -1213,7 +1213,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Detail' {
             It 'Show Warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Warn -OutputAs Detail -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Warn -OutputAs Detail -ExecutionInvariantCulture 'Ignore';
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1227,7 +1227,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Ignore -OutputAs Detail -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Ignore -OutputAs Detail -ExecutionInvariantCulture 'Ignore';
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1238,7 +1238,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Summary' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Warn -OutputAs Summary -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Warn -OutputAs Summary -ExecutionInvariantCulture 'Ignore';
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1250,7 +1250,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Ignore -OutputAs Summary -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -SuppressTargetName @{ FromFile1 = 'TestObject1'; FromFile2 = 'TestObject1'; } -ExecutionRuleSuppressed Ignore -OutputAs Summary -ExecutionInvariantCulture 'Ignore';
 
                 $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Option $option -Name 'FromFile1', 'FromFile2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
     
@@ -1294,7 +1294,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Detail' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Detail -InvariantCultureWarning $False -OutputCulture 'en-US';
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Detail -ExecutionInvariantCulture Ignore -OutputCulture 'en-US';
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile1', 'FromFile2', 'WithTag2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1318,7 +1318,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'Show warnings for all rules when rule property is null or empty' {
-                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Detail -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Detail -ExecutionInvariantCulture Ignore -SuppressionGroupExpired Ignore;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams2 -Option $option -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1330,7 +1330,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -ExecutionRuleSuppressed Ignore -OutputAs Detail -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Ignore -OutputAs Detail -ExecutionInvariantCulture Ignore -SuppressionGroupExpired Ignore;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile1', 'FromFile2', 'WithTag2' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1341,7 +1341,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         Context 'Summary' {
             It 'Show warnings' {
-                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Summary -InvariantCultureWarning $False -SuppressionGroupExpired Ignore -OutputCulture 'en-US';
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Summary -ExecutionInvariantCulture Ignore -SuppressionGroupExpired Ignore -OutputCulture 'en-US';
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile3', 'FromFile5', 'WithTag3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1359,7 +1359,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'Show warnings for all rules when rule property is null or empty' {
-                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Summary -InvariantCultureWarning $False;
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Warn -OutputAs Summary -ExecutionInvariantCulture Ignore;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams2 -Option $option -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1373,7 +1373,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             }
 
             It 'No warnings' {
-                $option = New-PSRuleOption -ExecutionRuleSuppressed Ignore -OutputAs Summary -InvariantCultureWarning $False -SuppressionGroupExpired Ignore;
+                $option = New-PSRuleOption -ExecutionRuleSuppressed Ignore -OutputAs Summary -ExecutionInvariantCulture Ignore -SuppressionGroupExpired Ignore;
 
                 $Null = $testObject | Invoke-PSRule @invokeParams -Option $option -Name 'FromFile3', 'FromFile5', 'WithTag3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
 
@@ -1408,7 +1408,7 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             $result | Should -Be $True;
 
             # Check result with one failing rule
-            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $option = @{ 'Execution.RuleInconclusive' = 'Ignore' };
             $result = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'FromFile1', 'FromFile2', 'FromFile3' -Option $option;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
@@ -1632,7 +1632,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             # Check multiple
             $assertParams = @{
                 Path = $ruleFilePath
-                Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain' }
+                Option = @{ 'Execution.RuleInconclusive' = 'Ignore'; 'Output.Style' = 'Plain' }
                 Name = 'FromFile1', 'FromFile2', 'FromFile3'
                 ErrorVariable = 'errorOut'
             }
@@ -1657,7 +1657,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $testOutputPath = (Join-Path -Path $outputPath -ChildPath 'newPath/assert.results.json');
             $assertParams = @{
                 Path = $ruleFilePath
-                Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain'; 'Binding.Field' = @{ extra = 'Name'} }
+                Option = @{ 'Execution.RuleInconclusive' = 'Ignore'; 'Output.Style' = 'Plain'; 'Binding.Field' = @{ extra = 'Name'} }
                 Name = 'FromFile1', 'FromFile2', 'FromFile3'
                 ErrorVariable = 'errorOut'
                 OutputFormat = 'Json'
@@ -1676,7 +1676,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
         It 'With -WarningAction' {
             $assertParams = @{
                 Path = $ruleFilePath
-                Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain' }
+                Option = @{ 'Execution.RuleInconclusive' = 'Ignore'; 'Output.Style' = 'Plain' }
                 Name = 'WithWarning'
             }
             $result = $testObject | Assert-PSRule @assertParams 6>&1 | Out-String;
@@ -1694,7 +1694,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $testOutputPath = (Join-Path -Path $outputPath -ChildPath 'newPath/assert.results2.json');
             $assertParams = @{
                 Path = $ruleFilePath
-                Option = @{ 'Execution.InconclusiveWarning' = $False; 'Output.Style' = 'Plain'; 'Binding.Field' = @{ extra = 'Name'} }
+                Option = @{ 'Execution.RuleInconclusive' = 'Ignore'; 'Output.Style' = 'Plain'; 'Binding.Field' = @{ extra = 'Name'} }
                 Name = 'FromFile2', 'FromFile3', 'WithError', 'WithException'
                 ErrorVariable = 'errorOut'
                 OutputFormat = 'Json'
@@ -1831,7 +1831,7 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Returns rules in current path' {
             try {
                 Push-Location -Path $searchPath;
-                $result = @(Get-PSRule  -Path $PWD -Option @{ 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule  -Path $PWD -Option @{ 'Execution.InvariantCulture' = 'Ignore' })
                 $result | Should -Not -BeNullOrEmpty;
                 $result.Length | Should -Be 3;
                 $result.RuleName | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
@@ -1947,31 +1947,31 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         It 'Uses rules with include option' {
             Push-Location -Path (Join-Path -Path $here -ChildPath 'rules/')
             try {
-                $result = @(Get-PSRule -Path $PWD -Option @{ 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule -Path $PWD -Option @{ 'Execution.InvariantCulture' = 'Ignore' })
                 $result.Length | Should -Be 4;
 
-                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/'; 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/'; 'Execution.InvariantCulture' = 'Ignore' })
                 $result.Length | Should -Be 1;
 
-                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/', 'extra/'; 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = 'main/', 'extra/'; 'Execution.InvariantCulture' = 'Ignore' })
                 $result.Length | Should -Be 2;
 
-                $result = @(Get-PSRule -Option @{ 'Include.Path' = '.'; 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule -Option @{ 'Include.Path' = '.'; 'Execution.InvariantCulture' = 'Ignore' })
                 $result.Length | Should -Be 4;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Execution.InvariantCulture' = 'Ignore' })
                 $result.Length | Should -Be 2;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = @(); 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = @(); 'Execution.InvariantCulture' = 'Ignore' })
                 $result.Length | Should -Be 1;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/'; 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/'; 'Execution.InvariantCulture' = 'Ignore' })
                 $result.Length | Should -Be 2;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/', '.ps-rule/'; 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'extra/', '.ps-rule/'; 'Execution.InvariantCulture' = 'Ignore' })
                 $result.Length | Should -Be 3;
 
-                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'main/'; 'Execution.InvariantCultureWarning' = $False })
+                $result = @(Get-PSRule -Path 'main/' -Option @{ 'Include.Path' = 'main/'; 'Execution.InvariantCulture' = 'Ignore' })
                 $result.Length | Should -Be 1;
             }
             finally {
@@ -2368,7 +2368,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
         BeforeAll {
             # Get a list of rules
             $searchPath = Join-Path -Path $here -ChildPath 'TestModule';
-            $options = @{ 'Execution.InvariantCultureWarning' = $False }
+            $options = @{ 'Execution.InvariantCulture' = 'Ignore' }
         }
 
         It 'Docs from imported module' {
@@ -2429,7 +2429,7 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
             try {
                 Push-Location $searchPath;
                 { Get-PSRuleHelp -Path $PWD } | Should -Throw "The resource '.\M1.Rule2' is using a duplicate resource identifier. A resource with the identifier '.\M1.Rule2' already exists. Each resource must have a unique name, ref, and aliases. See https://aka.ms/ps-rule/naming for guidance on naming within PSRule.";
-                Get-PSRuleHelp -Path $PWD -Option @{ 'Execution.DuplicateResourceId' = 'Warn'; 'Execution.InvariantCultureWarning' = $False } -WarningVariable outWarn -WarningAction SilentlyContinue;
+                Get-PSRuleHelp -Path $PWD -Option @{ 'Execution.DuplicateResourceId' = 'Warn'; 'Execution.InvariantCulture' = 'Ignore' } -WarningVariable outWarn -WarningAction SilentlyContinue;
                 $warnings = @($outWarn);
                 $warnings.Count | Should -Be 1;
                 $warnings | Should -Be "The resource '.\M1.Rule2' is using a duplicate resource identifier. A resource with the identifier '.\M1.Rule2' already exists. Each resource must have a unique name, ref, and aliases. See https://aka.ms/ps-rule/naming for guidance on naming within PSRule.";

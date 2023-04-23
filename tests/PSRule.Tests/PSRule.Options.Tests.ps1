@@ -625,7 +625,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
     Context 'Read Execution.InconclusiveWarning' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
-            $option.Execution.InconclusiveWarning | Should -Be $True;
+            $option.Execution.InconclusiveWarning | Should -Be $Null;
         }
 
         It 'from Hashtable' {
@@ -664,7 +664,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
     Context 'Read Execution.NotProcessedWarning' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
-            $option.Execution.NotProcessedWarning | Should -Be $True;
+            $option.Execution.NotProcessedWarning | Should -Be $Null;
         }
 
         It 'from Hashtable' {
@@ -875,10 +875,198 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Execution.AliasReference' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.AliasReference | Should -Be 'Warn';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.AliasReference' = 'error' };
+            $option.Execution.AliasReference | Should -Be 'Error';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.AliasReference' = 'Error' };
+            $option.Execution.AliasReference | Should -Be 'Error';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.AliasReference | Should -Be 'Ignore';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_ALIASREFERENCE = 'error';
+                $option = New-PSRuleOption;
+                $option.Execution.AliasReference | Should -Be 'Error';
+
+                # With enum
+                $Env:PSRULE_EXECUTION_ALIASREFERENCE = 'Error';
+                $option = New-PSRuleOption;
+                $option.Execution.AliasReference | Should -Be 'Error';
+
+                # With int
+                $Env:PSRULE_EXECUTION_ALIASREFERENCE = '3';
+                $option = New-PSRuleOption;
+                $option.Execution.AliasReference | Should -Be 'Error';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_ALIASREFERENCE' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -ExecutionAliasReference 'Error' -Path $emptyOptionsFilePath;
+            $option.Execution.AliasReference | Should -Be 'Error';
+        }
+    }
+
+    Context 'Read Execution.RuleInconclusive' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.RuleInconclusive | Should -Be 'Warn';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.RuleInconclusive' = 'error' };
+            $option.Execution.RuleInconclusive | Should -Be 'Error';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.RuleInconclusive' = 'Error' };
+            $option.Execution.RuleInconclusive | Should -Be 'Error';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.RuleInconclusive | Should -Be 'Ignore';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_RULEINCONCLUSIVE = 'error';
+                $option = New-PSRuleOption;
+                $option.Execution.RuleInconclusive | Should -Be 'Error';
+
+                # With enum
+                $Env:PSRULE_EXECUTION_RULEINCONCLUSIVE = 'Error';
+                $option = New-PSRuleOption;
+                $option.Execution.RuleInconclusive | Should -Be 'Error';
+
+                # With int
+                $Env:PSRULE_EXECUTION_RULEINCONCLUSIVE = '3';
+                $option = New-PSRuleOption;
+                $option.Execution.RuleInconclusive | Should -Be 'Error';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_RULEINCONCLUSIVE' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -ExecutionRuleInconclusive 'Error' -Path $emptyOptionsFilePath;
+            $option.Execution.RuleInconclusive | Should -Be 'Error';
+        }
+    }
+
+    Context 'Read Execution.InvariantCulture' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.InvariantCulture | Should -Be 'Warn';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.InvariantCulture' = 'error' };
+            $option.Execution.InvariantCulture | Should -Be 'Error';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.InvariantCulture' = 'Error' };
+            $option.Execution.InvariantCulture | Should -Be 'Error';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.InvariantCulture | Should -Be 'Ignore';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_INVARIANTCULTURE = 'error';
+                $option = New-PSRuleOption;
+                $option.Execution.InvariantCulture | Should -Be 'Error';
+
+                # With enum
+                $Env:PSRULE_EXECUTION_INVARIANTCULTURE = 'Error';
+                $option = New-PSRuleOption;
+                $option.Execution.InvariantCulture | Should -Be 'Error';
+
+                # With int
+                $Env:PSRULE_EXECUTION_INVARIANTCULTURE = '3';
+                $option = New-PSRuleOption;
+                $option.Execution.InvariantCulture | Should -Be 'Error';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_INVARIANTCULTURE' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -ExecutionInvariantCulture 'Error' -Path $emptyOptionsFilePath;
+            $option.Execution.InvariantCulture | Should -Be 'Error';
+        }
+    }
+
+    Context 'Read Execution.UnprocessedObject' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.UnprocessedObject | Should -Be 'Warn';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.UnprocessedObject' = 'error' };
+            $option.Execution.UnprocessedObject | Should -Be 'Error';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.UnprocessedObject' = 'Error' };
+            $option.Execution.UnprocessedObject | Should -Be 'Error';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.UnprocessedObject | Should -Be 'Ignore';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_UNPROCESSEDOBJECT = 'error';
+                $option = New-PSRuleOption;
+                $option.Execution.UnprocessedObject | Should -Be 'Error';
+
+                # With enum
+                $Env:PSRULE_EXECUTION_UNPROCESSEDOBJECT = 'Error';
+                $option = New-PSRuleOption;
+                $option.Execution.UnprocessedObject | Should -Be 'Error';
+
+                # With int
+                $Env:PSRULE_EXECUTION_UNPROCESSEDOBJECT = '3';
+                $option = New-PSRuleOption;
+                $option.Execution.UnprocessedObject | Should -Be 'Error';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_UNPROCESSEDOBJECT' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -ExecutionUnprocessedObject 'Error' -Path $emptyOptionsFilePath;
+            $option.Execution.UnprocessedObject | Should -Be 'Error';
+        }
+    }
+
     Context 'Read Execution.AliasReferenceWarning' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
-            $option.Execution.AliasReferenceWarning | Should -Be $True;
+            $option.Execution.AliasReferenceWarning | Should -Be $Null;
         }
 
         It 'from Hashtable' {
@@ -964,7 +1152,7 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
     Context 'Read Execution.InvariantCultureWarning' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
-            $option.Execution.InvariantCultureWarning | Should -Be $True;
+            $option.Execution.InvariantCultureWarning | Should -Be $Null;
         }
 
         It 'from Hashtable' {
