@@ -10,6 +10,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 **Important notes**:
 
+- Several options have been renamed and the old names will be removed in v3.
+  See [deprecations][2] for details.
 - Several properties of rule and language block elements will be removed from v3.
   See [deprecations][2] for details.
 
