@@ -240,5 +240,49 @@
         ]
       }
     }
+  },
+  {
+    // Synopsis: A test for the padLeft function.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.PadLeft"
+    },
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "padLeft": {
+              "string": "One"
+            },
+            "totalLength": 5,
+            "paddingCharacter": "_"
+          }
+        },
+        "equals": "__One"
+      }
+    }
+  },
+  {
+    // Synopsis: A test for the padRight function.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "Json.Fn.PadRight"
+    },
+    "spec": {
+      "if": {
+        "value": {
+          "$": {
+            "padRight": {
+              "string": "One"
+            },
+            "totalLength": 5,
+            "paddingCharacter": "_"
+          }
+        },
+        "equals": "One__"
+      }
+    }
   }
 ]

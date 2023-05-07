@@ -1673,7 +1673,7 @@ namespace PSRule
                 GetObject((name: "name", value: "log1")),
                 GetObject((name: "name", value: "log2"))
             }))));
-            actual3 = GetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: new object[] {}))));
+            actual3 = GetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: new object[] { }))));
 
             Assert.True(allOf.Match(actual1));
             Assert.True(allOf.Match(actual2));
@@ -1831,6 +1831,8 @@ namespace PSRule
             var example3 = GetSelectorVisitor($"{type}.Fn.First", GetSource(path), out _);
             var example4 = GetSelectorVisitor($"{type}.Fn.Last", GetSource(path), out _);
             var example5 = GetSelectorVisitor($"{type}.Fn.Split", GetSource(path), out _);
+            var example6 = GetSelectorVisitor($"{type}.Fn.PadLeft", GetSource(path), out _);
+            var example7 = GetSelectorVisitor($"{type}.Fn.PadRight", GetSource(path), out _);
             var actual1 = GetObject(
                 (name: "Name", value: "TestObject1")
             );
@@ -1840,6 +1842,8 @@ namespace PSRule
             Assert.True(example3.Match(actual1));
             Assert.True(example4.Match(actual1));
             Assert.True(example5.Match(actual1));
+            Assert.True(example6.Match(actual1));
+            Assert.True(example7.Match(actual1));
         }
 
         #endregion Functions

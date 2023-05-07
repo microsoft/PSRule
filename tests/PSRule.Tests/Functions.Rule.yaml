@@ -53,9 +53,9 @@ spec:
     value:
       $:
         concat:
-        - path: name
-        - string: '-'
-        - path: name
+          - path: name
+          - string: '-'
+          - path: name
     equals: TestObject1-TestObject1
 
 ---
@@ -83,9 +83,9 @@ spec:
     equals:
       $:
         concat:
-        - path: name
-        - string: '-'
-        - path: name
+          - path: name
+          - string: '-'
+          - path: name
 
 ---
 # Synopsis: A test for the replace function.
@@ -128,8 +128,8 @@ spec:
     value:
       $:
         first:
-        - string: abc
-        - string: def
+          - string: abc
+          - string: def
     equals: abc
 
 ---
@@ -143,8 +143,8 @@ spec:
     value:
       $:
         last:
-        - string: abc
-        - string: def
+          - string: abc
+          - string: def
     equals: def
 
 ---
@@ -162,6 +162,38 @@ spec:
         delimiter:
           - ' '
     equals:
-    - One
-    - Two
-    - Three
+      - One
+      - Two
+      - Three
+
+---
+# Synopsis: A test for the padLeft function.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.PadLeft
+spec:
+  if:
+    value:
+      $:
+        padLeft:
+          string: One
+        paddingCharacter: _
+        totalLength: 5
+    equals: __One
+
+---
+# Synopsis: A test for the padRight function.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: Yaml.Fn.PadRight
+spec:
+  if:
+    value:
+      $:
+        padRight:
+          string: One
+        paddingCharacter: _
+        totalLength: 5
+    equals: One__

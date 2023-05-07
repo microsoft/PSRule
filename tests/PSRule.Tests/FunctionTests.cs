@@ -427,6 +427,174 @@ namespace PSRule
             Assert.Null(fn(context, properties)(context));
         }
 
+        [Fact]
+        public void PadLeft()
+        {
+            var context = GetContext();
+            var fn = GetFunction("padLeft");
+
+            var properties = new LanguageExpression.PropertyBag
+            {
+                { "padLeft", "One" },
+                { "totalLength", 5 }
+            };
+            Assert.Equal("  One", fn(context, properties)(context));
+
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padLeft", "One" },
+                { "totalLength", 3 }
+            };
+            Assert.Equal("One", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padLeft", "One" },
+                { "totalLength", 5 },
+                { "paddingCharacter", '_' }
+            };
+            Assert.Equal("__One", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padLeft", "One" },
+                { "totalLength", 5 },
+                { "paddingCharacter", "_" }
+            };
+            Assert.Equal("__One", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padLeft", "One" },
+                { "totalLength", 5 },
+                { "paddingCharacter", "__" }
+            };
+            Assert.Equal("  One", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padLeft", "One" },
+                { "totalLength", 3 },
+                { "paddingCharacter", "_" }
+            };
+            Assert.Equal("One", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padLeft", "One" },
+                { "totalLength", 1 },
+                { "paddingCharacter", "_" }
+            };
+            Assert.Equal("One", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padLeft", "One" },
+                { "totalLength", -1 },
+                { "paddingCharacter", "_" }
+            };
+            Assert.Equal("One", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padLeft", null },
+                { "totalLength", 5 }
+            };
+            Assert.Null(fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padLeft", "One" },
+                { "totalLength", null }
+            };
+            Assert.Equal("One", fn(context, properties)(context));
+        }
+
+        [Fact]
+        public void PadRight()
+        {
+            var context = GetContext();
+            var fn = GetFunction("padRight");
+
+            var properties = new LanguageExpression.PropertyBag
+            {
+                { "padRight", "One" },
+                { "totalLength", 5 }
+            };
+            Assert.Equal("One  ", fn(context, properties)(context));
+
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padRight", "One" },
+                { "totalLength", 3 }
+            };
+            Assert.Equal("One", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padRight", "One" },
+                { "totalLength", 5 },
+                { "paddingCharacter", '_' }
+            };
+            Assert.Equal("One__", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padRight", "One" },
+                { "totalLength", 5 },
+                { "paddingCharacter", "_" }
+            };
+            Assert.Equal("One__", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padRight", "One" },
+                { "totalLength", 5 },
+                { "paddingCharacter", "__" }
+            };
+            Assert.Equal("One  ", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padRight", "One" },
+                { "totalLength", 3 },
+                { "paddingCharacter", "_" }
+            };
+            Assert.Equal("One", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padRight", "One" },
+                { "totalLength", 1 },
+                { "paddingCharacter", "_" }
+            };
+            Assert.Equal("One", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padRight", "One" },
+                { "totalLength", -1 },
+                { "paddingCharacter", "_" }
+            };
+            Assert.Equal("One", fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padRight", null },
+                { "totalLength", 5 }
+            };
+            Assert.Null(fn(context, properties)(context));
+
+            properties = new LanguageExpression.PropertyBag
+            {
+                { "padRight", "One" },
+                { "totalLength", null }
+            };
+            Assert.Equal("One", fn(context, properties)(context));
+        }
+
         #region Helper methods
 
         private static ExpressionBuilderFn GetFunction(string name)
