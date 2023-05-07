@@ -72,12 +72,14 @@ namespace PSRule
             Assert.Equal("YamlRuleWithPrecondition", rule[0].Name);
             Assert.Equal("YamlRuleWithSubselector", rule[1].Name);
             Assert.Equal("YamlRuleWithSubselectorReordered", rule[2].Name);
+            Assert.Equal("YamlRuleWithQuantifier", rule[3].Name);
 
             context.Init(GetSource("FromFileSubSelector.Rule.yaml"));
             context.Begin();
             var subselector1 = GetRuleVisitor(context, "YamlRuleWithPrecondition", GetSource("FromFileSubSelector.Rule.yaml"));
             var subselector2 = GetRuleVisitor(context, "YamlRuleWithSubselector", GetSource("FromFileSubSelector.Rule.yaml"));
             var subselector3 = GetRuleVisitor(context, "YamlRuleWithSubselectorReordered", GetSource("FromFileSubSelector.Rule.yaml"));
+            var subselector4 = GetRuleVisitor(context, "YamlRuleWithQuantifier", GetSource("FromFileSubSelector.Rule.yaml"));
             context.EnterLanguageScope(subselector1.Source);
 
             var actual1 = GetObject((name: "kind", value: "test"), (name: "resources", value: new string[] { "abc", "abc" }));
@@ -109,6 +111,24 @@ namespace PSRule
             context.EnterTargetObject(actual2);
             context.EnterRuleBlock(subselector3);
             Assert.True(subselector3.Condition.If().AllOf());
+
+            // YamlRuleWithQuantifier
+            var fromFile = GetObjectAsTarget("ObjectFromFile3.json");
+            actual1 = fromFile[0];
+            actual2 = fromFile[1];
+            var actual3 = fromFile[2];
+
+            context.EnterTargetObject(actual1);
+            context.EnterRuleBlock(subselector4);
+            Assert.True(subselector4.Condition.If().AllOf());
+
+            context.EnterTargetObject(actual2);
+            context.EnterRuleBlock(subselector4);
+            Assert.False(subselector4.Condition.If().AllOf());
+
+            context.EnterTargetObject(actual3);
+            context.EnterRuleBlock(subselector4);
+            Assert.True(subselector4.Condition.If().AllOf());
         }
 
         [Fact]
@@ -255,12 +275,14 @@ namespace PSRule
             Assert.Equal("JsonRuleWithPrecondition", rule[0].Name);
             Assert.Equal("JsonRuleWithSubselector", rule[1].Name);
             Assert.Equal("JsonRuleWithSubselectorReordered", rule[2].Name);
+            Assert.Equal("JsonRuleWithQuantifier", rule[3].Name);
 
             context.Init(GetSource("FromFileSubSelector.Rule.yaml"));
             context.Begin();
             var subselector1 = GetRuleVisitor(context, "JsonRuleWithPrecondition", GetSource("FromFileSubSelector.Rule.jsonc"));
             var subselector2 = GetRuleVisitor(context, "JsonRuleWithSubselector", GetSource("FromFileSubSelector.Rule.jsonc"));
             var subselector3 = GetRuleVisitor(context, "JsonRuleWithSubselectorReordered", GetSource("FromFileSubSelector.Rule.jsonc"));
+            var subselector4 = GetRuleVisitor(context, "JsonRuleWithQuantifier", GetSource("FromFileSubSelector.Rule.jsonc"));
             context.EnterLanguageScope(subselector1.Source);
 
             var actual1 = GetObject((name: "kind", value: "test"), (name: "resources", value: new string[] { "abc", "abc" }));
@@ -292,6 +314,24 @@ namespace PSRule
             context.EnterTargetObject(actual2);
             context.EnterRuleBlock(subselector3);
             Assert.True(subselector3.Condition.If().AllOf());
+
+            // JsonRuleWithQuantifier
+            var fromFile = GetObjectAsTarget("ObjectFromFile3.json");
+            actual1 = fromFile[0];
+            actual2 = fromFile[1];
+            var actual3 = fromFile[2];
+
+            context.EnterTargetObject(actual1);
+            context.EnterRuleBlock(subselector4);
+            Assert.True(subselector4.Condition.If().AllOf());
+
+            context.EnterTargetObject(actual2);
+            context.EnterRuleBlock(subselector4);
+            Assert.False(subselector4.Condition.If().AllOf());
+
+            context.EnterTargetObject(actual3);
+            context.EnterRuleBlock(subselector4);
+            Assert.True(subselector4.Condition.If().AllOf());
         }
 
         #endregion Json rules
@@ -322,6 +362,11 @@ namespace PSRule
         private static object[] GetObject(string path)
         {
             return JsonConvert.DeserializeObject<object[]>(File.ReadAllText(path));
+        }
+
+        private static TargetObject[] GetObjectAsTarget(string path)
+        {
+            return JsonConvert.DeserializeObject<object[]>(File.ReadAllText(path)).Select(o => new TargetObject(new PSObject(o))).ToArray();
         }
 
         private static RuleBlock GetRuleVisitor(RunspaceContext context, string name, Source[] source = null)

@@ -32,6 +32,14 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v2.9.0-B0013:
+
+- New features:
+  - Added sub-selector quantifiers for `allOf` or `anyOf` operators by @BernieWhite.
+    [#1423](https://github.com/microsoft/PSRule/issues/1423)
+    - Quantifiers allow you to specify the number of matches with `count`, `less`, `lessOrEqual`, `greater`, or `greaterOrEqual`.
+    - See [Sub-selectors][4] for more information.
+
 ## v2.9.0-B0013 (pre-release)
 
 What's changed since release v2.8.1:

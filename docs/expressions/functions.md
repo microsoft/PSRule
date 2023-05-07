@@ -136,3 +136,9 @@ spec:
         - string: '-'
         - path: name
 ```
+
+## Recommended content
+
+- [Create a standalone rule](../quickstart/standalone-rule.md)
+- [Expressions](../concepts/PSRule/en-US/about_PSRule_Expressions.md)
+- [Sub-selectors](sub-selectors.md)

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using PSRule.Configuration;
@@ -86,7 +87,13 @@ namespace PSRule.Definitions.Expressions
         private const char Dot = '.';
         private const char OpenBracket = '[';
         private const char CloseBracket = ']';
-        private const string Where = ".where";
+
+        private const string DOTWHERE = ".where";
+        private const string LESS = "less";
+        private const string LESSOREQUAL = "lessOrEqual";
+        private const string GREATER = "greater";
+        private const string GREATEROREQUAL = "greaterOrEqual";
+        private const string COUNT = "count";
 
         private readonly bool _Debugger;
 
@@ -279,27 +286,59 @@ namespace PSRule.Definitions.Expressions
             }
             else
             {
-                var subselector = expression.Subselector != null ? Expression(string.Concat(path, Where), expression.Subselector) : null;
+                var subselector = expression.Subselector != null ? Expression(string.Concat(path, DOTWHERE), expression.Subselector) : null;
                 return (context, o) =>
                 {
-                    if (!ObjectHelper.GetPath(context, o, Value<string>(context, expression.Property["field"]), caseSensitive: false, out object[] items) ||
-                    items == null || items.Length == 0)
-                        return false;
+                    ObjectHelper.GetPath(context, o, Value<string>(context, expression.Property["field"]), caseSensitive: false, out object[] items);
+
+                    var quantifier = GetQuantifier(expression);
+                    var pass = 0;
 
                     // If any fail, all fail
-                    for (var i = 0; i < items.Length; i++)
+                    for (var i = 0; items != null && i < items.Length; i++)
                     {
                         if (subselector == null || subselector(context, items[i]).GetValueOrDefault(true))
                         {
                             if (!expression.Descriptor.Fn(context, info, innerA, items[i]))
-                                return false;
+                            {
+                                if (quantifier == null)
+                                    return false;
+                            }
+                            else
+                            {
+                                pass++;
+                            }
                         }
                     }
-                    return true;
+                    return quantifier == null || quantifier(pass);
                 };
             }
         }
 
+        /// <summary>
+        /// Returns a quantifier function if set for the expression.
+        /// </summary>
+        private Func<long, bool> GetQuantifier(LanguageOperator expression)
+        {
+            if (expression.Property.TryGetLong(GREATEROREQUAL, out var q))
+                return (number) => number >= q.Value;
+
+            if (expression.Property.TryGetLong(GREATER, out q))
+                return (number) => number > q.Value;
+
+            if (expression.Property.TryGetLong(LESSOREQUAL, out q))
+                return (number) => number <= q.Value;
+
+            if (expression.Property.TryGetLong(LESS, out q))
+                return (number) => number < q.Value;
+
+            if (expression.Property.TryGetLong(COUNT, out q))
+                return (number) => number == q.Value;
+
+            return null;
+        }
+
+        [DebuggerStepThrough]
         private string Value<T>(ExpressionContext context, object v)
         {
             return v as string;
