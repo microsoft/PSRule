@@ -3357,6 +3357,12 @@
             },
             {
               "$ref": "#/definitions/fn/definitions/function/definitions/split"
+            },
+            {
+              "$ref": "#/definitions/fn/definitions/function/definitions/padLeft"
+            },
+            {
+              "$ref": "#/definitions/fn/definitions/function/definitions/padRight"
             }
           ],
           "definitions": {
@@ -3780,6 +3786,90 @@
               "required": [
                 "split",
                 "delimiter"
+              ]
+            },
+            "padLeft": {
+              "type": "object",
+              "properties": {
+                "padLeft": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "title": "Pad Left",
+                      "description": "The padLeft function returns a string with a minimum of the specified length.",
+                      "markdownDescription": "The `padLeft` function returns a string with a minimum of the specified length."
+                    },
+                    {
+                      "type": "object",
+                      "title": "Pad Left",
+                      "description": "The padLeft function returns a string with a minimum of the specified length.",
+                      "markdownDescription": "The `padLeft` function returns a string with a minimum of the specified length.",
+                      "$ref": "#/definitions/fn/definitions/function"
+                    }
+                  ],
+                  "default": {}
+                },
+                "totalLength": {
+                  "type": "integer",
+                  "title": "Total length",
+                  "description": "Sets the number of characters to pad the string to. If the string is less then the specified number of characters one or more padding characters will be added until the length is reached.",
+                  "minimum": 1
+                },
+                "paddingCharacter": {
+                  "type": "string",
+                  "title": "Padding characters",
+                  "description": "Sets the character to use for padding the string to reach the configured total length.",
+                  "minLength": 1,
+                  "maxLength": 1,
+                  "default": " "
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "padLeft",
+                "totalLength"
+              ]
+            },
+            "padRight": {
+              "type": "object",
+              "properties": {
+                "padRight": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "title": "Pad Right",
+                      "description": "The padRight function returns a string with a minimum of the specified length.",
+                      "markdownDescription": "The `padRight` function returns a string with a minimum of the specified length."
+                    },
+                    {
+                      "type": "object",
+                      "title": "Pad Right",
+                      "description": "The padRight function returns a string with a minimum of the specified length.",
+                      "markdownDescription": "The `padRight` function returns a string with a minimum of the specified length.",
+                      "$ref": "#/definitions/fn/definitions/function"
+                    }
+                  ],
+                  "default": {}
+                },
+                "totalLength": {
+                  "type": "integer",
+                  "title": "Total length",
+                  "description": "Sets the number of characters to pad the string to. If the string is less then the specified number of characters one or more padding characters will be added until the length is reached.",
+                  "minimum": 1
+                },
+                "paddingCharacter": {
+                  "type": "string",
+                  "title": "Padding characters",
+                  "description": "Sets the character to use for padding the string to reach the configured total length.",
+                  "minLength": 1,
+                  "maxLength": 1,
+                  "default": " "
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "padRight",
+                "totalLength"
               ]
             }
           }

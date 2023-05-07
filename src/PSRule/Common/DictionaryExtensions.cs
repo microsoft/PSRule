@@ -107,6 +107,26 @@ namespace PSRule
         }
 
         [DebuggerStepThrough]
+        public static bool TryGetChar(this IDictionary<string, object> dictionary, string key, out char? value)
+        {
+            value = null;
+            if (!dictionary.TryGetValue(key, out var o))
+                return false;
+
+            if (o is string svalue && svalue.Length == 1)
+            {
+                value = svalue[0];
+                return true;
+            }
+            if (o is char cvalue)
+            {
+                value = cvalue;
+                return true;
+            }
+            return false;
+        }
+
+        [DebuggerStepThrough]
         public static bool TryGetString(this IDictionary<string, object> dictionary, string key, out string value)
         {
             value = null;

@@ -39,6 +39,9 @@ What's changed since pre-release v2.9.0-B0013:
     [#1423](https://github.com/microsoft/PSRule/issues/1423)
     - Quantifiers allow you to specify the number of matches with `count`, `less`, `lessOrEqual`, `greater`, or `greaterOrEqual`.
     - See [Sub-selectors][4] for more information.
+  - Added support for new functions by @BernieWhite.
+    [#1422](https://github.com/microsoft/PSRule/issues/1422)
+    - Added support for `padLeft`, and `padRight`.
 
 ## v2.9.0-B0013 (pre-release)
 

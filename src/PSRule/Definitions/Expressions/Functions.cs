@@ -30,10 +30,16 @@ namespace PSRule.Definitions.Expressions
         private const string FIRST = "first";
         private const string LAST = "last";
         private const string SPLIT = "split";
+        private const string PADLEFT = "padLeft";
+        private const string PADRIGHT = "padRight";
         private const string DELIMITER = "delimiter";
         private const string OLDSTRING = "oldstring";
         private const string NEWSTRING = "newstring";
         private const string CASESENSITIVE = "casesensitive";
+        private const string TOTALLENGTH = "totalLength";
+        private const string PADDINGCHARACTER = "paddingCharacter";
+
+        private const char SPACE = ' ';
 
         /// <summary>
         /// The available built-in functions.
@@ -52,6 +58,8 @@ namespace PSRule.Definitions.Expressions
             new FunctionDescriptor(FIRST, First),
             new FunctionDescriptor(LAST, Last),
             new FunctionDescriptor(SPLIT, Split),
+            new FunctionDescriptor(PADLEFT, PadLeft),
+            new FunctionDescriptor(PADRIGHT, PadRight),
         };
 
         private static ExpressionFnOuter Boolean(IExpressionContext context, PropertyBag properties)
@@ -241,6 +249,45 @@ namespace PSRule.Definitions.Expressions
             {
                 var value = next(context);
                 return ExpressionHelpers.TryString(value, out var s) ? s.Split(delimiter, options: StringSplitOptions.None) : null;
+            };
+        }
+
+        private static ExpressionFnOuter PadLeft(IExpressionContext context, PropertyBag properties)
+        {
+            if (properties == null ||
+                properties.Count == 0 ||
+
+                !TryProperty(properties, PADLEFT, out ExpressionFnOuter next))
+                return null;
+
+            var paddingChar = properties.TryGetChar(PADDINGCHARACTER, out var c) ? c : SPACE;
+            var totalWidth = properties.TryGetInt(TOTALLENGTH, out var i) ? i : 0;
+            return (context) =>
+            {
+                var value = next(context);
+                if (ExpressionHelpers.TryString(value, convert: true, value: out var s))
+                    return totalWidth > s.Length ? s.PadLeft(totalWidth.Value, paddingChar.Value) : s;
+
+                return null;
+            };
+        }
+
+        private static ExpressionFnOuter PadRight(IExpressionContext context, PropertyBag properties)
+        {
+            if (properties == null ||
+                properties.Count == 0 ||
+                !TryProperty(properties, PADRIGHT, out ExpressionFnOuter next))
+                return null;
+
+            var paddingChar = properties.TryGetChar(PADDINGCHARACTER, out var c) ? c : SPACE;
+            var totalWidth = properties.TryGetInt(TOTALLENGTH, out var i) ? i : 0;
+            return (context) =>
+            {
+                var value = next(context);
+                if (ExpressionHelpers.TryString(value, convert: true, value: out var s))
+                    return totalWidth > s.Length ? s.PadRight(totalWidth.Value, paddingChar.Value) : s;
+
+                return null;
             };
         }
 
