@@ -41,7 +41,7 @@ namespace PSRule
             context.Begin();
             var selector = HostHelper.GetSelectorForTests(GetSource(path), context).ToArray();
             Assert.NotNull(selector);
-            Assert.Equal(101, selector.Length);
+            Assert.Equal(102, selector.Length);
 
             var actual = selector[0];
             var visitor = new SelectorVisitor(context, actual.Id, actual.Source, actual.Spec.If);
@@ -1661,6 +1661,23 @@ namespace PSRule
             Assert.False(allOf.Match(actual2));
             Assert.True(allOf.Match(actual3));
             Assert.False(allOf.Match(actual4));
+
+            // With quantifier
+            allOf = GetSelectorVisitor($"{type}AllOfWithQuantifier", GetSource(path), out _);
+            actual1 = GetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: new object[]
+            {
+                GetObject((name: "name", value: "log1"))
+            }))));
+            actual2 = GetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: new object[]
+            {
+                GetObject((name: "name", value: "log1")),
+                GetObject((name: "name", value: "log2"))
+            }))));
+            actual3 = GetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: new object[] {}))));
+
+            Assert.True(allOf.Match(actual1));
+            Assert.True(allOf.Match(actual2));
+            Assert.False(allOf.Match(actual3));
         }
 
         [Theory]

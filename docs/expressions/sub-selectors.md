@@ -184,7 +184,7 @@ In the example:
 
 ### When there are no results
 
-Given the example, is important to understand what happens if:
+Given the example, is important to understand what happens by default if:
 
 - The `resources` property doesn't exist. **OR**
 - The `resources` property doesn't contain any items that match the sub-selector condition.
@@ -196,6 +196,7 @@ If this was not the desired behavior, you could:
 
 - Use a pre-condition to avoid running the rule.
 - Group the sub-selector into a `anyOf`, and provide a secondary condition.
+- Use a quantifier to determine how many items must match sub-selector and match the `allOf` / `anyOf` operator.
 
 For example:
 
@@ -270,3 +271,85 @@ In the example:
 - If the `resources` property exists but has 0 items of type `Microsoft.Web/sites/config`, the rule fails.
 - If the `resources` property exists and has any items of type `Microsoft.Web/sites/config` but any fail, the rule fails.
 - If the `resources` property exists and has any items of type `Microsoft.Web/sites/config` and all pass, the rule passes.
+
+### Using a quantifier with sub-selectors
+
+When iterating over a list of items, you may want to determine how many items must match.
+A quantifier determines how many items in the list match.
+Matching items must be:
+
+- Selected by the sub-selector.
+- Match the condition of the operator.
+
+Supported quantifiers are:
+
+- `count` &mdash; The number of items must equal then the specified value.
+- `less` &mdash; The number of items must less then the specified value.
+- `lessOrEqual` &mdash; The number of items must less or equal to the specified value.
+- `greater` &mdash; The number of items must greater then the specified value.
+- `greaterOrEqual` &mdash; The number of items must greater or equal to the specified value.
+
+For example:
+
+=== "YAML"
+
+    ```yaml hl_lines="13"
+    ---
+    # Synopsis: A rule with a sub-selector quantifier.
+    apiVersion: github.com/microsoft/PSRule/v1
+    kind: Rule
+    metadata:
+      name: Yaml.Subselector.Quantifier
+    spec:
+      condition:
+        field: resources
+        where:
+          type: '.'
+          equals: 'Microsoft.Web/sites/config'
+        greaterOrEqual: 1
+        allOf:
+        - field: properties.detailedErrorLoggingEnabled
+          equals: true
+    ```
+
+=== "JSON"
+
+    ```json hl_lines="15"
+    {
+      // Synopsis: A rule with a sub-selector quantifier.
+      "apiVersion": "github.com/microsoft/PSRule/v1",
+      "kind": "Rule",
+      "metadata": {
+        "name": "Json.Subselector.Quantifier"
+      },
+      "spec": {
+        "condition": {
+          "field": "resources",
+          "where": {
+            "type": ".",
+            "equals": "Microsoft.Web/sites/config"
+          },
+          "greaterOrEqual": 1,
+          "allOf": [
+            {
+              "field": "properties.detailedErrorLoggingEnabled",
+              "equals": true
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+In the example:
+
+- If the array property `resources` exists, any items with a type of `Microsoft.Web/sites/config` are evaluated.
+  - Each item must have the `properties.detailedErrorLoggingEnabled` property set to `true` to pass.
+  - The number of items that pass must be greater or equal to `1`.
+- If the `resources` property does not exist or is empty, the number of items is `0` which fails greater or equal to `1`.
+
+## Recommended content
+
+- [Create a standalone rule](../quickstart/standalone-rule.md)
+- [Functions](functions.md)
+- [Expressions](../concepts/PSRule/en-US/about_PSRule_Expressions.md)

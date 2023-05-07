@@ -32,8 +32,8 @@ spec:
       field: '.'
       isString: true
     allOf:
-    - field: '.'
-      equals: abc
+      - field: '.'
+        equals: abc
 
 ---
 # Synopsis: A rule with sub-selector filter.
@@ -44,9 +44,25 @@ metadata:
 spec:
   condition:
     allOf:
-    - field: '.'
-      equals: abc
+      - field: '.'
+        equals: abc
     field: resources
     where:
       field: '.'
       equals: 'abc'
+
+---
+# Synopsis: A rule with a sub-selector quantifier.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Rule
+metadata:
+  name: YamlRuleWithQuantifier
+spec:
+  condition:
+    field: resources[*].properties.logs[*]
+    greaterOrEqual: 1
+    allOf:
+      - field: category
+        equals: firewall
+      - field: enabled
+        equals: true

@@ -25,18 +25,14 @@
       "/ps-rule.yaml"
     ],
     "./schemas/PSRule-language.schema.json": [
-      "/tests/PSRule.Tests/**.Rule.yaml",
-      "/tests/PSRule.Tests/**/**.Rule.yaml",
-      "/docs/scenarios/*/*.Rule.yaml",
-      "/docs/expressions/**/*.Rule.yaml"
+      "/**/**.Rule.yaml",
+      "/**/docs/scenarios/baselines/Baseline.rule.yaml"
     ]
   },
   "json.schemas": [
     {
       "fileMatch": [
-        "/tests/PSRule.Tests/**.Rule.jsonc",
-        "/tests/PSRule.Tests/**/**.Rule.jsonc",
-        "/docs/expressions/**/*.Rule.jsonc"
+        "/**/**.Rule.jsonc"
       ],
       "url": "./schemas/PSRule-resources.schema.json"
     }
