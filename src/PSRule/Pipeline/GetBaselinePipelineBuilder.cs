@@ -29,18 +29,17 @@ namespace PSRule.Pipeline
             if (option == null)
                 return this;
 
+            Option.Baseline = new Options.BaselineOption(option.Baseline);
             Option.Output.As = ResultFormat.Detail;
             Option.Output.Culture = GetCulture(option.Output.Culture);
             Option.Output.Format = SuppressFormat(option.Output.Format);
             Option.Output.JsonIndent = NormalizeJsonIndentRange(option.Output.JsonIndent);
-
             return this;
         }
 
         public override IPipeline Build(IPipelineWriter writer = null)
         {
-            var filter = new BaselineFilter(_Name);
-
+            var filter = new BaselineFilter(ResolveBaselineGroup(_Name));
             return new GetBaselinePipeline(
                 pipeline: PrepareContext(
                     bindTargetName: null,

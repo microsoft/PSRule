@@ -48,9 +48,9 @@ namespace PSRule.Configuration
         /// <summary>
         /// Load Requires option from environment variables.
         /// </summary>
-        internal void Load(EnvironmentHelper env)
+        internal void Load()
         {
-            Load(ENVIRONMENT_PREFIX, env, ConvertUnderscore);
+            Load(ENVIRONMENT_PREFIX, ConvertUnderscore);
         }
 
         /// <summary>

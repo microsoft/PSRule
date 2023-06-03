@@ -258,7 +258,7 @@ namespace PSRule.Pipeline
         private bool TryInstalledModule(string name, out string path)
         {
             path = null;
-            if (!EnvironmentHelper.Default.TryPathEnvironmentVariable("PSModulePath", out var searchPaths))
+            if (!Environment.TryPathEnvironmentVariable("PSModulePath", out var searchPaths))
                 return false;
 
             var unsorted = new List<string>();

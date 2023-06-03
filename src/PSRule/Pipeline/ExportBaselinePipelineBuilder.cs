@@ -29,20 +29,19 @@ namespace PSRule.Pipeline
             if (option == null)
                 return this;
 
+            Option.Baseline = new Options.BaselineOption(option.Baseline);
             Option.Output.As = ResultFormat.Detail;
             Option.Output.Culture = GetCulture(option.Output.Culture);
             Option.Output.Format = option.Output.Format ?? OutputOption.Default.Format;
             Option.Output.Encoding = option.Output.Encoding ?? OutputOption.Default.Encoding;
             Option.Output.Path = option.Output.Path ?? OutputOption.Default.Path;
             Option.Output.JsonIndent = NormalizeJsonIndentRange(option.Output.JsonIndent);
-
             return this;
         }
 
         public override IPipeline Build(IPipelineWriter writer = null)
         {
             var filter = new BaselineFilter(_Name);
-
             return new GetBaselinePipeline(
                 pipeline: PrepareContext(
                     bindTargetName: null,

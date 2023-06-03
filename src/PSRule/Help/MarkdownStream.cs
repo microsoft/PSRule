@@ -470,7 +470,7 @@ namespace PSRule.Help
 
         private string Substring(int start, int length, bool ignoreEscaping = false)
         {
-            var newLine = Environment.NewLine.ToCharArray();
+            var newLine = System.Environment.NewLine.ToCharArray();
 
             var position = start;
             var i = 0;

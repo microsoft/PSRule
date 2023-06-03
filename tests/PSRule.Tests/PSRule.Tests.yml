@@ -4,6 +4,10 @@ repository:
   url: 'https://github.com/microsoft/PSRule.UnitTest'
   baseRef: dev
 
+baseline:
+  group:
+    latest: .\TestBaseline1
+
 # Configure baseline
 rule:
   include:

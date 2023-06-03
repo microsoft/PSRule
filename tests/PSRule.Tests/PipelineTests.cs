@@ -151,6 +151,31 @@ namespace PSRule
         }
 
         [Fact]
+        public void GetRuleWithBaseline()
+        {
+            var option = PSRuleOption.FromDefault();
+            option.Baseline.Group = new Data.StringArrayMap();
+            option.Baseline.Group["test"] = new string[] { ".\\TestBaseline1" };
+            option.Execution.InvariantCulture = ExecutionActionPreference.Ignore;
+            Assert.Single(option.Baseline.Group);
+
+            var builder = PipelineBuilder.Get(GetSource(new string[]
+            {
+                "Baseline.Rule.yaml",
+                "FromFileBaseline.Rule.ps1"
+            }), option, null);
+            builder.Baseline(BaselineOption.FromString("@test"));
+            var writer = new TestWriter(option);
+            var pipeline = builder.Build(writer);
+
+            pipeline.Begin();
+            pipeline.Process(null);
+            pipeline.End();
+
+            Assert.Single(writer.Output);
+        }
+
+        [Fact]
         public void PipelineWithInvariantCulture()
         {
             PSRuleOption.UseCurrentCulture(CultureInfo.InvariantCulture);
@@ -309,10 +334,13 @@ namespace PSRule
 
         #region Helper methods
 
-        private static Source[] GetSource()
+        private static Source[] GetSource(string[] files = null)
         {
             var builder = new SourcePipelineBuilder(null, null);
             builder.Directory(GetSourcePath("FromFile.Rule.ps1"));
+            for (var i = 0; files != null && i < files.Length; i++)
+                builder.Directory(GetSourcePath(files[i]));
+
             return builder.Build();
         }
 

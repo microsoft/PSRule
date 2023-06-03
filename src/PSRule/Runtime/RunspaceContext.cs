@@ -527,7 +527,7 @@ namespace PSRule.Runtime
                 ? record.ScriptStackTrace
                 : string.Concat(
                     record.ScriptStackTrace,
-                    Environment.NewLine,
+                    System.Environment.NewLine,
                     string.Format(
                         Thread.CurrentThread.CurrentCulture,
                         PSRuleResources.RuleStackTrace,
@@ -578,7 +578,7 @@ namespace PSRule.Runtime
             if (string.IsNullOrEmpty(positionMessage))
                 return 0;
 
-            var lines = positionMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = positionMessage.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             return lines.Length != 3 ? 0 : lines[2].LastIndexOf('~') - 1;
         }
 
@@ -929,6 +929,15 @@ namespace PSRule.Runtime
                 return;
 
             Writer.WriteWarning(message, args);
+        }
+
+        /// <inheritdoc/>
+        public void Error(Exception exception, string errorId = null)
+        {
+            if (Writer == null || exception == null)
+                return;
+
+            Writer.WriteError(new ErrorRecord(exception, errorId, ErrorCategory.InvalidOperation, null));
         }
 
         #endregion ILogger

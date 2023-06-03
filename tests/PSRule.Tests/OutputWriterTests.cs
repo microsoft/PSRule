@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
@@ -302,7 +301,7 @@ namespace PSRule
 
             var declaration = doc.ChildNodes.Item(0) as XmlDeclaration;
             Assert.Equal("utf-8", declaration.Encoding);
-            var xml = doc["test-results"]["test-suite"].OuterXml.Replace(Environment.NewLine, "\r\n");
+            var xml = doc["test-results"]["test-suite"].OuterXml.Replace(System.Environment.NewLine, "\r\n");
             Assert.Equal("<test-suite type=\"TestFixture\" name=\"TestObject1\" executed=\"True\" result=\"Failure\" success=\"False\" time=\"3.5\" asserts=\"3\" description=\"\"><results><test-case description=\"This is rule 001.\" name=\"TestObject1 -- rule-001\" time=\"0.5\" asserts=\"0\" success=\"True\" result=\"Success\" executed=\"True\" /><test-case description=\"This is rule 002.\" name=\"TestObject1 -- rule-002\" time=\"1\" asserts=\"0\" success=\"False\" result=\"Failure\" executed=\"True\"><failure><message><![CDATA[Recommendation for rule 002\r\n]]></message><stack-trace><![CDATA[]]></stack-trace></failure></test-case><test-case description=\"This is rule 002.\" name=\"TestObject1 -- rule-002\" time=\"1\" asserts=\"0\" success=\"False\" result=\"Failure\" executed=\"True\"><failure><message><![CDATA[Recommendation for rule 002\r\n]]></message><stack-trace><![CDATA[]]></stack-trace></failure></test-case><test-case description=\"Synopsis &quot;with quotes&quot;.\" name=\"TestObject1 -- rule-002\" time=\"1\" asserts=\"0\" success=\"False\" result=\"Failure\" executed=\"True\"><failure><message><![CDATA[Recommendation for rule 002\r\n]]></message><stack-trace><![CDATA[]]></stack-trace></failure></test-case></results></test-suite>", xml);
         }
 
@@ -325,7 +324,7 @@ namespace PSRule
 
             stream.Seek(0, SeekOrigin.Begin);
             using var reader = new StreamReader(stream);
-            var s = reader.ReadToEnd().Replace(Environment.NewLine, "\r\n");
+            var s = reader.ReadToEnd().Replace(System.Environment.NewLine, "\r\n");
             Assert.Equal($"# PSRule result summary\r\n\r\n❌ PSRule completed with an overall result of 'Fail' with 3 rule(s) and 1 target(s) in {context.RunTime.Elapsed}.\r\n\r\n## Analysis\r\n\r\nThe following results were reported with fail or error results.\r\n\r\nName | Target name | Synopsis\r\n---- | ----------- | --------\r\nrule-002 | TestObject1 | This is rule 002.\r\nRule-003 | TestObject1 | This is rule 002.\r\n", s);
         }
 

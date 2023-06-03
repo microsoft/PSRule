@@ -217,7 +217,7 @@ namespace PSRule.Rules
                     sb.Append(": ");
                     sb.Append(Links[i].Uri);
                 }
-                sb.Append(Environment.NewLine);
+                sb.Append(System.Environment.NewLine);
             }
             return sb.ToString();
         }

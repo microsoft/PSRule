@@ -13,6 +13,7 @@ This topic describes what options are available, when to and how to use them.
 
 The following workspace options are available for use:
 
+- [Baseline.Group](#baselinegroup)
 - [Convention.Include](#conventioninclude)
 - [Execution.AliasReference](#executionaliasreference)
 - [Execution.AliasReferenceWarning](#executionaliasreferencewarning)
@@ -168,6 +169,54 @@ For example `PSRULE_EXECUTION_INCONCLUSIVEWARNING` could be set to `false`.
 Boolean values are case-insensitive.
 - String array values can specify multiple items by using a semi-colon separator.
 For example `PSRULE_INPUT_TARGETTYPE` could be set to `virtualMachine;virtualNetwork`.
+
+### Baseline.Group
+
+You can use a baseline group to provide a friendly name to an existing baseline.
+When you run PSRule you can opt to use the baseline group name as an alternative name for the baseline.
+To indicate a baseline group, prefix the group name with `@` where you would use the name of a baseline.
+
+Baseline groups can be specified using:
+
+```powershell
+# PowerShell: Using the BaselineGroup parameter
+$option = New-PSRuleOption -BaselineGroup @{ latest = 'YourBaseline' };
+```
+
+```powershell
+# PowerShell: Using the Baseline.Group hashtable key
+$option = New-PSRuleOption -Option @{ 'Baseline.Group' = @{ latest = 'YourBaseline' } };
+```
+
+```powershell
+# PowerShell: Using the BaselineGroup parameter to set YAML
+Set-PSRuleOption -BaselineGroup @{ latest = 'YourBaseline' };
+```
+
+```yaml
+# YAML: Using the baseline/group property
+baseline:
+  group:
+    latest: YourBaseline
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_BASELINE_GROUP='latest=YourBaseline'
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_BASELINE_GROUP: 'latest=YourBaseline'
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_BASELINE_GROUP
+  value: 'latest=YourBaseline'
+```
 
 ### Binding.Field
 

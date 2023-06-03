@@ -1673,7 +1673,7 @@ namespace PSRule
                 GetObject((name: "name", value: "log1")),
                 GetObject((name: "name", value: "log2"))
             }))));
-            actual3 = GetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: new object[] { }))));
+            actual3 = GetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: Array.Empty<object>()))));
 
             Assert.True(allOf.Match(actual1));
             Assert.True(allOf.Match(actual2));

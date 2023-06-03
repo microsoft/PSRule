@@ -17,6 +17,7 @@ using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Selectors;
 using PSRule.Definitions.SuppressionGroups;
 using PSRule.Host;
+using PSRule.Resources;
 using PSRule.Runtime;
 using PSRule.Runtime.ObjectPath;
 
@@ -89,7 +90,7 @@ namespace PSRule.Pipeline
             Baseline = baseline;
             _Unresolved = unresolved ?? new List<ResourceRef>();
             _TrackedIssues = new List<ResourceIssue>();
-            RunId = EnvironmentHelper.Default.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
+            RunId = Environment.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
             RunTime = Stopwatch.StartNew();
         }
 
@@ -171,7 +172,7 @@ namespace PSRule.Pipeline
             TrackIssue(resource);
             if (TryBaseline(resource, out var baseline) && TryBaselineRef(resource.Id, out var baselineRef))
             {
-                _Unresolved.Remove(baselineRef);
+                RemoveBaselineRef(resource.Id);
                 Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, baseline.BaselineId, resource.Source.Module, baseline.Spec, baseline.Obsolete));
             }
             else if (resource.Kind == ResourceKind.Selector && resource is SelectorV1 selector)
@@ -222,6 +223,15 @@ namespace PSRule.Pipeline
             return true;
         }
 
+        private void RemoveBaselineRef(ResourceId resourceId)
+        {
+            foreach (var r in _Unresolved.ToArray())
+            {
+                if (ResourceIdEqualityComparer.IdEquals(r.Id, resourceId.Value))
+                    _Unresolved.Remove(r);
+            }
+        }
+
         private static bool TryBaseline(IResource resource, out Baseline baseline)
         {
             baseline = null;
@@ -249,8 +259,18 @@ namespace PSRule.Pipeline
 
         internal void Begin(RunspaceContext runspaceContext)
         {
+            ReportUnresolved(runspaceContext);
             ReportIssue(runspaceContext);
             Baseline.CheckObsolete(runspaceContext);
+        }
+
+        private void ReportUnresolved(RunspaceContext runspaceContext)
+        {
+            foreach (var unresolved in _Unresolved)
+                runspaceContext.ErrorResourceUnresolved(unresolved.Kind, unresolved.Id);
+
+            if (_Unresolved.Count > 0)
+                throw new PipelineBuilderException(PSRuleResources.ErrorPipelineException);
         }
 
         /// <summary>

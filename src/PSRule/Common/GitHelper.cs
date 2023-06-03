@@ -50,17 +50,17 @@ namespace PSRule
         public static bool TryHeadRef(out string value, string path = null)
         {
             // Try PSRule
-            if (EnvironmentHelper.Default.TryString(ENV_PSRULE_REPO_REF, out value) ||
-                EnvironmentHelper.Default.TryString(ENV_PSRULE_REPO_HEADREF, out value))
+            if (Environment.TryString(ENV_PSRULE_REPO_REF, out value) ||
+                Environment.TryString(ENV_PSRULE_REPO_HEADREF, out value))
                 return true;
 
             // Try Azure Pipelines
-            if (EnvironmentHelper.Default.TryString(ENV_ADO_REPO_REF, out value))
+            if (Environment.TryString(ENV_ADO_REPO_REF, out value))
                 return true;
 
             // Try GitHub Actions
-            if (EnvironmentHelper.Default.TryString(ENV_GITHUB_REPO_REF, out value) ||
-                EnvironmentHelper.Default.TryString(ENV_GITHUB_REPO_HEADREF, out value))
+            if (Environment.TryString(ENV_GITHUB_REPO_REF, out value) ||
+                Environment.TryString(ENV_GITHUB_REPO_HEADREF, out value))
                 return true;
 
             // Try .git/
@@ -82,15 +82,15 @@ namespace PSRule
         public static bool TryBaseRef(out string value, string path = null)
         {
             // Try PSRule
-            if (EnvironmentHelper.Default.TryString(ENV_PSRULE_REPO_BASEREF, out value))
+            if (Environment.TryString(ENV_PSRULE_REPO_BASEREF, out value))
                 return true;
 
             // Try Azure Pipelines
-            if (EnvironmentHelper.Default.TryString(ENV_ADO_REPO_BASEREF, out value))
+            if (Environment.TryString(ENV_ADO_REPO_BASEREF, out value))
                 return true;
 
             // Try GitHub Actions
-            if (EnvironmentHelper.Default.TryString(ENV_GITHUB_REPO_BASEREF, out value))
+            if (Environment.TryString(ENV_GITHUB_REPO_BASEREF, out value))
                 return true;
 
             // Try .git/
@@ -100,15 +100,15 @@ namespace PSRule
         public static bool TryRevision(out string value, string path = null)
         {
             // Try PSRule
-            if (EnvironmentHelper.Default.TryString(ENV_PSRULE_REPO_REVISION, out value))
+            if (Environment.TryString(ENV_PSRULE_REPO_REVISION, out value))
                 return true;
 
             // Try Azure Pipelines
-            if (EnvironmentHelper.Default.TryString(ENV_ADO_REPO_REVISION, out value))
+            if (Environment.TryString(ENV_ADO_REPO_REVISION, out value))
                 return true;
 
             // Try GitHub Actions
-            if (EnvironmentHelper.Default.TryString(ENV_GITHUB_REPO_REVISION, out value))
+            if (Environment.TryString(ENV_GITHUB_REPO_REVISION, out value))
                 return true;
 
             // Try .git/
@@ -118,15 +118,15 @@ namespace PSRule
         public static bool TryRepository(out string value, string path = null)
         {
             // Try PSRule
-            if (EnvironmentHelper.Default.TryString(ENV_PSRULE_REPO_URL, out value))
+            if (Environment.TryString(ENV_PSRULE_REPO_URL, out value))
                 return true;
 
             // Try Azure Pipelines
-            if (EnvironmentHelper.Default.TryString(ENV_ADO_REPO_URL, out value))
+            if (Environment.TryString(ENV_ADO_REPO_URL, out value))
                 return true;
 
             // Try GitHub Actions
-            if (EnvironmentHelper.Default.TryString(ENV_GITHUB_REPO_URL, out value))
+            if (Environment.TryString(ENV_GITHUB_REPO_URL, out value))
             {
                 value = string.Concat(GITHUB_BASE_URL, value);
                 return true;
@@ -150,7 +150,7 @@ namespace PSRule
             if (!tool.WaitForExit(args, out var exitCode) || exitCode != 0)
                 return false;
 
-            files = tool.GetOutput().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            files = tool.GetOutput().Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             return true;
         }
 

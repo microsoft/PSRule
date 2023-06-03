@@ -114,42 +114,63 @@ namespace PSRule.Configuration
         /// <summary>
         /// One or more custom fields to bind.
         /// </summary>
+        /// <remarks>
+        /// See <see href="https://aka.ms/ps-rule/options#bindingfield"/>.
+        /// </remarks>
         [DefaultValue(null)]
         public FieldMap Field { get; set; }
 
         /// <summary>
         /// Determines if custom binding uses ignores case when matching properties.
         /// </summary>
+        /// <remarks>
+        /// See <see href="https://aka.ms/ps-rule/options#bindingignorecase"/>.
+        /// </remarks>
         [DefaultValue(null)]
         public bool? IgnoreCase { get; set; }
 
         /// <summary>
         /// Configures the separator to use for building a qualified name.
         /// </summary>
+        /// <remarks>
+        /// See <see href="https://aka.ms/ps-rule/options#bindingnameseparator"/>.
+        /// </remarks>
         [DefaultValue(null)]
         public string NameSeparator { get; set; }
 
         /// <summary>
         /// Determines if binding prefers target info provided by the object over custom configuration.
         /// </summary>
+        /// <remarks>
+        /// See <see href="https://aka.ms/ps-rule/options#bindingprefertargetinfo"/>.
+        /// </remarks>
         [DefaultValue(null)]
         public bool? PreferTargetInfo { get; set; }
 
         /// <summary>
         /// Property names to use to bind TargetName.
         /// </summary>
+        /// <remarks>
+        /// See <see href="https://aka.ms/ps-rule/options#bindingtargetname"/>.
+        /// </remarks>
         [DefaultValue(null)]
         public string[] TargetName { get; set; }
 
         /// <summary>
         /// Property names to use to bind TargetType.
         /// </summary>
+        /// <remarks>
+        /// See <see href="https://aka.ms/ps-rule/options#bindingtargettype"/>.
+        /// </remarks>
         [DefaultValue(null)]
         public string[] TargetType { get; set; }
 
         /// <summary>
         /// Determines if a qualified TargetName is used.
         /// </summary>
+        /// <remarks>
+        /// See <see href="https://aka.ms/ps-rule/options#bindingusequalifiedname"/>.
+        /// </remarks>
         [DefaultValue(null)]
         public bool? UseQualifiedName { get; set; }
     }

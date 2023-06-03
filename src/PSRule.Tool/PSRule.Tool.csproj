@@ -9,7 +9,7 @@
     <StartupObject>PSRule.Tool.Program</StartupObject>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>ps-rule</ToolCommandName>
     <PackageReadmeFile>README.md</PackageReadmeFile>

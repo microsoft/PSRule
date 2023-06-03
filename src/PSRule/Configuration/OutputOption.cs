@@ -215,42 +215,42 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public bool? SarifProblemsOnly { get; set; }
 
-        internal void Load(EnvironmentHelper env)
+        internal void Load()
         {
-            if (env.TryEnum("PSRULE_OUTPUT_AS", out ResultFormat value))
+            if (Environment.TryEnum("PSRULE_OUTPUT_AS", out ResultFormat value))
                 As = value;
 
-            if (env.TryEnum("PSRULE_OUTPUT_BANNER", out BannerFormat banner))
+            if (Environment.TryEnum("PSRULE_OUTPUT_BANNER", out BannerFormat banner))
                 Banner = banner;
 
-            if (env.TryStringArray("PSRULE_OUTPUT_CULTURE", out var culture))
+            if (Environment.TryStringArray("PSRULE_OUTPUT_CULTURE", out var culture))
                 Culture = culture;
 
-            if (env.TryEnum("PSRULE_OUTPUT_ENCODING", out OutputEncoding encoding))
+            if (Environment.TryEnum("PSRULE_OUTPUT_ENCODING", out OutputEncoding encoding))
                 Encoding = encoding;
 
-            if (env.TryEnum("PSRULE_OUTPUT_FOOTER", out FooterFormat footer))
+            if (Environment.TryEnum("PSRULE_OUTPUT_FOOTER", out FooterFormat footer))
                 Footer = footer;
 
-            if (env.TryEnum("PSRULE_OUTPUT_FORMAT", out OutputFormat format))
+            if (Environment.TryEnum("PSRULE_OUTPUT_FORMAT", out OutputFormat format))
                 Format = format;
 
-            if (env.TryString("PSRULE_OUTPUT_JOBSUMMARYPATH", out var jobSummaryPath))
+            if (Environment.TryString("PSRULE_OUTPUT_JOBSUMMARYPATH", out var jobSummaryPath))
                 JobSummaryPath = jobSummaryPath;
 
-            if (env.TryInt("PSRULE_OUTPUT_JSONINDENT", out var jsonIndent))
+            if (Environment.TryInt("PSRULE_OUTPUT_JSONINDENT", out var jsonIndent))
                 JsonIndent = jsonIndent;
 
-            if (env.TryEnum("PSRULE_OUTPUT_OUTCOME", out RuleOutcome outcome))
+            if (Environment.TryEnum("PSRULE_OUTPUT_OUTCOME", out RuleOutcome outcome))
                 Outcome = outcome;
 
-            if (env.TryString("PSRULE_OUTPUT_PATH", out var path))
+            if (Environment.TryString("PSRULE_OUTPUT_PATH", out var path))
                 Path = path;
 
-            if (env.TryEnum("PSRULE_OUTPUT_STYLE", out OutputStyle style))
+            if (Environment.TryEnum("PSRULE_OUTPUT_STYLE", out OutputStyle style))
                 Style = style;
 
-            if (env.TryBool("PSRULE_OUTPUT_SARIFPROBLEMSONLY", out var sarifProblemsOnly))
+            if (Environment.TryBool("PSRULE_OUTPUT_SARIFPROBLEMSONLY", out var sarifProblemsOnly))
                 SarifProblemsOnly = sarifProblemsOnly;
         }
 

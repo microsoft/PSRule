@@ -318,7 +318,7 @@ namespace PSRule.Definitions.Expressions
         /// <summary>
         /// Returns a quantifier function if set for the expression.
         /// </summary>
-        private Func<long, bool> GetQuantifier(LanguageOperator expression)
+        private static Func<long, bool> GetQuantifier(LanguageOperator expression)
         {
             if (expression.Property.TryGetLong(GREATEROREQUAL, out var q))
                 return (number) => number >= q.Value;
@@ -339,7 +339,7 @@ namespace PSRule.Definitions.Expressions
         }
 
         [DebuggerStepThrough]
-        private string Value<T>(ExpressionContext context, object v)
+        private static string Value<T>(ExpressionContext context, object v)
         {
             return v as string;
         }

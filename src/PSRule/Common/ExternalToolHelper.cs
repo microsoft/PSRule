@@ -119,7 +119,7 @@ namespace PSRule
 
         private static string[] GetErrorLine(string input)
         {
-            var lines = input.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = input.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             var result = new List<string>();
             for (var i = 0; i < lines.Length; i++)
                 if (!lines[i].Contains(": Warning ") && !lines[i].Contains(": Info "))
@@ -131,7 +131,7 @@ namespace PSRule
         private static bool TryPathFromEnvironment(string binary, out string binaryPath)
         {
             binaryPath = null;
-            if (!EnvironmentHelper.Default.TryPathEnvironmentVariable(out var path))
+            if (!Environment.TryPathEnvironmentVariable(out var path))
                 return false;
 
             for (var i = 0; path != null && i < path.Length; i++)

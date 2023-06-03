@@ -61,6 +61,7 @@ nav:
           - Kubernetes resource validation example: scenarios/kubernetes-resources/kubernetes-resources.md
           - Using PSRule from a Container: scenarios/containers/container-execution.md
       - Concepts:
+          - Baselines: concepts/baselines.md
           - Functions: expressions/functions.md
           - Grouping rules: concepts/grouping-rules.md
           - Sub-selectors: expressions/sub-selectors.md

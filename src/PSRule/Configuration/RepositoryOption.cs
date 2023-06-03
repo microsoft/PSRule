@@ -96,12 +96,12 @@ namespace PSRule.Configuration
         /// Load options from environment variables into repository option.
         /// Options that appear in both will replaced by environment variable values.
         /// </summary>
-        internal void Load(EnvironmentHelper env)
+        internal void Load()
         {
-            if (env.TryString("PSRULE_REPOSITORY_BASEREF", out var baseRef))
+            if (Environment.TryString("PSRULE_REPOSITORY_BASEREF", out var baseRef))
                 BaseRef = baseRef;
 
-            if (env.TryString("PSRULE_REPOSITORY_URL", out var url))
+            if (Environment.TryString("PSRULE_REPOSITORY_URL", out var url))
                 Url = url;
         }
 

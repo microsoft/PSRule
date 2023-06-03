@@ -5,17 +5,28 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using PSRule.Converters;
+using PSRule.Data;
 
 namespace PSRule
 {
-    internal static class DictionaryExtensions
+    /// <summary>
+    /// Extension methods for <see cref="IDictionary{TKey, TValue}"/>.
+    /// </summary>
+    public static class DictionaryExtensions
     {
+        /// <summary>
+        /// Try to get a value and remove it from the dictionary.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryPopValue(this IDictionary<string, object> dictionary, string key, out object value)
         {
             return dictionary.TryGetValue(key, out value) && dictionary.Remove(key);
         }
 
+        /// <summary>
+        /// Try to get a value and remove it from the dictionary.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryPopValue<T>(this IDictionary<string, object> dictionary, string key, out T value)
         {
@@ -28,6 +39,9 @@ namespace PSRule
             return false;
         }
 
+        /// <summary>
+        /// Try to get a <see cref="bool"/> and remove it from the dictionary.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryPopBool(this IDictionary<string, object> dictionary, string key, out bool value)
         {
@@ -35,6 +49,9 @@ namespace PSRule
             return TryPopValue(dictionary, key, out var v) && bool.TryParse(v.ToString(), out value);
         }
 
+        /// <summary>
+        /// Try to get a <typeparamref name="TEnum"/> and remove it from the dictionary.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryPopEnum<TEnum>(this IDictionary<string, object> dictionary, string key, out TEnum value) where TEnum : struct
         {
@@ -42,6 +59,9 @@ namespace PSRule
             return TryPopValue(dictionary, key, out var v) && Enum.TryParse(v.ToString(), ignoreCase: true, result: out value);
         }
 
+        /// <summary>
+        /// Try to get a <see cref="string"/> and remove it from the dictionary.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryPopString(this IDictionary<string, object> dictionary, string key, out string value)
         {
@@ -54,13 +74,39 @@ namespace PSRule
             return false;
         }
 
+        /// <summary>
+        /// Try to get an array of strings and remove it from the dictionary.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryPopStringArray(this IDictionary<string, object> dictionary, string key, out string[] value)
         {
             value = default;
-            return TryPopValue(dictionary, key, out var v) && ExpressionHelpers.TryStringOrArray(v, convert: true, value: out value);
+            return TryPopValue(dictionary, key, out var v) && TypeConverter.TryStringOrArray(v, convert: true, value: out value);
         }
 
+        /// <summary>
+        /// Try to get a <see cref="StringArrayMap"/> and remove it from the dictionary.
+        /// </summary>
+        [DebuggerStepThrough]
+        public static bool TryPopStringArrayMap(this IDictionary<string, object> dictionary, string key, out StringArrayMap value)
+        {
+            value = default;
+            if (TryPopValue(dictionary, key, out var v) && v is StringArrayMap svalue)
+            {
+                value = svalue;
+                return true;
+            }
+            if (v is Hashtable hashtable)
+            {
+                value = StringArrayMap.FromHashtable(hashtable);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Try to get the value as a <see cref="bool"/>.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryGetBool(this IDictionary<string, object> dictionary, string key, out bool? value)
         {
@@ -76,6 +122,9 @@ namespace PSRule
             return false;
         }
 
+        /// <summary>
+        /// Try to get the value as a <see cref="long"/>.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryGetLong(this IDictionary<string, object> dictionary, string key, out long? value)
         {
@@ -83,7 +132,7 @@ namespace PSRule
             if (!dictionary.TryGetValue(key, out var o))
                 return false;
 
-            if (ExpressionHelpers.TryLong(o, true, out var i_value))
+            if (TypeConverter.TryLong(o, convert: true, value: out var i_value))
             {
                 value = i_value;
                 return true;
@@ -91,6 +140,9 @@ namespace PSRule
             return false;
         }
 
+        /// <summary>
+        /// Try to get the value as a <see cref="int"/>.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryGetInt(this IDictionary<string, object> dictionary, string key, out int? value)
         {
@@ -98,7 +150,7 @@ namespace PSRule
             if (!dictionary.TryGetValue(key, out var o))
                 return false;
 
-            if (ExpressionHelpers.TryInt(o, true, out var i_value))
+            if (TypeConverter.TryInt(o, convert: true, value: out var i_value))
             {
                 value = i_value;
                 return true;
@@ -106,6 +158,9 @@ namespace PSRule
             return false;
         }
 
+        /// <summary>
+        /// Try to get the value as a <see cref="char"/>.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryGetChar(this IDictionary<string, object> dictionary, string key, out char? value)
         {
@@ -126,6 +181,9 @@ namespace PSRule
             return false;
         }
 
+        /// <summary>
+        /// Try to get the value as a <see cref="string"/>.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryGetString(this IDictionary<string, object> dictionary, string key, out string value)
         {
@@ -141,6 +199,9 @@ namespace PSRule
             return false;
         }
 
+        /// <summary>
+        /// Try to get the value as an <see cref="IEnumerable"/>.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryGetEnumerable(this IDictionary<string, object> dictionary, string key, out IEnumerable value)
         {
@@ -156,19 +217,28 @@ namespace PSRule
             return false;
         }
 
+        /// <summary>
+        /// Try to get the value as an array of strings.
+        /// </summary>
         [DebuggerStepThrough]
         public static bool TryGetStringArray(this IDictionary<string, object> dictionary, string key, out string[] value)
         {
             value = null;
-            return dictionary.TryGetValue(key, out var o) && ExpressionHelpers.TryStringOrArray(o, convert: true, value: out value);
+            return dictionary.TryGetValue(key, out var o) && TypeConverter.TryStringOrArray(o, convert: true, value: out value);
         }
 
+        /// <summary>
+        /// Add unique keys to the dictionary.
+        /// Duplicate keys are ignored.
+        /// </summary>
         [DebuggerStepThrough]
         public static void AddUnique(this IDictionary<string, object> dictionary, IEnumerable<KeyValuePair<string, object>> values)
         {
             foreach (var kv in values)
+            {
                 if (!dictionary.ContainsKey(kv.Key))
                     dictionary.Add(kv.Key, kv.Value);
+            }
         }
 
         internal static SortedDictionary<TKey, TValue> ToSortedDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)

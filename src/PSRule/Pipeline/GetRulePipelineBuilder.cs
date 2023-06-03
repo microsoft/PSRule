@@ -32,12 +32,12 @@ namespace PSRule.Pipeline
             if (option == null)
                 return this;
 
+            Option.Baseline = new Options.BaselineOption(option.Baseline);
             Option.Execution = GetExecutionOption(option.Execution);
             Option.Output.Culture = GetCulture(option.Output.Culture);
             Option.Output.Format = SuppressFormat(option.Output.Format);
             Option.Requires = new RequiresOption(option.Requires);
             Option.Output.JsonIndent = NormalizeJsonIndentRange(option.Output.JsonIndent);
-
             if (option.Rule != null)
                 Option.Rule = new RuleOption(option.Rule);
 

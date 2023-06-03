@@ -76,9 +76,9 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public string[] Include { get; set; }
 
-        internal void Load(EnvironmentHelper env)
+        internal void Load()
         {
-            if (env.TryStringArray("PSRULE_CONVENTION_INCLUDE", out var include))
+            if (Environment.TryStringArray("PSRULE_CONVENTION_INCLUDE", out var include))
                 Include = include;
         }
 

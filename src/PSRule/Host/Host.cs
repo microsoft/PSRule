@@ -93,7 +93,7 @@ namespace PSRule.Host
 
         }
 
-        public override object Value => RunspaceContext.CurrentThread.TargetObject.Value;
+        public override object Value => RunspaceContext.CurrentThread.TargetObject?.Value;
     }
 
     internal sealed class ConfigurationVariable : PSVariable
@@ -169,7 +169,7 @@ namespace PSRule.Host
         private static void SetExecutionPolicy(InitialSessionState state, Microsoft.PowerShell.ExecutionPolicy executionPolicy)
         {
             // Only set execution policy on Windows
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            if (System.Environment.OSVersion.Platform == PlatformID.Win32NT)
                 state.ExecutionPolicy = executionPolicy;
         }
     }
