@@ -91,12 +91,12 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public string[] Module { get; set; }
 
-        internal void Load(EnvironmentHelper env)
+        internal void Load()
         {
-            if (env.TryStringArray("PSRULE_INCLUDE_PATH", out var path))
+            if (Environment.TryStringArray("PSRULE_INCLUDE_PATH", out var path))
                 Path = path;
 
-            if (env.TryStringArray("PSRULE_INCLUDE_MODULE", out var module))
+            if (Environment.TryStringArray("PSRULE_INCLUDE_MODULE", out var module))
                 Module = module;
         }
 

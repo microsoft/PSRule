@@ -57,6 +57,9 @@
       "document"
     ]
   },
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
   "[powershell]": {
     "editor.formatOnSave": false,
     "editor.tabSize": 4

@@ -10,6 +10,7 @@ using System.IO;
 using System.Management.Automation;
 using System.Threading;
 using Newtonsoft.Json;
+using PSRule.Converters.Yaml;
 using PSRule.Definitions.Baselines;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -44,6 +45,7 @@ namespace PSRule.Configuration
 
         private static readonly PSRuleOption Default = new()
         {
+            Baseline = Options.BaselineOption.Default,
             Binding = BindingOption.Default,
             Convention = ConventionOption.Default,
             Execution = ExecutionOption.Default,
@@ -70,6 +72,7 @@ namespace PSRule.Configuration
         public PSRuleOption()
         {
             // Set defaults
+            Baseline = new Options.BaselineOption();
             Binding = new BindingOption();
             Configuration = new ConfigurationOption();
             Convention = new ConventionOption();
@@ -90,6 +93,7 @@ namespace PSRule.Configuration
             _SourcePath = sourcePath;
 
             // Set from existing option instance
+            Baseline = new Options.BaselineOption(option?.Baseline);
             Binding = new BindingOption(option?.Binding);
             Configuration = new ConfigurationOption(option?.Configuration);
             Convention = new ConventionOption(option?.Convention);
@@ -104,6 +108,11 @@ namespace PSRule.Configuration
             Rule = new RuleOption(option?.Rule);
             Suppression = new SuppressionOption(option?.Suppression);
         }
+
+        /// <summary>
+        /// Options that configure baselines.
+        /// </summary>
+        public Options.BaselineOption Baseline { get; set; }
 
         /// <summary>
         /// Options that affect property binding.
@@ -189,7 +198,7 @@ namespace PSRule.Configuration
                         Thread.CurrentThread.CurrentCulture,
                         PSRuleResources.OptionsSourceComment,
                         _SourcePath),
-                    Environment.NewLine,
+                    System.Environment.NewLine,
                     yaml);
         }
 
@@ -219,6 +228,7 @@ namespace PSRule.Configuration
         private static PSRuleOption Combine(PSRuleOption o1, PSRuleOption o2)
         {
             var result = new PSRuleOption(o1?._SourcePath ?? o2?._SourcePath, o1);
+            result.Baseline = Options.BaselineOption.Combine(result.Baseline, o2?.Baseline);
             result.Binding = BindingOption.Combine(result.Binding, o2?.Binding);
             result.Configuration = ConfigurationOption.Combine(result.Configuration, o2?.Configuration);
             result.Convention = ConventionOption.Combine(result.Convention, o2?.Convention);
@@ -318,6 +328,7 @@ namespace PSRule.Configuration
                     .IgnoreUnmatchedProperties()
                     .WithNamingConvention(CamelCaseNamingConvention.Instance)
                     .WithTypeConverter(new FieldMapYamlTypeConverter())
+                    .WithTypeConverter(new StringArrayMapConverter())
                     .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
                     .WithTypeConverter(new PSObjectYamlTypeConverter())
                     .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
@@ -346,16 +357,16 @@ namespace PSRule.Configuration
             option ??= new PSRuleOption();
 
             // Start loading matching values
-            var env = EnvironmentHelper.Default;
-            option.Convention.Load(env);
-            option.Execution.Load(env);
-            option.Include.Load(env);
-            option.Input.Load(env);
-            option.Logging.Load(env);
-            option.Output.Load(env);
-            option.Repository.Load(env);
-            option.Requires.Load(env);
-            BaselineOption.Load(option, env);
+            option.Baseline.Load();
+            option.Convention.Load();
+            option.Execution.Load();
+            option.Include.Load();
+            option.Input.Load();
+            option.Logging.Load();
+            option.Output.Load();
+            option.Repository.Load();
+            option.Requires.Load();
+            BaselineOption.Load(option);
             return option;
         }
 
@@ -375,6 +386,7 @@ namespace PSRule.Configuration
 
             // Start loading matching values
             var index = BuildIndex(hashtable);
+            option.Baseline.Load(index);
             option.Convention.Load(index);
             option.Execution.Load(index);
             option.Include.Load(index);
@@ -493,6 +505,7 @@ namespace PSRule.Configuration
         public bool Equals(PSRuleOption other)
         {
             return other != null &&
+                Baseline == other.Baseline &&
                 Binding == other.Binding &&
                 Configuration == other.Configuration &&
                 Convention == other.Convention &&
@@ -513,6 +526,7 @@ namespace PSRule.Configuration
             unchecked // Overflow is fine
             {
                 var hash = 17;
+                hash = hash * 23 + (Baseline != null ? Baseline.GetHashCode() : 0);
                 hash = hash * 23 + (Binding != null ? Binding.GetHashCode() : 0);
                 hash = hash * 23 + (Configuration != null ? Configuration.GetHashCode() : 0);
                 hash = hash * 23 + (Convention != null ? Convention.GetHashCode() : 0);
@@ -637,6 +651,7 @@ namespace PSRule.Configuration
             var s = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
+                .WithTypeConverter(new StringArrayMapConverter())
                 .Build();
             return s.Serialize(this);
         }

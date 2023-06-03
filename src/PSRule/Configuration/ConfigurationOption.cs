@@ -57,9 +57,9 @@ namespace PSRule.Configuration
         /// Load values from environment variables into the configuration option.
         /// Keys that appear in both will replaced by environment variable values.
         /// </summary>
-        internal void Load(EnvironmentHelper env)
+        internal void Load()
         {
-            Load(ENVIRONMENT_PREFIX, env);
+            Load(ENVIRONMENT_PREFIX);
         }
 
         /// <summary>

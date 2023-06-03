@@ -173,30 +173,30 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public string[] TargetType { get; set; }
 
-        internal void Load(EnvironmentHelper env)
+        internal void Load()
         {
-            if (env.TryEnum("PSRULE_INPUT_FORMAT", out InputFormat format))
+            if (Environment.TryEnum("PSRULE_INPUT_FORMAT", out InputFormat format))
                 Format = format;
 
-            if (env.TryBool("PSRULE_INPUT_IGNOREGITPATH", out var ignoreGitPath))
+            if (Environment.TryBool("PSRULE_INPUT_IGNOREGITPATH", out var ignoreGitPath))
                 IgnoreGitPath = ignoreGitPath;
 
-            if (env.TryBool("PSRULE_INPUT_IGNOREOBJECTSOURCE", out var ignoreObjectSource))
+            if (Environment.TryBool("PSRULE_INPUT_IGNOREOBJECTSOURCE", out var ignoreObjectSource))
                 IgnoreObjectSource = ignoreObjectSource;
 
-            if (env.TryBool("PSRULE_INPUT_IGNOREREPOSITORYCOMMON", out var ignoreRepositoryCommon))
+            if (Environment.TryBool("PSRULE_INPUT_IGNOREREPOSITORYCOMMON", out var ignoreRepositoryCommon))
                 IgnoreRepositoryCommon = ignoreRepositoryCommon;
 
-            if (env.TryBool("PSRULE_INPUT_IGNOREUNCHANGEDPATH", out var ignoreUnchangedPath))
+            if (Environment.TryBool("PSRULE_INPUT_IGNOREUNCHANGEDPATH", out var ignoreUnchangedPath))
                 IgnoreUnchangedPath = ignoreUnchangedPath;
 
-            if (env.TryString("PSRULE_INPUT_OBJECTPATH", out var objectPath))
+            if (Environment.TryString("PSRULE_INPUT_OBJECTPATH", out var objectPath))
                 ObjectPath = objectPath;
 
-            if (env.TryStringArray("PSRULE_INPUT_PATHIGNORE", out var pathIgnore))
+            if (Environment.TryStringArray("PSRULE_INPUT_PATHIGNORE", out var pathIgnore))
                 PathIgnore = pathIgnore;
 
-            if (env.TryStringArray("PSRULE_INPUT_TARGETTYPE", out var targetType))
+            if (Environment.TryStringArray("PSRULE_INPUT_TARGETTYPE", out var targetType))
                 TargetType = targetType;
         }
 

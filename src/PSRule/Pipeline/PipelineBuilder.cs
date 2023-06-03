@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Management.Automation;
 using System.Threading;
 using PSRule.Configuration;
@@ -348,6 +347,7 @@ namespace PSRule.Pipeline
             if (option == null)
                 return this;
 
+            Option.Baseline = new Options.BaselineOption(option.Baseline);
             Option.Binding = new BindingOption(option.Binding);
             Option.Convention = new ConventionOption(option.Convention);
             Option.Execution = GetExecutionOption(option.Execution);
@@ -441,16 +441,7 @@ namespace PSRule.Pipeline
         {
             var unresolved = new List<ResourceRef>();
             if (_Baseline is BaselineOption.BaselineRef baselineRef)
-                unresolved.Add(new BaselineRef(baselineRef.Name, OptionContext.ScopeType.Explicit));
-
-            for (var i = 0; Source != null && i < Source.Length; i++)
-            {
-                if (Source[i].Module != null && Source[i].Module.Baseline != null && !unresolved.Any(u => ResourceIdEqualityComparer.IdEquals(u.Id, Source[i].Module.Baseline)))
-                {
-                    unresolved.Add(new BaselineRef(Source[i].Module.Baseline, OptionContext.ScopeType.Module));
-                    PrepareWriter().WarnModuleManifestBaseline(Source[i].Module.Name);
-                }
-            }
+                unresolved.Add(new BaselineRef(ResolveBaselineGroup(baselineRef.Name), OptionContext.ScopeType.Explicit));
 
             return PipelineContext.New(
                 option: Option,
@@ -462,6 +453,30 @@ namespace PSRule.Pipeline
                 baseline: GetOptionContext(),
                 unresolved: unresolved
             );
+        }
+
+        protected string[] ResolveBaselineGroup(string[] name)
+        {
+            for (var i = 0; name != null && i < name.Length; i++)
+                name[i] = ResolveBaselineGroup(name[i]);
+
+            return name;
+        }
+
+        protected string ResolveBaselineGroup(string name)
+        {
+            if (name == null || name.Length < 2 || !name.StartsWith("@") ||
+                Option == null || Option.Baseline == null || Option.Baseline.Group == null ||
+                Option.Baseline.Group.Count == 0)
+                return name;
+
+            var key = name.Substring(1);
+            if (!Option.Baseline.Group.TryGetValue(key, out var baselines) || baselines.Length == 0)
+                throw new PipelineConfigurationException("Baseline.Group", string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.PSR0003, key));
+
+            var writer = PrepareWriter();
+            writer.WriteVerbose($"Using baseline group '{key}': {baselines[0]}");
+            return baselines[0];
         }
 
         protected virtual PipelineReader PrepareReader()
@@ -676,13 +691,13 @@ namespace PSRule.Pipeline
             if (style != OutputStyle.Detect)
                 return style;
 
-            if (EnvironmentHelper.Default.IsAzurePipelines())
+            if (Environment.IsAzurePipelines())
                 return OutputStyle.AzurePipelines;
 
-            if (EnvironmentHelper.Default.IsGitHubActions())
+            if (Environment.IsGitHubActions())
                 return OutputStyle.GitHubActions;
 
-            return EnvironmentHelper.Default.IsVisualStudioCode() ?
+            return Environment.IsVisualStudioCode() ?
                 OutputStyle.VisualStudioCode :
                 OutputStyle.Client;
         }

@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Text;
 using PSRule.Configuration;
 using PSRule.Definitions;
@@ -79,7 +78,7 @@ namespace PSRule.Pipeline.Output
             _Builder.Append(ViewStrings.Synopsis);
             _Builder.Append(COMMA);
             _Builder.Append(ViewStrings.Recommendation);
-            _Builder.Append(Environment.NewLine);
+            _Builder.Append(System.Environment.NewLine);
         }
 
         private void VisitRecord(RuleRecord record)
@@ -100,7 +99,7 @@ namespace PSRule.Pipeline.Output
             WriteColumn(record.Info.Synopsis);
             _Builder.Append(COMMA);
             WriteColumn(record.Info.Recommendation);
-            _Builder.Append(Environment.NewLine);
+            _Builder.Append(System.Environment.NewLine);
         }
 
         private void VisitSummaryRecord(RuleSummaryRecord record)
@@ -119,7 +118,7 @@ namespace PSRule.Pipeline.Output
             WriteColumn(record.Info.Synopsis);
             _Builder.Append(COMMA);
             WriteColumn(record.Info.Recommendation);
-            _Builder.Append(Environment.NewLine);
+            _Builder.Append(System.Environment.NewLine);
         }
 
         private void WriteColumn(string value)

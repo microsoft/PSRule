@@ -204,6 +204,32 @@
       },
       "additionalProperties": false
     },
+    "baseline-option": {
+      "type": "object",
+      "title": "Baseline options",
+      "description": "Options that configure baselines.",
+      "properties": {
+        "group": {
+          "type": "object",
+          "title": "Baseline group",
+          "description": "Configure baseline group names.",
+          "additionalProperties": {
+            "title": "Group mapping",
+            "description": "Maps a group name to a baseline.",
+            "type": "string"
+          },
+          "defaultSnippets": [
+            {
+              "label": "Baseline group",
+              "body": {
+                "${1:Group}": "${2:Baseline}"
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
     "binding-option": {
       "type": "object",
       "title": "Object binding",
@@ -851,6 +877,10 @@
     },
     "options": {
       "properties": {
+        "baseline": {
+          "type": "object",
+          "$ref": "#/definitions/baseline-option"
+        },
         "binding": {
           "type": "object",
           "oneOf": [
@@ -966,7 +996,7 @@
     },
     "rule-option": {
       "type": "object",
-      "title": "Baseline options",
+      "title": "Rule options",
       "description": "Options that include/ exclude and configure rules.",
       "properties": {
         "include": {

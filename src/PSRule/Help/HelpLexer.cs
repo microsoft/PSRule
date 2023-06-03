@@ -169,9 +169,9 @@ namespace PSRule.Help
                 preserveEnding = true;
 
             if (token.IsDoubleLineEnding())
-                stringBuilder.Append(preserveEnding ? string.Concat(Environment.NewLine, Environment.NewLine) : Environment.NewLine);
+                stringBuilder.Append(preserveEnding ? string.Concat(System.Environment.NewLine, System.Environment.NewLine) : System.Environment.NewLine);
             else if (token.IsSingleLineEnding())
-                stringBuilder.Append(preserveEnding ? Environment.NewLine : Space);
+                stringBuilder.Append(preserveEnding ? System.Environment.NewLine : Space);
         }
     }
 }

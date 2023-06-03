@@ -19,6 +19,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 **Experimental features**:
 
+- Baseline groups allow you to use a friendly name to reference baselines.
+  See [baselines][6] for more information.
 - Functions within YAML and JSON expressions can be used to perform manipulation prior to testing a condition.
   See [functions][3] for more information.
 - Sub-selectors within YAML and JSON expressions can be used to filter rules and list properties.
@@ -29,11 +31,19 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
   [3]: expressions/functions.md
   [4]: expressions/sub-selectors.md
   [5]: creating-your-pipeline.md#processing-changed-files-only
+  [6]: concepts/baselines.md
 
 ## Unreleased
 
 What's changed since pre-release v2.9.0-B0033:
 
+- New features:
+  - **Experimental**: Added support for baseline groups by @BernieWhite.
+    [#1541](https://github.com/microsoft/PSRule/issues/1541)
+    - Baseline groups allow you to reference a baseline by a friendly name.
+    - Update the baseline group to point to a new baseline.
+    - Currently only a single baseline can be referenced by a baseline group.
+    - See [baselines][6] for more information.
 - Engineering:
   - Bump Microsoft.NET.Test.Sdk to v17.6.1.
     [#1540](https://github.com/microsoft/PSRule/pull/1540)

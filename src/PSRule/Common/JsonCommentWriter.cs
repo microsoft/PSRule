@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -18,12 +17,12 @@ namespace PSRule
             if (Indentation > 0 && Formatting == Formatting.Indented)
                 WriteIndent();
             else
-                WriteRaw(Environment.NewLine);
+                WriteRaw(System.Environment.NewLine);
 
             WriteRaw("// ");
             WriteRaw(text);
             if (Indentation == 0 || Formatting == Formatting.None)
-                WriteRaw(Environment.NewLine);
+                WriteRaw(System.Environment.NewLine);
         }
     }
 }

@@ -18,10 +18,10 @@ Create options to configure PSRule execution.
 ```text
 New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
- [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
- [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
- [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
- [-AliasReferenceWarning <Boolean>] [-DuplicateResourceId <ExecutionActionPreference>]
+ [-BindTargetType <BindTargetName[]>] [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
+ [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
+ [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
+ [-Convention <String[]>] [-AliasReferenceWarning <Boolean>] [-DuplicateResourceId <ExecutionActionPreference>]
  [-InconclusiveWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>]
  [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
  [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
@@ -46,10 +46,10 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
 ```text
 New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
- [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
- [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
- [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
- [-AliasReferenceWarning <Boolean>] [-DuplicateResourceId <ExecutionActionPreference>]
+ [-BindTargetType <BindTargetName[]>] [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
+ [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
+ [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
+ [-Convention <String[]>] [-AliasReferenceWarning <Boolean>] [-DuplicateResourceId <ExecutionActionPreference>]
  [-InconclusiveWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>]
  [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
  [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
@@ -73,14 +73,15 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
 
 ```text
 New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTargetName <SuppressionOption>]
- [-BindTargetName <BindTargetName[]>] [-BindTargetType <BindTargetName[]>] [-BindingIgnoreCase <Boolean>]
- [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
- [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
- [-Convention <String[]>] [-AliasReferenceWarning <Boolean>] [-DuplicateResourceId <ExecutionActionPreference>]
- [-InconclusiveWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>]
- [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
- [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
- [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-BindTargetName <BindTargetName[]>] [-BindTargetType <BindTargetName[]>] [-BaselineGroup <Hashtable>]
+ [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
+ [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
+ [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>] [-AliasReferenceWarning <Boolean>]
+ [-DuplicateResourceId <ExecutionActionPreference>] [-InconclusiveWarning <Boolean>]
+ [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-NotProcessedWarning <Boolean>]
+ [-SuppressedRuleWarning <Boolean>] [-SuppressionGroupExpired <ExecutionActionPreference>]
+ [-ExecutionRuleExcluded <ExecutionActionPreference>] [-ExecutionRuleSuppressed <ExecutionActionPreference>]
+ [-ExecutionAliasReference <ExecutionActionPreference>]
  [-ExecutionRuleInconclusive <ExecutionActionPreference>]
  [-ExecutionInvariantCulture <ExecutionActionPreference>]
  [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
@@ -251,6 +252,24 @@ See about_PSRule_Options for more information.
 Type: ConfigurationOption
 Parameter Sets: (All)
 Aliases: BaselineConfiguration
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BaselineGroup
+
+Sets the option `Baseline.Group`.
+The option `Baseline.Group` allows a named group of baselines to be defined and later referenced.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Hashtable
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

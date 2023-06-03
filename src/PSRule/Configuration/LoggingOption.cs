@@ -115,18 +115,18 @@ namespace PSRule.Configuration
         [DefaultValue(null)]
         public OutcomeLogStream? RulePass { get; set; }
 
-        internal void Load(EnvironmentHelper env)
+        internal void Load()
         {
-            if (env.TryStringArray("PSRULE_LOGGING_LIMITDEBUG", out var limitDebug))
+            if (Environment.TryStringArray("PSRULE_LOGGING_LIMITDEBUG", out var limitDebug))
                 LimitDebug = limitDebug;
 
-            if (env.TryStringArray("PSRULE_LOGGING_LIMITVERBOSE", out var limitVerbose))
+            if (Environment.TryStringArray("PSRULE_LOGGING_LIMITVERBOSE", out var limitVerbose))
                 LimitVerbose = limitVerbose;
 
-            if (env.TryEnum("PSRULE_LOGGING_RULEFAIL", out OutcomeLogStream ruleFail))
+            if (Environment.TryEnum("PSRULE_LOGGING_RULEFAIL", out OutcomeLogStream ruleFail))
                 RuleFail = ruleFail;
 
-            if (env.TryEnum("PSRULE_LOGGING_RULEPASS", out OutcomeLogStream rulePass))
+            if (Environment.TryEnum("PSRULE_LOGGING_RULEPASS", out OutcomeLogStream rulePass))
                 RulePass = rulePass;
         }
 

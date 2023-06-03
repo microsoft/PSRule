@@ -15,14 +15,14 @@ Sets options that configure PSRule execution.
 
 ```text
 Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force] [-AllowClobber]
- [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
- [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
- [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>] [-AliasReferenceWarning <Boolean>]
- [-DuplicateResourceId <ExecutionActionPreference>] [-InconclusiveWarning <Boolean>]
- [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-NotProcessedWarning <Boolean>]
- [-SuppressedRuleWarning <Boolean>] [-SuppressionGroupExpired <ExecutionActionPreference>]
- [-ExecutionRuleExcluded <ExecutionActionPreference>] [-ExecutionRuleSuppressed <ExecutionActionPreference>]
- [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
+ [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
+ [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
+ [-AliasReferenceWarning <Boolean>] [-DuplicateResourceId <ExecutionActionPreference>]
+ [-InconclusiveWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>]
+ [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
+ [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
+ [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
  [-ExecutionRuleInconclusive <ExecutionActionPreference>]
  [-ExecutionInvariantCulture <ExecutionActionPreference>]
  [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
@@ -145,6 +145,24 @@ Overwrite YAML files that contain comments.
 
 ```yaml
 Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BaselineGroup
+
+Sets the option `Baseline.Group`.
+The option `Baseline.Group` allows a named group of baselines to be defined and later referenced.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Hashtable
 Parameter Sets: (All)
 Aliases:
 

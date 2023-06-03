@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using PSRule.Converters.Yaml;
 using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
 using PSRule.Runtime;
@@ -195,7 +196,8 @@ namespace PSRule.Definitions
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
-                .WithTypeConverter(new StringArrayYamlTypeConverter())
+                .WithTypeConverter(new StringArrayMapConverter())
+                .WithTypeConverter(new StringArrayConverter())
                 .WithNodeDeserializer(
                     inner => new ResourceNodeDeserializer(new LanguageExpressionDeserializer(inner)),
                     s => s.InsteadOf<ObjectNodeDeserializer>())
@@ -380,7 +382,7 @@ namespace PSRule.Definitions
             foreach (var kv in this)
             {
                 if (i > 0)
-                    sb.Append(Environment.NewLine);
+                    sb.Append(System.Environment.NewLine);
 
                 sb.Append(kv.Key);
                 sb.Append('=');

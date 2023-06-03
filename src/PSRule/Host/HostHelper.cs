@@ -10,6 +10,7 @@ using System.Linq;
 using System.Management.Automation;
 using Newtonsoft.Json;
 using PSRule.Annotations;
+using PSRule.Converters.Yaml;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Definitions.Conventions;
@@ -252,7 +253,8 @@ namespace PSRule.Host
                 .IgnoreUnmatchedProperties()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
-                .WithTypeConverter(new StringArrayYamlTypeConverter())
+                .WithTypeConverter(new StringArrayMapConverter())
+                .WithTypeConverter(new Converters.Yaml.StringArrayConverter())
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
                 .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
                 .WithNodeDeserializer(

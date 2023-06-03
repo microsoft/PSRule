@@ -42,5 +42,12 @@ namespace PSRule.Runtime
         /// <param name="message">The warning message write.</param>
         /// <param name="args">Any arguments to format the string with.</param>
         void Warning(string message, params object[] args);
+
+        /// <summary>
+        /// Write an error from an exception.
+        /// </summary>
+        /// <param name="exception">The exception to write.</param>
+        /// <param name="errorId">A string identififer for the error.</param>
+        void Error(Exception exception, string errorId = null);
     }
 }

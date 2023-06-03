@@ -177,12 +177,9 @@ namespace PSRule
         /// Keys that appear in both will replaced by environment variable values.
         /// </summary>
         /// <exception cref="ArgumentNullException">Is raised if the environment helper is null.</exception>
-        internal void Load(string prefix, EnvironmentHelper env, Func<string, string> format = null)
+        internal void Load(string prefix, Func<string, string> format = null)
         {
-            if (env == null)
-                throw new ArgumentNullException(nameof(env));
-
-            foreach (var variable in env.WithPrefix(prefix))
+            foreach (var variable in Environment.GetByPrefix(prefix))
             {
                 if (TryKeyPrefix(variable.Key, prefix, out var suffix))
                 {

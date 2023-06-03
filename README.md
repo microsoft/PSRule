@@ -281,6 +281,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [WithinPath](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#withinpath)
   - [Version](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#version)
 - [Options](https://aka.ms/ps-rule/options)
+  - [Baseline.Group](https://aka.ms/ps-rule/options#baselinegroup)
   - [Binding.Field](https://aka.ms/ps-rule/options#bindingfield)
   - [Binding.IgnoreCase](https://aka.ms/ps-rule/options#bindingignorecase)
   - [Binding.NameSeparator](https://aka.ms/ps-rule/options#bindingnameseparator)

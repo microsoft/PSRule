@@ -325,7 +325,7 @@ namespace PSRule.Pipeline.Formatters
             if (!Option.Output.Banner.GetValueOrDefault(BannerFormat.Default).HasFlag(BannerFormat.Title))
                 return;
 
-            WriteLine(FormatterStrings.Banner.Replace("\\n", Environment.NewLine));
+            WriteLine(FormatterStrings.Banner.Replace("\\n", System.Environment.NewLine));
             LineBreak();
         }
 
@@ -551,7 +551,7 @@ namespace PSRule.Pipeline.Formatters
             if (string.IsNullOrEmpty(message))
                 return;
 
-            var lines = message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            var lines = message.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None);
             for (var i = 0; i < lines.Length; i++)
                 WriteLine(lines[i], prefix, forgroundColor);
         }

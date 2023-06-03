@@ -74,6 +74,17 @@ namespace PSRule
             Assert.Equal("East US", pso.PropertyValue<string>("location"));
         }
 
+        [Fact]
+        public void GetBaselineGroupFromYaml()
+        {
+            var option = GetOption();
+            var actual = option.Baseline.Group;
+            Assert.NotNull(actual);
+            Assert.Single(actual);
+            Assert.True(actual.TryGetValue("latest", out var latest));
+            Assert.Equal(new string[] { ".\\TestBaseline1" }, latest);
+        }
+
         #region Helper methods
 
         private static Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
@@ -94,12 +105,7 @@ namespace PSRule
 
         private static PSRuleOption GetOption()
         {
-            var loaded = PSRuleOption.FromFile(GetSourcePath("PSRule.Tests.yml"));
-            var option = new PSRuleOption
-            {
-                Configuration = loaded.Configuration
-            };
-            return option;
+            return PSRuleOption.FromFile(GetSourcePath("PSRule.Tests.yml"));
         }
 
         private static string GetSourcePath(string fileName)

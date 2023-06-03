@@ -255,6 +255,47 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Baseline.Group' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Baseline.Group | Should -BeNullOrEmpty;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Baseline.Group' = @{ 'test' = 'Test123' } };
+            $option.Baseline.Group.Count | Should -Be 1;
+            $option.Baseline.Group['test'] | Should -Not -BeNullOrEmpty;
+            $option.Baseline.Group['test'][0] | Should -Be 'Test123';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Baseline.Group.Count | Should -Be 1;
+            $option.Baseline.Group['latest'] | Should -Not -BeNullOrEmpty;
+            $option.Baseline.Group['latest'][0] | Should -Be '.\TestBaseline1';
+        }
+
+        It 'from Environment' {
+            try {
+                $Env:PSRULE_BASELINE_GROUP = 'latest=YourBaseline';
+                $option = New-PSRuleOption;
+                $option.Baseline.Group.Count | Should -Be 1;
+                $option.Baseline.Group['latest'] | Should -Not -BeNullOrEmpty;
+                $option.Baseline.Group['latest'][0] | Should -Be 'YourBaseline';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_BASELINE_GROUP' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -BaselineGroup @{ test = 'Test123' } -Path $emptyOptionsFilePath;
+            $option.Baseline.Group.Count | Should -Be 1;
+            $option.Baseline.Group['test'] | Should -Not -BeNullOrEmpty;
+            $option.Baseline.Group['test'][0] | Should -Be 'Test123';
+        }
+    }
+
     Context 'Read Binding.Field' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

@@ -380,6 +380,16 @@ Describe 'Get-PSRuleBaseline' -Tag 'Baseline','Get-PSRuleBaseline' {
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result[0].Name | Should -Be 'TestBaseline1';
+
+            # Use a baseline group by name
+            $result = @(Get-PSRuleBaseline -Path $baselineFilePath -Name '@latest' -Option @{
+                'Baseline.Group' = @{
+                    latest = 'TestBaseline1'
+                }
+            });
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].Name | Should -Be 'TestBaseline1';
         }
 
         It 'With -Module' {
@@ -689,6 +699,20 @@ Describe 'Baseline' -Tag 'Baseline' {
 
         It 'With -Baseline' {
             $result = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline1');
+            $result | Should -Not -BeNullOrEmpty;
+            $result.Length | Should -Be 1;
+            $result[0].RuleName | Should -Be 'WithBaseline';
+            $result[0].Outcome | Should -Be 'Pass';
+            $result[0].TargetName | Should -Be 'TestObject1';
+            $result[0].TargetType | Should -Be 'TestObjectType';
+            $result[0].Field.kind | Should -Be 'TestObjectType';
+
+            # Use a baseline group by name
+            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline '@latest' -Option @{
+                'Baseline.Group' = @{
+                    latest = 'TestBaseline1'
+                }
+            });
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result[0].RuleName | Should -Be 'WithBaseline';

@@ -56,14 +56,14 @@ namespace PSRule.Pipeline.Output
             xml.WriteAttributeString("time", TimeSpan.FromMilliseconds(time).ToString());
 
             xml.WriteStartElement("environment");
-            xml.WriteAttributeString("user", Environment.UserName);
-            xml.WriteAttributeString("machine-name", Environment.MachineName);
+            xml.WriteAttributeString("user", System.Environment.UserName);
+            xml.WriteAttributeString("machine-name", System.Environment.MachineName);
             xml.WriteAttributeString("cwd", PSRuleOption.GetWorkingPath());
-            xml.WriteAttributeString("user-domain", Environment.UserDomainName);
-            xml.WriteAttributeString("platform", Environment.OSVersion.Platform.ToString());
+            xml.WriteAttributeString("user-domain", System.Environment.UserDomainName);
+            xml.WriteAttributeString("platform", System.Environment.OSVersion.Platform.ToString());
             xml.WriteAttributeString("nunit-version", "2.5.8.0");
-            xml.WriteAttributeString("os-version", Environment.OSVersion.Version.ToString());
-            xml.WriteAttributeString("clr-version", Environment.Version.ToString());
+            xml.WriteAttributeString("os-version", System.Environment.OSVersion.Version.ToString());
+            xml.WriteAttributeString("clr-version", System.Environment.Version.ToString());
             xml.WriteEndElement();
 
             xml.WriteStartElement("culture-info");

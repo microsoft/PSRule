@@ -134,40 +134,6 @@ namespace PSRule
     }
 
     /// <summary>
-    /// A YAML converter that handles string to string array.
-    /// </summary>
-    internal sealed class StringArrayYamlTypeConverter : IYamlTypeConverter
-    {
-        public bool Accepts(Type type)
-        {
-            return type == typeof(string[]);
-        }
-
-        public object ReadYaml(IParser parser, Type type)
-        {
-            if (parser.TryConsume<SequenceStart>(out _))
-            {
-                var result = new List<string>();
-                while (parser.TryConsume<Scalar>(out var scalar))
-                    result.Add(scalar.Value);
-
-                parser.Consume<SequenceEnd>();
-                return result.ToArray();
-            }
-            else if (parser.TryConsume<Scalar>(out var scalar))
-            {
-                return new string[] { scalar.Value };
-            }
-            return null;
-        }
-
-        public void WriteYaml(IEmitter emitter, object value, Type type)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    /// <summary>
     /// A YAML converter to deserialize a map/ object as a PSObject.
     /// </summary>
     internal sealed class PSObjectYamlTypeConverter : MappingTypeConverter, IYamlTypeConverter

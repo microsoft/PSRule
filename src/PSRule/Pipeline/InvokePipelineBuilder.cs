@@ -71,7 +71,7 @@ namespace PSRule.Pipeline
 
         public void UnblockPublisher(string publisher)
         {
-            if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+            if (System.Environment.OSVersion.Platform != PlatformID.Win32NT)
                 return;
 
             _TrustedPublishers ??= new List<string>();
@@ -124,7 +124,7 @@ namespace PSRule.Pipeline
         {
             if (Source == null || Source.Length == 0 ||
                 _TrustedPublishers == null || _TrustedPublishers.Count == 0 ||
-                Environment.OSVersion.Platform != PlatformID.Win32NT)
+                System.Environment.OSVersion.Platform != PlatformID.Win32NT)
                 return;
 
             var files = new List<string>();

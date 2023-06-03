@@ -7,6 +7,7 @@
     <OutputType>Library</OutputType>
     <ProjectGuid>{309bed8b-4e60-4c42-a2b4-37a2e7ebef3f}</ProjectGuid>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

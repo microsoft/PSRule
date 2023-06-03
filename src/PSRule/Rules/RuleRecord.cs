@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -214,7 +213,7 @@ namespace PSRule.Rules
         /// </remarks>
         public string GetReasonViewString()
         {
-            return Reason == null || Reason.Length == 0 ? string.Empty : string.Join(Environment.NewLine, Reason);
+            return Reason == null || Reason.Length == 0 ? string.Empty : string.Join(System.Environment.NewLine, Reason);
         }
 
         internal bool HasSource()

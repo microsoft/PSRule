@@ -140,7 +140,6 @@ namespace PSRule.Pipeline
 
             public readonly string Path;
             public readonly string Name;
-            public readonly string Baseline;
             public readonly string Version;
             public readonly string ProjectUri;
             public readonly string Guid;

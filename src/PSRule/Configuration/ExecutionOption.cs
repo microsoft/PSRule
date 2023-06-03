@@ -330,53 +330,53 @@ namespace PSRule.Configuration
         /// <summary>
         /// Load from environment variables.
         /// </summary>
-        internal void Load(EnvironmentHelper env)
+        internal void Load()
         {
 #pragma warning disable CS0618 // Type or member is obsolete
-            if (env.TryBool("PSRULE_EXECUTION_ALIASREFERENCEWARNING", out var bvalue))
+            if (Environment.TryBool("PSRULE_EXECUTION_ALIASREFERENCEWARNING", out var bvalue))
                 AliasReferenceWarning = bvalue;
 
-            if (env.TryEnum("PSRULE_EXECUTION_DUPLICATERESOURCEID", out ExecutionActionPreference duplicateResourceId))
+            if (Environment.TryEnum("PSRULE_EXECUTION_DUPLICATERESOURCEID", out ExecutionActionPreference duplicateResourceId))
                 DuplicateResourceId = duplicateResourceId;
 
-            if (env.TryEnum("PSRULE_EXECUTION_LANGUAGEMODE", out LanguageMode languageMode))
+            if (Environment.TryEnum("PSRULE_EXECUTION_LANGUAGEMODE", out LanguageMode languageMode))
                 LanguageMode = languageMode;
 
-            if (env.TryBool("PSRULE_EXECUTION_INCONCLUSIVEWARNING", out bvalue))
+            if (Environment.TryBool("PSRULE_EXECUTION_INCONCLUSIVEWARNING", out bvalue))
                 InconclusiveWarning = bvalue;
 
-            if (env.TryBool("PSRULE_EXECUTION_INVARIANTCULTUREWARNING", out bvalue))
+            if (Environment.TryBool("PSRULE_EXECUTION_INVARIANTCULTUREWARNING", out bvalue))
                 InvariantCultureWarning = bvalue;
 
-            if (env.TryEnum("PSRULE_EXECUTION_INITIALSESSIONSTATE", out SessionState initialSessionState))
+            if (Environment.TryEnum("PSRULE_EXECUTION_INITIALSESSIONSTATE", out SessionState initialSessionState))
                 InitialSessionState = initialSessionState;
 
-            if (env.TryBool("PSRULE_EXECUTION_NOTPROCESSEDWARNING", out bvalue))
+            if (Environment.TryBool("PSRULE_EXECUTION_NOTPROCESSEDWARNING", out bvalue))
                 NotProcessedWarning = bvalue;
 
-            if (env.TryBool("PSRULE_EXECUTION_SUPPRESSEDRULEWARNING", out bvalue))
+            if (Environment.TryBool("PSRULE_EXECUTION_SUPPRESSEDRULEWARNING", out bvalue))
                 SuppressedRuleWarning = bvalue;
 #pragma warning restore CS0618 // Type or member is obsolete
 
-            if (env.TryEnum("PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED", out ExecutionActionPreference suppressionGroupExpired))
+            if (Environment.TryEnum("PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED", out ExecutionActionPreference suppressionGroupExpired))
                 SuppressionGroupExpired = suppressionGroupExpired;
 
-            if (env.TryEnum("PSRULE_EXECUTION_RULEEXCLUDED", out ExecutionActionPreference ruleExcluded))
+            if (Environment.TryEnum("PSRULE_EXECUTION_RULEEXCLUDED", out ExecutionActionPreference ruleExcluded))
                 RuleExcluded = ruleExcluded;
 
-            if (env.TryEnum("PSRULE_EXECUTION_RULESUPPRESSED", out ExecutionActionPreference ruleSuppressed))
+            if (Environment.TryEnum("PSRULE_EXECUTION_RULESUPPRESSED", out ExecutionActionPreference ruleSuppressed))
                 RuleSuppressed = ruleSuppressed;
 
-            if (env.TryEnum("PSRULE_EXECUTION_ALIASREFERENCE", out ExecutionActionPreference aliasReference))
+            if (Environment.TryEnum("PSRULE_EXECUTION_ALIASREFERENCE", out ExecutionActionPreference aliasReference))
                 AliasReference = aliasReference;
 
-            if (env.TryEnum("PSRULE_EXECUTION_RULEINCONCLUSIVE", out ExecutionActionPreference ruleInconclusive))
+            if (Environment.TryEnum("PSRULE_EXECUTION_RULEINCONCLUSIVE", out ExecutionActionPreference ruleInconclusive))
                 RuleInconclusive = ruleInconclusive;
 
-            if (env.TryEnum("PSRULE_EXECUTION_INVARIANTCULTURE", out ExecutionActionPreference invariantCulture))
+            if (Environment.TryEnum("PSRULE_EXECUTION_INVARIANTCULTURE", out ExecutionActionPreference invariantCulture))
                 InvariantCulture = invariantCulture;
 
-            if (env.TryEnum("PSRULE_EXECUTION_UNPROCESSEDOBJECT", out ExecutionActionPreference unprocessedObject))
+            if (Environment.TryEnum("PSRULE_EXECUTION_UNPROCESSEDOBJECT", out ExecutionActionPreference unprocessedObject))
                 UnprocessedObject = unprocessedObject;
         }
 

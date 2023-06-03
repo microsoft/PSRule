@@ -708,7 +708,7 @@ function Get-PSRule {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Verbose -Message "[Get-PSRule] -- Could not find any .Rule.ps1 script files in the path";
+            Write-Verbose -Message "[Get-PSRule] -- Could not find any .Rule.ps1 script files in the path.";
             return; # continue causes issues with Pester
         }
 
@@ -737,8 +737,6 @@ function Get-PSRule {
             $builder.IncludeDependencies();
         }
 
-        # $builder.UseCommandRuntime($PSCmdlet);
-        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
@@ -828,7 +826,7 @@ function Get-PSRuleBaseline {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Verbose -Message "[Get-PSRuleBaseline] -- Could not find any .Rule.ps1 script files in the path";
+            Write-Verbose -Message "[Get-PSRuleBaseline] -- Could not find any .Rule.ps1 script files in the path.";
             return; # continue causes issues with Pester
         }
 
@@ -935,7 +933,7 @@ function Export-PSRuleBaseline {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Verbose -Message "[Export-PSRuleBaseline] -- Could not find any .Rule.ps1 script files in the path";
+            Write-Verbose -Message "[Export-PSRuleBaseline] -- Could not find any .Rule.ps1 script files in the path.";
             return; # continue causes issues with Pester
         }
 
@@ -1043,7 +1041,7 @@ function Get-PSRuleHelp {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Verbose -Message "[Get-PSRuleHelp] -- Could not find any .Rule.ps1 script files in the path";
+            Write-Verbose -Message "[Get-PSRuleHelp] -- Could not find any .Rule.ps1 script files in the path.";
             return; # continue causes issues with Pester
         }
 
@@ -1128,6 +1126,10 @@ function New-PSRuleOption {
         [PSRule.Configuration.BindTargetName[]]$BindTargetType,
 
         # Options
+
+        # Sets the Baseline.Group option
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$BaselineGroup,
 
         # Sets the Binding.IgnoreCase option
         [Parameter(Mandatory = $False)]
@@ -1454,6 +1456,10 @@ function Set-PSRuleOption {
         [Switch]$AllowClobber = $False,
 
         # Options
+
+        # Sets the Baseline.Group option
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$BaselineGroup,
 
         # Sets the Binding.IgnoreCase option
         [Parameter(Mandatory = $False)]
@@ -2228,6 +2234,10 @@ function SetOptions {
 
         # Options
 
+        # Sets the Baseline.Group option
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$BaselineGroup,
+
         # Sets the Binding.IgnoreCase option
         [Parameter(Mandatory = $False)]
         [System.Boolean]$BindingIgnoreCase = $True,
@@ -2458,6 +2468,11 @@ function SetOptions {
     )
     process {
         # Options
+
+        # Sets option Baseline.Group
+        if ($PSBoundParameters.ContainsKey('BaselineGroup')) {
+            $Option.Baseline.Group = $BaselineGroup;
+        }
 
         # Sets option Binding.IgnoreCase
         if ($PSBoundParameters.ContainsKey('BindingIgnoreCase')) {
