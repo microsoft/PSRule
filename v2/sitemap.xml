@@ -191,6 +191,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://microsoft.github.io/PSRule/v2/concepts/baselines/</loc>
+         <lastmod>2023-06-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://microsoft.github.io/PSRule/v2/concepts/grouping-rules/</loc>
          <lastmod>2023-06-03</lastmod>
          <changefreq>daily</changefreq>
