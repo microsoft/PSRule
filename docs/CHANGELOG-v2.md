@@ -47,6 +47,8 @@ What's changed since pre-release v2.9.0-B0033:
 - Engineering:
   - Bump Microsoft.NET.Test.Sdk to v17.6.1.
     [#1540](https://github.com/microsoft/PSRule/pull/1540)
+  - Bump Microsoft.CodeAnalysis.Common to v4.6.0.
+    [#1534](https://github.com/microsoft/PSRule/pull/1534)
 
 ## v2.9.0-B0033 (pre-release)
 
