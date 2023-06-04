@@ -1,8 +1,14 @@
 {
   "profiles": {
-    "PSRule.Tool": {
+    "ps-rule analyze": {
       "commandName": "Project",
-      "commandLineArgs": "analyze"
+      "commandLineArgs": "analyze",
+      "workingDirectory": "../../"
+    },
+    "ps-rule restore": {
+      "commandName": "Project",
+      "commandLineArgs": "restore",
+      "workingDirectory": "../../"
     }
   }
 }

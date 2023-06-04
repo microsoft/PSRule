@@ -61,7 +61,7 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run rule analysis..
+        ///   Looks up a localized string similar to Run rule analysis.
         /// </summary>
         internal static string Analyze_Description {
             get {
@@ -115,11 +115,20 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restore PSRule modules..
+        ///   Looks up a localized string similar to Restore PSRule modules.
         /// </summary>
         internal static string Restore_Description {
             get {
                 return ResourceManager.GetString("Restore_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force restore of modules.
+        /// </summary>
+        internal static string Restore_Force_Description {
+            get {
+                return ResourceManager.GetString("Restore_Force_Description", resourceCulture);
             }
         }
     }

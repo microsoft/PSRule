@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
@@ -15,12 +16,16 @@ namespace PSRule.Tool
         private readonly InvocationContext _Invocation;
         private readonly bool _Verbose;
         private readonly bool _Debug;
+        private readonly ConsoleColor _BackgroundColor;
+        private readonly ConsoleColor _ForegroundColor;
 
         public ClientHost(InvocationContext invocation, bool verbose, bool debug)
         {
             _Invocation = invocation;
             _Verbose = verbose;
             _Debug = debug;
+            _BackgroundColor = Console.BackgroundColor;
+            _ForegroundColor = Console.ForegroundColor;
 
             Verbose($"Using working path: {Directory.GetCurrentDirectory()}");
         }
@@ -55,7 +60,27 @@ namespace PSRule.Tool
         public override void Information(InformationRecord informationRecord)
         {
             if (informationRecord?.MessageData is HostInformationMessage info)
-                _Invocation.Console.WriteLine(info.Message);
+            {
+                SetConsole(info);
+                if (info.NoNewLine.GetValueOrDefault(false))
+                    _Invocation.Console.Write(info.Message);
+                else
+                    _Invocation.Console.WriteLine(info.Message);
+
+                RevertConsole();
+            }
+        }
+
+        private void SetConsole(HostInformationMessage info)
+        {
+            Console.BackgroundColor = info.BackgroundColor.GetValueOrDefault(_BackgroundColor);
+            Console.ForegroundColor = info.ForegroundColor.GetValueOrDefault(_ForegroundColor);
+        }
+
+        private void RevertConsole()
+        {
+            Console.BackgroundColor = _BackgroundColor;
+            Console.ForegroundColor = _ForegroundColor;
         }
 
         public override void Verbose(string text)

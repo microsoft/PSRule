@@ -243,7 +243,7 @@ namespace PSRule.Pipeline
         private static RepositoryInfo GetRepositoryInfo(TargetObject targetObject, out TargetSourceInfo sourceInfo)
         {
             sourceInfo = null;
-            if (!(targetObject.Value.BaseObject is InputFileInfo inputFileInfo))
+            if (targetObject.Value.BaseObject is not InputFileInfo inputFileInfo)
                 return null;
 
             sourceInfo = new TargetSourceInfo(inputFileInfo);

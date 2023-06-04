@@ -7,7 +7,6 @@ using System.Management.Automation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PSRule.Runtime.ObjectPath;
-using Xunit;
 
 namespace PSRule
 {

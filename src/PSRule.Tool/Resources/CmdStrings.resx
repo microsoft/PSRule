@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Analyze_Description" xml:space="preserve">
-    <value>Run rule analysis.</value>
+    <value>Run rule analysis</value>
   </data>
   <data name="Cmd_Description" xml:space="preserve">
     <value>PSRule CLI</value>
@@ -136,6 +136,9 @@
     <value>Return verbose output</value>
   </data>
   <data name="Restore_Description" xml:space="preserve">
-    <value>Restore PSRule modules.</value>
+    <value>Restore PSRule modules</value>
+  </data>
+  <data name="Restore_Force_Description" xml:space="preserve">
+    <value>Force restore of modules</value>
   </data>
 </root>

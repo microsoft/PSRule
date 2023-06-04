@@ -349,7 +349,7 @@ namespace PSRule.Pipeline.Output
 
         public override void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
-            if (!(sendToPipeline is InvokeResult result))
+            if (sendToPipeline is not InvokeResult result)
                 return;
 
             Add(result);

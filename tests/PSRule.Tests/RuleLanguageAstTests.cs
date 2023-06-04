@@ -4,7 +4,6 @@
 using System;
 using System.IO;
 using PSRule.Host;
-using Xunit;
 
 namespace PSRule
 {

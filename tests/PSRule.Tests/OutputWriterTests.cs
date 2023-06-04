@@ -14,7 +14,6 @@ using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Output;
 using PSRule.Rules;
-using Xunit;
 
 namespace PSRule
 {

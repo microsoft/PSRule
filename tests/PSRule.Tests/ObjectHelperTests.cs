@@ -4,7 +4,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using PSRule.Definitions;
-using Xunit;
 using ObjectHelper = PSRule.Runtime.ObjectHelper;
 
 namespace PSRule

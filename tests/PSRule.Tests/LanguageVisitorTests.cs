@@ -3,7 +3,6 @@
 
 using System.Management.Automation;
 using PSRule.Host;
-using Xunit;
 
 namespace PSRule
 {

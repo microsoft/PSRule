@@ -6,7 +6,6 @@ using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
 using PSRule.Definitions.Baselines;
 using PSRule.Pipeline;
-using Xunit;
 
 namespace PSRule
 {

@@ -5,7 +5,6 @@ using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline;
-using Xunit;
 
 namespace PSRule
 {
@@ -56,7 +55,7 @@ namespace PSRule
 
             PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, null, null, null, null, null);
 
-            var actual = PipelineHookActions.BindTargetName(new string[] { "Name" }, false, false, pso1, out string path);
+            var actual = PipelineHookActions.BindTargetName(new string[] { "Name" }, false, false, pso1, out var path);
             Assert.Equal("OtherName", actual);
             Assert.Equal("Name", path);
 

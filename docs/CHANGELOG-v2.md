@@ -44,6 +44,9 @@ What's changed since pre-release v2.9.0-B0033:
     - Update the baseline group to point to a new baseline.
     - Currently only a single baseline can be referenced by a baseline group.
     - See [baselines][6] for more information.
+- General improvements:
+  - Added style and improved handling for restore command by @BernieWhite.
+    [#1152](https://github.com/microsoft/PSRule/issues/1152)
 - Engineering:
   - Bump Microsoft.NET.Test.Sdk to v17.6.1.
     [#1540](https://github.com/microsoft/PSRule/pull/1540)

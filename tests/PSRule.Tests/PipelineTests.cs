@@ -12,7 +12,6 @@ using PSRule.Configuration;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
-using Xunit;
 
 namespace PSRule
 {

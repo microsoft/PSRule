@@ -22,7 +22,7 @@ namespace PSRule.Pipeline
 
             public override void WriteObject(object sendToPipeline, bool enumerateCollection)
             {
-                if (!(sendToPipeline is InvokeResult result) || !ShouldOutput(result.Outcome))
+                if (sendToPipeline is not InvokeResult result || !ShouldOutput(result.Outcome))
                     return;
 
                 base.WriteObject(result.IsSuccess(), false);

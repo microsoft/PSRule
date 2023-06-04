@@ -1586,7 +1586,7 @@ namespace PSRule.Runtime
 
         private static bool TryTypeName(object fieldValue, string typeName)
         {
-            if (!(fieldValue is PSObject pso))
+            if (fieldValue is not PSObject pso)
                 return false;
 
             for (var i = 0; i < pso.TypeNames.Count; i++)

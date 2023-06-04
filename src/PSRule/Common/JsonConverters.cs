@@ -762,8 +762,7 @@ namespace PSRule
             _FunctionBuilder.Push();
             while (reader.TokenType != JsonToken.EndObject)
             {
-                var name = reader.Value as string;
-                if (name != null)
+                if (reader.Value is string name)
                 {
                     reader.Consume(JsonToken.PropertyName);
                     if (reader.TryConsume(JsonToken.StartObject))

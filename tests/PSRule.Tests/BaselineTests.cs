@@ -13,7 +13,6 @@ using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Output;
 using PSRule.Runtime;
-using Xunit;
 using YamlDotNet.Serialization;
 using Assert = Xunit.Assert;
 

@@ -4,6 +4,7 @@
     <AssemblyTitle>PSRule.BuildTask</AssemblyTitle>
     <EnableNuget>false</EnableNuget>
     <IsPackable>false</IsPackable>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
   </PropertyGroup>
 
   <ItemGroup>

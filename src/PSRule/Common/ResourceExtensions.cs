@@ -12,7 +12,7 @@ namespace PSRule
         internal static bool TryValidateResourceAnnotation(this IResource resource, out ValidateResourceAnnotation value)
         {
             value = null;
-            if (!(resource is IAnnotated<ResourceAnnotation> annotated))
+            if (resource is not IAnnotated<ResourceAnnotation> annotated)
                 return false;
 
             value = annotated.GetAnnotation<ValidateResourceAnnotation>();

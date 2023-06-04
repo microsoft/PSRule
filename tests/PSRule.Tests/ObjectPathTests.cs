@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using PSRule.Pipeline;
-using Xunit;
 
 namespace PSRule
 {

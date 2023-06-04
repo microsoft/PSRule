@@ -8,7 +8,6 @@ using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Formatters;
 using PSRule.Rules;
-using Xunit;
 
 namespace PSRule
 {
