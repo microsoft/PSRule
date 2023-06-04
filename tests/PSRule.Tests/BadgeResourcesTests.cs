@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Badges;
-using Xunit;
 
 namespace PSRule
 {

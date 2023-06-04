@@ -97,7 +97,7 @@ namespace PSRule.Pipeline
 
             public override void WriteObject(object sendToPipeline, bool enumerateCollection)
             {
-                if (!(sendToPipeline is RuleHelpInfo[] result))
+                if (sendToPipeline is not RuleHelpInfo[] result)
                 {
                     base.WriteObject(sendToPipeline, enumerateCollection);
                     return;

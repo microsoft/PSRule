@@ -7,7 +7,6 @@ using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Definitions.Expressions;
 using PSRule.Pipeline;
-using Xunit;
 
 namespace PSRule
 {

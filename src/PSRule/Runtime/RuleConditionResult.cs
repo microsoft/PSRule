@@ -8,7 +8,7 @@ namespace PSRule.Runtime
 {
     internal static class RuleConditionHelper
     {
-        private readonly static RuleConditionResult Empty = new RuleConditionResult(pass: 0, count: 0, hadErrors: false);
+        private readonly static RuleConditionResult Empty = new(pass: 0, count: 0, hadErrors: false);
 
         internal static RuleConditionResult Create(IEnumerable<object> value)
         {
@@ -41,7 +41,7 @@ namespace PSRule.Runtime
         private static bool TryBoolean(object o, out bool result)
         {
             result = false;
-            if (!(o is bool bresult))
+            if (o is not bool bresult)
                 return false;
 
             result = bresult;
@@ -51,7 +51,7 @@ namespace PSRule.Runtime
         private static bool TryAssertResult(object o, out bool result)
         {
             result = false;
-            if (!(o is AssertResult assert))
+            if (o is not AssertResult assert)
                 return false;
 
             result = assert.Result;

@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using PSRule.Definitions;
 using PSRule.Help;
-using Xunit;
 
 namespace PSRule
 {

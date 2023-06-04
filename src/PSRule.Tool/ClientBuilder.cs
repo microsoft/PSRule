@@ -3,15 +3,19 @@
 
 using System.CommandLine;
 using System.IO;
+using System.Reflection;
 using PSRule.Tool.Resources;
 
 namespace PSRule.Tool
 {
     internal sealed class ClientBuilder
     {
+        private static readonly string _Version = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
         private readonly Option<string> _Option;
         private readonly Option<bool> _Verbose;
         private readonly Option<bool> _Debug;
+        private readonly Option<bool> _RestoreForce;
         private readonly Option<string[]> _Path;
         private readonly Option<DirectoryInfo> _OutputPath;
         private readonly Option<string> _OutputFormat;
@@ -52,6 +56,10 @@ namespace PSRule.Tool
             _Baseline = new Option<string>(
                 new string[] { "--baseline" }
             );
+            _RestoreForce = new Option<bool>(
+                new string[] { "--force" },
+                CmdStrings.Restore_Force_Description
+            );
 
             cmd.AddGlobalOption(_Option);
             cmd.AddGlobalOption(_Verbose);
@@ -62,7 +70,7 @@ namespace PSRule.Tool
 
         public static Command New()
         {
-            var cmd = new RootCommand(CmdStrings.Cmd_Description)
+            var cmd = new RootCommand(string.Concat(CmdStrings.Cmd_Description, " v", _Version))
             {
                 Name = "ps-rule"
             };
@@ -103,6 +111,7 @@ namespace PSRule.Tool
         {
             var cmd = new Command("restore", CmdStrings.Restore_Description);
             cmd.AddOption(_Path);
+            cmd.AddOption(_RestoreForce);
             cmd.SetHandler((invocation) =>
             {
                 var option = new RestoreOptions
@@ -111,6 +120,7 @@ namespace PSRule.Tool
                     Option = invocation.ParseResult.GetValueForOption(_Option),
                     Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
                     Debug = invocation.ParseResult.GetValueForOption(_Debug),
+                    Force = invocation.ParseResult.GetValueForOption(_RestoreForce),
                 };
                 var client = new ClientContext();
                 invocation.ExitCode = ClientHelper.RunRestore(option, client, invocation);

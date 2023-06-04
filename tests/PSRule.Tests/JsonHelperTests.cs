@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json.Linq;
-using Xunit;
 
 namespace PSRule
 {

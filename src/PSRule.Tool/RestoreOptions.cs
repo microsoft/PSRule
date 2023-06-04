@@ -12,5 +12,7 @@ namespace PSRule.Tool
         public bool Verbose { get; set; }
 
         public bool Debug { get; set; }
+
+        public bool Force { get; set; }
     }
 }

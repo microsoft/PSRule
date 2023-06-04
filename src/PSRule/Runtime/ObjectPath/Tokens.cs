@@ -104,8 +104,8 @@ namespace PSRule.Runtime.ObjectPath
     [DebuggerDisplay("Type = {Type}, Arg = {Arg}")]
     internal sealed class PathToken : IPathToken
     {
-        public readonly static PathToken RootRef = new PathToken(PathTokenType.RootRef);
-        public readonly static PathToken CurrentRef = new PathToken(PathTokenType.CurrentRef);
+        public readonly static PathToken RootRef = new(PathTokenType.RootRef);
+        public readonly static PathToken CurrentRef = new(PathTokenType.CurrentRef);
 
         public PathTokenType Type { get; }
 

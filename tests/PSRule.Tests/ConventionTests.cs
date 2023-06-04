@@ -6,7 +6,6 @@ using System.IO;
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Pipeline;
-using Xunit;
 using static PSRule.PipelineTests;
 
 namespace PSRule

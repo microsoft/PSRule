@@ -9,7 +9,6 @@ using Newtonsoft.Json.Linq;
 using PSRule.Data;
 using PSRule.Pipeline;
 using PSRule.Runtime;
-using Xunit;
 using Xunit.Abstractions;
 using Assert = Xunit.Assert;
 

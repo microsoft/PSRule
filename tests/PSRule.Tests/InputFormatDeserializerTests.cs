@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using PSRule.Pipeline;
-using Xunit;
 
 namespace PSRule
 {
@@ -22,7 +21,7 @@ namespace PSRule
             Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
             Assert.Equal(2, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value2"));
             Assert.Equal(2, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
-            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out string path));
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out var path));
             Assert.Null(path);
 
             // Array item
@@ -44,7 +43,7 @@ namespace PSRule
             Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
             Assert.Equal(2, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value2"));
             Assert.Equal(3, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
-            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out string path));
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out var path));
             Assert.Null(path);
             actual[0].Value.TryTargetInfo(out var info1);
             actual[1].Value.TryTargetInfo(out var info2);
@@ -74,7 +73,7 @@ namespace PSRule
             Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
             Assert.Equal(1, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value1"));
             Assert.Equal(2, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
-            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out string path));
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out var path));
             Assert.Null(path);
         }
 
@@ -88,7 +87,7 @@ namespace PSRule
             Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
             Assert.Equal(1, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value1"));
             Assert.Equal(2, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<Array>("array").Length);
-            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out string path));
+            Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out var path));
             Assert.Null(path);
         }
 

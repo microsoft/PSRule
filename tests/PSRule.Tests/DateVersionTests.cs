@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Data;
-using Xunit;
 
 namespace PSRule
 {

@@ -241,7 +241,7 @@ namespace PSRule.Host
         private static ScriptBlockAst GetParentBlock(Ast ast)
         {
             var block = ast;
-            while (block != null && !(block is ScriptBlockAst))
+            while (block != null && block is not ScriptBlockAst)
                 block = block.Parent;
 
             return (ScriptBlockAst)block;

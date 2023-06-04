@@ -23,7 +23,7 @@ namespace PSRule.Configuration
         private const bool DEFAULT_SARIF_PROBLEMS_ONLY = true;
         private const OutputStyle DEFAULT_STYLE = OutputStyle.Detect;
 
-        internal static readonly OutputOption Default = new OutputOption
+        internal static readonly OutputOption Default = new()
         {
             As = DEFAULT_AS,
             Banner = DEFAULT_BANNER,
