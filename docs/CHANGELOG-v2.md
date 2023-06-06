@@ -48,8 +48,8 @@ What's changed since pre-release v2.9.0-B0033:
   - Added style and improved handling for restore command by @BernieWhite.
     [#1152](https://github.com/microsoft/PSRule/issues/1152)
 - Engineering:
-  - Bump Microsoft.NET.Test.Sdk to v17.6.1.
-    [#1540](https://github.com/microsoft/PSRule/pull/1540)
+  - Bump Microsoft.NET.Test.Sdk to v17.6.2.
+    [#1544](https://github.com/microsoft/PSRule/pull/1544)
   - Bump Microsoft.CodeAnalysis.Common to v4.6.0.
     [#1534](https://github.com/microsoft/PSRule/pull/1534)
 - Bug fixes:
