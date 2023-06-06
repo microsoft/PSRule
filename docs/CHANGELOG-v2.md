@@ -52,6 +52,9 @@ What's changed since pre-release v2.9.0-B0033:
     [#1540](https://github.com/microsoft/PSRule/pull/1540)
   - Bump Microsoft.CodeAnalysis.Common to v4.6.0.
     [#1534](https://github.com/microsoft/PSRule/pull/1534)
+- Bug fixes:
+  - Fixed include local not automatically being enabled for default module baseline by @BernieWhite.
+    [#1506](https://github.com/microsoft/PSRule/issues/1506)
 
 ## v2.9.0-B0033 (pre-release)
 

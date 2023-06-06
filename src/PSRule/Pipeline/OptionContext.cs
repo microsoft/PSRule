@@ -24,7 +24,14 @@ namespace PSRule.Pipeline
         private readonly List<string> _ConventionOrder;
         private readonly string[] _DefaultCulture;
 
+        /// <summary>
+        /// Used when options are passed in by command line parameters.
+        /// </summary>
         private BaselineScope _Parameter;
+
+        /// <summary>
+        /// Used when a baseline is explictly set by name.
+        /// </summary>
         private BaselineScope _Explicit;
 
         private BaselineScope _WorkspaceBaseline;
@@ -32,12 +39,6 @@ namespace PSRule.Pipeline
 
         private BaselineScope _ModuleBaseline;
         private ConfigScope _ModuleConfig;
-
-        //private BindingOption _Binding;
-        //private RuleFilter _Filter;
-        //private Dictionary<string, object> _Configuration;
-        //private string[] _Culture;
-        //private ConventionFilter _ConventionFilter;
 
         internal OptionContext()
         {
@@ -51,9 +52,24 @@ namespace PSRule.Pipeline
 
         internal enum ScopeType
         {
+            /// <summary>
+            /// Used when options are passed in by command line parameters.
+            /// </summary>
             Parameter = 0,
+
+            /// <summary>
+            /// Used when a baseline is explictly set by name.
+            /// </summary>
             Explicit = 1,
+
+            /// <summary>
+            /// Used when options are set within the PSRule options from the workspace or an options object.
+            /// </summary>
             Workspace = 2,
+
+            /// <summary>
+            /// Used for options that are inherited from module configuration.
+            /// </summary>
             Module = 3
         }
 
@@ -358,31 +374,24 @@ namespace PSRule.Pipeline
         {
             _ModuleConfig = !string.IsNullOrEmpty(moduleName) && _ModuleConfigScope.TryGetValue(moduleName, out var configScope) ? configScope : null;
             _ModuleBaseline = !string.IsNullOrEmpty(moduleName) && _ModuleBaselineScope.TryGetValue(moduleName, out var baselineScope) ? baselineScope : null;
-            //_Binding = null;
-            //_Configuration = null;
-            //_Filter = null;
-            //_Culture = null;
-            //_ConventionFilter = null;
         }
 
         private IResourceFilter GetRuleFilter()
         {
-            // if (_Filter != null)
-            //     return _Filter;
-
             var include = _Parameter?.Include ?? _Explicit?.Include ?? _WorkspaceBaseline?.Include ?? _ModuleBaseline?.Include;
             var exclude = _Explicit?.Exclude ?? _WorkspaceBaseline?.Exclude ?? _ModuleBaseline?.Exclude;
             var tag = _Parameter?.Tag ?? _Explicit?.Tag ?? _WorkspaceBaseline?.Tag ?? _ModuleBaseline?.Tag;
             var labels = _Parameter?.Labels ?? _Explicit?.Labels ?? _WorkspaceBaseline?.Labels ?? _ModuleBaseline?.Labels;
-            var includeLocal = _Explicit?.IncludeLocal ?? _WorkspaceBaseline?.IncludeLocal ?? _ModuleBaseline?.IncludeLocal;
+            var includeLocal = _Explicit == null &&
+                _Parameter?.Include == null &&
+                _Parameter?.Tag == null &&
+                _Parameter?.Labels == null &&
+                (_WorkspaceBaseline == null || !_WorkspaceBaseline.IncludeLocal.HasValue) ? true : _WorkspaceBaseline?.IncludeLocal;
             return new RuleFilter(include, tag, exclude, includeLocal, labels);
         }
 
         private IResourceFilter GetConventionFilter()
         {
-            // if (_ConventionFilter != null)
-            //     return _ConventionFilter;
-
             var include = new List<string>();
             for (var i = 0; _Parameter?.Convention?.Include != null && i < _Parameter.Convention.Include.Length; i++)
                 include.Add(_Parameter.Convention.Include[i]);
@@ -398,9 +407,6 @@ namespace PSRule.Pipeline
 
         private IBindingOption GetTargetBinding()
         {
-            // if (_Binding != null)
-            //     return _Binding;
-
             var field = new FieldMap[] { _Explicit?.Field, _WorkspaceBaseline?.Field, _ModuleBaseline?.Field, _ModuleConfig?.Field };
             var ignoreCase = _Explicit?.IgnoreCase ?? _WorkspaceBaseline?.IgnoreCase ?? _ModuleBaseline?.IgnoreCase ?? _ModuleConfig?.IgnoreCase ?? Configuration.BindingOption.Default.IgnoreCase.Value;
             var nameSeparator = _Explicit?.NameSeparator ?? _WorkspaceBaseline?.NameSeparator ?? _ModuleBaseline?.NameSeparator ?? _ModuleConfig?.NameSeparator ?? Configuration.BindingOption.Default.NameSeparator;
