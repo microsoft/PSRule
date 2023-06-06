@@ -346,6 +346,7 @@ namespace PSRule
         private static PSRuleOption GetOption(string path = null, ExecutionActionPreference ruleExcludedAction = ExecutionActionPreference.None)
         {
             var option = path == null ? new PSRuleOption() : PSRuleOption.FromFile(path);
+            option.Rule.IncludeLocal = false;
             option.Execution.RuleExcluded = ruleExcludedAction;
             return option;
         }

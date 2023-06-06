@@ -994,7 +994,7 @@ function Get-PSRuleHelp {
         [Parameter(Position = 0, Mandatory = $False)]
         [Alias('n')]
         [SupportsWildcards()]
-        [String]$Name,
+        [String[]]$Name,
 
         # A path to check documentation for.
         [Parameter(Mandatory = $False)]
@@ -1053,16 +1053,13 @@ function Get-PSRuleHelp {
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
         }
-        if ($PSBoundParameters.ContainsKey('Name')) {
-            $Option.Rule.Include = $Name;
-        }
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
         }
 
         $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
-        $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option, $hostContext);;
-
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option, $hostContext);
+        $builder.Name($Name);
         if ($Online) {
             $builder.Online();
         }

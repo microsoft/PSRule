@@ -26,6 +26,11 @@ namespace PSRule.Pipeline
         /// Open or show online help for a rule if it exists.
         /// </summary>
         void Online();
+
+        /// <summary>
+        /// Filter by name.
+        /// </summary>
+        void Name(string[] name);
     }
 
     internal sealed class GetRuleHelpPipelineBuilder : PipelineBuilderBase, IHelpPipelineBuilder
