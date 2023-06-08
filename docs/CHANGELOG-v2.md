@@ -35,6 +35,59 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v2.9.0
+
+What's changed since release v2.8.1:
+
+- New features:
+  - Added sub-selector quantifiers for `allOf` or `anyOf` operators by @BernieWhite.
+    [#1423](https://github.com/microsoft/PSRule/issues/1423)
+    - Quantifiers allow you to specify the number of matches with `count`, `less`, `lessOrEqual`, `greater`, or `greaterOrEqual`.
+    - See [Sub-selectors][4] for more information.
+  - Added support for new functions by @BernieWhite.
+    [#1422](https://github.com/microsoft/PSRule/issues/1422)
+    - Added support for `padLeft`, and `padRight`.
+  - **Experimental**: Added support for baseline groups by @BernieWhite.
+    [#1541](https://github.com/microsoft/PSRule/issues/1541)
+    - Baseline groups allow you to reference a baseline by a friendly name.
+    - Update the baseline group to point to a new baseline.
+    - Currently only a single baseline can be referenced by a baseline group.
+    - See [baselines][6] for more information.
+- General improvements:
+  - Added style and improved handling for restore command by @BernieWhite.
+    [#1152](https://github.com/microsoft/PSRule/issues/1152)
+  - **Important change**: Rename of execution options by @BernieWhite.
+    [#1456](https://github.com/microsoft/PSRule/issues/1456)
+    - Renamed options allow configuration of output level as `Ignore`, `Warn`, `Error`, or `Debug`.
+    - `Execution.AliasReferenceWarning` is replaced with `Execution.AliasReference`.
+    - `Execution.InconclusiveWarning` is replaced with `Execution.RuleInconclusive`.
+    - `Execution.InvariantCultureWarning` is replaced with `Execution.InvariantCulture`.
+    - `Execution.NotProcessedWarning` is replaced with `Execution.UnprocessedObject`.
+    - Deprecated `AliasReferenceWarning` option, which will be removed in v3.
+    - Deprecated `InconclusiveWarning` option, which will be removed in v3.
+    - Deprecated `InvariantCultureWarning` option, which will be removed in v3.
+    - Deprecated `NotProcessedWarning` option, which will be removed in v3.
+  - Improved schema display names by @BernieWhite.
+    [#1488](https://github.com/microsoft/PSRule/issues/1488)
+- Engineering:
+  - Bump Pester to v5.4.1.
+    [#1510](https://github.com/microsoft/PSRule/pull/1510)
+  - Bump Microsoft.NET.Test.Sdk to v17.6.2.
+    [#1544](https://github.com/microsoft/PSRule/pull/1544)
+  - Bump Microsoft.CodeAnalysis.Common to v4.6.0.
+    [#1534](https://github.com/microsoft/PSRule/pull/1534)
+- Bug fixes:
+  - Fixed tool output on access denied to path by @BernieWhite.
+    [#1490](https://github.com/microsoft/PSRule/issues/1490)
+  - Fixed tool exit code on error or failure by @BernieWhite.
+    [#1491](https://github.com/microsoft/PSRule/issues/1491)
+  - Fixed include local not automatically being enabled for default module baseline by @BernieWhite.
+    [#1506](https://github.com/microsoft/PSRule/issues/1506)
+
+What's changed since pre-release v2.9.0-B0068:
+
+- No additional changes.
+
 ## v2.9.0-B0068 (pre-release)
 
 What's changed since pre-release v2.9.0-B0033:
