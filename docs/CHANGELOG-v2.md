@@ -35,6 +35,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since release v2.9.0:
+
+- Engineering:
+  - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.3.
+    [#1550](https://github.com/microsoft/PSRule/pull/1550)
+
 ## v2.9.0
 
 What's changed since release v2.8.1:
