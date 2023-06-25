@@ -37,6 +37,10 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since release v2.9.0:
 
+- General improvements:
+  - Expanded support for `FileHeader` assertion by @BernieWhite.
+    [#1521](https://github.com/microsoft/PSRule/issues/1521)
+    - Added support for `.bicepparam`, `.tsp`, `.tsx`, `.editorconfig`, `.ipynb`, and `.toml` files.
 - Engineering:
   - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.3.
     [#1550](https://github.com/microsoft/PSRule/pull/1550)

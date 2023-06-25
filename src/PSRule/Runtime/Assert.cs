@@ -1532,9 +1532,12 @@ namespace PSRule.Runtime
             switch (extension)
             {
                 case ".bicep":
+                case ".bicepparam":
                 case ".cs":
                 case ".csx":
                 case ".ts":
+                case ".tsp":
+                case ".tsx":
                 case ".js":
                 case ".jsx":
                 case ".fs":
@@ -1550,6 +1553,8 @@ namespace PSRule.Runtime
                 case "jenkinsfile":
                     return "// ";
 
+                case ".editorconfig":
+                case ".ipynb":
                 case ".ps1":
                 case ".psd1":
                 case ".psm1":
@@ -1560,6 +1565,7 @@ namespace PSRule.Runtime
                 case ".sh":
                 case ".tf":
                 case ".tfvars":
+                case ".toml":
                 case ".gitignore":
                 case ".pl":
                 case ".rb":
