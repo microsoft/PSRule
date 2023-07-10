@@ -44,6 +44,8 @@ What's changed since release v2.9.0:
 - Engineering:
   - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.3.
     [#1550](https://github.com/microsoft/PSRule/pull/1550)
+  - Bump Microsoft.NET.Test.Sdk to v17.6.3.
+    [#1557](https://github.com/microsoft/PSRule/pull/1557)
 
 ## v2.9.0
 
