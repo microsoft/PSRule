@@ -50,6 +50,8 @@ What's changed since release v2.9.0:
     [#1399](https://github.com/microsoft/PSRule/issues/1399)
   - Bump xunit to v2.5.0.
     [#1562](https://github.com/microsoft/PSRule/pull/1562)
+  - Bump xunit.runner.visualstudio to v2.5.0.
+    [#1561](https://github.com/microsoft/PSRule/pull/1561)
 
 ## v2.9.0
 
