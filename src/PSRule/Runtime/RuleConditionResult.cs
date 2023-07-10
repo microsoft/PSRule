@@ -1,14 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Collections.Generic;
 using PSRule.Definitions;
 
 namespace PSRule.Runtime
 {
     internal static class RuleConditionHelper
     {
-        private readonly static RuleConditionResult Empty = new(pass: 0, count: 0, hadErrors: false);
+        private static readonly RuleConditionResult Empty = new(pass: 0, count: 0, hadErrors: false);
 
         internal static RuleConditionResult Create(IEnumerable<object> value)
         {

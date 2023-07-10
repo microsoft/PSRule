@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Diagnostics;
-using System.Linq;
 
 namespace PSRule.Help
 {
@@ -92,7 +90,7 @@ namespace PSRule.Help
         private const char AngleOpen = '<';
         private const char AngleClose = '>';
         private const char Backslash = '\\';
-        private readonly static char[] NewLineStopCharacters = new char[] { '\r', '\n' };
+        private static readonly char[] NewLineStopCharacters = new char[] { '\r', '\n' };
 
         public MarkdownStream(string markdown)
         {

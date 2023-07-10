@@ -41,7 +41,7 @@ namespace PSRule.Pipeline
             return new BooleanWriter(GetOutput(), Option.Output.Outcome.Value, ShouldProcess);
         }
 
-        private new static bool ShouldProcess(string target, string action)
+        private static new bool ShouldProcess(string target, string action)
         {
             return true;
         }

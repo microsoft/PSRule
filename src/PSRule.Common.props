@@ -3,7 +3,9 @@
   <!-- Project defaults -->
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
+    <!-- <Nullable>enable</Nullable> -->
+    <ImplicitUsings>enable</ImplicitUsings>
     <NeutralLanguage>en-US</NeutralLanguage>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>

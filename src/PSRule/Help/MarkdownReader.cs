@@ -29,7 +29,7 @@ namespace PSRule.Help
         /// <summary>
         /// Line ending characters: \r, \n
         /// </summary>
-        private readonly static char[] LineEndingCharacters = new char[] { '\r', '\n' };
+        private static readonly char[] LineEndingCharacters = new char[] { '\r', '\n' };
 
         private const char Hash = '#';
         private const char Asterix = '*';

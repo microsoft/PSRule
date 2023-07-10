@@ -1,12 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Resources;
 using System.Text;
-using System.Threading;
 using PSRule.Definitions;
 using PSRule.Resources;
 

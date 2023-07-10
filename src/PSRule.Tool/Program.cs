@@ -3,7 +3,6 @@
 
 using System.CommandLine;
 using System.CommandLine.Parsing;
-using System.Threading.Tasks;
 
 namespace PSRule.Tool
 {

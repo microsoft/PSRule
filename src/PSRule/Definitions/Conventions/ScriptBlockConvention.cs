@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections;
 using System.Management.Automation;
 using PSRule.Pipeline;
@@ -106,14 +105,11 @@ namespace PSRule.Definitions.Conventions
             {
                 if (disposing)
                 {
-                    if (_Begin != null)
-                        _Begin.Dispose();
+                    _Begin?.Dispose();
 
-                    if (_Process != null)
-                        _Process.Dispose();
+                    _Process?.Dispose();
 
-                    if (_End != null)
-                        _End.Dispose();
+                    _End?.Dispose();
                 }
                 _Disposed = true;
             }

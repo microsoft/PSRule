@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Collections.Generic;
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Definitions.Rules;
@@ -72,8 +71,7 @@ namespace PSRule.Pipeline
                     return;
 
                 ProcessResult(result);
-                if (_InnerWriter != null)
-                    _InnerWriter.WriteObject(sendToPipeline, enumerateCollection);
+                _InnerWriter?.WriteObject(sendToPipeline, enumerateCollection);
             }
 
             public override void WriteWarning(string message)
@@ -152,8 +150,7 @@ namespace PSRule.Pipeline
                 }
                 finally
                 {
-                    if (_InnerWriter != null)
-                        _InnerWriter.End();
+                    _InnerWriter?.End();
                 }
             }
 
@@ -164,8 +161,7 @@ namespace PSRule.Pipeline
                 _ErrorCount += result.Error;
                 _TotalCount += result.Total;
                 _Level = _Level.GetWorstCase(result.Level);
-                if (_Results != null)
-                    _Results.AddRange(result.AsRecord());
+                _Results?.AddRange(result.AsRecord());
             }
         }
 

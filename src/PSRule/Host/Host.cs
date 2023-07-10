@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using PSRule.Commands;
@@ -115,7 +114,7 @@ namespace PSRule.Host
         /// <summary>
         /// Define language commands.
         /// </summary>
-        private readonly static SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
+        private static readonly SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
         {
             new SessionStateCmdletEntry("New-RuleDefinition", typeof(NewRuleDefinitionCommand), null),
             new SessionStateCmdletEntry("Export-PSRuleConvention", typeof(ExportConventionCommand), null),
@@ -132,7 +131,7 @@ namespace PSRule.Host
         /// <summary>
         /// Define language aliases.
         /// </summary>
-        private readonly static SessionStateAliasEntry[] BuiltInAliases = new SessionStateAliasEntry[]
+        private static readonly SessionStateAliasEntry[] BuiltInAliases = new SessionStateAliasEntry[]
         {
             new SessionStateAliasEntry(LanguageKeywords.Rule, "New-RuleDefinition", string.Empty, ScopedItemOptions.ReadOnly),
             new SessionStateAliasEntry(LanguageKeywords.Recommend, "Write-Recommendation", string.Empty, ScopedItemOptions.ReadOnly),
