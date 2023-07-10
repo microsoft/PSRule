@@ -1,11 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
 
 namespace PSRule
 {
@@ -20,7 +17,7 @@ namespace PSRule
         /// <summary>
         /// Create an empty map.
         /// </summary>
-        internal protected KeyMapDictionary()
+        protected internal KeyMapDictionary()
         {
             _Map = new Dictionary<string, TValue>(StringComparer.OrdinalIgnoreCase);
         }
@@ -30,7 +27,7 @@ namespace PSRule
         /// </summary>
         /// <param name="map">An existing instance to copy key/ values from.</param>
         /// <exception cref="ArgumentNullException">Is raised if the map is null.</exception>
-        internal protected KeyMapDictionary(KeyMapDictionary<TValue> map)
+        protected internal KeyMapDictionary(KeyMapDictionary<TValue> map)
         {
             if (map == null)
                 throw new ArgumentNullException(nameof(map));
@@ -42,7 +39,7 @@ namespace PSRule
         /// Create a map intially populated with values copied from a dictionary.
         /// </summary>
         /// <param name="dictionary">An existing dictionary to copy key/ values from.</param>
-        internal protected KeyMapDictionary(IDictionary<string, TValue> dictionary)
+        protected internal KeyMapDictionary(IDictionary<string, TValue> dictionary)
         {
             _Map = dictionary == null ?
                 new Dictionary<string, TValue>(StringComparer.OrdinalIgnoreCase) :
@@ -53,7 +50,7 @@ namespace PSRule
         /// Create a map intially populated with values copied from a hashtable.
         /// </summary>
         /// <param name="hashtable">An existing hashtable to copy key/ values from.</param>
-        internal protected KeyMapDictionary(Hashtable hashtable)
+        protected internal KeyMapDictionary(Hashtable hashtable)
             : this()
         {
             Load(hashtable);

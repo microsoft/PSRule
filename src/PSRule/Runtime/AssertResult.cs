@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
 using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -108,8 +105,7 @@ namespace PSRule.Runtime
         /// <param name="args">Replacement arguments for the format string.</param>
         public AssertResult Reason(string text, params object[] args)
         {
-            if (_Reason != null)
-                _Reason.Clear();
+            _Reason?.Clear();
 
             AddReason(Operand.FromTarget(), text, args);
             return this;
@@ -123,8 +119,7 @@ namespace PSRule.Runtime
         /// <param name="args">Replacement arguments for the format string.</param>
         public AssertResult ReasonFrom(string path, string text, params object[] args)
         {
-            if (_Reason != null)
-                _Reason.Clear();
+            _Reason?.Clear();
 
             AddReason(Operand.FromPath(path), text, args);
             return this;

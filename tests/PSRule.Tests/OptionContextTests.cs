@@ -46,7 +46,7 @@ namespace PSRule
             // With explict baseline
             builder = new OptionContextBuilder(GetOption());
             optionContext = builder.Build();
-            optionContext.Add(new OptionContext.BaselineScope(OptionContext.ScopeType.Explicit, new string[] {"abc" }, null, null));
+            optionContext.Add(new OptionContext.BaselineScope(OptionContext.ScopeType.Explicit, new string[] { "abc" }, null, null));
             optionContext.UpdateLanguageScope(localScope);
             ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
             Assert.NotNull(ruleFilter);
@@ -88,17 +88,17 @@ namespace PSRule
 
             public void AddService(string name, object service)
             {
-                
+
             }
 
             public void Configure(Dictionary<string, object> configuration)
             {
-                
+
             }
 
             public void Dispose()
             {
-                
+
             }
 
             public IResourceFilter GetFilter(ResourceKind kind)
@@ -133,12 +133,12 @@ namespace PSRule
 
             public void WithBinding(IBindingOption bindingOption)
             {
-                
+
             }
 
             public void WithCulture(string[] strings)
             {
-                
+
             }
 
             public void WithFilter(IResourceFilter resourceFilter)

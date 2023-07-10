@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections;
 using System.Management.Automation;
-using System.Threading;
 using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;

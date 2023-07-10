@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using PSRule.Runtime;
 
@@ -191,7 +189,7 @@ namespace PSRule.Definitions
     /// </summary>
     internal sealed class ResourceIdEqualityComparer : IEqualityComparer<ResourceId>, IEqualityComparer<string>
     {
-        public readonly static ResourceIdEqualityComparer Default = new();
+        public static readonly ResourceIdEqualityComparer Default = new();
 
         public static bool IdEquals(ResourceId x, ResourceId y)
         {

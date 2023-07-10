@@ -1,11 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.IO;
 using System.Management.Automation;
 using System.Net;
-using System.Threading;
 using Manatee.Json;
 using Manatee.Json.Schema;
 using Manatee.Json.Serialization;

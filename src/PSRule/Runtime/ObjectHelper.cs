@@ -39,8 +39,7 @@ namespace PSRule.Runtime
             if (bindingContext == null || !bindingContext.GetPathExpression(path, out var expression))
             {
                 expression = PathExpression.Create(path);
-                if (bindingContext != null)
-                    bindingContext.CachePathExpression(path, expression);
+                bindingContext?.CachePathExpression(path, expression);
             }
             return expression;
         }

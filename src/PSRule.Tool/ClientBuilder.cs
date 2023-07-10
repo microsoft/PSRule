@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.CommandLine;
-using System.IO;
 using System.Reflection;
 using PSRule.Tool.Resources;
 

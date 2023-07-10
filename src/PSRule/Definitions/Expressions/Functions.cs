@@ -1,10 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.Linq;
 using System.Text;
-using System.Threading;
 using PSRule.Common;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -44,7 +41,7 @@ namespace PSRule.Definitions.Expressions
         /// <summary>
         /// The available built-in functions.
         /// </summary>
-        internal readonly static IFunctionDescriptor[] Builtin = new IFunctionDescriptor[]
+        internal static readonly IFunctionDescriptor[] Builtin = new IFunctionDescriptor[]
         {
             new FunctionDescriptor(CONFIGURATION, Configuration),
             new FunctionDescriptor(PATH, Path),

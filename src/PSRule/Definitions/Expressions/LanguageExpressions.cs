@@ -1,11 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline;
@@ -249,8 +245,7 @@ namespace PSRule.Definitions.Expressions
         {
             return (context, o) =>
             {
-                if (RunspaceContext.CurrentThread != null)
-                    RunspaceContext.CurrentThread.EnterLanguageScope(context.Source);
+                RunspaceContext.CurrentThread?.EnterLanguageScope(context.Source);
 
                 return fn(context, o);
             };
@@ -486,7 +481,7 @@ namespace PSRule.Definitions.Expressions
         private const string DOT = ".";
 
         // Define built-ins
-        internal readonly static ILanguageExpresssionDescriptor[] Builtin = new ILanguageExpresssionDescriptor[]
+        internal static readonly ILanguageExpresssionDescriptor[] Builtin = new ILanguageExpresssionDescriptor[]
         {
             // Operators
             new LanguageExpresssionDescriptor(IF, LanguageExpressionType.Operator, If),

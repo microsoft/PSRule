@@ -1,11 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 using PSRule.Converters.Yaml;
 using PSRule.Definitions.Rules;
@@ -485,7 +482,7 @@ namespace PSRule.Definitions
         /// <summary>
         /// Create a resource.
         /// </summary>
-        internal protected Resource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
+        protected internal Resource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
         {
             Kind = kind;
             ApiVersion = apiVersion;

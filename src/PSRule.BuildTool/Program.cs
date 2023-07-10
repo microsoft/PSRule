@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.CommandLine;
-using System.Threading.Tasks;
 
 namespace PSRule.BuildTool
 {

@@ -50,7 +50,7 @@ namespace PSRule.Definitions
         /// <summary>
         /// The built-in resource types.
         /// </summary>
-        public readonly static ISpecDescriptor[] BuiltinTypes = new ISpecDescriptor[]
+        public static readonly ISpecDescriptor[] BuiltinTypes = new ISpecDescriptor[]
         {
             new SpecDescriptor<RuleV1, RuleV1Spec>(V1, Rule),
             new SpecDescriptor<Baseline, BaselineSpec>(V1, Baseline),

@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
-using System.Threading;
 using PSRule.Resources;
 using PSRule.Runtime;
 
