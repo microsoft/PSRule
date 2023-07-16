@@ -59,7 +59,7 @@ jobs:
       - name: Run DevSkim scanner
         uses: microsoft/DevSkim-Action@v1
         with:
-          directory-to-scan: src/
+          directory-to-scan: .
 
       - name: Upload results to security tab
         uses: github/codeql-action/upload-sarif@v2
