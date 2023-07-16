@@ -64,6 +64,9 @@
     "editor.formatOnSave": false,
     "editor.tabSize": 4
   },
+  "[html]": {
+    "editor.formatOnSave": false,
+  },
   "files.associations": {
     "**/.azure-pipelines/*.yaml": "azure-pipelines",
     "**/.azure-pipelines/jobs/*.yaml": "azure-pipelines",
