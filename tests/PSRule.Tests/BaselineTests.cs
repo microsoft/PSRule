@@ -14,7 +14,6 @@ using PSRule.Pipeline;
 using PSRule.Pipeline.Output;
 using PSRule.Runtime;
 using YamlDotNet.Serialization;
-using Assert = Xunit.Assert;
 
 namespace PSRule
 {

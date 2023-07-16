@@ -10,7 +10,6 @@ using PSRule.Data;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 using Xunit.Abstractions;
-using Assert = Xunit.Assert;
 
 namespace PSRule
 {
