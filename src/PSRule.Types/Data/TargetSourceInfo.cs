@@ -1,9 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Management.Automation;
 using Newtonsoft.Json;
-using PSRule.Configuration;
+using PSRule.Expressions;
 using PSRule.Resources;
 
 namespace PSRule.Data
@@ -11,7 +10,7 @@ namespace PSRule.Data
     /// <summary>
     /// An object source location reported by a downstream tool.
     /// </summary>
-    public sealed class TargetSourceInfo : IEquatable<TargetSourceInfo>
+    public sealed class TargetSourceInfo : IEquatable<TargetSourceInfo>, IFileInfo
     {
         private const string PROPERTY_FILE = "file";
         private const string PROPERTY_LINE = "line";
@@ -32,19 +31,19 @@ namespace PSRule.Data
         internal TargetSourceInfo(InputFileInfo info)
         {
             File = info.FullName;
-            Type = PSRuleResources.FileSourceType;
+            Type = "File";
         }
 
         internal TargetSourceInfo(FileInfo info)
         {
             File = info.FullName;
-            Type = PSRuleResources.FileSourceType;
+            Type = "File";
         }
 
         internal TargetSourceInfo(Uri uri)
         {
             File = uri.AbsoluteUri;
-            Type = PSRuleResources.FileSourceType;
+            Type = "File";
         }
 
         /// <summary>
@@ -70,6 +69,10 @@ namespace PSRule.Data
         /// </summary>
         [JsonProperty(PropertyName = PROPERTY_TYPE)]
         public string Type { get; internal set; }
+
+        string IFileInfo.Path => File;
+
+        string IFileInfo.Extension => Path.GetExtension(File);
 
         /// <inheritdoc/>
         public bool Equals(TargetSourceInfo other)
@@ -124,36 +127,7 @@ namespace PSRule.Data
 
         internal string GetPath(bool useRelativePath)
         {
-            return useRelativePath ? ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), File) : File;
-        }
-
-        /// <summary>
-        /// Create source information from a structured object.
-        /// </summary>
-        public static TargetSourceInfo Create(object o)
-        {
-            return o is PSObject pso ? Create(pso) : null;
-        }
-
-        /// <summary>
-        /// Create source information from a structured object.
-        /// </summary>
-        public static TargetSourceInfo Create(PSObject o)
-        {
-            var result = new TargetSourceInfo();
-            if (o.TryProperty(PROPERTY_FILE, out string file))
-                result.File = file;
-
-            if (o.TryProperty(PROPERTY_LINE, out int line))
-                result.Line = line;
-
-            if (o.TryProperty(PROPERTY_POSITION, out int position))
-                result.Position = position;
-
-            if (o.TryProperty(PROPERTY_TYPE, out string type))
-                result.Type = type;
-
-            return result;
+            return useRelativePath ? Helpers.NormalizePath(Environment.GetWorkingPath(), File) : File;
         }
     }
 }

@@ -93,7 +93,7 @@ namespace PSRule.Runtime
             /// <inheritdoc/>
             public IInputFileInfoCollection GetChangedFiles()
             {
-                _ChangedFiles ??= new InputFileInfoCollection(PSRuleOption.GetWorkingPath(), GitHelper.TryGetChangedFiles(BaseRef, "d", null, out var files) ? files : null);
+                _ChangedFiles ??= new InputFileInfoCollection(Environment.GetWorkingPath(), GitHelper.TryGetChangedFiles(BaseRef, "d", null, out var files) ? files : null);
                 return _ChangedFiles;
             }
         }

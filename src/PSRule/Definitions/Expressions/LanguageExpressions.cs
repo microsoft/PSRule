@@ -1325,7 +1325,7 @@ namespace PSRule.Definitions.Expressions
                     context,
                     operand,
                     ReasonStrings.WithinPath,
-                    ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), source),
+                    ExpressionHelpers.NormalizePath(Environment.GetWorkingPath(), source),
                     StringJoinNormalizedPath(path)
                 );
             }
@@ -1351,8 +1351,8 @@ namespace PSRule.Definitions.Expressions
                                 context,
                                 operand,
                                 ReasonStrings.NotWithinPath,
-                                ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), source),
-                                ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), path[i])
+                                ExpressionHelpers.NormalizePath(Environment.GetWorkingPath(), source),
+                                ExpressionHelpers.NormalizePath(Environment.GetWorkingPath(), path[i])
                             );
                     }
                 }
@@ -1855,7 +1855,7 @@ namespace PSRule.Definitions.Expressions
 
         private static string StringJoinNormalizedPath(string[] path)
         {
-            var normalizedPath = path.Select(p => ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), p));
+            var normalizedPath = path.Select(p => ExpressionHelpers.NormalizePath(Environment.GetWorkingPath(), p));
             return StringJoin(normalizedPath.ToArray());
         }
 

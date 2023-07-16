@@ -31,7 +31,7 @@ namespace PSRule.Pipeline.Output
         public JobSummaryWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess, string outputPath = null, Stream stream = null, Source[] source = null)
             : base(inner, option, shouldProcess)
         {
-            _OutputPath = outputPath ?? PSRuleOption.GetRootedPath(Option.Output.JobSummaryPath);
+            _OutputPath = outputPath ?? Environment.GetRootedPath(Option.Output.JobSummaryPath);
             _Encoding = option.Output.GetEncoding();
             _JobSummary = JobSummaryFormat.Default;
             _Stream = stream;

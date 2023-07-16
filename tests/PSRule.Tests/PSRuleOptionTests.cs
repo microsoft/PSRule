@@ -16,10 +16,10 @@ namespace PSRule
         {
             var pwd = Directory.GetCurrentDirectory();
             var basePwd = $"{pwd}{Path.DirectorySeparatorChar}";
-            Assert.Equal(basePwd, PSRuleOption.GetRootedBasePath(null));
-            Assert.Equal(basePwd, PSRuleOption.GetRootedBasePath(pwd));
-            Assert.Equal(pwd, PSRuleOption.GetRootedPath(null));
-            Assert.Equal(pwd, PSRuleOption.GetRootedPath(pwd));
+            Assert.Equal(basePwd, Environment.GetRootedBasePath(null));
+            Assert.Equal(basePwd, Environment.GetRootedBasePath(pwd));
+            Assert.Equal(pwd, Environment.GetRootedPath(null));
+            Assert.Equal(pwd, Environment.GetRootedPath(pwd));
         }
 
         [Fact]

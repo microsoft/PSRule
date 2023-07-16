@@ -183,7 +183,7 @@ namespace PSRule
 
         private static bool TryGitFile(string path, string file, out string filePath)
         {
-            path ??= PSRuleOption.GetRootedBasePath(GIT_DEFAULT_PATH);
+            path ??= Environment.GetRootedBasePath(GIT_DEFAULT_PATH);
             filePath = Path.Combine(path, file);
             return File.Exists(filePath);
         }

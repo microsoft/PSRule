@@ -17,11 +17,6 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace PSRule.Configuration
 {
     /// <summary>
-    /// A delgate to allow callback to PowerShell to get current working path.
-    /// </summary>
-    internal delegate string PathDelegate();
-
-    /// <summary>
     /// A structure that stores PSRule configuration options.
     /// </summary>
     /// <remarks>
@@ -30,9 +25,6 @@ namespace PSRule.Configuration
     public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     {
         private const string DEFAULT_FILENAME = "ps-rule.yaml";
-
-        private const char Backslash = '\\';
-        private const char Slash = '/';
 
         /// <summary>
         /// The original source path the options were loaded from if applicable.
@@ -51,16 +43,6 @@ namespace PSRule.Configuration
             Output = OutputOption.Default,
             Rule = RuleOption.Default,
         };
-
-        /// <summary>
-        /// A callback that is overridden by PowerShell so that the current working path can be retrieved.
-        /// </summary>
-        private static PathDelegate _GetWorkingPath = () => Directory.GetCurrentDirectory();
-
-        /// <summary>
-        /// Sets the current culture to use when processing rules unless otherwise specified.
-        /// </summary>
-        private static CultureInfo _CurrentCulture = Thread.CurrentThread.CurrentCulture;
 
         /// <summary>
         /// Create an empty PSRule options object.
@@ -295,7 +277,7 @@ namespace PSRule.Configuration
         /// </remarks>
         public static PSRuleOption FromFileOrEmpty()
         {
-            return FromFileOrEmpty(GetWorkingPath());
+            return FromFileOrEmpty(Environment.GetWorkingPath());
         }
 
         /// <summary>
@@ -404,12 +386,7 @@ namespace PSRule.Configuration
         /// </remarks>
         public static void UseExecutionContext(EngineIntrinsics executionContext)
         {
-            if (executionContext == null)
-            {
-                _GetWorkingPath = () => Directory.GetCurrentDirectory();
-                return;
-            }
-            _GetWorkingPath = () => executionContext.SessionState.Path.CurrentFileSystemLocation.Path;
+            Environment.UseWorkingPathResolver(executionContext == null ? () => Directory.GetCurrentDirectory() : () => executionContext.SessionState.Path.CurrentFileSystemLocation.Path);
         }
 
         /// <summary>
@@ -417,58 +394,61 @@ namespace PSRule.Configuration
         /// </summary>
         public static void UseHostContext(IHostContext hostContext)
         {
-            if (hostContext == null)
-            {
-                _GetWorkingPath = () => Directory.GetCurrentDirectory();
-                return;
-            }
-            _GetWorkingPath = () => hostContext.GetWorkingPath();
+            Environment.UseWorkingPathResolver(hostContext == null ? () => Directory.GetCurrentDirectory() : () => hostContext.GetWorkingPath());
         }
 
         /// <summary>
         /// Configures PSRule to use the culture of the current thread at runtime.
+        /// This method is deprecated. Use <see cref="Environment.UseCurrentCulture()"/> instead.
         /// </summary>
-        [DebuggerStepThrough]
+        [Obsolete("Use PSRule.Environment instead.")]
         public static void UseCurrentCulture()
         {
-            UseCurrentCulture(Thread.CurrentThread.CurrentCulture);
+            Environment.UseCurrentCulture();
         }
 
         /// <summary>
         /// Configures PSRule to use the specified culture at runtime.
+        /// This method is deprecated. Use <see cref="Environment.UseCurrentCulture(string)"/> instead.
         /// </summary>
         /// <param name="culture">A valid culture.</param>
-        [DebuggerStepThrough]
+        [Obsolete("Use PSRule.Environment instead.")]
         public static void UseCurrentCulture(string culture)
         {
-            UseCurrentCulture(CultureInfo.CreateSpecificCulture(culture));
+            Environment.UseCurrentCulture(culture);
         }
 
         /// <summary>
         /// Configures PSRule to use the specified culture at runtime. 
+        /// This method is deprecated. Use <see cref="Environment.UseCurrentCulture(CultureInfo)"/> instead.
         /// </summary>
         /// <param name="culture">A valid culture.</param>
+        [Obsolete("Use PSRule.Environment instead.")]
         public static void UseCurrentCulture(CultureInfo culture)
         {
-            _CurrentCulture = culture;
+            Environment.UseCurrentCulture(culture);
         }
 
         /// <summary>
         /// Gets the current working path being used by PSRule.
+        /// This method is deprecated. Use <see cref="Environment.GetWorkingPath()"/> instead.
         /// </summary>
         /// <returns>The current working path.</returns>
+        [Obsolete("Use PSRule.Environment instead.")]
         public static string GetWorkingPath()
         {
-            return _GetWorkingPath();
+            return Environment.GetWorkingPath();
         }
 
         /// <summary>
         /// Get the current culture being used by PSRule.
+        /// This method is deprecated. Use <see cref="Environment.GetCurrentCulture()"/> instead.
         /// </summary>
         /// <returns>The current culture.</returns>
+        [Obsolete("Use PSRule.Environment instead.")]
         public static CultureInfo GetCurrentCulture()
         {
-            return _CurrentCulture;
+            return Environment.GetCurrentCulture();
         }
 
         /// <summary>
@@ -546,7 +526,7 @@ namespace PSRule.Configuration
         /// <returns></returns>
         public static string GetFilePath(string path)
         {
-            var rootedPath = GetRootedPath(path);
+            var rootedPath = Environment.GetRootedPath(path);
             if (Path.HasExtension(rootedPath))
             {
                 var ext = Path.GetExtension(rootedPath);
@@ -563,44 +543,6 @@ namespace PSRule.Configuration
                 UseFilePath(path: rootedPath, name: "psrule.yaml") ??
                 UseFilePath(path: rootedPath, name: "psrule.yml") ??
                 Path.Combine(rootedPath, DEFAULT_FILENAME);
-        }
-
-        /// <summary>
-        /// Get a full path instead of a relative path that may be passed from PowerShell.
-        /// </summary>
-        /// <param name="path">A full or relative path.</param>
-        /// <param name="normalize">When set to <c>true</c> the returned path uses forward slashes instead of backslashes.</param>
-        /// <param name="basePath">The base path to use. When <c>null</c> of unspecified, the current working path will be used.</param>
-        /// <returns>A absolute path.</returns>
-        internal static string GetRootedPath(string path, bool normalize = false, string basePath = null)
-        {
-            if (string.IsNullOrEmpty(path))
-                path = string.Empty;
-
-            basePath ??= GetWorkingPath();
-            var rootedPath = Path.IsPathRooted(path) ? Path.GetFullPath(path) : Path.GetFullPath(Path.Combine(basePath, path));
-            return normalize ? rootedPath.Replace(Backslash, Slash) : rootedPath;
-        }
-
-        /// <summary>
-        /// Get a full base path instead of a relative path that may be passed from PowerShell.
-        /// </summary>
-        /// <param name="path">A full or relative path.</param>
-        /// <param name="normalize">When set to <c>true</c> the returned path uses forward slashes instead of backslashes.</param>
-        /// <returns>A absolute base path.</returns>
-        /// <remarks>
-        /// A base path always includes a trailing <c>/</c>.
-        /// </remarks>
-        internal static string GetRootedBasePath(string path, bool normalize = false)
-        {
-            if (string.IsNullOrEmpty(path))
-                path = string.Empty;
-
-            var rootedPath = GetRootedPath(path);
-            var basePath = rootedPath.Length > 0 && IsSeparator(rootedPath[rootedPath.Length - 1])
-                ? rootedPath
-                : string.Concat(rootedPath, Path.DirectorySeparatorChar);
-            return normalize ? basePath.Replace(Backslash, Slash) : basePath;
         }
 
         /// <summary>
@@ -622,11 +564,11 @@ namespace PSRule.Configuration
         [DebuggerStepThrough]
         internal static bool IsCaseSentitive()
         {
-            var lower = GetWorkingPath().ToLower(Thread.CurrentThread.CurrentCulture);
+            var lower = Environment.GetWorkingPath().ToLower(Thread.CurrentThread.CurrentCulture);
             if (!Directory.Exists(lower))
                 return true;
 
-            var upper = GetWorkingPath().ToUpper(Thread.CurrentThread.CurrentCulture);
+            var upper = Environment.GetWorkingPath().ToUpper(Thread.CurrentThread.CurrentCulture);
             return !Directory.Exists(upper);
         }
 
@@ -650,12 +592,6 @@ namespace PSRule.Configuration
                 .WithTypeConverter(new StringArrayMapConverter())
                 .Build();
             return s.Serialize(this);
-        }
-
-        [DebuggerStepThrough]
-        private static bool IsSeparator(char c)
-        {
-            return c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar || c == '/' || c == '\\';
         }
     }
 }

@@ -576,7 +576,7 @@ namespace PSRule.Pipeline
         {
             if (_InputFilter == null)
             {
-                var basePath = PSRuleOption.GetWorkingPath();
+                var basePath = Environment.GetWorkingPath();
                 var ignoreGitPath = Option.Input.IgnoreGitPath ?? InputOption.Default.IgnoreGitPath.Value;
                 var ignoreRepositoryCommon = Option.Input.IgnoreRepositoryCommon ?? InputOption.Default.IgnoreRepositoryCommon.Value;
                 var builder = PathFilterBuilder.Create(basePath, Option.Input.PathIgnore, ignoreGitPath, ignoreRepositoryCommon);

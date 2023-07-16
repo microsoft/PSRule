@@ -62,7 +62,7 @@ namespace PSRule.Pipeline
 
         internal static string GetLocalPath()
         {
-            return string.IsNullOrEmpty(AppContext.BaseDirectory) ? null : PSRuleOption.GetRootedBasePath(AppContext.BaseDirectory);
+            return string.IsNullOrEmpty(AppContext.BaseDirectory) ? null : Environment.GetRootedBasePath(AppContext.BaseDirectory);
         }
     }
 }

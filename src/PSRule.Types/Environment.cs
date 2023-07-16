@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 using System.Security;
 using PSRule.Data;
@@ -8,7 +10,7 @@ using PSRule.Data;
 namespace PSRule
 {
     /// <summary>
-    /// A helper for accessing environment variables.
+    /// A helper for accessing environment and runtime variables.
     /// </summary>
     public static class Environment
     {
@@ -17,11 +19,122 @@ namespace PSRule
         private static readonly char[] LINUX_PATH_ENV_SEPARATOR = new char[] { ':' };
         private static readonly char[] WINDOWS_PATH_ENV_SEPARATOR = new char[] { ';' };
 
+        private const char BACKSLASH = '\\';
+        private const char SLASH = '/';
+
         private const char STRINGARRYAMAP_PAIRSEPARATOR = '=';
         private const string PATH_ENV = "PATH";
         private const string DEFAULT_CREDENTIAL_USERNAME = "na";
         private const string TF_BUILD = "TF_BUILD";
         private const string GITHUB_ACTIONS = "GITHUB_ACTIONS";
+
+        /// <summary>
+        /// A callback that is overridden by PowerShell so that the current working path can be retrieved.
+        /// </summary>
+        private static WorkingPathResolver _GetWorkingPath = () => Directory.GetCurrentDirectory();
+
+        /// <summary>
+        /// Sets the current culture to use when processing rules unless otherwise specified.
+        /// </summary>
+        private static CultureInfo _CurrentCulture = Thread.CurrentThread.CurrentCulture;
+
+        /// <summary>
+        /// A delgate to allow callback get current working path.
+        /// </summary>
+        public delegate string WorkingPathResolver();
+
+        /// <summary>
+        /// Configures PSRule to use the culture of the current thread at runtime.
+        /// </summary>
+        [DebuggerStepThrough]
+        public static void UseCurrentCulture()
+        {
+            UseCurrentCulture(Thread.CurrentThread.CurrentCulture);
+        }
+
+        /// <summary>
+        /// Configures PSRule to use the specified culture at runtime.
+        /// </summary>
+        /// <param name="culture">A valid culture.</param>
+        [DebuggerStepThrough]
+        public static void UseCurrentCulture(string culture)
+        {
+            UseCurrentCulture(CultureInfo.CreateSpecificCulture(culture));
+        }
+
+        /// <summary>
+        /// Configures PSRule to use the specified culture at runtime. 
+        /// </summary>
+        /// <param name="culture">A valid culture.</param>
+        public static void UseCurrentCulture(CultureInfo culture)
+        {
+            _CurrentCulture = culture;
+        }
+
+        /// <summary>
+        /// Configures PSRule to use the specified resolver to determine the current working path.
+        /// </summary>
+        /// <param name="resolver">A method that can be used to resolve the current working path.</param>
+        internal static void UseWorkingPathResolver(WorkingPathResolver resolver)
+        {
+            _GetWorkingPath = resolver;
+        }
+
+        /// <summary>
+        /// Gets the current working path being used by PSRule.
+        /// </summary>
+        /// <returns>The current working path.</returns>
+        public static string GetWorkingPath()
+        {
+            return _GetWorkingPath();
+        }
+
+        /// <summary>
+        /// Get the current culture being used by PSRule.
+        /// </summary>
+        /// <returns>The current culture.</returns>
+        public static CultureInfo GetCurrentCulture()
+        {
+            return _CurrentCulture;
+        }
+
+        /// <summary>
+        /// Get a full path instead of a relative path that may be passed from PowerShell.
+        /// </summary>
+        /// <param name="path">A full or relative path.</param>
+        /// <param name="normalize">When set to <c>true</c> the returned path uses forward slashes instead of backslashes.</param>
+        /// <param name="basePath">The base path to use. When <c>null</c> of unspecified, the current working path will be used.</param>
+        /// <returns>A absolute path.</returns>
+        internal static string GetRootedPath(string path, bool normalize = false, string basePath = null)
+        {
+            if (string.IsNullOrEmpty(path))
+                path = string.Empty;
+
+            basePath ??= GetWorkingPath();
+            var rootedPath = Path.IsPathRooted(path) ? Path.GetFullPath(path) : Path.GetFullPath(Path.Combine(basePath, path));
+            return normalize ? rootedPath.Replace(BACKSLASH, SLASH) : rootedPath;
+        }
+
+        /// <summary>
+        /// Get a full base path instead of a relative path that may be passed from PowerShell.
+        /// </summary>
+        /// <param name="path">A full or relative path.</param>
+        /// <param name="normalize">When set to <c>true</c> the returned path uses forward slashes instead of backslashes.</param>
+        /// <returns>A absolute base path.</returns>
+        /// <remarks>
+        /// A base path always includes a trailing <c>/</c>.
+        /// </remarks>
+        internal static string GetRootedBasePath(string path, bool normalize = false)
+        {
+            if (string.IsNullOrEmpty(path))
+                path = string.Empty;
+
+            var rootedPath = GetRootedPath(path);
+            var basePath = rootedPath.Length > 0 && IsPathSeparator(rootedPath[rootedPath.Length - 1])
+                ? rootedPath
+                : string.Concat(rootedPath, Path.DirectorySeparatorChar);
+            return normalize ? basePath.Replace(BACKSLASH, SLASH) : basePath;
+        }
 
         /// <summary>
         /// Determine if the environment is running within Azure Pipelines.
@@ -204,6 +317,17 @@ namespace PSRule
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Determine if the <seealso cref="char"/> is a path separator character.
+        /// </summary>
+        /// <param name="c">The character to check.</param>
+        /// <returns>Returns <c>true</c> if the charater is a path separator. Otherwise <c>false</c> is returned.</returns>
+        [DebuggerStepThrough]
+        private static bool IsPathSeparator(char c)
+        {
+            return c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar || c == SLASH || c == BACKSLASH;
         }
     }
 }

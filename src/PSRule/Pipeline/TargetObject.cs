@@ -38,7 +38,7 @@ namespace PSRule.Pipeline
     /// <summary>
     /// An object processed by PSRule.
     /// </summary>
-    public sealed class TargetObject
+    public sealed class TargetObject : ITargetObject
     {
         private readonly Dictionary<Type, TargetObjectAnnotation> _Annotations;
 

@@ -186,7 +186,7 @@ namespace PSRule.Pipeline
                 return;
 
             VerboseScanSource(path);
-            path = PSRuleOption.GetRootedPath(path);
+            path = Environment.GetRootedPath(path);
             var files = GetFiles(path, null, excludeDefaultRulePath);
             if (files == null || files.Length == 0)
                 return;
@@ -243,7 +243,7 @@ namespace PSRule.Pipeline
                 return false;
 
             Log($"Looking for modules in: {_LocalPath}");
-            path = PSRuleOption.GetRootedBasePath(Path.Combine(_LocalPath, "Modules", name));
+            path = Environment.GetRootedBasePath(Path.Combine(_LocalPath, "Modules", name));
             return System.IO.Directory.Exists(path);
         }
 
@@ -261,7 +261,7 @@ namespace PSRule.Pipeline
             for (var i = 0; i < searchPaths.Length; i++)
             {
                 Debug($"Looking for modules search paths: {searchPaths[i]}");
-                var searchPath = PSRuleOption.GetRootedBasePath(Path.Combine(searchPaths[i], name));
+                var searchPath = Environment.GetRootedBasePath(Path.Combine(searchPaths[i], name));
                 if (System.IO.Directory.Exists(searchPath))
                 {
                     foreach (var versionPath in System.IO.Directory.EnumerateDirectories(searchPath))
@@ -405,7 +405,7 @@ namespace PSRule.Pipeline
 
         private static SourceFile[] GetFiles(string path, string helpPath, bool excludeDefaultRulePath, string moduleName = null)
         {
-            var rootedPath = PSRuleOption.GetRootedPath(path);
+            var rootedPath = Environment.GetRootedPath(path);
             var extension = Path.GetExtension(rootedPath);
             if (IsSourceFile(extension))
             {

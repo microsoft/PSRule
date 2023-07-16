@@ -34,7 +34,7 @@ namespace PSRule.Pipeline.Output
 
         private void WriteToFile(object o)
         {
-            var rootedPath = PSRuleOption.GetRootedPath(_Path);
+            var rootedPath = Environment.GetRootedPath(_Path);
             if (CreateFile(rootedPath))
             {
                 File.WriteAllText(path: rootedPath, contents: o.ToString(), encoding: _Encoding);

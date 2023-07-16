@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Expressions;
+
 namespace PSRule.Data
 {
     /// <summary>
@@ -17,7 +19,7 @@ namespace PSRule.Data
         {
             FullName = path;
             _Source = new TargetSourceInfo(this);
-            if (path.IsUri())
+            if (path.IsURL())
             {
                 IsUrl = true;
                 return;
@@ -26,8 +28,8 @@ namespace PSRule.Data
             Name = System.IO.Path.GetFileName(path);
             Extension = System.IO.Path.GetExtension(path);
             DirectoryName = System.IO.Path.GetDirectoryName(path);
-            DisplayName = ExpressionHelpers.NormalizePath(basePath, FullName);
-            Path = ExpressionHelpers.NormalizePath(basePath, FullName);
+            DisplayName = Helpers.NormalizePath(basePath, FullName);
+            Path = Helpers.NormalizePath(basePath, FullName);
             _TargetType = string.IsNullOrEmpty(Extension) ? System.IO.Path.GetFileNameWithoutExtension(path) : Extension;
         }
 

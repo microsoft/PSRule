@@ -19,6 +19,10 @@ namespace PSRule
         private const string PROPERTY_TYPE = "type";
         private const string PROPERTY_SCOPE = "scope";
         private const string PROPERTY_PATH = "path";
+        private const string PROPERTY_FILE = "file";
+        private const string PROPERTY_LINE = "line";
+        private const string PROPERTY_POSITION = "position";
+        private const string PROPERTY_MESSAGE = "message";
 
         public static T PropertyValue<T>(this PSObject o, string propertyName)
         {
@@ -161,7 +165,7 @@ namespace PSRule
             {
                 for (var i = 0; i < sources.Length; i++)
                 {
-                    var source = TargetSourceInfo.Create(sources.GetValue(i));
+                    var source = CreateSourceInfo(sources.GetValue(i));
                     targetInfo.WithSource(source);
                 }
             }
@@ -169,7 +173,7 @@ namespace PSRule
             {
                 for (var i = 0; i < issues.Length; i++)
                 {
-                    var issue = TargetIssueInfo.Create(issues.GetValue(i));
+                    var issue = CreateIssueInfo(issues.GetValue(i));
                     targetInfo.WithIssue(issue);
                 }
             }
@@ -188,6 +192,52 @@ namespace PSRule
                 UseTargetInfo(o, out var targetInfo);
                 targetInfo.WithSource(new TargetSourceInfo(inputFileInfo));
             }
+        }
+
+        private static TargetIssueInfo CreateIssueInfo(object o)
+        {
+            return o is PSObject pso ? CreateIssueInfo(pso) : null;
+        }
+
+        private static TargetIssueInfo CreateIssueInfo(PSObject o)
+        {
+            var result = new TargetIssueInfo();
+            if (o.TryProperty(PROPERTY_TYPE, out string type))
+                result.Type = type;
+
+            if (o.TryProperty(PROPERTY_NAME, out string name))
+                result.Name = name;
+
+            if (o.TryProperty(PROPERTY_PATH, out string path))
+                result.Path = path;
+
+            if (o.TryProperty(PROPERTY_MESSAGE, out string message))
+                result.Message = message;
+
+            return result;
+        }
+
+        private static TargetSourceInfo CreateSourceInfo(object o)
+        {
+            return o is PSObject pso ? CreateSourceInfo(pso) : null;
+        }
+
+        private static TargetSourceInfo CreateSourceInfo(PSObject o)
+        {
+            var result = new TargetSourceInfo();
+            if (o.TryProperty(PROPERTY_FILE, out string file))
+                result.File = file;
+
+            if (o.TryProperty(PROPERTY_LINE, out int line))
+                result.Line = line;
+
+            if (o.TryProperty(PROPERTY_POSITION, out int position))
+                result.Position = position;
+
+            if (o.TryProperty(PROPERTY_TYPE, out string type))
+                result.Type = type;
+
+            return result;
         }
 
         private static T ConvertValue<T>(object value)

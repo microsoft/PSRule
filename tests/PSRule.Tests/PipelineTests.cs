@@ -177,7 +177,7 @@ namespace PSRule
         [Fact]
         public void PipelineWithInvariantCulture()
         {
-            PSRuleOption.UseCurrentCulture(CultureInfo.InvariantCulture);
+            Environment.UseCurrentCulture(CultureInfo.InvariantCulture);
             var context = PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null);
             var writer = new TestWriter(GetOption());
             var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null, null), writer, false);
@@ -190,14 +190,14 @@ namespace PSRule
             }
             finally
             {
-                PSRuleOption.UseCurrentCulture();
+                Environment.UseCurrentCulture();
             }
         }
 
         [Fact]
         public void PipelineWithInvariantCultureDisabled()
         {
-            PSRuleOption.UseCurrentCulture(CultureInfo.InvariantCulture);
+            Environment.UseCurrentCulture(CultureInfo.InvariantCulture);
             var option = new PSRuleOption();
             option.Execution.InvariantCulture = ExecutionActionPreference.Ignore;
             var context = PipelineContext.New(option, null, null, null, null, null, new OptionContext(), null);
@@ -212,7 +212,7 @@ namespace PSRule
             }
             finally
             {
-                PSRuleOption.UseCurrentCulture();
+                Environment.UseCurrentCulture();
             }
         }
 
@@ -361,7 +361,7 @@ namespace PSRule
             var info = new PSObject();
             info.Properties.Add(new PSNoteProperty("path", "resources[0]"));
             var source = new PSObject();
-            source.Properties.Add(new PSNoteProperty("file", PSRuleOption.GetRootedPath("./ObjectFromFileNotFile.json")));
+            source.Properties.Add(new PSNoteProperty("file", Environment.GetRootedPath("./ObjectFromFileNotFile.json")));
             source.Properties.Add(new PSNoteProperty("type", "example"));
             info.Properties.Add(new PSNoteProperty("source", new PSObject[] { source }));
             var o = new PSObject();
@@ -372,7 +372,7 @@ namespace PSRule
 
         private static PSObject GetFileObject()
         {
-            var info = new FileInfo(PSRuleOption.GetRootedPath("./ObjectFromFileSingle.json"));
+            var info = new FileInfo(Environment.GetRootedPath("./ObjectFromFileSingle.json"));
             return new PSObject(info);
         }
 

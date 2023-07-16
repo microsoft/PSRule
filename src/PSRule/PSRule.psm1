@@ -8,7 +8,7 @@
 Set-StrictMode -Version latest;
 
 [PSRule.Configuration.PSRuleOption]::UseExecutionContext($ExecutionContext);
-[PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
+[PSRule.Environment]::UseCurrentCulture();
 
 #
 # Localization

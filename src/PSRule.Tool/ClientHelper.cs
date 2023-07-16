@@ -44,7 +44,7 @@ namespace PSRule.Tool
             var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
             var option = GetOption(host);
             var inputPath = operationOptions.InputPath == null || operationOptions.InputPath.Length == 0 ?
-                new string[] { PSRuleOption.GetWorkingPath() } : operationOptions.InputPath;
+                new string[] { Environment.GetWorkingPath() } : operationOptions.InputPath;
 
             if (operationOptions.Path != null)
                 option.Include.Path = operationOptions.Path;
