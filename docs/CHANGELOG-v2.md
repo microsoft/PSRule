@@ -33,25 +33,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
   [5]: creating-your-pipeline.md#processing-changed-files-only
   [6]: concepts/baselines.md
 
-## Unreleased
+!!! Attention
+    We are currently working towards the next release of PSRule.
+    For more information see [v3][7] release notes.
+    Please check out our [upgrade notes][1] to get prepared for upgrading to the latest version.
 
-What's changed since release v2.9.0:
-
-- General improvements:
-  - Expanded support for `FileHeader` assertion by @BernieWhite.
-    [#1521](https://github.com/microsoft/PSRule/issues/1521)
-    - Added support for `.bicepparam`, `.tsp`, `.tsx`, `.editorconfig`, `.ipynb`, and `.toml` files.
-- Engineering:
-  - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.3.
-    [#1550](https://github.com/microsoft/PSRule/pull/1550)
-  - Bump Microsoft.NET.Test.Sdk to v17.6.3.
-    [#1557](https://github.com/microsoft/PSRule/pull/1557)
-  - Bump YamlDotNet to v13.1.1.
-    [#1399](https://github.com/microsoft/PSRule/issues/1399)
-  - Bump xunit to v2.5.0.
-    [#1562](https://github.com/microsoft/PSRule/pull/1562)
-  - Bump xunit.runner.visualstudio to v2.5.0.
-    [#1561](https://github.com/microsoft/PSRule/pull/1561)
+  [7]: https://microsoft.github.io/PSRule/latest/CHANGELOG-v3/
 
 ## v2.9.0
 
