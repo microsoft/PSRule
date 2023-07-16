@@ -34,7 +34,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.11'
           architecture: 'x64'
 
       - name: Install dependencies
@@ -44,4 +44,4 @@ jobs:
           python3 -m pip install -r requirements-docs.txt
 
       - name: Deploy site
-        run: mike deploy --push --update-aliases v2 latest stable --title 'v2'
+        run: mike deploy --push --update-aliases v3 latest --title 'v3'
