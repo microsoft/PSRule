@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Management.Automation;
 using Newtonsoft.Json;
 
 namespace PSRule.Data
@@ -76,35 +75,6 @@ namespace PSRule.Data
                 hash = hash * 23 + (Message != null ? Message.GetHashCode() : 0);
                 return hash;
             }
-        }
-
-        /// <summary>
-        /// Create an issue from a structured object.
-        /// </summary>
-        public static TargetIssueInfo Create(object o)
-        {
-            return o is PSObject pso ? Create(pso) : null;
-        }
-
-        /// <summary>
-        /// Create an issue from a structured object.
-        /// </summary>
-        public static TargetIssueInfo Create(PSObject o)
-        {
-            var result = new TargetIssueInfo();
-            if (o.TryProperty(PROPERTY_TYPE, out string type))
-                result.Type = type;
-
-            if (o.TryProperty(PROPERTY_NAME, out string name))
-                result.Name = name;
-
-            if (o.TryProperty(PROPERTY_PATH, out string path))
-                result.Path = path;
-
-            if (o.TryProperty(PROPERTY_MESSAGE, out string message))
-                result.Message = message;
-
-            return result;
         }
     }
 }

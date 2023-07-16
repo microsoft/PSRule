@@ -872,13 +872,13 @@ namespace PSRule
     {
         private readonly INodeDeserializer _Next;
         private readonly PSObjectYamlTypeConverter _Converter;
-        private readonly TargetSourceInfo _SourceInfo;
+        private readonly IFileInfo _FileInfo;
 
-        public PSObjectYamlDeserializer(INodeDeserializer next, TargetSourceInfo sourceInfo)
+        public PSObjectYamlDeserializer(INodeDeserializer next, IFileInfo sourceInfo)
         {
             _Next = next;
             _Converter = new PSObjectYamlTypeConverter();
-            _SourceInfo = sourceInfo;
+            _FileInfo = sourceInfo;
         }
 
         bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
@@ -891,7 +891,7 @@ namespace PSRule
                 if (value is PSObject pso)
                 {
                     pso.UseTargetInfo(out var info);
-                    info.SetSource(_SourceInfo?.File, lineNumber, linePosition);
+                    info.SetSource(_FileInfo?.Path, lineNumber, linePosition);
                     value = new PSObject[] { pso };
                     return true;
                 }

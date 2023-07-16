@@ -129,7 +129,7 @@ namespace PSRule.Badges
         /// <inheritdoc/>
         public void ToFile(string path)
         {
-            path = PSRuleOption.GetRootedPath(path);
+            path = Environment.GetRootedPath(path);
             var parentPath = Directory.GetParent(path);
             if (!parentPath.Exists)
                 Directory.CreateDirectory(path: parentPath.FullName);

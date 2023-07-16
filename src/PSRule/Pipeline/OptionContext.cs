@@ -448,7 +448,7 @@ namespace PSRule.Pipeline
             var set = new HashSet<string>();
 
             // Fallback to current culture
-            var current = PSRuleOption.GetCurrentCulture();
+            var current = Environment.GetCurrentCulture();
             if (!set.Contains(current.Name) && !string.IsNullOrEmpty(current.Name))
             {
                 result.Add(current.Name);

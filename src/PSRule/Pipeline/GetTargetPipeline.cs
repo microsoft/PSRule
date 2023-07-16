@@ -56,11 +56,11 @@ namespace PSRule.Pipeline
             PathFilter required = null;
             if (TryChangedFiles(out var files))
             {
-                required = PathFilter.Create(PSRuleOption.GetWorkingPath(), path);
+                required = PathFilter.Create(Environment.GetWorkingPath(), path);
                 path = files;
             }
 
-            var builder = new InputPathBuilder(GetOutput(), PSRuleOption.GetWorkingPath(), "*", GetInputFilter(), required);
+            var builder = new InputPathBuilder(GetOutput(), Environment.GetWorkingPath(), "*", GetInputFilter(), required);
             builder.Add(path);
             _InputPath = builder;
         }

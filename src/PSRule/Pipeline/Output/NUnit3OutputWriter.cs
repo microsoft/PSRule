@@ -55,7 +55,7 @@ namespace PSRule.Pipeline.Output
             xml.WriteStartElement("environment");
             xml.WriteAttributeString("user", System.Environment.UserName);
             xml.WriteAttributeString("machine-name", System.Environment.MachineName);
-            xml.WriteAttributeString("cwd", PSRuleOption.GetWorkingPath());
+            xml.WriteAttributeString("cwd", Environment.GetWorkingPath());
             xml.WriteAttributeString("user-domain", System.Environment.UserDomainName);
             xml.WriteAttributeString("platform", System.Environment.OSVersion.Platform.ToString());
             xml.WriteAttributeString("nunit-version", "2.5.8.0");

@@ -1230,8 +1230,8 @@ namespace PSRule.Runtime
                     return Pass();
 
                 result.AddReason(Operand.FromPath(field), ReasonStrings.WithinPath,
-                    ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), fieldValuePath),
-                    ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), path[i])
+                    ExpressionHelpers.NormalizePath(Environment.GetWorkingPath(), fieldValuePath),
+                    ExpressionHelpers.NormalizePath(Environment.GetWorkingPath(), path[i])
                 );
             }
             return result;
@@ -1254,8 +1254,8 @@ namespace PSRule.Runtime
             {
                 if (ExpressionHelpers.WithinPath(fieldValuePath, path[i], caseSensitive.GetValueOrDefault(PSRuleOption.IsCaseSentitive())))
                     return Fail(Operand.FromPath(field), ReasonStrings.NotWithinPath,
-                        ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), fieldValuePath),
-                        ExpressionHelpers.NormalizePath(PSRuleOption.GetWorkingPath(), path[i])
+                        ExpressionHelpers.NormalizePath(Environment.GetWorkingPath(), fieldValuePath),
+                        ExpressionHelpers.NormalizePath(Environment.GetWorkingPath(), path[i])
                     );
             }
             return Pass();
@@ -1485,7 +1485,7 @@ namespace PSRule.Runtime
             {
                 return false;
             }
-            else if (uri.IsUri())
+            else if (uri.IsURL())
             {
                 using var webClient = new WebClient();
                 json = webClient.DownloadString(uri);
@@ -1502,7 +1502,7 @@ namespace PSRule.Runtime
 
         private static bool TryFilePath(string path, out string rootedPath)
         {
-            rootedPath = PSRuleOption.GetRootedPath(path);
+            rootedPath = Environment.GetRootedPath(path);
             return File.Exists(rootedPath);
         }
 

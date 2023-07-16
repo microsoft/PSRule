@@ -45,7 +45,7 @@ namespace PSRule.Pipeline
             _Logger = logger;
             _Files = new List<InputFileInfo>();
             _Paths = new HashSet<string>();
-            _BasePath = NormalizePath(PSRuleOption.GetRootedBasePath(basePath));
+            _BasePath = NormalizePath(Environment.GetRootedBasePath(basePath));
             _DefaultSearchPattern = searchPattern;
             _GlobalFilter = filter;
             _Required = required;
@@ -113,7 +113,7 @@ namespace PSRule.Pipeline
 
         private bool TryUrl(string path)
         {
-            if (!path.IsUri())
+            if (!path.IsURL())
                 return false;
 
             AddFile(path);

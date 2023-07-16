@@ -54,7 +54,7 @@ namespace PSRule
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                WorkingDirectory = PSRuleOption.GetWorkingPath(),
+                WorkingDirectory = Environment.GetWorkingPath(),
             };
             _Process = Process.Start(startInfo);
             _Process.ErrorDataReceived += Bicep_ErrorDataReceived;
