@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Runtime.InteropServices;
-using PSRule.Configuration;
 
 namespace PSRule
 {

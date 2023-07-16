@@ -4,7 +4,6 @@
 using System.Collections;
 using System.Management.Automation;
 using PSRule.Badges;
-using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline;
 

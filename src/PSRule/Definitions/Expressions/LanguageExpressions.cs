@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
-using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline;
 using PSRule.Resources;

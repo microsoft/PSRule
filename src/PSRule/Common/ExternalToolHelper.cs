@@ -3,7 +3,6 @@
 
 using System.Diagnostics;
 using System.Text;
-using PSRule.Configuration;
 
 namespace PSRule
 {
