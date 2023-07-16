@@ -13,13 +13,22 @@
       },
       "extensions": [
         "ms-dotnettools.csharp",
-        "bewhite.psrule-vscode-preview"
+        "ms-vscode.powershell",
+        "github.vscode-pull-request-github",
+        "davidanson.vscode-markdownlint",
+        "streetsidesoftware.code-spell-checker",
+        "bewhite.psrule-vscode-preview",
+        "eamodio.gitlens"
       ]
     }
   },
   "features": {
-    "github-cli": "latest",
-    "powershell": "latest"
+    "ghcr.io/devcontainers/features/github-cli": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/powershell": {
+      "version": "latest"
+    }
   },
   "onCreateCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-build.ps1",
   "postStartCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-start.ps1",
