@@ -21,6 +21,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://microsoft.github.io/PSRule/v2/CHANGELOG-v3/</loc>
+         <lastmod>2023-07-16</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://microsoft.github.io/PSRule/v2/about/</loc>
          <lastmod>2023-07-16</lastmod>
          <changefreq>daily</changefreq>
