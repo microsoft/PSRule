@@ -70,10 +70,8 @@ namespace PSRule.Data
         [JsonProperty(PropertyName = PROPERTY_TYPE)]
         public string Type { get; internal set; }
 
-        // TODO: Temporary
         string IFileInfo.Path => File;
 
-        // TODO: Temporary
         string IFileInfo.Extension => Path.GetExtension(File);
 
         /// <inheritdoc/>

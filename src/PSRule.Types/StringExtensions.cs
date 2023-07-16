@@ -37,8 +37,7 @@ namespace PSRule
             if (s == null)
                 return null;
 
-            // TODO: This should be fixed to be width argument instead.
-            if (s.Length <= 80)
+            if (s.Length <= width)
                 return new string[] { s };
 
             var result = new List<string>();
@@ -51,7 +50,9 @@ namespace PSRule
 
                 var breaks = s.IndexOfAny(LINE_STOPCHARACTERS, pos, i - pos);
                 if (breaks > -1)
+                {
                     i = breaks;
+                }
                 else
                 {
                     while (!IsSemanticStopChar(s[i]) && i > pos)
