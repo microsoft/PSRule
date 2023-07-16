@@ -18,6 +18,7 @@ The following workspace options are available for use:
 - [Execution.AliasReference](#executionaliasreference)
 - [Execution.AliasReferenceWarning](#executionaliasreferencewarning)
 - [Execution.DuplicateResourceId](#executionduplicateresourceid)
+- [Execution.HashAlgorithm](#executionhashalgorithm)
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InconclusiveWarning](#executioninconclusivewarning)
 - [Execution.InvariantCulture](#executioninvariantculture)
@@ -88,7 +89,8 @@ Options can be used with the following PSRule cmdlets:
 
 Each of these cmdlets support:
 
-- Using the `-Option` parameter with an object created with the `New-PSRuleOption` cmdlet. See cmdlet help for syntax and examples.
+- Using the `-Option` parameter with an object created with the `New-PSRuleOption` cmdlet.
+  See cmdlet help for syntax and examples.
 - Using the `-Option` parameter with a hashtable object.
 - Using the `-Option` parameter with a YAML file path.
 
@@ -124,7 +126,8 @@ The `Set-PSRuleOption` cmdlet can be used to set options stored in YAML or the Y
 Set-PSRuleOption -OutputFormat Yaml;
 ```
 
-By default, PSRule will automatically look for a default YAML options file in the current working directory. Alternatively, you can specify a specific file path.
+By default, PSRule will automatically look for a default YAML options file in the current working directory.
+Alternatively, you can specify a specific file path.
 
 For example:
 
@@ -426,21 +429,25 @@ _TargetName_ is used in output results to identify one object from another.
 Many objects could be passed down the pipeline at the same time, so using a _TargetName_ that is meaningful is important.
 _TargetName_ is also used for advanced features such as rule suppression.
 
-The value that PSRule uses for _TargetName_ is configurable. PSRule uses the following logic to determine what _TargetName_ should be used:
+The value that PSRule uses for _TargetName_ is configurable.
+PSRule uses the following logic to determine what _TargetName_ should be used:
 
 - By default PSRule will:
   - Use `TargetName` or `Name` properties on the object. These property names are case insensitive.
   - If both `TargetName` and `Name` properties exist, `TargetName` will take precedence over `Name`.
-  - If neither `TargetName` or `Name` properties exist, a SHA1 hash of the object will be used as _TargetName_.
+  - If neither `TargetName` or `Name` properties exist, a hash of the object will be used as _TargetName_.
+  - The hash algorithm used can be set by the `Execution.HashAlgorithm` option.
 - If custom _TargetName_ binding properties are configured, the property names specified will override the defaults.
   - If **none** of the configured property names exist, PSRule will revert back to `TargetName` then `Name`.
   - If more then one property name is configured, the order they are specified in the configuration determines precedence.
     - i.e. The first configured property name will take precedence over the second property name.
-  - By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the [Binding.IgnoreCase](#bindingignorecase) option.
+  - By default the property name will be matched ignoring case sensitivity.
+    To use a case sensitive match, configure the [Binding.IgnoreCase](#bindingignorecase) option.
 - If a custom _TargetName_ binding function is specified, the function will be evaluated first before any other option.
   - If the function returns `$Null` then custom properties, `TargetName` and `Name` properties will be used.
   - The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.
-  - Custom binding functions are blocked in constrained language mode is used. See [language mode](#executionlanguagemode) for more information.
+  - Custom binding functions are blocked in constrained language mode is used.
+    See [language mode](#executionlanguagemode) for more information.
 
 Custom property names to use for binding can be specified using:
 
@@ -515,11 +522,13 @@ PSRule uses the following logic to determine what _TargetType_ should be used:
   - If **none** of the configured property names exist, PSRule will revert back to the type presented by PowerShell.
   - If more then one property name is configured, the order they are specified in the configuration determines precedence.
     - i.e. The first configured property name will take precedence over the second property name.
-  - By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the [`Binding.IgnoreCase`](#bindingignorecase) option.
+  - By default the property name will be matched ignoring case sensitivity.
+    To use a case sensitive match, configure the [`Binding.IgnoreCase`](#bindingignorecase) option.
 - If a custom _TargetType_ binding function is specified, the function will be evaluated first before any other option.
   - If the function returns `$Null` then custom properties, or the type presented by PowerShell will be used in order instead.
   - The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.
-  - Custom binding functions are blocked in constrained language mode is used. See [language mode](#executionlanguagemode) for more information.
+  - Custom binding functions are blocked in constrained language mode is used.
+    See [language mode](#executionlanguagemode) for more information.
 
 Custom property names to use for binding can be specified using:
 
@@ -895,6 +904,50 @@ env:
 variables:
 - name: PSRULE_EXECUTION_DUPLICATERESOURCEID
   value: Warn
+```
+
+### Execution.HashAlgorithm
+
+Specifies the hashing algorithm used by the PSRule runtime.
+This hash algorithm is used when generating a resource identifier for an object that does not have a bound name.
+
+By default, the _SHA512_ algorithm is used.
+
+The following algorithms are available for use in PSRule:
+
+- SHA512
+- SHA384
+- SHA256
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Execution.HashAlgorithm hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.HashAlgorithm' = 'SHA256' };
+```
+
+```yaml
+# YAML: Using the execution/hashAlgorithm property
+execution:
+  hashAlgorithm: SHA256
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_HASHALGORITHM=SHA256
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_HASHALGORITHM: SHA256
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_HASHALGORITHM
+  value: SHA256
 ```
 
 ### Execution.LanguageMode

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace PSRule.Configuration
+namespace PSRule.Options
 {
     /// <summary>
     /// Configures how the initial PowerShell sandbox for executing rules is created.

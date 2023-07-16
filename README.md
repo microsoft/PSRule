@@ -294,6 +294,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Execution.AliasReference](https://aka.ms/ps-rule/options#executionaliasreference)
   - [Execution.AliasReferenceWarning](https://aka.ms/ps-rule/options#executionaliasreferencewarning)
   - [Execution.DuplicateResourceId](https://aka.ms/ps-rule/options#executionduplicateresourceid)
+  - [Execution.HashAlgorithm](https://aka.ms/ps-rule/options#executionhashalgorithm)
   - [Execution.LanguageMode](https://aka.ms/ps-rule/options#executionlanguagemode)
   - [Execution.InconclusiveWarning](https://aka.ms/ps-rule/options#executioninconclusivewarning)
   - [Execution.InvariantCulture](https://aka.ms/ps-rule/options#executioninvariantculture)

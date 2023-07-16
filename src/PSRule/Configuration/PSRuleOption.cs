@@ -36,7 +36,7 @@ namespace PSRule.Configuration
             Baseline = Options.BaselineOption.Default,
             Binding = BindingOption.Default,
             Convention = ConventionOption.Default,
-            Execution = ExecutionOption.Default,
+            Execution = Options.ExecutionOption.Default,
             Include = IncludeOption.Default,
             Input = InputOption.Default,
             Logging = LoggingOption.Default,
@@ -54,7 +54,7 @@ namespace PSRule.Configuration
             Binding = new BindingOption();
             Configuration = new ConfigurationOption();
             Convention = new ConventionOption();
-            Execution = new ExecutionOption();
+            Execution = new Options.ExecutionOption();
             Include = new IncludeOption();
             Input = new InputOption();
             Logging = new LoggingOption();
@@ -75,7 +75,7 @@ namespace PSRule.Configuration
             Binding = new BindingOption(option?.Binding);
             Configuration = new ConfigurationOption(option?.Configuration);
             Convention = new ConventionOption(option?.Convention);
-            Execution = new ExecutionOption(option?.Execution);
+            Execution = new Options.ExecutionOption(option?.Execution);
             Include = new IncludeOption(option?.Include);
             Input = new InputOption(option?.Input);
             Logging = new LoggingOption(option?.Logging);
@@ -110,7 +110,7 @@ namespace PSRule.Configuration
         /// <summary>
         /// Options that configure the execution sandbox.
         /// </summary>
-        public ExecutionOption Execution { get; set; }
+        public Options.ExecutionOption Execution { get; set; }
 
         /// <summary>
         /// Options that affect source locations imported for execution.
@@ -210,7 +210,7 @@ namespace PSRule.Configuration
             result.Binding = BindingOption.Combine(result.Binding, o2?.Binding);
             result.Configuration = ConfigurationOption.Combine(result.Configuration, o2?.Configuration);
             result.Convention = ConventionOption.Combine(result.Convention, o2?.Convention);
-            result.Execution = ExecutionOption.Combine(result.Execution, o2?.Execution);
+            result.Execution = Options.ExecutionOption.Combine(result.Execution, o2?.Execution);
             result.Include = IncludeOption.Combine(result.Include, o2?.Include);
             result.Input = InputOption.Combine(result.Input, o2?.Input);
             result.Logging = LoggingOption.Combine(result.Logging, o2?.Logging);

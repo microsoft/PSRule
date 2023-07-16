@@ -8,6 +8,7 @@ using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
+using PSRule.Options;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;
 
@@ -179,7 +180,7 @@ namespace PSRule.Pipeline
         /// Configure the pipeline to use a specific baseline.
         /// </summary>
         /// <param name="baseline">A baseline option or the name of a baseline.</param>
-        void Baseline(BaselineOption baseline);
+        void Baseline(Configuration.BaselineOption baseline);
 
         /// <summary>
         /// Build the pipeline.
@@ -284,7 +285,7 @@ namespace PSRule.Pipeline
 
         private string[] _Include;
         private Hashtable _Tag;
-        private BaselineOption _Baseline;
+        private Configuration.BaselineOption _Baseline;
         private string[] _Convention;
         private PathFilter _InputFilter;
         private PipelineWriter _Writer;
@@ -365,13 +366,13 @@ namespace PSRule.Pipeline
         /// Use a baseline, either by name or by path.
         /// </summary>
         [Obsolete()]
-        public void UseBaseline(BaselineOption baseline)
+        public void UseBaseline(Configuration.BaselineOption baseline)
         {
             Baseline(baseline);
         }
 
         /// <inheritdoc/>
-        public void Baseline(BaselineOption baseline)
+        public void Baseline(Configuration.BaselineOption baseline)
         {
             if (baseline == null)
                 return;
@@ -437,7 +438,7 @@ namespace PSRule.Pipeline
         protected PipelineContext PrepareContext(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField)
         {
             var unresolved = new List<ResourceRef>();
-            if (_Baseline is BaselineOption.BaselineRef baselineRef)
+            if (_Baseline is Configuration.BaselineOption.BaselineRef baselineRef)
                 unresolved.Add(new BaselineRef(ResolveBaselineGroup(baselineRef.Name), OptionContext.ScopeType.Explicit));
 
             return PipelineContext.New(

@@ -9,6 +9,7 @@ using System.Management.Automation;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
+using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
@@ -163,7 +164,7 @@ namespace PSRule
                 "Baseline.Rule.yaml",
                 "FromFileBaseline.Rule.ps1"
             }), option, null);
-            builder.Baseline(BaselineOption.FromString("@test"));
+            builder.Baseline(Configuration.BaselineOption.FromString("@test"));
             var writer = new TestWriter(option);
             var pipeline = builder.Build(writer);
 

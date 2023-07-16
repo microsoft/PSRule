@@ -190,7 +190,7 @@ namespace PSRule.Tool
         {
             PSRuleOption.UseHostContext(host);
             var option = PSRuleOption.FromFileOrEmpty();
-            option.Execution.InitialSessionState = Configuration.SessionState.Minimal;
+            option.Execution.InitialSessionState = Options.SessionState.Minimal;
             option.Input.Format = InputFormat.File;
             option.Output.Style ??= OutputStyle.Client;
             return option;

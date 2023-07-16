@@ -8,6 +8,27 @@ discussion: false
 
 This document contains notes to help upgrade from previous versions of PSRule.
 
+## Upgrading to v3.0.0
+
+### Unbound object names
+
+When an object is processed by PSRule, it is assigned a name.
+This name is used to identify the object in the output and to suppress the object from future processing.
+
+Prior to _v3.0.0_, the name was generated using a SHA-1 hash of the object.
+The SHA-1 algorithm is no longer considered secure and has been replaced with SHA-512.
+
+From _v3.0.0_, if the name of an object can not be determined, the SHA-512 hash of the object will be used.
+Any objects that have previously been suppressed with a name based on a SHA-1 hash will no longer be suppressed.
+
+To resolve any issue caused by this change, you can:
+
+1. Configure binding by setting the [Binding.TargetName][1] option to set an alternative property to use as the name. _OR_
+2. Update any existing keys set with the [Suppression][2] option to use the new SHA-512 hash.
+
+  [1]: https://aka.ms/ps-rule/options#bindingtargetname
+  [2]: https://aka.ms/ps-rule/options#suppression
+
 ## Upgrading to v2.0.0
 
 ### Resources naming restrictions

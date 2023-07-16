@@ -6,6 +6,7 @@ using System.Management.Automation;
 using System.Management.Automation.Language;
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;

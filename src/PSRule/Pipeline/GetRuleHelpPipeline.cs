@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Host;
+using PSRule.Options;
 using PSRule.Resources;
 using PSRule.Rules;
 

@@ -635,6 +635,34 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Execution.HashAlgorithm' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.HashAlgorithm | Should -Be 'SHA512';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.HashAlgorithm' = 'SHA256' };
+            $option.Execution.HashAlgorithm | Should -Be 'SHA256';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.HashAlgorithm | Should -Be 'SHA256';
+        }
+
+        It 'from Environment' {
+            try {
+                $Env:PSRULE_EXECUTION_HASHALGORITHM = 'SHA256';
+                $option = New-PSRuleOption;
+                $option.Execution.HashAlgorithm | Should -Be 'SHA256';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_HASHALGORITHM' -Force;
+            }
+        }
+    }
+
     Context 'Read Execution.LanguageMode' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

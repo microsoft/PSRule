@@ -143,7 +143,7 @@ namespace PSRule.Pipeline
         }
 
         /// <summary>
-        /// Calculate a SHA1 hash for an object to use as TargetName.
+        /// Calculate a hash for an object to use as TargetName.
         /// </summary>
         /// <param name="targetObject">A PSObject to hash.</param>
         /// <returns>The TargetName of the object.</returns>
@@ -159,7 +159,8 @@ namespace PSRule.Pipeline
 
             settings.Converters.Insert(0, new PSObjectJsonConverter());
             var json = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(targetObject, settings));
-            return PipelineContext.CurrentThread.ObjectHashAlgorithm.GetDigest(json);
+            var name = PipelineContext.CurrentThread.ObjectHashAlgorithm.GetDigest(json);
+            return name.Substring(0, name.Length > 50 ? 50 : name.Length);
         }
 
         /// <summary>
