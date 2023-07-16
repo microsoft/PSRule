@@ -147,9 +147,9 @@ namespace PSRule.Host
         /// <summary>
         /// Create a default session state.
         /// </summary>
-        public static InitialSessionState CreateSessionState(Configuration.SessionState initialSessionState)
+        public static InitialSessionState CreateSessionState(Options.SessionState initialSessionState)
         {
-            var state = initialSessionState == Configuration.SessionState.Minimal ?
+            var state = initialSessionState == Options.SessionState.Minimal ?
                 InitialSessionState.CreateDefault2() : InitialSessionState.CreateDefault();
 
             // Add in language elements

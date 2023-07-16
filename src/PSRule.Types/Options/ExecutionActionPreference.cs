@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace PSRule.Configuration
+namespace PSRule.Options
 {
     /// <summary>
     /// Determines the action to take for execution behaviors.

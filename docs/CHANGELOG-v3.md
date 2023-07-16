@@ -38,6 +38,13 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 What's changed since release v2.9.0:
 
 - General improvements:
+  - **Breaking change:** Switch to use SHA-512 for generating unbound objects by @BernieWhite.
+    [#1155](https://github.com/microsoft/PSRule/issues/1155)
+    - Objects that have no bound name will automatically be assigned a name based on the SHA-512 hash of the object.
+    - Previously a SHA-1 hash was used, however this is no longer considered secure.
+    - The name for unbound objects that are suppressed will change as a result.
+    - Additionally the hash can be changed by setting the `Execution.HashAlgorithm` option.
+    - See [upgrade notes][1] for details.
   - Expanded support for `FileHeader` assertion by @BernieWhite.
     [#1521](https://github.com/microsoft/PSRule/issues/1521)
     - Added support for `.bicepparam`, `.tsp`, `.tsx`, `.editorconfig`, `.ipynb`, and `.toml` files.

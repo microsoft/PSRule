@@ -3,7 +3,7 @@
 
 using System.ComponentModel;
 
-namespace PSRule.Configuration
+namespace PSRule.Options
 {
     /// <summary>
     /// Options that configure the execution sandbox.
@@ -13,7 +13,7 @@ namespace PSRule.Configuration
     /// </remarks>
     public sealed class ExecutionOption : IEquatable<ExecutionOption>
     {
-        private const LanguageMode DEFAULT_LANGUAGEMODE = Configuration.LanguageMode.FullLanguage;
+        private const LanguageMode DEFAULT_LANGUAGEMODE = Options.LanguageMode.FullLanguage;
         private const ExecutionActionPreference DEFAULT_DUPLICATERESOURCEID = ExecutionActionPreference.Error;
         private const SessionState DEFAULT_INITIALSESSIONSTATE = SessionState.BuiltIn;
         private const ExecutionActionPreference DEFAULT_SUPPRESSIONGROUPEXPIRED = ExecutionActionPreference.Warn;
@@ -23,10 +23,12 @@ namespace PSRule.Configuration
         private const ExecutionActionPreference DEFAULT_RULEINCONCLUSIVE = ExecutionActionPreference.Warn;
         private const ExecutionActionPreference DEFAULT_INVARIANTCULTURE = ExecutionActionPreference.Warn;
         private const ExecutionActionPreference DEFAULT_UNPROCESSEDOBJECT = ExecutionActionPreference.Warn;
+        private const HashAlgorithm DEFAULT_HASHALGORITHM = Options.HashAlgorithm.SHA512;
 
         internal static readonly ExecutionOption Default = new()
         {
             DuplicateResourceId = DEFAULT_DUPLICATERESOURCEID,
+            HashAlgorithm = DEFAULT_HASHALGORITHM,
             LanguageMode = DEFAULT_LANGUAGEMODE,
             InitialSessionState = DEFAULT_INITIALSESSIONSTATE,
             SuppressionGroupExpired = DEFAULT_SUPPRESSIONGROUPEXPIRED,
@@ -46,6 +48,7 @@ namespace PSRule.Configuration
 #pragma warning disable CS0618 // Type or member is obsolete
             AliasReferenceWarning = null;
             DuplicateResourceId = null;
+            HashAlgorithm = null;
             LanguageMode = null;
             InconclusiveWarning = null;
             InvariantCultureWarning = null;
@@ -74,6 +77,7 @@ namespace PSRule.Configuration
 #pragma warning disable CS0618 // Type or member is obsolete
             AliasReferenceWarning = option.AliasReferenceWarning;
             DuplicateResourceId = option.DuplicateResourceId;
+            HashAlgorithm = option.HashAlgorithm;
             LanguageMode = option.LanguageMode;
             InconclusiveWarning = option.InconclusiveWarning;
             InvariantCultureWarning = option.InvariantCultureWarning;
@@ -103,6 +107,7 @@ namespace PSRule.Configuration
             return other != null &&
                 AliasReferenceWarning == other.AliasReferenceWarning &&
                 DuplicateResourceId == other.DuplicateResourceId &&
+                HashAlgorithm == other.HashAlgorithm &&
                 LanguageMode == other.LanguageMode &&
                 InconclusiveWarning == other.InconclusiveWarning &&
                 InvariantCultureWarning == other.InvariantCultureWarning &&
@@ -128,6 +133,7 @@ namespace PSRule.Configuration
 #pragma warning disable CS0618 // Type or member is obsolete
                 hash = hash * 23 + (AliasReferenceWarning.HasValue ? AliasReferenceWarning.Value.GetHashCode() : 0);
                 hash = hash * 23 + (DuplicateResourceId.HasValue ? DuplicateResourceId.Value.GetHashCode() : 0);
+                hash = hash * 23 + (HashAlgorithm.HasValue ? HashAlgorithm.Value.GetHashCode() : 0);
                 hash = hash * 23 + (LanguageMode.HasValue ? LanguageMode.Value.GetHashCode() : 0);
                 hash = hash * 23 + (InconclusiveWarning.HasValue ? InconclusiveWarning.Value.GetHashCode() : 0);
                 hash = hash * 23 + (InvariantCultureWarning.HasValue ? InvariantCultureWarning.Value.GetHashCode() : 0);
@@ -157,6 +163,7 @@ namespace PSRule.Configuration
             {
                 AliasReferenceWarning = o1.AliasReferenceWarning ?? o2.AliasReferenceWarning,
                 DuplicateResourceId = o1.DuplicateResourceId ?? o2.DuplicateResourceId,
+                HashAlgorithm = o1.HashAlgorithm ?? o2.HashAlgorithm,
                 LanguageMode = o1.LanguageMode ?? o2.LanguageMode,
                 InconclusiveWarning = o1.InconclusiveWarning ?? o2.InconclusiveWarning,
                 NotProcessedWarning = o1.NotProcessedWarning ?? o2.NotProcessedWarning,
@@ -191,6 +198,12 @@ namespace PSRule.Configuration
         /// </summary>
         [DefaultValue(null)]
         public ExecutionActionPreference? DuplicateResourceId { get; set; }
+
+        /// <summary>
+        /// Configures the hashing algorithm used by the PSRule runtime.
+        /// </summary>
+        [DefaultValue(null)]
+        public HashAlgorithm? HashAlgorithm { get; set; }
 
         /// <summary>
         /// The langauge mode to execute PowerShell code with.
@@ -330,6 +343,9 @@ namespace PSRule.Configuration
         /// </summary>
         internal void Load()
         {
+            if (Environment.TryEnum("PSRULE_EXECUTION_HASHALGORITHM", out HashAlgorithm hashAlgorithm))
+                HashAlgorithm = hashAlgorithm;
+
 #pragma warning disable CS0618 // Type or member is obsolete
             if (Environment.TryBool("PSRULE_EXECUTION_ALIASREFERENCEWARNING", out var bvalue))
                 AliasReferenceWarning = bvalue;
@@ -383,6 +399,9 @@ namespace PSRule.Configuration
         /// </summary>
         internal void Load(Dictionary<string, object> index)
         {
+            if (index.TryPopEnum("Execution.HashAlgorithm", out HashAlgorithm hashAlgorithm))
+                HashAlgorithm = hashAlgorithm;
+
 #pragma warning disable CS0618 // Type or member is obsolete
             if (index.TryPopBool("Execution.AliasReferenceWarning", out var bvalue))
                 AliasReferenceWarning = bvalue;

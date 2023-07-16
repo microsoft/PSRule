@@ -14,6 +14,7 @@ using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Selectors;
 using PSRule.Definitions.SuppressionGroups;
 using PSRule.Host;
+using PSRule.Options;
 using PSRule.Resources;
 using PSRule.Runtime;
 using PSRule.Runtime.ObjectPath;
@@ -38,7 +39,6 @@ namespace PSRule.Pipeline
 
         // Objects kept for caching and disposal
         private Runspace _Runspace;
-        private SHA1Managed _Hash;
 
         // Track whether Dispose has been called.
         private bool _Disposed;
@@ -60,14 +60,7 @@ namespace PSRule.Pipeline
 
         internal readonly Stopwatch RunTime;
 
-        public HashAlgorithm ObjectHashAlgorithm
-        {
-            get
-            {
-                _Hash ??= new SHA1Managed();
-                return _Hash;
-            }
-        }
+        public System.Security.Cryptography.HashAlgorithm ObjectHashAlgorithm { get; }
 
         private PipelineContext(PSRuleOption option, IHostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IList<ResourceRef> unresolved)
         {
@@ -87,6 +80,8 @@ namespace PSRule.Pipeline
             Baseline = baseline;
             _Unresolved = unresolved ?? new List<ResourceRef>();
             _TrackedIssues = new List<ResourceIssue>();
+
+            ObjectHashAlgorithm = GetHashAlgorithm(option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm.Value));
             RunId = Environment.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
             RunTime = Stopwatch.StartNew();
         }
@@ -280,6 +275,14 @@ namespace PSRule.Pipeline
             //    runspaceContext.WarnMissingApiVersion(_TrackedIssues[i].Kind, _TrackedIssues[i].Id);
         }
 
+        private static System.Security.Cryptography.HashAlgorithm GetHashAlgorithm(Options.HashAlgorithm hashAlgorithm)
+        {
+            if (hashAlgorithm == Options.HashAlgorithm.SHA256)
+                return SHA256.Create();
+
+            return hashAlgorithm == Options.HashAlgorithm.SHA384 ? SHA384.Create() : SHA512.Create();
+        }
+
         #region IBindingContext
 
         public bool GetPathExpression(string path, out PathExpression expression)
@@ -307,7 +310,7 @@ namespace PSRule.Pipeline
             {
                 if (disposing)
                 {
-                    _Hash?.Dispose();
+                    ObjectHashAlgorithm?.Dispose();
                     _Runspace?.Dispose();
                     _PathExpressionCache.Clear();
                     LocalizedDataCache.Clear();

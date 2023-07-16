@@ -4,6 +4,7 @@
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Data;
+using PSRule.Options;
 using PSRule.Pipeline;
 
 namespace PSRule
@@ -39,12 +40,17 @@ namespace PSRule
             var pso1 = PSObject.AsPSObject(testObject1);
             var pso2 = PSObject.AsPSObject(testObject2);
 
+            // SHA512
             PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, null, null, null, null, null);
-            var actual1 = PipelineHookActions.BindTargetName(null, false, false, pso1, out _);
-            var actual2 = PipelineHookActions.BindTargetName(null, false, false, pso2, out _);
 
-            Assert.Equal(expected: "f209c623345144be61087d91f30c17b01c6e86d2", actual: actual1);
-            Assert.Equal(expected: "f209c623345144be61087d91f30c17b01c6e86d2", actual: actual2);
+            Assert.Equal("f3d2f8ce966af96a8d320e8f5c088604324885a0d02f44b174", PipelineHookActions.BindTargetName(null, false, false, pso1, out _));
+            Assert.Equal("f3d2f8ce966af96a8d320e8f5c088604324885a0d02f44b174", PipelineHookActions.BindTargetName(null, false, false, pso2, out _));
+
+            // SHA256
+            PipelineContext.CurrentThread = PipelineContext.New(GetOption(HashAlgorithm.SHA256), null, null, null, null, null, null, null);
+
+            Assert.Equal("67327c8cd8622d17cf1702a76cbbb685e9ef260ce39c9f6779", PipelineHookActions.BindTargetName(null, false, false, pso1, out _));
+            Assert.Equal("67327c8cd8622d17cf1702a76cbbb685e9ef260ce39c9f6779", PipelineHookActions.BindTargetName(null, false, false, pso2, out _));
         }
 
         [Fact]
@@ -68,9 +74,13 @@ namespace PSRule
             Assert.Null(path);
         }
 
-        private static PSRuleOption GetOption()
+        private static PSRuleOption GetOption(HashAlgorithm? hashAlgorithm = null)
         {
-            return new PSRuleOption();
+            var option = new PSRuleOption();
+            if (hashAlgorithm != null)
+                option.Execution.HashAlgorithm = hashAlgorithm;
+
+            return option;
         }
     }
 }

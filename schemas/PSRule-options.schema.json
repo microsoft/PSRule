@@ -328,6 +328,18 @@
           ],
           "default": "Error"
         },
+        "hashAlgorithm": {
+          "type": "string",
+          "title": "Hash Algorithm",
+          "description": "Configures the hashing algorithm used by the PSRule runtime. By default, SHA512 is used.",
+          "markdownDescription": "Configures the hashing algorithm used by the PSRule runtime.\n\nBy default, `SHA512` is used.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionhashalgorithm)",
+          "enum": [
+            "SHA512",
+            "SHA384",
+            "SHA256"
+          ],
+          "default": "SHA512"
+        },
         "languageMode": {
           "type": "string",
           "title": "Language mode",
