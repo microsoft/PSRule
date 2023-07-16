@@ -3,7 +3,6 @@
 
 using Newtonsoft.Json;
 using PSRule.Expressions;
-using PSRule.Resources;
 
 namespace PSRule.Data
 {

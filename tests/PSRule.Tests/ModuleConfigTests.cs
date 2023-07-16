@@ -8,7 +8,6 @@ using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Runtime;
-using Assert = Xunit.Assert;
 
 namespace PSRule
 {

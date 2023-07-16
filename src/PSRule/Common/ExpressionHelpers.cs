@@ -6,7 +6,6 @@ using System.Management.Automation;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
-using PSRule.Configuration;
 using PSRule.Converters;
 using PSRule.Data;
 using PSRule.Pipeline;

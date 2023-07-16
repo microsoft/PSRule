@@ -3,7 +3,6 @@
 
 using System.Diagnostics;
 using System.Management.Automation;
-using PSRule.Configuration;
 using PSRule.Data;
 
 namespace PSRule.Pipeline
