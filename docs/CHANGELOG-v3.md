@@ -53,8 +53,8 @@ What's changed since release v2.9.0:
     [#1550](https://github.com/microsoft/PSRule/pull/1550)
   - Bump Microsoft.NET.Test.Sdk to v17.6.3.
     [#1557](https://github.com/microsoft/PSRule/pull/1557)
-  - Bump YamlDotNet to v13.1.1.
-    [#1399](https://github.com/microsoft/PSRule/issues/1399)
+  - Bump YamlDotNet to v13.2.0.
+    [#1589](https://github.com/microsoft/PSRule/issues/1589)
   - Bump xunit to v2.5.0.
     [#1562](https://github.com/microsoft/PSRule/pull/1562)
   - Bump xunit.runner.visualstudio to v2.5.0.
