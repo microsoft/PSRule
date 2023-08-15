@@ -51,8 +51,8 @@ What's changed since release v2.9.0:
 - Engineering:
   - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.3.
     [#1550](https://github.com/microsoft/PSRule/pull/1550)
-  - Bump Microsoft.NET.Test.Sdk to v17.6.3.
-    [#1557](https://github.com/microsoft/PSRule/pull/1557)
+  - Bump Microsoft.NET.Test.Sdk to v17.7.0.
+    [#1588](https://github.com/microsoft/PSRule/pull/1588)
   - Bump YamlDotNet to v13.2.0.
     [#1589](https://github.com/microsoft/PSRule/issues/1589)
   - Bump xunit to v2.5.0.
