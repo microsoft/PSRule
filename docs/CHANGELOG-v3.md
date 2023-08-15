@@ -61,5 +61,5 @@ What's changed since release v2.9.0:
     [#1561](https://github.com/microsoft/PSRule/pull/1561)
   - Bump BenchmarkDotNet to v0.13.7.
     [#1587](https://github.com/microsoft/PSRule/pull/1587)
-  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.6.
-    [#1565](https://github.com/microsoft/PSRule/pull/1565)
+  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.7.
+    [#1586](https://github.com/microsoft/PSRule/pull/1586)
