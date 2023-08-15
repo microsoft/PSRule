@@ -99,12 +99,12 @@
   "[csharp]": {
     "editor.tabSize": 4
   },
-  "omnisharp.enableImportCompletion": true,
   "omnisharp.organizeImportsOnFormat": true,
   "omnisharp.enableEditorConfigSupport": true,
   "omnisharp.enableRoslynAnalyzers": true,
   "git.branchProtection": [
     "main",
     "release/*"
-  ]
+  ],
+  "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true
 }
