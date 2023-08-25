@@ -45,6 +45,8 @@ What's changed since release v2.9.0:
     - The name for unbound objects that are suppressed will change as a result.
     - Additionally the hash can be changed by setting the `Execution.HashAlgorithm` option.
     - See [upgrade notes][1] for details.
+  - **Breaking change:** Removed deprecated execution options by @BernieWhite.
+    [#1457](https://github.com/microsoft/PSRule/issues/1457)
   - Expanded support for `FileHeader` assertion by @BernieWhite.
     [#1521](https://github.com/microsoft/PSRule/issues/1521)
     - Added support for `.bicepparam`, `.tsp`, `.tsx`, `.editorconfig`, `.ipynb`, and `.toml` files.

@@ -21,11 +21,10 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-BindTargetType <BindTargetName[]>] [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
  [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
- [-Convention <String[]>] [-AliasReferenceWarning <Boolean>] [-DuplicateResourceId <ExecutionActionPreference>]
- [-InconclusiveWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>]
- [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
- [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
- [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-Convention <String[]>] [-DuplicateResourceId <ExecutionActionPreference>]
+ [-InitialSessionState <SessionState>] [-SuppressionGroupExpired <ExecutionActionPreference>]
+ [-ExecutionRuleExcluded <ExecutionActionPreference>] [-ExecutionRuleSuppressed <ExecutionActionPreference>]
+ [-ExecutionAliasReference <ExecutionActionPreference>]
  [-ExecutionRuleInconclusive <ExecutionActionPreference>]
  [-ExecutionInvariantCulture <ExecutionActionPreference>]
  [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
@@ -49,11 +48,10 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-BindTargetType <BindTargetName[]>] [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
  [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
- [-Convention <String[]>] [-AliasReferenceWarning <Boolean>] [-DuplicateResourceId <ExecutionActionPreference>]
- [-InconclusiveWarning <Boolean>] [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>]
- [-NotProcessedWarning <Boolean>] [-SuppressedRuleWarning <Boolean>]
- [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
- [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-Convention <String[]>] [-DuplicateResourceId <ExecutionActionPreference>]
+ [-InitialSessionState <SessionState>] [-SuppressionGroupExpired <ExecutionActionPreference>]
+ [-ExecutionRuleExcluded <ExecutionActionPreference>] [-ExecutionRuleSuppressed <ExecutionActionPreference>]
+ [-ExecutionAliasReference <ExecutionActionPreference>]
  [-ExecutionRuleInconclusive <ExecutionActionPreference>]
  [-ExecutionInvariantCulture <ExecutionActionPreference>]
  [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
@@ -76,12 +74,10 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-BindTargetName <BindTargetName[]>] [-BindTargetType <BindTargetName[]>] [-BaselineGroup <Hashtable>]
  [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
  [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
- [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>] [-AliasReferenceWarning <Boolean>]
- [-DuplicateResourceId <ExecutionActionPreference>] [-InconclusiveWarning <Boolean>]
- [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-NotProcessedWarning <Boolean>]
- [-SuppressedRuleWarning <Boolean>] [-SuppressionGroupExpired <ExecutionActionPreference>]
- [-ExecutionRuleExcluded <ExecutionActionPreference>] [-ExecutionRuleSuppressed <ExecutionActionPreference>]
- [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
+ [-DuplicateResourceId <ExecutionActionPreference>] [-InitialSessionState <SessionState>]
+ [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
+ [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
  [-ExecutionRuleInconclusive <ExecutionActionPreference>]
  [-ExecutionInvariantCulture <ExecutionActionPreference>]
  [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
@@ -435,60 +431,6 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -InconclusiveWarning
-
-Sets the option `Execution.InconclusiveWarning`.
-The `Execution.InconclusiveWarning` option determines if a warning is generated when the outcome of a rule is inconclusive.
-See about_PSRule_Options for more information.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases: ExecutionInconclusiveWarning
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -NotProcessedWarning
-
-Sets the option `Execution.NotProcessedWarning`.
-The `Execution.NotProcessedWarning` option determines if a warning is generated when an object is not processed by any rule.
-See about_PSRule_Options for more information.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases: ExecutionNotProcessedWarning
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SuppressedRuleWarning
-
-Sets the `Execution.SuppressedRuleWarning` option.
-The `Execution.SuppressedRuleWarning` option determines if a warning is generated when a rule is suppressed.
-See about_PSRule_Options for more information.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases: ExecutionSuppressedRuleWarning
-
-Required: False
-Position: Named
-Default value: True
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -1071,40 +1013,6 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -AliasReferenceWarning
-
-Sets the option `Execution.AliasReferenceWarning`.
-The `Execution.AliasReferenceWarning` option determines if a warning is logged when alises are referenced.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases: ExecutionAliasReferenceWarning
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -InvariantCultureWarning
-
-Sets the option `Execution.InvariantCultureWarning`.
-The `Execution.InvariantCultureWarning` option sets if a warning is logged when invarient culture is detected.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases: ExecutionInvariantCultureWarning
-
-Required: False
-Position: Named
-Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

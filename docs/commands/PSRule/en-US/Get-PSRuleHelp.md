@@ -14,7 +14,7 @@ Displays information about a rule.
 ## SYNTAX
 
 ```text
-Get-PSRuleHelp [-Module <String>] [-Online] [-Full] [[-Name] <String>] [-Path <String>]
+Get-PSRuleHelp [-Module <String>] [-Online] [-Full] [[-Name] <String[]>] [-Path <String>]
  [-Option <PSRuleOption>] [-Culture <String>] [<CommonParameters>]
 ```
 
@@ -60,7 +60,7 @@ Browse to the online version of documentation for `Azure.ACR.AdminUser` using th
 The name of the rule to get documentation for.
 
 ```yaml
-Type: String
+Type: String[]
 Parameter Sets: (All)
 Aliases: n
 

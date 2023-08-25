@@ -1163,41 +1163,15 @@ function New-PSRuleOption {
         [Alias('ConventionInclude')]
         [String[]]$Convention,
 
-        # Sets the Execution.AliasReferenceWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionAliasReferenceWarning')]
-        [System.Boolean]$AliasReferenceWarning = $True,
-
         # Sets the Execution.DuplicateResourceId option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionDuplicateResourceId')]
         [PSRule.Options.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Options.ExecutionActionPreference]::Error,
 
-        # Sets the Execution.InconclusiveWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInconclusiveWarning')]
-        [System.Boolean]$InconclusiveWarning = $True,
-
-        # Sets the Execution.InvariantCultureWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInvariantCultureWarning')]
-        [System.Boolean]$InvariantCultureWarning = $True,
-
         # Sets the Execution.InitialSessionState option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInitialSessionState')]
         [PSRule.Options.SessionState]$InitialSessionState = [PSRule.Options.SessionState]::BuiltIn,
-
-        # Sets the Execution.NotProcessedWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionNotProcessedWarning')]
-        [System.Boolean]$NotProcessedWarning = $True,
-
-        # Sets the Execution.SuppressedRuleWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionSuppressedRuleWarning')]
-        [System.Obsolete('Use ExecutionRuleSuppressed instead. See https://aka.ms/ps-rule/deprecations for more detail.')]
-        [System.Boolean]$SuppressedRuleWarning = $True,
 
         # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
@@ -1493,41 +1467,15 @@ function Set-PSRuleOption {
         [Alias('ConventionInclude')]
         [String[]]$Convention,
 
-        # Sets the Execution.AliasReferenceWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionAliasReferenceWarning')]
-        [System.Boolean]$AliasReferenceWarning = $True,
-
         # Sets the Execution.DuplicateResourceId option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionDuplicateResourceId')]
         [PSRule.Options.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Options.ExecutionActionPreference]::Error,
 
-        # Sets the Execution.InconclusiveWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInconclusiveWarning')]
-        [System.Boolean]$InconclusiveWarning = $True,
-
-        # Sets the Execution.InvariantCultureWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInvariantCultureWarning')]
-        [System.Boolean]$InvariantCultureWarning = $True,
-
         # Sets the Execution.InitialSessionState option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInitialSessionState')]
         [PSRule.Options.SessionState]$InitialSessionState = [PSRule.Options.SessionState]::BuiltIn,
-
-        # Sets the Execution.NotProcessedWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionNotProcessedWarning')]
-        [System.Boolean]$NotProcessedWarning = $True,
-
-        # Sets the Execution.SuppressedRuleWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionSuppressedRuleWarning')]
-        [System.Obsolete('Use ExecutionRuleSuppressed instead. See https://aka.ms/ps-rule/deprecations for more detail.')]
-        [System.Boolean]$SuppressedRuleWarning = $True,
 
         # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
@@ -2270,40 +2218,15 @@ function SetOptions {
         [Alias('ConventionInclude')]
         [String[]]$Convention,
 
-        # Sets the Execution.AliasReferenceWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionAliasReferenceWarning')]
-        [System.Boolean]$AliasReferenceWarning = $True,
-
         # Sets the Execution.DuplicateResourceId option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionDuplicateResourceId')]
         [PSRule.Options.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Options.ExecutionActionPreference]::Error,
 
-        # Sets the Execution.InconclusiveWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInconclusiveWarning')]
-        [System.Boolean]$InconclusiveWarning = $True,
-
-        # Sets the Execution.InvariantCultureWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInvariantCultureWarning')]
-        [System.Boolean]$InvariantCultureWarning = $True,
-
         # Sets the Execution.InitialSessionState option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInitialSessionState')]
         [PSRule.Options.SessionState]$InitialSessionState = [PSRule.Options.SessionState]::BuiltIn,
-
-        # Sets the Execution.NotProcessedWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionNotProcessedWarning')]
-        [System.Boolean]$NotProcessedWarning = $True,
-
-        # Sets the Execution.SuppressedRuleWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionSuppressedRuleWarning')]
-        [System.Boolean]$SuppressedRuleWarning = $True,
 
         # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
@@ -2516,34 +2439,9 @@ function SetOptions {
             $Option.Execution.DuplicateResourceId = $DuplicateResourceId;
         }
 
-        # Sets option Execution.InconclusiveWarning
-        if ($PSBoundParameters.ContainsKey('InconclusiveWarning')) {
-            $Option.Execution.InconclusiveWarning = $InconclusiveWarning;
-        }
-
-        # Sets option Execution.InvariantCultureWarning
-        if ($PSBoundParameters.ContainsKey('InvariantCultureWarning')) {
-            $Option.Execution.InvariantCultureWarning = $InvariantCultureWarning;
-        }
-
         # Sets option Execution.InitialSessionState
         if ($PSBoundParameters.ContainsKey('InitialSessionState')) {
             $Option.Execution.InitialSessionState = $InitialSessionState;
-        }
-
-        # Sets option Execution.NotProcessedWarning
-        if ($PSBoundParameters.ContainsKey('NotProcessedWarning')) {
-            $Option.Execution.NotProcessedWarning = $NotProcessedWarning;
-        }
-
-        # Sets option Execution.SuppressedRuleWarning
-        if ($PSBoundParameters.ContainsKey('SuppressedRuleWarning')) {
-            $Option.Execution.SuppressedRuleWarning = $SuppressedRuleWarning;
-        }
-
-        # Sets option Execution.AliasReferenceWarning
-        if ($PSBoundParameters.ContainsKey('AliasReferenceWarning')) {
-            $Option.Execution.AliasReferenceWarning = $AliasReferenceWarning;
         }
 
         # Sets option Execution.SuppressionGroupExpired
