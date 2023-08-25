@@ -16,17 +16,12 @@ The following workspace options are available for use:
 - [Baseline.Group](#baselinegroup)
 - [Convention.Include](#conventioninclude)
 - [Execution.AliasReference](#executionaliasreference)
-- [Execution.AliasReferenceWarning](#executionaliasreferencewarning)
 - [Execution.DuplicateResourceId](#executionduplicateresourceid)
 - [Execution.HashAlgorithm](#executionhashalgorithm)
 - [Execution.LanguageMode](#executionlanguagemode)
-- [Execution.InconclusiveWarning](#executioninconclusivewarning)
 - [Execution.InvariantCulture](#executioninvariantculture)
-- [Execution.InvariantCultureWarning](#executioninvariantculturewarning)
 - [Execution.InitialSessionState](#executioninitialsessionstate)
-- [Execution.NotProcessedWarning](#executionnotprocessedwarning)
 - [Execution.RuleInconclusive](#executionruleinconclusive)
-- [Execution.SuppressedRuleWarning](#executionsuppressedrulewarning)
 - [Execution.SuppressionGroupExpired](#executionsuppressiongroupexpired)
 - [Execution.UnprocessedObject](#executionunprocessedobject)
 - [Include.Module](#includemodule)
@@ -740,10 +735,6 @@ variables:
 Determines how to handle when an alias to a resource is used.
 By defaut, a warning is generated, however this behaviour can be modified by this option.
 
-This option replaces `AliasReferenceWarning`.
-You do not need to configure both options.
-If `AliasReferenceWarning` is configured, it will override `AliasReference` with `Warn` or `Ignore` until removal in PSRule v3.
-
 The following preferences are available:
 
 - `None` (0) - No preference.
@@ -791,61 +782,6 @@ env:
 variables:
 - name: PSRULE_EXECUTION_ALIASREFERENCE
   value: Error
-```
-
-### Execution.AliasReferenceWarning
-
-This option has been deprecated and will be removed from v3 in favor of `aliasReference`.
-Use `aliasReference` instead.
-
-Rules may define one or more aliases.
-These aliases are alternative names to identify the rule.
-An alias may be used to reference the rule anywhere a rule name is used.
-The primary purpose of an alias is to provide a non-breaking method to change the rule name.
-Alises can be removed at a later revision once the rule is no longer referenced by the alias.
-
-A warning is logged by default to help identify when an alias is used.
-We recommend taking action to update your usage of the alis to use the rule name or ref instead.
-
-Alternatively, the alias reference warning can be disabled by using:
-
-```powershell
-# PowerShell: Using the AliasReferenceWarning parameter
-$option = New-PSRuleOption -AliasReferenceWarning $False;
-```
-
-```powershell
-# PowerShell: Using the Execution.AliasReferenceWarning hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.AliasReferenceWarning' = $False };
-```
-
-```powershell
-# PowerShell: Using the AliasReferenceWarning parameter to set YAML
-Set-PSRuleOption -AliasReferenceWarning $False;
-```
-
-```yaml
-# YAML: Using the execution/aliasReferenceWarning property
-execution:
-  aliasReferenceWarning: false
-```
-
-```bash
-# Bash: Using environment variable
-export PSRULE_EXECUTION_ALIASREFERENCEWARNING=false
-```
-
-```yaml
-# GitHub Actions: Using environment variable
-env:
-  PSRULE_EXECUTION_ALIASREFERENCEWARNING: false
-```
-
-```yaml
-# Azure Pipelines: Using environment variable
-variables:
-- name: PSRULE_EXECUTION_ALIASREFERENCEWARNING
-  value: false
 ```
 
 ### Execution.DuplicateResourceId
@@ -993,73 +929,10 @@ variables:
   value: ConstrainedLanguage
 ```
 
-### Execution.InconclusiveWarning
-
-This option has been deprecated and will be removed from v3 in favor of `ruleInconclusive`.
-Use `ruleInconclusive` instead.
-
-When defining rules, it is possible not return a valid `$True` or `$False` result within the definition script block.
-
-Rule authors should not intentionally avoid returning a result, however a possible cause for not returning a result may be a rule logic error.
-
-If a rule should not be evaluated, use pre-conditions to avoid processing the rule for objects where the rule is not applicable.
-
-In cases where the rule does not return a result it is marked as inconclusive.
-
-Inconclusive results will:
-
-- Generate a warning by default.
-- Fail the object. Outcome will be reported as `Fail` with an OutcomeReason of `Inconclusive`.
-
-The inconclusive warning can be disabled by using:
-
-```powershell
-# PowerShell: Using the InconclusiveWarning parameter
-$option = New-PSRuleOption -InconclusiveWarning $False;
-```
-
-```powershell
-# PowerShell: Using the Execution.InconclusiveWarning hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.InconclusiveWarning' = $False };
-```
-
-```powershell
-# PowerShell: Using the InconclusiveWarning parameter to set YAML
-Set-PSRuleOption -InconclusiveWarning $False;
-```
-
-```yaml
-# YAML: Using the execution/inconclusiveWarning property
-execution:
-  inconclusiveWarning: false
-```
-
-```bash
-# Bash: Using environment variable
-export PSRULE_EXECUTION_INCONCLUSIVEWARNING=false
-```
-
-```yaml
-# GitHub Actions: Using environment variable
-env:
-  PSRULE_EXECUTION_INCONCLUSIVEWARNING: false
-```
-
-```yaml
-# Azure Pipelines: Using environment variable
-variables:
-- name: PSRULE_EXECUTION_INCONCLUSIVEWARNING
-  value: false
-```
-
 ### Execution.InvariantCulture
 
 Determines how to report when an invariant culture is used.
 By defaut, a warning is generated, however this behaviour can be modified by this option.
-
-This option replaces `InvariantCultureWarning`.
-You do not need to configure both options.
-If `InvariantCultureWarning` is configured, it will override `InvariantCulture` with `Warn` or `Ignore` until removal in PSRule v3.
 
 The following preferences are available:
 
@@ -1108,55 +981,6 @@ env:
 variables:
 - name: PSRULE_EXECUTION_INVARIANTCULTURE
   value: Error
-```
-
-### Execution.InvariantCultureWarning
-
-This option has been deprecated and will be removed from v3 in favor of `invariantCulture`.
-Use `invariantCulture` instead.
-
-When evaluating rules inside a CI host, if invariant culture is used, a warning is shown by default.
-You can suppress this warning if you set the culture with `-Culture` or the `Output.Culture` option.
-
-This warning can also be suppressed by using:
-
-```powershell
-# PowerShell: Using the InvariantCultureWarning parameter
-$option = New-PSRuleOption -InvariantCultureWarning $False;
-```
-
-```powershell
-# PowerShell: Using the Execution.InvariantCultureWarning hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.InvariantCultureWarning' = $False };
-```
-
-```powershell
-# PowerShell: Using the InvariantCultureWarning parameter to set YAML
-Set-PSRuleOption -InvariantCultureWarning $False;
-```
-
-```yaml
-# YAML: Using the execution/invariantCultureWarning property
-execution:
-  invariantCultureWarning: false
-```
-
-```bash
-# Bash: Using environment variable
-export PSRULE_EXECUTION_INVARIANTCULTUREWARNING=false
-```
-
-```yaml
-# GitHub Actions: Using environment variable
-env:
-  PSRULE_EXECUTION_INVARIANTCULTUREWARNING: false
-```
-
-```yaml
-# Azure Pipelines: Using environment variable
-variables:
-- name: PSRULE_EXECUTION_INVARIANTCULTUREWARNING
-  value: false
 ```
 
 ### Execution.InitialSessionState
@@ -1208,68 +1032,10 @@ variables:
   value: Minimal
 ```
 
-### Execution.NotProcessedWarning
-
-This option has been deprecated and will be removed from v3 in favor of `unprocessedObject`.
-Use `unprocessedObject` instead.
-
-When evaluating rules, it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.
-In this case the object has not been processed by any rule.
-
-Not processed objects will:
-
-- Generate a warning by default.
-- Pass the object. Outcome will be reported as `None`.
-
-The not processed warning can be disabled by using:
-
-```powershell
-# PowerShell: Using the NotProcessedWarning parameter
-$option = New-PSRuleOption -NotProcessedWarning $False;
-```
-
-```powershell
-# PowerShell: Using the Execution.NotProcessedWarning hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.NotProcessedWarning' = $False };
-```
-
-```powershell
-# PowerShell: Using the NotProcessedWarning parameter to set YAML
-Set-PSRuleOption -NotProcessedWarning $False;
-```
-
-```yaml
-# YAML: Using the execution/notProcessedWarning property
-execution:
-  notProcessedWarning: false
-```
-
-```bash
-# Bash: Using environment variable
-export PSRULE_EXECUTION_NOTPROCESSEDWARNING=false
-```
-
-```yaml
-# GitHub Actions: Using environment variable
-env:
-  PSRULE_EXECUTION_NOTPROCESSEDWARNING: false
-```
-
-```yaml
-# Azure Pipelines: Using environment variable
-variables:
-- name: PSRULE_EXECUTION_NOTPROCESSEDWARNING
-  value: false
-```
-
 ### Execution.RuleInconclusive
 
 Determines how to handle rules that generate inconclusive results.
 By defaut, a warning is generated, however this behaviour can be modified by this option.
-
-This option replaces `InconclusiveWarning`.
-You do not need to configure both options.
-If `InconclusiveWarning` is configured, it will override `RuleInconclusive` with `Warn` or `Ignore` until removal in PSRule v3.
 
 The following preferences are available:
 
@@ -1318,60 +1084,6 @@ env:
 variables:
 - name: PSRULE_EXECUTION_RULEINCONCLUSIVE
   value: Error
-```
-
-### Execution.SuppressedRuleWarning
-
-This option has been deprecated and will be removed from v3 in favor of `ruleSuppressed`.
-Use `ruleSuppressed` instead.
-
-When evaluating rules, it is possible to output suppressed rules as warnings.
-
-Suppressed rules will:
-
-- Output a warning by default.
-- Show which rules were suppressed when `Output.As` is set to `Detail`.
-- Show how many rules were suppressed when `Output.As` is set to `Summary`.
-
-The suppressed rule can be disabled by using:
-
-```powershell
-# PowerShell: Using the SuppressedRuleWarning parameter
-$option = New-PSRuleOption -SuppressedRuleWarning $False;
-```
-
-```powershell
-# PowerShell: Using the Execution.SuppressedRuleWarning hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.SuppressedRuleWarning' = $False };
-```
-
-```powershell
-# PowerShell: Using the SuppressedRuleWarning parameter to set YAML
-Set-PSRuleOption -SuppressedRuleWarning $False;
-```
-
-```yaml
-# YAML: Using the execution/suppressedRuleWarning property
-execution:
-  suppressedRuleWarning: false
-```
-
-```bash
-# Bash: Using environment variable
-export PSRULE_EXECUTION_SUPPRESSEDRULEWARNING=false
-```
-
-```yaml
-# GitHub Actions: Using environment variable
-env:
-  PSRULE_EXECUTION_SUPPRESSEDRULEWARNING: false
-```
-
-```yaml
-# Azure Pipelines: Using environment variable
-variables:
-- name: PSRULE_EXECUTION_SUPPRESSEDRULEWARNING
-  value: false
 ```
 
 ### Execution.SuppressionGroupExpired
@@ -1490,10 +1202,6 @@ Determines how to handle suppressed rules.
 Regardless of the value, a suppressed rule is ignored.
 By defaut, a warning is generated, however this behaviour can be modified by this option.
 
-This option replaces `suppressedRuleWarning`.
-You do not need to configure both options.
-If `suppressedRuleWarning` is configured, it will override `ruleSuppressed` with `Warn` or `Ignore` until removal in PSRule v3.
-
 The following preferences are available:
 
 - `None` (0) - No preference.
@@ -1548,10 +1256,6 @@ variables:
 Determines how to report objects that are not processed by any rule.
 By defaut, a warning is generated, however this behaviour can be modified by this option.
 
-This option replaces `NotProcessedWarning`.
-You do not need to configure both options.
-If `NotProcessedWarning` is configured, it will override `UnprocessedObject` with `Warn` or `Ignore` until removal in PSRule v3.
-
 The following preferences are available:
 
 - `None` (0) - No preference.
@@ -1564,41 +1268,41 @@ The following preferences are available:
 
 ```powershell
 # PowerShell: Using the ExecutionUnprocessedObject parameter
-$option = New-PSRuleOption -ExecutionUnprocessedObject 'Error';
+$option = New-PSRuleOption -ExecutionUnprocessedObject 'Ignore';
 ```
 
 ```powershell
 # PowerShell: Using the Execution.UnprocessedObject hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.UnprocessedObject' = 'Error' };
+$option = New-PSRuleOption -Option @{ 'Execution.UnprocessedObject' = 'Ignore' };
 ```
 
 ```powershell
 # PowerShell: Using the ExecutionUnprocessedObject parameter to set YAML
-Set-PSRuleOption -ExecutionUnprocessedObject 'Error';
+Set-PSRuleOption -ExecutionUnprocessedObject 'Ignore';
 ```
 
 ```yaml
 # YAML: Using the execution/unprocessedObject property
 execution:
-  unprocessedObject: Error
+  unprocessedObject: Ignore
 ```
 
 ```bash
 # Bash: Using environment variable
-export PSRULE_EXECUTION_UNPROCESSEDOBJECT=Error
+export PSRULE_EXECUTION_UNPROCESSEDOBJECT=Ignore
 ```
 
 ```yaml
 # GitHub Actions: Using environment variable
 env:
-  PSRULE_EXECUTION_UNPROCESSEDOBJECT: Error
+  PSRULE_EXECUTION_UNPROCESSEDOBJECT: Ignore
 ```
 
 ```yaml
 # Azure Pipelines: Using environment variable
 variables:
 - name: PSRULE_EXECUTION_UNPROCESSEDOBJECT
-  value: Error
+  value: Ignore
 ```
 
 ### Include.Module
@@ -3495,12 +3199,8 @@ convention:
 
 # Configure execution options
 execution:
-  aliasReferenceWarning: false
   duplicateResourceId: Warn
   languageMode: ConstrainedLanguage
-  inconclusiveWarning: false
-  notProcessedWarning: false
-  suppressedRuleWarning: false
   suppressionGroupExpired: Error
 
 # Configure include options

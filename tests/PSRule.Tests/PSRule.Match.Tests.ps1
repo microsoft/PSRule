@@ -108,7 +108,7 @@ Describe 'PSRule -- Match keyword' -Tag 'Match' {
                     Name = 'TestObject2'
                 }
             )
-            $option = New-PSRuleOption -NotProcessedWarning $False
+            $option = New-PSRuleOption -ExecutionUnprocessedObject Ignore;
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'MatchCondition' -Outcome All -Option $option;
 
             # Test positive cases

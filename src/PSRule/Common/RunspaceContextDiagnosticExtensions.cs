@@ -101,23 +101,13 @@ namespace PSRule
 
         internal static void WarnAliasReference(this RunspaceContext context, ResourceKind kind, string resourceId, string targetId, string alias)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
             var action = context.Pipeline.Option.Execution.AliasReference.GetValueOrDefault(ExecutionOption.Default.AliasReference.Value);
-            if (context.Pipeline.Option.Execution.AliasReferenceWarning.HasValue)
-                action = context.Pipeline.Option.Execution.AliasReferenceWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
-#pragma warning restore CS0618 // Type or member is obsolete
-
             Throw(context, action, PSRuleResources.AliasReference, kind.ToString(), resourceId, targetId, alias);
         }
 
         internal static void WarnAliasSuppression(this RunspaceContext context, string targetId, string alias)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
             var action = context.Pipeline.Option.Execution.AliasReference.GetValueOrDefault(ExecutionOption.Default.AliasReference.Value);
-            if (context.Pipeline.Option.Execution.AliasReferenceWarning.HasValue)
-                action = context.Pipeline.Option.Execution.AliasReferenceWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
-#pragma warning restore CS0618 // Type or member is obsolete
-
             Throw(context, action, PSRuleResources.AliasSuppression, targetId, alias);
         }
     }

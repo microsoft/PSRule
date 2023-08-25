@@ -54,16 +54,11 @@ binding:
 # Configure execution options
 execution:
   aliasReference: Ignore
-  aliasReferenceWarning: false
   duplicateResourceId: Warn
   hashAlgorithm: SHA256
   languageMode: ConstrainedLanguage
-  inconclusiveWarning: false
   invariantCulture: Ignore
-  invariantCultureWarning: false
   initialSessionState: Minimal
-  notProcessedWarning: false
-  suppressedRuleWarning: false
   suppressionGroupExpired: Debug
   ruleExcluded: Warn
   ruleInconclusive: Ignore

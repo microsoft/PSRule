@@ -25,7 +25,7 @@ BeforeAll {
 
 Describe 'Scenarios -- azure-resources' -Tag 'EndToEnd','azure-resources' {
     BeforeAll {
-        $option = @{ 'Execution.NotProcessedWarning' = $False };
+        $option = @{ 'Execution.UnprocessedObject' = 'Ignore' };
         $jsonData = Get-Content -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources/resources.json) | ConvertFrom-Json;
         $result = $jsonData | Invoke-PSRule -Path (Join-Path -Path $rootPath -ChildPath docs/scenarios/azure-resources) -Option $option;
     }

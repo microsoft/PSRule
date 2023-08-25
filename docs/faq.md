@@ -68,7 +68,7 @@ For example:
 
 ```powershell
 # With cmdlet
-$option = New-PSRuleOption -OutputAs Summary -OutputCulture 'en-AU' -NotProcessedWarning $False -Configuration @{
+$option = New-PSRuleOption -OutputAs Summary -OutputCulture 'en-AU' -ExecutionUnprocessedObject 'Ignore' -Configuration @{
   CUSTOM_VALUE = 'example'
 }
 $items | Assert-PSRule -Option $option
@@ -77,7 +77,7 @@ $items | Assert-PSRule -Option $option
 $items | Assert-PSRule -Option @{
   'Output.As' = 'Summary'
   'Output.Culture' = 'en-AU'
-  'Execution.NotProcessedWarning' = $False
+  'Execution.UnprocessedObject' = 'Ignore'
   'Configuration.CUSTOM_VALUE' = 'Example'
 }
 ```
@@ -89,7 +89,7 @@ output:
   culture: [ 'en-AU' ]
 
 execution:
-  notProcessedWarning: false
+  unprocessedObject: Ignore
 
 configuration:
   CUSTOM_VALUE: Example
@@ -97,7 +97,7 @@ configuration:
 
 ```bash
 # With environment variable in bash
-export PSRULE_EXECUTION_NOTPROCESSEDWARNING=false
+export PSRULE_EXECUTION_UNPROCESSEDOBJECT=Ignore
 export PSRULE_OUTPUT_AS=Summary
 export PSRULE_OUTPUT_CULTURE=en-AU
 export PSRULE_CONFIGURATION_CUSTOM_VALUE=Example
@@ -184,9 +184,9 @@ After you have tuned your configuration, you may wish to disable this warning to
 To do this you have two options:
 
 1. Exclude files from analysis &mdash; Configure the [Input.PathIgnore][9] option.
-2. Disable the warning entirely &mdash; Set the [Execution.NotProcessedWarning][10] option to `false`.
+2. Disable the warning entirely &mdash; Set the [Execution.UnprocessedObject][10] option to `Ignore`.
 
-  [10]: concepts/PSRule/en-US/about_PSRule_Options/#executionnotprocessedwarning
+  [10]: concepts/PSRule/en-US/about_PSRule_Options/#executionunprocessedobject
 
 ## How do I layer on custom rules on top of an existing module?
 

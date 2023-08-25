@@ -113,29 +113,10 @@ namespace PSRule.Runtime
             CurrentThread = this;
             Pipeline = pipeline;
 
-#pragma warning disable CS0618 // Type or member is obsolete
-
-            if (Pipeline.Option.Execution.InconclusiveWarning.HasValue)
-                _RuleInconclusive = Pipeline.Option.Execution.InconclusiveWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
-            else
-                _RuleInconclusive = Pipeline.Option.Execution.RuleInconclusive.GetValueOrDefault(ExecutionOption.Default.RuleInconclusive.Value);
-
-            if (Pipeline.Option.Execution.NotProcessedWarning.HasValue)
-                _UnprocessedObject = Pipeline.Option.Execution.NotProcessedWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
-            else
-                _UnprocessedObject = Pipeline.Option.Execution.UnprocessedObject.GetValueOrDefault(ExecutionOption.Default.UnprocessedObject.Value);
-
-            if (Pipeline.Option.Execution.SuppressedRuleWarning.HasValue)
-                _RuleSuppressed = Pipeline.Option.Execution.SuppressedRuleWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
-            else
-                _RuleSuppressed = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed.Value);
-
-            if (Pipeline.Option.Execution.InvariantCultureWarning.HasValue)
-                _InvariantCulture = Pipeline.Option.Execution.InvariantCultureWarning.Value ? ExecutionActionPreference.Warn : ExecutionActionPreference.Ignore;
-            else
-                _InvariantCulture = Pipeline.Option.Execution.InvariantCulture.GetValueOrDefault(ExecutionOption.Default.InvariantCulture.Value);
-
-#pragma warning restore CS0618 // Type or member is obsolete
+            _RuleInconclusive = Pipeline.Option.Execution.RuleInconclusive.GetValueOrDefault(ExecutionOption.Default.RuleInconclusive.Value);
+            _UnprocessedObject = Pipeline.Option.Execution.UnprocessedObject.GetValueOrDefault(ExecutionOption.Default.UnprocessedObject.Value);
+            _RuleSuppressed = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed.Value);
+            _InvariantCulture = Pipeline.Option.Execution.InvariantCulture.GetValueOrDefault(ExecutionOption.Default.InvariantCulture.Value);
 
             _FailStream = Pipeline.Option.Logging.RuleFail ?? LoggingOption.Default.RuleFail.Value;
             _PassStream = Pipeline.Option.Logging.RulePass ?? LoggingOption.Default.RulePass.Value;
