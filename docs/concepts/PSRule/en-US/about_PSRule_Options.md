@@ -1268,41 +1268,41 @@ The following preferences are available:
 
 ```powershell
 # PowerShell: Using the ExecutionUnprocessedObject parameter
-$option = New-PSRuleOption -ExecutionUnprocessedObject 'Error';
+$option = New-PSRuleOption -ExecutionUnprocessedObject 'Ignore';
 ```
 
 ```powershell
 # PowerShell: Using the Execution.UnprocessedObject hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.UnprocessedObject' = 'Error' };
+$option = New-PSRuleOption -Option @{ 'Execution.UnprocessedObject' = 'Ignore' };
 ```
 
 ```powershell
 # PowerShell: Using the ExecutionUnprocessedObject parameter to set YAML
-Set-PSRuleOption -ExecutionUnprocessedObject 'Error';
+Set-PSRuleOption -ExecutionUnprocessedObject 'Ignore';
 ```
 
 ```yaml
 # YAML: Using the execution/unprocessedObject property
 execution:
-  unprocessedObject: Error
+  unprocessedObject: Ignore
 ```
 
 ```bash
 # Bash: Using environment variable
-export PSRULE_EXECUTION_UNPROCESSEDOBJECT=Error
+export PSRULE_EXECUTION_UNPROCESSEDOBJECT=Ignore
 ```
 
 ```yaml
 # GitHub Actions: Using environment variable
 env:
-  PSRULE_EXECUTION_UNPROCESSEDOBJECT: Error
+  PSRULE_EXECUTION_UNPROCESSEDOBJECT: Ignore
 ```
 
 ```yaml
 # Azure Pipelines: Using environment variable
 variables:
 - name: PSRULE_EXECUTION_UNPROCESSEDOBJECT
-  value: Error
+  value: Ignore
 ```
 
 ### Include.Module
