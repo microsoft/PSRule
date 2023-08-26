@@ -23,7 +23,7 @@ Install and use PSRule with GitHub Actions by referencing the `microsoft/ps-rule
 
     ```yaml title="GitHub Actions"
     - name: Analyze with PSRule
-      uses: microsoft/ps-rule@v2.7.0
+      uses: microsoft/ps-rule@v2.9.0
     ```
 
 === "Latest stable v2"

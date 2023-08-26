@@ -54,7 +54,7 @@ For example:
 
     ```yaml
     - name: Run PSRule
-      uses: microsoft/ps-rule@v2.8.1
+      uses: microsoft/ps-rule@v2.9.0
       with:
         modules: 'PSRule.Rules.Azure'
         baseline: '@latest'
