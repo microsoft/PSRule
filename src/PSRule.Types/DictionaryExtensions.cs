@@ -26,7 +26,7 @@ namespace PSRule
         /// Try to get a value and remove it from the dictionary.
         /// </summary>
         [DebuggerStepThrough]
-        public static bool TryPopValue<T>(this IDictionary<string, object> dictionary, string key, out T value)
+        public static bool TryPopValue<T>(this IDictionary<string, object> dictionary, string key, out T? value)
         {
             value = default;
             if (dictionary.TryGetValue(key, out var v) && dictionary.Remove(key) && v is T result)
@@ -61,7 +61,7 @@ namespace PSRule
         /// Try to get a <see cref="string"/> and remove it from the dictionary.
         /// </summary>
         [DebuggerStepThrough]
-        public static bool TryPopString(this IDictionary<string, object> dictionary, string key, out string value)
+        public static bool TryPopString(this IDictionary<string, object> dictionary, string key, out string? value)
         {
             value = default;
             if (TryPopValue(dictionary, key, out var v) && v is string svalue)
@@ -76,7 +76,7 @@ namespace PSRule
         /// Try to get an array of strings and remove it from the dictionary.
         /// </summary>
         [DebuggerStepThrough]
-        public static bool TryPopStringArray(this IDictionary<string, object> dictionary, string key, out string[] value)
+        public static bool TryPopStringArray(this IDictionary<string, object> dictionary, string key, out string[]? value)
         {
             value = default;
             return TryPopValue(dictionary, key, out var v) && TypeConverter.TryStringOrArray(v, convert: true, value: out value);
@@ -86,7 +86,7 @@ namespace PSRule
         /// Try to get a <see cref="StringArrayMap"/> and remove it from the dictionary.
         /// </summary>
         [DebuggerStepThrough]
-        public static bool TryPopStringArrayMap(this IDictionary<string, object> dictionary, string key, out StringArrayMap value)
+        public static bool TryPopStringArrayMap(this IDictionary<string, object> dictionary, string key, out StringArrayMap? value)
         {
             value = default;
             if (TryPopValue(dictionary, key, out var v) && v is StringArrayMap svalue)
@@ -183,7 +183,7 @@ namespace PSRule
         /// Try to get the value as a <see cref="string"/>.
         /// </summary>
         [DebuggerStepThrough]
-        public static bool TryGetString(this IDictionary<string, object> dictionary, string key, out string value)
+        public static bool TryGetString(this IDictionary<string, object> dictionary, string key, out string? value)
         {
             value = null;
             if (!dictionary.TryGetValue(key, out var o))
@@ -201,7 +201,7 @@ namespace PSRule
         /// Try to get the value as an <see cref="IEnumerable"/>.
         /// </summary>
         [DebuggerStepThrough]
-        public static bool TryGetEnumerable(this IDictionary<string, object> dictionary, string key, out IEnumerable value)
+        public static bool TryGetEnumerable(this IDictionary<string, object> dictionary, string key, out IEnumerable? value)
         {
             value = null;
             if (!dictionary.TryGetValue(key, out var o))
@@ -219,7 +219,7 @@ namespace PSRule
         /// Try to get the value as an array of strings.
         /// </summary>
         [DebuggerStepThrough]
-        public static bool TryGetStringArray(this IDictionary<string, object> dictionary, string key, out string[] value)
+        public static bool TryGetStringArray(this IDictionary<string, object> dictionary, string key, out string[]? value)
         {
             value = null;
             return dictionary.TryGetValue(key, out var o) && TypeConverter.TryStringOrArray(o, convert: true, value: out value);

@@ -19,7 +19,7 @@ namespace PSRule.Converters.Yaml
         }
 
         /// <inheritdoc/>
-        object IYamlTypeConverter.ReadYaml(IParser parser, Type type)
+        object? IYamlTypeConverter.ReadYaml(IParser parser, Type type)
         {
             if (parser.TryConsume<SequenceStart>(out _))
             {
@@ -38,7 +38,7 @@ namespace PSRule.Converters.Yaml
         }
 
         /// <inheritdoc/>
-        void IYamlTypeConverter.WriteYaml(IEmitter emitter, object value, Type type)
+        void IYamlTypeConverter.WriteYaml(IEmitter emitter, object? value, Type type)
         {
             throw new NotImplementedException();
         }

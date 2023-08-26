@@ -8,7 +8,7 @@ namespace PSRule.Converters
 {
     internal static class TypeConverter
     {
-        public static bool TryString(object o, out string value)
+        public static bool TryString(object o, out string? value)
         {
             if (o is string s)
             {
@@ -24,9 +24,9 @@ namespace PSRule.Converters
             return false;
         }
 
-        public static bool TryString(object o, bool convert, out string value)
+        public static bool TryString(object o, bool convert, out string? value)
         {
-            if (TryString(o, out value))
+            if (TryString(o, out value) && value != null)
                 return true;
 
             if (convert && o is Enum evalue)
@@ -52,7 +52,7 @@ namespace PSRule.Converters
             return false;
         }
 
-        public static bool TryArray(object o, out Array value)
+        public static bool TryArray(object o, out Array? value)
         {
             value = null;
             if (o is string) return false;
@@ -68,10 +68,10 @@ namespace PSRule.Converters
             return value != null;
         }
 
-        public static bool TryStringOrArray(object o, bool convert, out string[] value)
+        public static bool TryStringOrArray(object o, bool convert, out string[]? value)
         {
             // Handle single string
-            if (TryString(o, convert, value: out var s))
+            if (TryString(o, convert, value: out var s) && s != null)
             {
                 value = new string[] { s };
                 return true;
@@ -81,7 +81,7 @@ namespace PSRule.Converters
             return TryStringArray(o, convert, out value);
         }
 
-        public static bool TryStringArray(object o, bool convert, out string[] value)
+        public static bool TryStringArray(object o, bool convert, out string[]? value)
         {
             value = null;
             if (o is Array array)
@@ -89,7 +89,7 @@ namespace PSRule.Converters
                 value = new string[array.Length];
                 for (var i = 0; i < array.Length; i++)
                 {
-                    if (TryString(array.GetValue(i), convert, value: out var s))
+                    if (TryString(array.GetValue(i), convert, value: out var s) && s != null)
                         value[i] = s;
                 }
             }
@@ -98,7 +98,7 @@ namespace PSRule.Converters
                 value = new string[jArray.Count];
                 for (var i = 0; i < jArray.Count; i++)
                 {
-                    if (TryString(jArray[i], convert, out var s))
+                    if (TryString(jArray[i], convert, out var s) && s != null)
                         value[i] = s;
                 }
             }

@@ -10,7 +10,7 @@ namespace PSRule.Data
     /// </summary>
     public sealed class InputFileInfo : ITargetInfo
     {
-        private readonly string _TargetType;
+        private readonly string? _TargetType;
         private readonly TargetSourceInfo _Source;
 
         internal readonly bool IsUrl;
@@ -36,48 +36,48 @@ namespace PSRule.Data
         /// <summary>
         /// The fully qualified path to the file.
         /// </summary>
-        public string FullName { get; }
+        public string? FullName { get; }
 
         /// <summary>
         /// The path to the parent directory containing the file.
         /// </summary>
-        public string BasePath { get; }
+        public string? BasePath { get; }
 
         /// <summary>
         /// The file name.
         /// </summary>
-        public string Name { get; }
+        public string? Name { get; }
 
         /// <summary>
         /// The file extension.
         /// </summary>
-        public string Extension { get; }
+        public string? Extension { get; }
 
         /// <summary>
         /// The name of the directory containing the file.
         /// </summary>
-        public string DirectoryName { get; }
+        public string? DirectoryName { get; }
 
         /// <summary>
         /// The normalized path to the file.
         /// </summary>
-        public string Path { get; }
+        public string? Path { get; }
 
         /// <summary>
         /// The friendly display name for the file.
         /// </summary>
-        public string DisplayName { get; }
+        public string? DisplayName { get; }
 
-        string ITargetInfo.TargetName => DisplayName;
+        string? ITargetInfo.TargetName => DisplayName;
 
-        string ITargetInfo.TargetType => _TargetType;
+        string? ITargetInfo.TargetType => _TargetType;
 
         TargetSourceInfo ITargetInfo.Source => _Source;
 
         /// <summary>
         /// Convert to string.
         /// </summary>
-        public override string ToString()
+        public override string? ToString()
         {
             return FullName;
         }

@@ -87,7 +87,7 @@ namespace PSRule.Data
         /// </summary>
         public sealed class VersionConstraint : ISemanticVersionConstraint
         {
-            private List<ConstraintExpression> _Constraints;
+            private List<ConstraintExpression>? _Constraints;
 
             /// <inheritdoc/>
             public bool Equals(Version version)
@@ -182,7 +182,7 @@ namespace PSRule.Data
                 return Equals(version.Major, version.Minor, version.Patch, version.Prerelease);
             }
 
-            public bool Equals(int major, int minor, int patch, PR prid)
+            public bool Equals(int major, int minor, int patch, PR? prid)
             {
                 if (_Flag == ComparisonOperator.Equals)
                     return EQ(major, minor, patch, prid);
@@ -219,22 +219,22 @@ namespace PSRule.Data
                 return !GuardLessOrEqual(major, minor, patch, prid);
             }
 
-            private bool GuardLessOrEqual(int major, int minor, int patch, PR prid)
+            private bool GuardLessOrEqual(int major, int minor, int patch, PR? prid)
             {
                 return _Flag == (ComparisonOperator.LessThan | ComparisonOperator.Equals) && !(LT(major, minor, patch, prid) || EQ(major, minor, patch, prid));
             }
 
-            private bool GaurdLess(int major, int minor, int patch, PR prid)
+            private bool GaurdLess(int major, int minor, int patch, PR? prid)
             {
                 return _Flag == ComparisonOperator.LessThan && !LT(major, minor, patch, prid);
             }
 
-            private bool GuardGreaterOrEqual(int major, int minor, int patch, PR prid)
+            private bool GuardGreaterOrEqual(int major, int minor, int patch, PR? prid)
             {
                 return _Flag == (ComparisonOperator.GreaterThan | ComparisonOperator.Equals) && !(GT(major, minor, patch, prid) || EQ(major, minor, patch, prid));
             }
 
-            private bool GuardGreater(int major, int minor, int patch, PR prid)
+            private bool GuardGreater(int major, int minor, int patch, PR? prid)
             {
                 return _Flag == ComparisonOperator.GreaterThan && !GT(major, minor, patch, prid);
             }
@@ -254,12 +254,12 @@ namespace PSRule.Data
                 return (_Flag == ComparisonOperator.MinorUplift || _Flag == ComparisonOperator.PatchUplift) && major != _Major;
             }
 
-            private bool GuardPRID(PR prid)
+            private bool GuardPRID(PR? prid)
             {
                 return !_IncludePrerelease && Stable && !IsStable(prid);
             }
 
-            private bool EQ(int major, int minor, int patch, PR prid)
+            private bool EQ(int major, int minor, int patch, PR? prid)
             {
                 return EQCore(major, minor, patch) && PR(prid) == 0;
             }
@@ -288,7 +288,7 @@ namespace PSRule.Data
             /// <summary>
             /// Greater Than.
             /// </summary>
-            private bool GT(int major, int minor, int patch, PR prid)
+            private bool GT(int major, int minor, int patch, PR? prid)
             {
                 return !IsStable(prid) && !_IncludePrerelease
                     ? EQCore(major, minor, patch) && PR(prid) < 0
@@ -298,7 +298,7 @@ namespace PSRule.Data
             /// <summary>
             /// Less Than.
             /// </summary>
-            private bool LT(int major, int minor, int patch, PR prid)
+            private bool LT(int major, int minor, int patch, PR? prid)
             {
                 return !IsStable(prid) && !_IncludePrerelease
                     ? EQCore(major, minor, patch) && PR(prid) > 0
@@ -308,12 +308,12 @@ namespace PSRule.Data
             /// <summary>
             /// Compare pre-release.
             /// </summary>
-            private int PR(PR prid)
+            private int PR(PR? prid)
             {
                 return _PRID.CompareTo(prid);
             }
 
-            private static bool IsStable(PR prid)
+            private static bool IsStable(PR? prid)
             {
                 return prid == null || prid.Stable;
             }
@@ -361,7 +361,7 @@ namespace PSRule.Data
             /// <summary>
             /// Try to parse a semantic version from a string.
             /// </summary>
-            public static bool TryParse(string value, out Version version)
+            public static bool TryParse(string value, out Version? version)
             {
                 return TryParseVersion(value, out version);
             }
@@ -439,7 +439,7 @@ namespace PSRule.Data
             internal static readonly PR Empty = new();
             private static readonly char[] SEPARATORS = new char[] { SEPARATOR };
 
-            private readonly string[] _Identifiers;
+            private readonly string[]? _Identifiers;
 
             private PR()
             {
@@ -466,11 +466,11 @@ namespace PSRule.Data
             /// <summary>
             /// Compare the pre-release identifer to another pre-release identifier.
             /// </summary>
-            public int CompareTo(PR pr)
+            public int CompareTo(PR? pr)
             {
-                if (pr == null || pr.Stable)
+                if (pr == null || pr.Stable || pr._Identifiers == null)
                     return Stable ? 0 : -1;
-                else if (Stable)
+                else if (Stable || _Identifiers == null)
                     return 1;
 
                 var i = -1;
@@ -811,7 +811,7 @@ namespace PSRule.Data
         /// <summary>
         /// Try to parse a version from the provided string.
         /// </summary>
-        public static bool TryParseVersion(string value, out Version version)
+        public static bool TryParseVersion(string value, out Version? version)
         {
             version = null;
             if (string.IsNullOrEmpty(value))

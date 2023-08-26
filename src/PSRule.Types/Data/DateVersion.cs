@@ -74,7 +74,7 @@ namespace PSRule.Data
         /// </summary>
         public sealed class VersionConstraint : IDateVersionConstraint
         {
-            private List<ConstraintExpression> _Constraints;
+            private List<ConstraintExpression>? _Constraints;
 
             /// <inheritdoc/>
             public bool Equals(Version version)
@@ -388,7 +388,7 @@ namespace PSRule.Data
             internal static readonly PR Empty = new();
             private static readonly char[] SEPARATORS = new char[] { DOT };
 
-            private readonly string[] _Identifiers;
+            private readonly string[]? _Identifiers;
 
             private PR()
             {
@@ -417,10 +417,14 @@ namespace PSRule.Data
             /// </summary>
             public int CompareTo(PR pr)
             {
-                if (pr == null || pr.Stable)
+                if (pr == null || pr.Stable || pr._Identifiers == null)
+                {
                     return Stable ? 0 : -1;
-                else if (Stable)
+                }
+                else if (Stable || _Identifiers == null)
+                {
                     return 1;
+                }
 
                 var i = -1;
                 var left = _Identifiers;
@@ -751,7 +755,7 @@ namespace PSRule.Data
         /// <summary>
         /// Try to parse a version from the provided string.
         /// </summary>
-        public static bool TryParseVersion(string value, out Version version)
+        public static bool TryParseVersion(string value, out Version? version)
         {
             version = null;
             if (string.IsNullOrEmpty(value))

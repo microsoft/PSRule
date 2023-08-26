@@ -95,7 +95,7 @@ namespace PSRule.Data
         {
             foreach (var property in properties)
             {
-                if (TypeConverter.TryStringOrArray(property.Value, convert: true, out var values))
+                if (TypeConverter.TryStringOrArray(property.Value, convert: true, out var values) && values != null)
                     map[property.Key] = values;
             }
         }

@@ -37,7 +37,7 @@ namespace PSRule.Runtime
         public string[] GetStringValues(string configurationKey)
         {
             if (!TryGetValue(configurationKey, out var value) || value == null)
-                return System.Array.Empty<string>();
+                return Array.Empty<string>();
 
             if (value is string valueT)
                 return new string[] { valueT };

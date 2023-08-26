@@ -32,7 +32,7 @@ namespace PSRule
         /// <param name="s">The string to split.</param>
         /// <param name="width">The maximum width to split lines along.</param>
         /// <returns>Returns an array of strings that have been semantically split.</returns>
-        public static string[] SplitSemantic(this string s, int width = 80)
+        public static string[]? SplitSemantic(this string s, int width = 80)
         {
             if (s == null)
                 return null;

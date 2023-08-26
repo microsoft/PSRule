@@ -105,7 +105,7 @@ namespace PSRule
         /// <param name="normalize">When set to <c>true</c> the returned path uses forward slashes instead of backslashes.</param>
         /// <param name="basePath">The base path to use. When <c>null</c> of unspecified, the current working path will be used.</param>
         /// <returns>A absolute path.</returns>
-        internal static string GetRootedPath(string path, bool normalize = false, string basePath = null)
+        internal static string GetRootedPath(string? path, bool normalize = false, string? basePath = null)
         {
             if (string.IsNullOrEmpty(path))
                 path = string.Empty;
@@ -141,7 +141,7 @@ namespace PSRule
         /// </summary>
         public static bool IsAzurePipelines()
         {
-            return TryBool(TF_BUILD, out var azp) && azp;
+            return TryBool(TF_BUILD, out var azp) && azp.HasValue && azp.Value;
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace PSRule
         /// </summary>
         public static bool IsGitHubActions()
         {
-            return TryBool(GITHUB_ACTIONS, out var gh) && gh;
+            return TryBool(GITHUB_ACTIONS, out var gh) && gh.HasValue && gh.Value;
         }
 
         /// <summary>
@@ -163,9 +163,9 @@ namespace PSRule
         /// <summary>
         /// Get the run identifier for the current environment.
         /// </summary>
-        public static string GetRunId()
+        public static string? GetRunId()
         {
-            if (TryString("PSRULE_RUN_ID", out var runId))
+            if (TryString("PSRULE_RUN_ID", out var runId) && runId != null)
                 return runId;
 
             return TryString("BUILD_REPOSITORY_NAME", out var prefix) && TryString("BUILD_BUILDID", out var suffix) ||
@@ -177,7 +177,7 @@ namespace PSRule
         /// <summary>
         /// Try to get the environment variable as a <see cref="string"/>.
         /// </summary>
-        public static bool TryString(string key, out string value)
+        public static bool TryString(string key, out string? value)
         {
             return TryVariable(key, out value) && !string.IsNullOrEmpty(value);
         }
@@ -185,7 +185,7 @@ namespace PSRule
         /// <summary>
         /// Try to get the environment variable as a <see cref="SecureString"/>.
         /// </summary>
-        public static bool TrySecureString(string key, out SecureString value)
+        public static bool TrySecureString(string key, out SecureString? value)
         {
             value = null;
             if (!TryString(key, out var variable))
@@ -207,7 +207,7 @@ namespace PSRule
         /// <summary>
         /// Try to get the environment variable as a <see cref="bool"/>.
         /// </summary>
-        public static bool TryBool(string key, out bool value)
+        public static bool TryBool(string key, out bool? value)
         {
             value = default;
             return TryVariable(key, out var variable) && TryParseBool(variable, out value);
@@ -225,10 +225,10 @@ namespace PSRule
         /// <summary>
         /// Try to get the environment variable as an array of strings.
         /// </summary>
-        public static bool TryStringArray(string key, out string[] value)
+        public static bool TryStringArray(string key, out string[]? value)
         {
             value = default;
-            if (!TryVariable(key, out var variable))
+            if (!TryVariable(key, out var variable) || variable == null)
                 return false;
 
             value = variable.Split(STRINGARRAY_SEPARATOR, options: StringSplitOptions.RemoveEmptyEntries);
@@ -238,10 +238,10 @@ namespace PSRule
         /// <summary>
         /// Try to get the environment variable as a <see cref="StringArrayMap"/>.
         /// </summary>
-        public static bool TryStringArrayMap(string key, out StringArrayMap value)
+        public static bool TryStringArrayMap(string key, out StringArrayMap? value)
         {
             value = default;
-            if (!TryVariable(key, out var variable))
+            if (!TryVariable(key, out var variable) || variable == null)
                 return false;
 
             var pairs = variable.Split(STRINGARRAY_SEPARATOR, options: StringSplitOptions.RemoveEmptyEntries);
@@ -266,7 +266,7 @@ namespace PSRule
         /// <summary>
         /// Try to get the PATH environment variable.
         /// </summary>
-        public static bool TryPathEnvironmentVariable(out string[] value)
+        public static bool TryPathEnvironmentVariable(out string[]? value)
         {
             return TryPathEnvironmentVariable(PATH_ENV, out value);
         }
@@ -274,10 +274,10 @@ namespace PSRule
         /// <summary>
         /// Try to get a PATH environment variable with a specific name.
         /// </summary>
-        public static bool TryPathEnvironmentVariable(string key, out string[] value)
+        public static bool TryPathEnvironmentVariable(string key, out string[]? value)
         {
             value = default;
-            if (!TryVariable(key, out var variable))
+            if (!TryVariable(key, out var variable) || variable == null)
                 return false;
 
             var separator = System.Environment.OSVersion.Platform == PlatformID.Win32NT ? WINDOWS_PATH_ENV_SEPARATOR : LINUX_PATH_ENV_SEPARATOR;
@@ -300,20 +300,26 @@ namespace PSRule
             }
         }
 
-        private static bool TryVariable(string key, out string variable)
+        private static bool TryVariable(string key, out string? variable)
         {
             variable = System.Environment.GetEnvironmentVariable(key);
             return variable != null;
         }
 
-        private static bool TryParseBool(string variable, out bool value)
+        private static bool TryParseBool(string? variable, out bool? value)
         {
-            if (bool.TryParse(variable, out value))
-                return true;
+            value = default;
+            if (variable == null)
+                return false;
 
-            if (int.TryParse(variable, out var ivalue))
+            if (bool.TryParse(variable, out var b))
             {
-                value = ivalue > 0;
+                value = b;
+                return true;
+            }
+            if (int.TryParse(variable, out var i))
+            {
+                value = i > 0;
                 return true;
             }
             return false;
