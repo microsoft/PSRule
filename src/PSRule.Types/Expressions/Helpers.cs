@@ -15,7 +15,7 @@ namespace PSRule.Expressions
             return actual.StartsWith(expected, ignoreCase: !caseSensitive, Thread.CurrentThread.CurrentCulture);
         }
 
-        internal static string NormalizePath(string basePath, string path, bool caseSensitive = true)
+        internal static string NormalizePath(string basePath, string? path, bool caseSensitive = true)
         {
             path = Environment.GetRootedPath(path, normalize: true, basePath: basePath);
             basePath = Environment.GetRootedBasePath(basePath, normalize: true);

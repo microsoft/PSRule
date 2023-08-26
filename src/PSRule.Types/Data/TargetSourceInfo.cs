@@ -49,7 +49,7 @@ namespace PSRule.Data
         /// The file path of the source file.
         /// </summary>
         [JsonProperty(PropertyName = PROPERTY_FILE)]
-        public string File { get; internal set; }
+        public string? File { get; internal set; }
 
         /// <summary>
         /// The first line of the object.
@@ -67,11 +67,11 @@ namespace PSRule.Data
         /// The type of source.
         /// </summary>
         [JsonProperty(PropertyName = PROPERTY_TYPE)]
-        public string Type { get; internal set; }
+        public string? Type { get; internal set; }
 
-        string IFileInfo.Path => File;
+        string? IFileInfo.Path => File;
 
-        string IFileInfo.Extension => Path.GetExtension(File);
+        string? IFileInfo.Extension => Path.GetExtension(File);
 
         /// <inheritdoc/>
         public bool Equals(TargetSourceInfo other)
@@ -115,7 +115,7 @@ namespace PSRule.Data
         /// <param name="defaultType">The default type to use if the type was not specified.</param>
         /// <param name="useRelativePath">Determine if a relative path is returned.</param>
         /// <returns>A formatted source string.</returns>
-        public string ToString(string defaultType, bool useRelativePath)
+        public string ToString(string? defaultType, bool useRelativePath)
         {
             var type = Type ?? defaultType;
             var file = GetPath(useRelativePath);
@@ -124,7 +124,7 @@ namespace PSRule.Data
                 : string.Concat(type, COLONSPACE, file, COLON, Line, COLON, Position);
         }
 
-        internal string GetPath(bool useRelativePath)
+        internal string? GetPath(bool useRelativePath)
         {
             return useRelativePath ? Helpers.NormalizePath(Environment.GetWorkingPath(), File) : File;
         }

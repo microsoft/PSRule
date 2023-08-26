@@ -9,7 +9,27 @@ namespace PSRule.Options
     /// <summary>
     /// Options that configure baselines.
     /// </summary>
-    public sealed class BaselineOption : IEquatable<BaselineOption>
+    /// <remarks>
+    /// See <see href="https://aka.ms/ps-rule/options"/>.
+    /// </remarks>
+    public interface IBaselineOption : IOption
+    {
+        /// <summary>
+        /// A mapping of baseline group names to baselines.
+        /// </summary>
+        /// <remarks>
+        /// See <see href="https://aka.ms/ps-rule/options#baselinegroup"/>.
+        /// </remarks>
+        StringArrayMap? Group { get; }
+    }
+
+    /// <summary>
+    /// Options that configure baselines.
+    /// </summary>
+    /// <remarks>
+    /// See <see href="https://aka.ms/ps-rule/options"/>.
+    /// </remarks>
+    public sealed class BaselineOption : IEquatable<BaselineOption>, IBaselineOption
     {
         internal static readonly BaselineOption Default = new()
         {
@@ -73,14 +93,9 @@ namespace PSRule.Options
             return result;
         }
 
-        /// <summary>
-        /// A mapping of baseline group names to baselines.
-        /// </summary>
-        /// <remarks>
-        /// See <see href="https://aka.ms/ps-rule/options#baselinegroup"/>.
-        /// </remarks>
+        /// <inheritdoc/>
         [DefaultValue(null)]
-        public StringArrayMap Group { get; set; }
+        public StringArrayMap? Group { get; set; }
 
         /// <summary>
         /// Load from environment variables.

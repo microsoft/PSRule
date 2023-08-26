@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Options;
 using PSRule.Definitions;
+using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;

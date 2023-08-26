@@ -27,25 +27,25 @@ namespace PSRule.Data
         /// The type of issue.
         /// </summary>
         [JsonProperty(PropertyName = PROPERTY_TYPE)]
-        public string Type { get; internal set; }
+        public string? Type { get; internal set; }
 
         /// <summary>
         /// The name of the issue.
         /// </summary>
         [JsonProperty(PropertyName = PROPERTY_NAME)]
-        public string Name { get; internal set; }
+        public string? Name { get; internal set; }
 
         /// <summary>
         /// The object path reported by the issue.
         /// </summary>
         [JsonProperty(PropertyName = PROPERTY_PATH)]
-        public string Path { get; internal set; }
+        public string? Path { get; internal set; }
 
         /// <summary>
         /// A localized message describing the issue.
         /// </summary>
         [JsonProperty(PropertyName = PROPERTY_MESSAGE)]
-        public string Message { get; internal set; }
+        public string? Message { get; internal set; }
 
         /// <inheritdoc/>
         public bool Equals(TargetIssueInfo other)

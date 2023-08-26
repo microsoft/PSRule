@@ -11,12 +11,12 @@ namespace PSRule.Data
         /// <summary>
         /// The target name provided by the object.
         /// </summary>
-        string TargetName { get; }
+        string? TargetName { get; }
 
         /// <summary>
         /// The target type provided by the object.
         /// </summary>
-        string TargetType { get; }
+        string? TargetType { get; }
 
         /// <summary>
         /// The source information provided by the object.

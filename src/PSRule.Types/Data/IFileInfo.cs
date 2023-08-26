@@ -11,11 +11,11 @@ namespace PSRule.Data
         /// <summary>
         /// The full path to the file.
         /// </summary>
-        string Path { get; }
+        string? Path { get; }
 
         /// <summary>
         /// The extension for the file.
         /// </summary>
-        string Extension { get; }
+        string? Extension { get; }
     }
 }
