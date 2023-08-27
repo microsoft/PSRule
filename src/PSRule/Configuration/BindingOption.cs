@@ -2,9 +2,19 @@
 // Licensed under the MIT License.
 
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace PSRule.Configuration
 {
+    internal static class BindingOptionExtensions
+    {
+        [DebuggerStepThrough]
+        public static StringComparer GetComparer(this BindingOption option)
+        {
+            return option.IgnoreCase.GetValueOrDefault(BindingOption.Default.IgnoreCase.Value) ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+        }
+    }
+
     /// <summary>
     /// Options that affect property binding of TargetName and TargetType.
     /// </summary>
@@ -92,20 +102,20 @@ namespace PSRule.Configuration
         }
 
         /// <summary>
-        /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+        /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
         /// Values from <paramref name="o1"/> that are set are not overridden.
         /// </summary>
         internal static BindingOption Combine(BindingOption o1, BindingOption o2)
         {
             var result = new BindingOption(o1)
             {
-                Field = o1.Field ?? o2.Field,
-                IgnoreCase = o1.IgnoreCase ?? o2.IgnoreCase,
-                NameSeparator = o1.NameSeparator ?? o2.NameSeparator,
-                PreferTargetInfo = o1.PreferTargetInfo ?? o2.PreferTargetInfo,
-                TargetName = o1.TargetName ?? o2.TargetName,
-                TargetType = o1.TargetType ?? o2.TargetType,
-                UseQualifiedName = o1.UseQualifiedName ?? o2.UseQualifiedName
+                Field = FieldMap.Combine(o1?.Field, o2?.Field),
+                IgnoreCase = o1?.IgnoreCase ?? o2?.IgnoreCase,
+                NameSeparator = o1?.NameSeparator ?? o2?.NameSeparator,
+                PreferTargetInfo = o1?.PreferTargetInfo ?? o2?.PreferTargetInfo,
+                TargetName = o1?.TargetName ?? o2?.TargetName,
+                TargetType = o1?.TargetType ?? o2?.TargetType,
+                UseQualifiedName = o1?.UseQualifiedName ?? o2?.UseQualifiedName
             };
             return result;
         }

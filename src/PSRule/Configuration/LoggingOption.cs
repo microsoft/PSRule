@@ -81,10 +81,10 @@ namespace PSRule.Configuration
         {
             var result = new LoggingOption(o1)
             {
-                LimitDebug = o1.LimitDebug ?? o2.LimitDebug,
-                LimitVerbose = o1.LimitVerbose ?? o2.LimitVerbose,
-                RuleFail = o1.RuleFail ?? o2.RuleFail,
-                RulePass = o1.RulePass ?? o2.RulePass
+                LimitDebug = o1?.LimitDebug ?? o2?.LimitDebug,
+                LimitVerbose = o1?.LimitVerbose ?? o2?.LimitVerbose,
+                RuleFail = o1?.RuleFail ?? o2?.RuleFail,
+                RulePass = o1?.RulePass ?? o2?.RulePass
             };
             return result;
         }

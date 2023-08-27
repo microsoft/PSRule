@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
+using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -10,7 +11,7 @@ using PSRule.Runtime;
 namespace PSRule.Commands
 {
     /// <summary>
-    /// An internal langauge command used to evaluate a rule script block.
+    /// An internal language command used to evaluate a rule script block.
     /// </summary>
     internal sealed class InvokeRuleBlockCommand : Cmdlet
     {
@@ -37,14 +38,14 @@ namespace PSRule.Commands
                 if (Body == null)
                     return;
 
-                // Evalute selector pre-condition
+                // Evaluate selector pre-condition
                 if (!AcceptsWith())
                 {
                     context.Writer.DebugMessage(PSRuleResources.DebugTargetTypeMismatch);
                     return;
                 }
 
-                // Evalute type pre-condition
+                // Evaluate type pre-condition
                 if (!AcceptsType())
                 {
                     context.Writer.DebugMessage(PSRuleResources.DebugTargetTypeMismatch);

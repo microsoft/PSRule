@@ -439,7 +439,7 @@ namespace PSRule.Pipeline
         {
             var unresolved = new List<ResourceRef>();
             if (_Baseline is Configuration.BaselineOption.BaselineRef baselineRef)
-                unresolved.Add(new BaselineRef(ResolveBaselineGroup(baselineRef.Name), OptionContext.ScopeType.Explicit));
+                unresolved.Add(new BaselineRef(ResolveBaselineGroup(baselineRef.Name), ScopeType.Explicit));
 
             return PipelineContext.New(
                 option: Option,
@@ -448,7 +448,7 @@ namespace PSRule.Pipeline
                 bindTargetName: bindTargetName,
                 bindTargetType: bindTargetType,
                 bindField: bindField,
-                baseline: GetOptionContext(),
+                optionBuilder: GetOptionBuilder(),
                 unresolved: unresolved
             );
         }
@@ -589,10 +589,9 @@ namespace PSRule.Pipeline
             return _InputFilter;
         }
 
-        private OptionContext GetOptionContext()
+        private OptionContextBuilder GetOptionBuilder()
         {
-            var builder = new OptionContextBuilder(Option, _Include, _Tag, _Convention);
-            return builder.Build();
+            return new OptionContextBuilder(Option, _Include, _Tag, _Convention);
         }
 
         protected void ConfigureBinding(PSRuleOption option)

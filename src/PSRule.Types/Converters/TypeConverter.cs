@@ -8,8 +8,12 @@ namespace PSRule.Converters
 {
     internal static class TypeConverter
     {
+        private const string PROPERTY_BASEOBJECT = "BaseObject";
+
         public static bool TryString(object o, out string? value)
         {
+            value = null;
+            if (o == null) return false;
             if (o is string s)
             {
                 value = s;
@@ -20,7 +24,11 @@ namespace PSRule.Converters
                 value = token.Value<string>();
                 return true;
             }
-            value = null;
+            else if (TryGetValue(o, PROPERTY_BASEOBJECT, out var baseValue) && baseValue is string s_baseValue)
+            {
+                value = s_baseValue;
+                return true;
+            }
             return false;
         }
 
@@ -254,6 +262,20 @@ namespace PSRule.Converters
                 return true;
             }
             value = default;
+            return false;
+        }
+
+        private static bool TryGetValue(object o, string propertyName, out object? value)
+        {
+            value = null;
+            if (o == null) return false;
+
+            var type = o.GetType();
+            if (type.TryGetPropertyInfo(propertyName, out var propertyInfo) && propertyInfo != null)
+            {
+                value = propertyInfo.GetValue(o);
+                return true;
+            }
             return false;
         }
     }

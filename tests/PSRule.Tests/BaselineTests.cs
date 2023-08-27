@@ -186,7 +186,7 @@ namespace PSRule
 
         private static Baseline[] GetBaselines(Source[] source)
         {
-            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
+            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContextBuilder(), null), null);
             context.Init(source);
             context.Begin();
             var baseline = HostHelper.GetBaseline(source, context).ToArray();

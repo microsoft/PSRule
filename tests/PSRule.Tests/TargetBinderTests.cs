@@ -5,6 +5,7 @@ using System.Management.Automation;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
 using PSRule.Definitions.Baselines;
+using PSRule.Definitions.ModuleConfigs;
 using PSRule.Pipeline;
 
 namespace PSRule
@@ -78,58 +79,52 @@ namespace PSRule
         private static ITargetBinder GetBinder()
         {
             var builder = new TargetBinderBuilder(PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, null);
-            var option = new OptionContext();
+            var option = new OptionContextBuilder();
 
-            option.Add(new OptionContext.BaselineScope(
-                type: OptionContext.ScopeType.Module,
-                baselineId: null,
-                moduleName: "Module1",
-                option: GetOption(
-                    targetName: new string[] { "name" },
-                    targetType: new string[] { "type" }
-                ),
-                obsolete: false
-            ));
+            option.ModuleConfig("Module1", new ModuleConfigV1Spec
+            {
+                Binding = new BindingOption
+                {
+                    TargetName = new[] { "name" },
+                    TargetType = new[] { "type" }
+                }
+            });
 
-            option.Add(new OptionContext.BaselineScope(
-                type: OptionContext.ScopeType.Module,
-                baselineId: null,
-                moduleName: "Module2",
-                option: GetOption(
-                    targetName: new string[] { "AlternativeName" },
-                    targetType: new string[] { "type" }
-                ),
-                obsolete: false
-            ));
+            option.ModuleConfig("Module2", new ModuleConfigV1Spec
+            {
+                Binding = new BindingOption
+                {
+                    TargetName = new[] { "AlternativeName" },
+                    TargetType = new[] { "type" }
+                }
+            });
 
-            option.Add(new OptionContext.BaselineScope(
-                type: OptionContext.ScopeType.Module,
-                baselineId: null,
-                moduleName: "Module3",
-                option: GetOption(
-                    targetName: new string[] { "name" },
-                    targetType: new string[] { "type" },
-                    preferTargetInfo: true
-                ),
-                obsolete: false
-            ));
+            option.ModuleConfig("Module3", new ModuleConfigV1Spec
+            {
+                Binding = new BindingOption
+                {
+                    TargetName = new[] { "name" },
+                    TargetType = new[] { "type" },
+                    PreferTargetInfo = true
+                }
+            });
 
             var scopes = new Runtime.LanguageScopeSet(null);
 
             scopes.Import("Module1", out var module1);
-            option.UpdateLanguageScope(module1);
+            module1.Configure(option.Build(module1.Name));
             builder.With(module1);
 
             scopes.Import("Module2", out var module2);
-            option.UpdateLanguageScope(module2);
+            module2.Configure(option.Build(module2.Name));
             builder.With(module2);
 
             scopes.Import("Module3", out var module3);
-            option.UpdateLanguageScope(module3);
+            module3.Configure(option.Build(module3.Name));
             builder.With(module3);
 
             scopes.Import(".", out var local);
-            option.UpdateLanguageScope(local);
+            local.Configure(option.Build(local.Name));
             builder.With(local);
             return builder.Build();
         }

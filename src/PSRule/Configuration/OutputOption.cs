@@ -125,18 +125,18 @@ namespace PSRule.Configuration
         {
             var result = new OutputOption(o1)
             {
-                As = o1.As ?? o2.As,
-                Banner = o1.Banner ?? o2.Banner,
-                Culture = o1.Culture ?? o2.Culture,
-                Encoding = o1.Encoding ?? o2.Encoding,
-                Footer = o1.Footer ?? o2.Footer,
-                Format = o1.Format ?? o2.Format,
-                JobSummaryPath = o1.JobSummaryPath ?? o2.JobSummaryPath,
-                JsonIndent = o1.JsonIndent ?? o2.JsonIndent,
-                Outcome = o1.Outcome ?? o2.Outcome,
-                Path = o1.Path ?? o2.Path,
-                SarifProblemsOnly = o1.SarifProblemsOnly ?? o2.SarifProblemsOnly,
-                Style = o1.Style ?? o2.Style,
+                As = o1?.As ?? o2?.As,
+                Banner = o1?.Banner ?? o2?.Banner,
+                Culture = o1?.Culture ?? o2?.Culture,
+                Encoding = o1?.Encoding ?? o2?.Encoding,
+                Footer = o1?.Footer ?? o2?.Footer,
+                Format = o1?.Format ?? o2?.Format,
+                JobSummaryPath = o1?.JobSummaryPath ?? o2?.JobSummaryPath,
+                JsonIndent = o1?.JsonIndent ?? o2?.JsonIndent,
+                Outcome = o1?.Outcome ?? o2?.Outcome,
+                Path = o1?.Path ?? o2?.Path,
+                SarifProblemsOnly = o1?.SarifProblemsOnly ?? o2?.SarifProblemsOnly,
+                Style = o1?.Style ?? o2?.Style,
             };
             return result;
         }

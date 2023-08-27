@@ -63,7 +63,7 @@ namespace PSRule.Configuration
         {
             var result = new ConventionOption(o1)
             {
-                Include = o1.Include ?? o2.Include
+                Include = o1?.Include ?? o2?.Include
             };
             return result;
         }

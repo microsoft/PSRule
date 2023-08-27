@@ -103,6 +103,17 @@ namespace PSRule.Configuration
         }
 
         /// <summary>
+        /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+        /// Values from <paramref name="o1"/> that are set are not overridden.
+        /// </summary>
+        internal static SuppressionOption Combine(SuppressionOption o1, SuppressionOption o2)
+        {
+            var result = new SuppressionOption(o1);
+            result.AddUnique(o2);
+            return result;
+        }
+
+        /// <summary>
         /// Remove a specific <see cref="SuppressionRule"/> by rule name.
         /// </summary>
         /// <param name="key">The name of the rule.</param>

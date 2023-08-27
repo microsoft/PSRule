@@ -119,5 +119,15 @@ namespace PSRule.Configuration
         {
             get => _Map;
         }
+
+        internal static FieldMap Combine(FieldMap m1, FieldMap m2)
+        {
+            if (m1 == null) return m2;
+            if (m2 == null) return m1;
+
+            var result = new FieldMap(m1);
+            result._Map.AddUnique(m2._Map);
+            return result;
+        }
     }
 }

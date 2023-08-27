@@ -45,6 +45,17 @@ namespace PSRule.Configuration
         }
 
         /// <summary>
+        /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+        /// Values from <paramref name="o1"/> that are set are not overridden.
+        /// </summary>
+        internal static RequiresOption Combine(RequiresOption o1, RequiresOption o2)
+        {
+            var result = new RequiresOption(o1);
+            result.AddUnique(o2);
+            return result;
+        }
+
+        /// <summary>
         /// Load Requires option from environment variables.
         /// </summary>
         internal void Load()

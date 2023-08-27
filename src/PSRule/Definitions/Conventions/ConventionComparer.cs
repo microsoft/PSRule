@@ -19,7 +19,7 @@ namespace PSRule.Definitions.Conventions
 
         public int Compare(IConvention x, IConvention y)
         {
-            return _Context.Pipeline.Baseline.GetConventionOrder(x) - _Context.Pipeline.Baseline.GetConventionOrder(y);
+            return _Context.Pipeline.GetConventionOrder(x) - _Context.Pipeline.GetConventionOrder(y);
         }
     }
 }

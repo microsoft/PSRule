@@ -31,6 +31,8 @@ namespace PSRule.Pipeline
         [ThreadStatic]
         internal static PipelineContext CurrentThread;
 
+        private readonly OptionContextBuilder _OptionBuilder;
+
         // Configuration parameters
         private readonly IList<ResourceRef> _Unresolved;
         private readonly LanguageMode _LanguageMode;
@@ -50,7 +52,6 @@ namespace PSRule.Pipeline
         internal readonly Dictionary<string, PSObject[]> ContentCache;
         internal readonly Dictionary<string, SelectorVisitor> Selector;
         internal readonly List<SuppressionGroupVisitor> SuppressionGroup;
-        internal readonly OptionContext Baseline;
         internal readonly IHostContext HostContext;
         internal readonly PipelineReader Reader;
         internal readonly BindTargetMethod BindTargetName;
@@ -60,10 +61,13 @@ namespace PSRule.Pipeline
 
         internal readonly Stopwatch RunTime;
 
+        private OptionContext _DefaultOptionContext;
+
         public System.Security.Cryptography.HashAlgorithm ObjectHashAlgorithm { get; }
 
-        private PipelineContext(PSRuleOption option, IHostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IList<ResourceRef> unresolved)
+        private PipelineContext(PSRuleOption option, IHostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
         {
+            _OptionBuilder = optionBuilder;
             Option = option;
             HostContext = hostContext;
             Reader = reader;
@@ -77,18 +81,18 @@ namespace PSRule.Pipeline
             ContentCache = new Dictionary<string, PSObject[]>();
             Selector = new Dictionary<string, SelectorVisitor>();
             SuppressionGroup = new List<SuppressionGroupVisitor>();
-            Baseline = baseline;
             _Unresolved = unresolved ?? new List<ResourceRef>();
             _TrackedIssues = new List<ResourceIssue>();
 
             ObjectHashAlgorithm = GetHashAlgorithm(option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm.Value));
             RunId = Environment.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
             RunTime = Stopwatch.StartNew();
+            _DefaultOptionContext = _OptionBuilder?.Build(null);
         }
 
-        public static PipelineContext New(PSRuleOption option, IHostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContext baseline, IList<ResourceRef> unresolved)
+        public static PipelineContext New(PSRuleOption option, IHostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
         {
-            var context = new PipelineContext(option, hostContext, reader, bindTargetName, bindTargetType, bindField, baseline, unresolved);
+            var context = new PipelineContext(option, hostContext, reader, bindTargetName, bindTargetType, bindField, optionBuilder, unresolved);
             CurrentThread = context;
             return context;
         }
@@ -165,7 +169,7 @@ namespace PSRule.Pipeline
             if (TryBaseline(resource, out var baseline) && TryBaselineRef(resource.Id, out var baselineRef))
             {
                 RemoveBaselineRef(resource.Id);
-                Baseline.Add(new OptionContext.BaselineScope(baselineRef.Type, baseline.BaselineId, resource.Source.Module, baseline.Spec, baseline.Obsolete));
+                _OptionBuilder.Baseline(baselineRef.Type, baseline.BaselineId, resource.Source.Module, baseline.Spec, baseline.Obsolete);
             }
             else if (resource.Kind == ResourceKind.Selector && resource is SelectorV1 selector)
                 Selector[selector.Id.Value] = new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
@@ -174,10 +178,10 @@ namespace PSRule.Pipeline
                 if (!string.IsNullOrEmpty(moduleConfig?.Spec?.Rule?.Baseline))
                 {
                     var baselineId = ResourceHelper.GetIdString(moduleConfig.Source.Module, moduleConfig.Spec.Rule.Baseline);
-                    if (!Baseline.ContainsBaseline(baselineId))
-                        _Unresolved.Add(new BaselineRef(baselineId, OptionContext.ScopeType.Module));
+                    if (!_OptionBuilder.ContainsBaseline(baselineId))
+                        _Unresolved.Add(new BaselineRef(baselineId, ScopeType.Baseline));
                 }
-                Baseline.Add(new OptionContext.ConfigScope(OptionContext.ScopeType.Module, resource.Source.Module, moduleConfig?.Spec));
+                _OptionBuilder.ModuleConfig(resource.Source.Module, moduleConfig?.Spec);
             }
             else if (resource.Kind == ResourceKind.SuppressionGroup && resource is SuppressionGroupV1 suppressionGroup)
             {
@@ -253,7 +257,19 @@ namespace PSRule.Pipeline
         {
             ReportUnresolved(runspaceContext);
             ReportIssue(runspaceContext);
-            Baseline.CheckObsolete(runspaceContext);
+            _DefaultOptionContext = _OptionBuilder.Build(null);
+            _OptionBuilder.CheckObsolete(runspaceContext);
+        }
+
+        internal void UpdateLanguageScope(ILanguageScope languageScope)
+        {
+            var context = _OptionBuilder.Build(languageScope.Name);
+            languageScope.Configure(context);
+        }
+
+        internal int GetConventionOrder(IConvention x)
+        {
+            return _DefaultOptionContext.GetConventionOrder(x);
         }
 
         private void ReportUnresolved(RunspaceContext runspaceContext)

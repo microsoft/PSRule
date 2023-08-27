@@ -46,7 +46,7 @@ namespace PSRule
 
         private static SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
         {
-            context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContext(), null), null);
+            context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContextBuilder(), null), null);
             context.Init(source);
             context.Begin();
             var selector = HostHelper.GetSelectorForTests(source, context).ToArray().FirstOrDefault(s => s.Name == name);

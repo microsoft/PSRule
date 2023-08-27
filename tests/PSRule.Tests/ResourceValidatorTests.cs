@@ -17,7 +17,7 @@ namespace PSRule
         public void ResourceName()
         {
             var writer = new TestWriter(GetOption());
-            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), writer);
+            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContextBuilder(), null), writer);
 
             // Get good rules
             var rule = HostHelper.GetRule(GetSource(), context, includeDependencies: false);

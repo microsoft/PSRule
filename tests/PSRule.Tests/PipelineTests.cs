@@ -179,7 +179,7 @@ namespace PSRule
         public void PipelineWithInvariantCulture()
         {
             Environment.UseCurrentCulture(CultureInfo.InvariantCulture);
-            var context = PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null);
+            var context = PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContextBuilder(), null);
             var writer = new TestWriter(GetOption());
             var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null, null), writer, false);
             try
@@ -201,7 +201,7 @@ namespace PSRule
             Environment.UseCurrentCulture(CultureInfo.InvariantCulture);
             var option = new PSRuleOption();
             option.Execution.InvariantCulture = ExecutionActionPreference.Ignore;
-            var context = PipelineContext.New(option, null, null, null, null, null, new OptionContext(), null);
+            var context = PipelineContext.New(option, null, null, null, null, null, new OptionContextBuilder(), null);
             var writer = new TestWriter(option);
             var pipeline = new GetRulePipeline(context, GetSource(), new PipelineReader(null, null, null), writer, false);
             try

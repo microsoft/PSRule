@@ -2,13 +2,14 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
+using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Pipeline;
 
 namespace PSRule.Runtime
 {
     /// <summary>
-    /// A named scope for langauge elements.
+    /// A named scope for language elements.
     /// </summary>
     internal interface ILanguageScope : IDisposable
     {
@@ -17,17 +18,14 @@ namespace PSRule.Runtime
         /// </summary>
         string Name { get; }
 
-        IBindingOption Binding { get; }
+        BindingOption Binding { get; }
 
         /// <summary>
         /// Get an ordered culture preference list which will be tries for finding help.
         /// </summary>
         string[] Culture { get; }
 
-        /// <summary>
-        /// Adds one or more configuration values to the scope.
-        /// </summary>
-        void Configure(Dictionary<string, object> configuration);
+        void Configure(OptionContext context);
 
         /// <summary>
         /// Try to get a specific configuration value by name.
@@ -35,10 +33,6 @@ namespace PSRule.Runtime
         bool TryConfigurationValue(string key, out object value);
 
         void WithFilter(IResourceFilter resourceFilter);
-
-        void WithBinding(IBindingOption bindingOption);
-
-        void WithCulture(string[] strings);
 
         /// <summary>
         /// Get a filter for a specific resource kind.
@@ -65,10 +59,10 @@ namespace PSRule.Runtime
     [DebuggerDisplay("{Name}")]
     internal sealed class LanguageScope : ILanguageScope
     {
-        private const string STANDALONE_SCOPENAME = ".";
+        internal const string STANDALONE_SCOPENAME = ".";
 
         private readonly RunspaceContext _Context;
-        private readonly Dictionary<string, object> _Configuration;
+        private IDictionary<string, object> _Configuration;
         private readonly Dictionary<string, object> _Service;
         private readonly Dictionary<ResourceKind, IResourceFilter> _Filter;
 
@@ -78,7 +72,7 @@ namespace PSRule.Runtime
         {
             _Context = context;
             Name = Normalize(name);
-            _Configuration = new Dictionary<string, object>();
+            //_Configuration = new Dictionary<string, object>();
             _Filter = new Dictionary<ResourceKind, IResourceFilter>();
             _Service = new Dictionary<string, object>();
         }
@@ -87,7 +81,7 @@ namespace PSRule.Runtime
         public string Name { [DebuggerStepThrough] get; }
 
         /// <inheritdoc/>
-        public IBindingOption Binding { [DebuggerStepThrough] get; [DebuggerStepThrough] private set; }
+        public BindingOption Binding { [DebuggerStepThrough] get; [DebuggerStepThrough] private set; }
 
         /// <inheritdoc/>
         public string[] Culture { [DebuggerStepThrough] get; [DebuggerStepThrough] private set; }
@@ -96,6 +90,19 @@ namespace PSRule.Runtime
         public void Configure(Dictionary<string, object> configuration)
         {
             _Configuration.AddUnique(configuration);
+        }
+
+        /// <inheritdoc/>
+        public void Configure(OptionContext context)
+        {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+
+            _Configuration = context.Configuration;
+            WithFilter(context.RuleFilter);
+            WithFilter(context.ConventionFilter);
+            Binding = context.Binding;
+            Culture = context.Output.Culture;
         }
 
         /// <inheritdoc/>
@@ -109,18 +116,6 @@ namespace PSRule.Runtime
         public void WithFilter(IResourceFilter resourceFilter)
         {
             _Filter[resourceFilter.Kind] = resourceFilter;
-        }
-
-        /// <inheritdoc/>
-        public void WithBinding(IBindingOption bindingOption)
-        {
-            Binding = bindingOption;
-        }
-
-        /// <inheritdoc/>
-        public void WithCulture(string[] culture)
-        {
-            Culture = culture;
         }
 
         /// <inheritdoc/>

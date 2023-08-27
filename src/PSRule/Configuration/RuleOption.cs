@@ -91,12 +91,12 @@ namespace PSRule.Configuration
         {
             var result = new RuleOption(o1)
             {
-                Baseline = o1.Baseline ?? o2.Baseline,
-                Exclude = o1.Exclude ?? o2.Exclude,
-                IncludeLocal = o1.IncludeLocal ?? o2.IncludeLocal,
-                Include = o1.Include ?? o2.Include,
-                Tag = o1.Tag ?? o2.Tag,
-                Labels = o1.Labels ?? o2.Labels,
+                Baseline = o1?.Baseline ?? o2?.Baseline,
+                Exclude = o1?.Exclude ?? o2?.Exclude,
+                IncludeLocal = o1?.IncludeLocal ?? o2?.IncludeLocal,
+                Include = o1?.Include ?? o2?.Include,
+                Tag = o1?.Tag ?? o2?.Tag,
+                Labels = o1?.Labels ?? o2?.Labels,
             };
             return result;
         }

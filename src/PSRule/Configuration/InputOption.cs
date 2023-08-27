@@ -111,14 +111,14 @@ namespace PSRule.Configuration
         {
             var result = new InputOption(o1)
             {
-                Format = o1.Format ?? o2.Format,
-                IgnoreGitPath = o1.IgnoreGitPath ?? o2.IgnoreGitPath,
-                IgnoreObjectSource = o1.IgnoreObjectSource ?? o2.IgnoreObjectSource,
-                IgnoreRepositoryCommon = o1.IgnoreRepositoryCommon ?? o2.IgnoreRepositoryCommon,
-                IgnoreUnchangedPath = o1.IgnoreUnchangedPath ?? o2.IgnoreUnchangedPath,
-                ObjectPath = o1.ObjectPath ?? o2.ObjectPath,
-                PathIgnore = o1.PathIgnore ?? o2.PathIgnore,
-                TargetType = o1.TargetType ?? o2.TargetType
+                Format = o1?.Format ?? o2?.Format,
+                IgnoreGitPath = o1?.IgnoreGitPath ?? o2?.IgnoreGitPath,
+                IgnoreObjectSource = o1?.IgnoreObjectSource ?? o2?.IgnoreObjectSource,
+                IgnoreRepositoryCommon = o1?.IgnoreRepositoryCommon ?? o2?.IgnoreRepositoryCommon,
+                IgnoreUnchangedPath = o1?.IgnoreUnchangedPath ?? o2?.IgnoreUnchangedPath,
+                ObjectPath = o1?.ObjectPath ?? o2?.ObjectPath,
+                PathIgnore = o1?.PathIgnore ?? o2?.PathIgnore,
+                TargetType = o1?.TargetType ?? o2?.TargetType
             };
             return result;
         }

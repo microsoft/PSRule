@@ -224,24 +224,24 @@ namespace PSRule.Options
         }
 
         /// <summary>
-        /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+        /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
         /// Values from <paramref name="o1"/> that are set are not overridden.
         /// </summary>
         internal static ExecutionOption Combine(ExecutionOption o1, ExecutionOption o2)
         {
             var result = new ExecutionOption(o1)
             {
-                DuplicateResourceId = o1.DuplicateResourceId ?? o2.DuplicateResourceId,
-                HashAlgorithm = o1.HashAlgorithm ?? o2.HashAlgorithm,
-                LanguageMode = o1.LanguageMode ?? o2.LanguageMode,
-                InitialSessionState = o1.InitialSessionState ?? o2.InitialSessionState,
-                SuppressionGroupExpired = o1.SuppressionGroupExpired ?? o2.SuppressionGroupExpired,
-                RuleExcluded = o1.RuleExcluded ?? o2.RuleExcluded,
-                RuleSuppressed = o1.RuleSuppressed ?? o2.RuleSuppressed,
-                AliasReference = o1.AliasReference ?? o2.AliasReference,
-                RuleInconclusive = o1.RuleInconclusive ?? o2.RuleInconclusive,
-                InvariantCulture = o1.InvariantCulture ?? o2.InvariantCulture,
-                UnprocessedObject = o1.UnprocessedObject ?? o2.UnprocessedObject,
+                DuplicateResourceId = o1?.DuplicateResourceId ?? o2?.DuplicateResourceId,
+                HashAlgorithm = o1?.HashAlgorithm ?? o2?.HashAlgorithm,
+                LanguageMode = o1?.LanguageMode ?? o2?.LanguageMode,
+                InitialSessionState = o1?.InitialSessionState ?? o2?.InitialSessionState,
+                SuppressionGroupExpired = o1?.SuppressionGroupExpired ?? o2?.SuppressionGroupExpired,
+                RuleExcluded = o1?.RuleExcluded ?? o2?.RuleExcluded,
+                RuleSuppressed = o1?.RuleSuppressed ?? o2?.RuleSuppressed,
+                AliasReference = o1?.AliasReference ?? o2?.AliasReference,
+                RuleInconclusive = o1?.RuleInconclusive ?? o2?.RuleInconclusive,
+                InvariantCulture = o1?.InvariantCulture ?? o2?.InvariantCulture,
+                UnprocessedObject = o1?.UnprocessedObject ?? o2?.UnprocessedObject,
             };
             return result;
         }
@@ -249,7 +249,7 @@ namespace PSRule.Options
         /// <summary>
         /// Determines how to handle duplicate resources identifiers during execution.
         /// Regardless of the value, only the first resource will be used.
-        /// By defaut, an error is thrown.
+        /// By default, an error is thrown.
         /// When set to Warn, a warning is generated.
         /// When set to Debug, a message is written to the debug log.
         /// When set to Ignore, no output will be displayed.
