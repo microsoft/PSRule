@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
+using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -179,7 +180,7 @@ namespace PSRule.Definitions.Expressions
         {
             return (context, o) =>
             {
-                // Evalute selector pre-condition
+                // Evaluate selector pre-condition
                 if (!AcceptsWith(with))
                 {
                     context.Debug(PSRuleResources.DebugTargetTypeMismatch);
@@ -193,7 +194,7 @@ namespace PSRule.Definitions.Expressions
         {
             return (context, o) =>
             {
-                // Evalute type pre-condition
+                // Evaluate type pre-condition
                 if (!AcceptsType(type))
                 {
                     context.Debug(PSRuleResources.DebugTargetTypeMismatch);
@@ -211,7 +212,7 @@ namespace PSRule.Definitions.Expressions
                 {
                     context.PushScope(RunspaceScope.Precondition);
 
-                    // Evalute sub-selector pre-condition
+                    // Evaluate sub-selector pre-condition
                     if (!AcceptsSubselector(context, subselector, o))
                     {
                         context.Debug(PSRuleResources.DebugTargetSubselectorMismatch);

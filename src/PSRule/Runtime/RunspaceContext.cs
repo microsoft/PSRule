@@ -766,7 +766,7 @@ namespace PSRule.Runtime
                 Pipeline.Import(this, resource);
 
             foreach (var languageScope in _LanguageScopes.Get())
-                Pipeline.Baseline.UpdateLanguageScope(languageScope);
+                Pipeline.UpdateLanguageScope(languageScope);
 
             foreach (var resource in resources)
             {
@@ -786,7 +786,7 @@ namespace PSRule.Runtime
                 Pipeline.Import(this, resource);
 
             foreach (var languageScope in _LanguageScopes.Get())
-                Pipeline.Baseline.UpdateLanguageScope(languageScope);
+                Pipeline.UpdateLanguageScope(languageScope);
         }
 
         private void InitLanguageScopes(Source[] source)

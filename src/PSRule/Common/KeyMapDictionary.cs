@@ -23,20 +23,19 @@ namespace PSRule
         }
 
         /// <summary>
-        /// Create a map intially populated with values copied from an existing instance.
+        /// Create a map initially populated with values copied from an existing instance.
         /// </summary>
         /// <param name="map">An existing instance to copy key/ values from.</param>
         /// <exception cref="ArgumentNullException">Is raised if the map is null.</exception>
         protected internal KeyMapDictionary(KeyMapDictionary<TValue> map)
         {
-            if (map == null)
-                throw new ArgumentNullException(nameof(map));
-
-            _Map = new Dictionary<string, TValue>(map._Map, StringComparer.OrdinalIgnoreCase);
+            _Map = map == null ?
+                new Dictionary<string, TValue>(StringComparer.OrdinalIgnoreCase) :
+                new Dictionary<string, TValue>(map._Map, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
-        /// Create a map intially populated with values copied from a dictionary.
+        /// Create a map initially populated with values copied from a dictionary.
         /// </summary>
         /// <param name="dictionary">An existing dictionary to copy key/ values from.</param>
         protected internal KeyMapDictionary(IDictionary<string, TValue> dictionary)
@@ -47,7 +46,7 @@ namespace PSRule
         }
 
         /// <summary>
-        /// Create a map intially populated with values copied from a hashtable.
+        /// Create a map initially populated with values copied from a hashtable.
         /// </summary>
         /// <param name="hashtable">An existing hashtable to copy key/ values from.</param>
         protected internal KeyMapDictionary(Hashtable hashtable)

@@ -18,7 +18,7 @@ namespace PSRule
         public void Match()
         {
             var option = GetOption();
-            var context = new RunspaceContext(PipelineContext.New(option, null, null, null, null, null, new OptionContext(), null), new TestWriter(option));
+            var context = new RunspaceContext(PipelineContext.New(option, null, null, null, null, null, new OptionContextBuilder(), null), new TestWriter(option));
             context.Init(GetSource());
             context.Begin();
             var rules = HostHelper.GetRule(GetSource(), context, includeDependencies: false);

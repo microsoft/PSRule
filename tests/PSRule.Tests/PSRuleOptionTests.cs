@@ -9,6 +9,9 @@ using PSRule.Pipeline;
 
 namespace PSRule
 {
+    /// <summary>
+    /// Tests for <see cref="PSRuleOption"/>.
+    /// </summary>
     public sealed class PSRuleOptionTests
     {
         [Fact]
@@ -89,7 +92,7 @@ namespace PSRule
         private static Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
         {
             var builder = new OptionContextBuilder(option);
-            var context = new Runtime.RunspaceContext(PipelineContext.New(option, null, null, null, null, null, builder.Build(), null), null);
+            var context = new Runtime.RunspaceContext(PipelineContext.New(option, null, null, null, null, null, builder, null), null);
             context.Init(null);
             context.Begin();
             return new Runtime.Configuration(context);

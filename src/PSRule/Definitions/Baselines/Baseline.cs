@@ -113,9 +113,9 @@ namespace PSRule.Definitions.Baselines
 
     internal sealed class BaselineRef : ResourceRef
     {
-        public readonly OptionContext.ScopeType Type;
+        public readonly ScopeType Type;
 
-        public BaselineRef(string id, OptionContext.ScopeType scopeType)
+        public BaselineRef(string id, ScopeType scopeType)
             : base(id, ResourceKind.Baseline)
         {
             Type = scopeType;

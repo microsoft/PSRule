@@ -72,8 +72,8 @@ namespace PSRule.Configuration
         {
             var result = new RepositoryOption(o1)
             {
-                BaseRef = o1.BaseRef ?? o2.BaseRef,
-                Url = o1.Url ?? o2.Url,
+                BaseRef = o1?.BaseRef ?? o2?.BaseRef,
+                Url = o1?.Url ?? o2?.Url,
             };
             return result;
         }

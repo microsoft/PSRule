@@ -87,9 +87,9 @@ namespace PSRule
             return option;
         }
 
-        private static OptionContext GetOptionContext()
+        private static OptionContextBuilder GetOptionContext()
         {
-            return new OptionContextBuilder(GetOption()).Build();
+            return new OptionContextBuilder(GetOption());
         }
 
         private static Source[] GetSource(string path)

@@ -204,16 +204,28 @@ namespace PSRule.Pipeline
 
         internal sealed class TargetBindingContext : ITargetBindingContext
         {
-            private readonly IBindingOption _BindingOption;
+            private readonly bool _PreferTargetInfo;
+            private readonly bool _IgnoreCase;
+            private readonly bool _UseQualifiedName;
+            private readonly FieldMap _Field;
+            private readonly string[] _TargetName;
+            private readonly string[] _TargetType;
+            private readonly string _NameSeparator;
             private readonly BindTargetMethod _BindTargetName;
             private readonly BindTargetMethod _BindTargetType;
             private readonly BindTargetMethod _BindField;
             private readonly HashSet<string> _TypeFilter;
 
-            public TargetBindingContext(string languageScope, IBindingOption bindingOption, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, HashSet<string> typeFilter)
+            public TargetBindingContext(string languageScope, BindingOption bindingOption, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, HashSet<string> typeFilter)
             {
                 LanguageScope = languageScope;
-                _BindingOption = bindingOption;
+                _PreferTargetInfo = bindingOption?.PreferTargetInfo ?? BindingOption.Default.PreferTargetInfo.Value;
+                _IgnoreCase = bindingOption?.IgnoreCase ?? BindingOption.Default.IgnoreCase.Value;
+                _UseQualifiedName = bindingOption?.UseQualifiedName ?? BindingOption.Default.UseQualifiedName.Value;
+                _Field = bindingOption?.Field;
+                _TargetName = bindingOption?.TargetName;
+                _TargetType = bindingOption?.TargetType;
+                _NameSeparator = bindingOption?.NameSeparator ?? BindingOption.Default.NameSeparator;
                 _BindTargetName = bindTargetName;
                 _BindTargetType = bindTargetType;
                 _BindField = bindField;
@@ -225,24 +237,24 @@ namespace PSRule.Pipeline
             public ITargetBindingResult Bind(TargetObject o)
             {
                 var targetNamePath = ".";
-                var targetName = _BindingOption.PreferTargetInfo && o.TargetName != null ? o.TargetName : _BindTargetName(_BindingOption.TargetName, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, o.Value, out targetNamePath);
+                var targetName = _PreferTargetInfo && o.TargetName != null ? o.TargetName : _BindTargetName(_TargetName, !_IgnoreCase, _PreferTargetInfo, o.Value, out targetNamePath);
                 var targetTypePath = ".";
-                var targetType = _BindingOption.PreferTargetInfo && o.TargetType != null ? o.TargetType : _BindTargetType(_BindingOption.TargetType, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, o.Value, out targetTypePath);
+                var targetType = _PreferTargetInfo && o.TargetType != null ? o.TargetType : _BindTargetType(_TargetType, !_IgnoreCase, _PreferTargetInfo, o.Value, out targetTypePath);
                 var shouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(targetType));
 
                 // Bind custom fields
-                var field = BindField(_BindField, _BindingOption.Field, !_BindingOption.IgnoreCase, o.Value);
+                var field = BindField(_BindField, new[] { _Field }, !_IgnoreCase, o.Value);
                 return Bind(targetName, targetNamePath, targetType, targetTypePath, field);
             }
 
             public ITargetBindingResult Bind(object o)
             {
-                var targetName = _BindTargetName(_BindingOption.TargetName, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, o, out var targetNamePath);
-                var targetType = _BindTargetType(_BindingOption.TargetType, !_BindingOption.IgnoreCase, _BindingOption.PreferTargetInfo, o, out var targetTypePath);
+                var targetName = _BindTargetName(_TargetName, !_IgnoreCase, _PreferTargetInfo, o, out var targetNamePath);
+                var targetType = _BindTargetType(_TargetType, !_IgnoreCase, _PreferTargetInfo, o, out var targetTypePath);
                 var shouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(targetType));
 
                 // Bind custom fields
-                var field = BindField(_BindField, _BindingOption.Field, !_BindingOption.IgnoreCase, o);
+                var field = BindField(_BindField, new[] { _Field }, !_IgnoreCase, o);
                 return Bind(targetName, targetNamePath, targetType, targetTypePath, field);
             }
 
@@ -251,8 +263,8 @@ namespace PSRule.Pipeline
                 var shouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(targetType));
 
                 // Use qualified name
-                if (_BindingOption.UseQualifiedName)
-                    targetName = string.Concat(targetType, _BindingOption.NameSeparator, targetName);
+                if (_UseQualifiedName)
+                    targetName = string.Concat(targetType, _NameSeparator, targetName);
 
                 return new TargetBindingResult
                 (

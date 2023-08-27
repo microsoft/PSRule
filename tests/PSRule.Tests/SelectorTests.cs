@@ -34,7 +34,7 @@ namespace PSRule
         public void ReadSelector(string type, string path)
         {
             var testObject = GetObject((name: "value", value: 3));
-            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContext(), null), null);
+            var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContextBuilder(), null), null);
             context.Init(GetSource(path));
             context.Begin();
             var selector = HostHelper.GetSelectorForTests(GetSource(path), context).ToArray();
@@ -1874,7 +1874,7 @@ namespace PSRule
         private static SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
         {
             var builder = new OptionContextBuilder(GetOption());
-            context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, builder.Build(), null), null);
+            context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, builder, null), null);
             context.Init(source);
             context.Begin();
             var selector = HostHelper.GetSelectorForTests(source, context).ToArray().FirstOrDefault(s => s.Name == name);

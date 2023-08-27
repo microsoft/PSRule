@@ -88,7 +88,7 @@ namespace PSRule.Options
         {
             var result = new BaselineOption(o1)
             {
-                Group = o1.Group ?? o2.Group,
+                Group = o1?.Group ?? o2?.Group,
             };
             return result;
         }

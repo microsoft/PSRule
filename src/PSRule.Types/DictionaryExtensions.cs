@@ -230,8 +230,26 @@ namespace PSRule
         /// Duplicate keys are ignored.
         /// </summary>
         [DebuggerStepThrough]
-        public static void AddUnique(this IDictionary<string, object> dictionary, IEnumerable<KeyValuePair<string, object>> values)
+        public static void AddUnique<T>(this IDictionary<string, T> dictionary, IEnumerable<KeyValuePair<string, T>> values) where T : class
         {
+            if (values == null) return;
+
+            foreach (var kv in values)
+            {
+                if (!dictionary.ContainsKey(kv.Key))
+                    dictionary.Add(kv.Key, kv.Value);
+            }
+        }
+
+        /// <summary>
+        /// Add unique keys to the dictionary.
+        /// Duplicate keys are ignored.
+        /// </summary>
+        [DebuggerStepThrough]
+        public static void AddUnique(this IDictionary<string, string> dictionary, IEnumerable<KeyValuePair<string, string>> values)
+        {
+            if (values == null) return;
+
             foreach (var kv in values)
             {
                 if (!dictionary.ContainsKey(kv.Key))

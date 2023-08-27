@@ -42,8 +42,18 @@ jobs:
 
       - name: Upload results to security tab
         uses: github/codeql-action/upload-sarif@v2
+        if: always()
         with:
           sarif_file: reports/ps-rule-results.sarif
+
+      - name: Upload results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: PSRule-Sarif
+          path: reports/ps-rule-results.sarif
+          retention-days: 1
+          if-no-files-found: error
 
   devskim:
     name: Analyze with DevSkim
@@ -63,8 +73,18 @@ jobs:
 
       - name: Upload results to security tab
         uses: github/codeql-action/upload-sarif@v2
+        if: always()
         with:
           sarif_file: devskim-results.sarif
+
+      - name: Upload results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: DevSkim-Sarif
+          path: devskim-results.sarif
+          retention-days: 1
+          if-no-files-found: error
 
   codeql:
     name: Analyze with CodeQL

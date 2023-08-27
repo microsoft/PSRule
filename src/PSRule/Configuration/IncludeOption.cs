@@ -71,8 +71,8 @@ namespace PSRule.Configuration
         {
             var result = new IncludeOption(o1)
             {
-                Path = o1.Path ?? o2.Path,
-                Module = o1.Module ?? o2.Module
+                Path = o1?.Path ?? o2?.Path,
+                Module = o1?.Module ?? o2?.Module
             };
             return result;
         }
