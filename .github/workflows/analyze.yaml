@@ -52,7 +52,7 @@ jobs:
         with:
           name: PSRule-Sarif
           path: reports/ps-rule-results.sarif
-          retention-days: 3
+          retention-days: 1
           if-no-files-found: error
 
   devskim:
@@ -83,7 +83,7 @@ jobs:
         with:
           name: DevSkim-Sarif
           path: devskim-results.sarif
-          retention-days: 3
+          retention-days: 1
           if-no-files-found: error
 
   codeql:
