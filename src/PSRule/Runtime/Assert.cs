@@ -1226,7 +1226,7 @@ namespace PSRule.Runtime
             result = Fail();
             for (var i = 0; path != null && i < path.Length; i++)
             {
-                if (ExpressionHelpers.WithinPath(fieldValuePath, path[i], caseSensitive.GetValueOrDefault(PSRuleOption.IsCaseSentitive())))
+                if (ExpressionHelpers.WithinPath(fieldValuePath, path[i], caseSensitive.GetValueOrDefault(PSRuleOption.IsCaseSensitive())))
                     return Pass();
 
                 result.AddReason(Operand.FromPath(field), ReasonStrings.WithinPath,
@@ -1252,7 +1252,7 @@ namespace PSRule.Runtime
             var fieldValuePath = ExpressionHelpers.GetObjectOriginPath(fieldValue);
             for (var i = 0; path != null && i < path.Length; i++)
             {
-                if (ExpressionHelpers.WithinPath(fieldValuePath, path[i], caseSensitive.GetValueOrDefault(PSRuleOption.IsCaseSentitive())))
+                if (ExpressionHelpers.WithinPath(fieldValuePath, path[i], caseSensitive.GetValueOrDefault(PSRuleOption.IsCaseSensitive())))
                     return Fail(Operand.FromPath(field), ReasonStrings.NotWithinPath,
                         ExpressionHelpers.NormalizePath(Environment.GetWorkingPath(), fieldValuePath),
                         ExpressionHelpers.NormalizePath(Environment.GetWorkingPath(), path[i])

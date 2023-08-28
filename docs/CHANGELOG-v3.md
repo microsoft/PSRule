@@ -47,6 +47,8 @@ What's changed since release v2.9.0:
     - See [upgrade notes][1] for details.
   - **Breaking change:** Removed deprecated execution options by @BernieWhite.
     [#1457](https://github.com/microsoft/PSRule/issues/1457)
+  - **Breaking change:** Remove deprecated object properties by @BernieWhite.
+    [#1601](https://github.com/microsoft/PSRule/issues/1601)
   - Expanded support for `FileHeader` assertion by @BernieWhite.
     [#1521](https://github.com/microsoft/PSRule/issues/1521)
     - Added support for `.bicepparam`, `.tsp`, `.tsx`, `.editorconfig`, `.ipynb`, and `.toml` files.

@@ -28,7 +28,7 @@ namespace PSRule.Pipeline
         /// </remarks>
         /// <param name="source">An array of sources.</param>
         /// <param name="option">Options that configure PSRule.</param>
-        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <param name="hostContext">An implementation of a host context that will receive output and results.</param>
         /// <returns>A builder object to configure the pipeline.</returns>
         public static IInvokePipelineBuilder Assert(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
@@ -42,11 +42,11 @@ namespace PSRule.Pipeline
         /// Used by Invoke-PSRule.
         /// </summary>
         /// <remarks>
-        /// Invoke piplines process objects and produce records indicating the outcome of each rule.
+        /// Invoke pipelines process objects and produce records indicating the outcome of each rule.
         /// </remarks>
         /// <param name="source">An array of sources.</param>
         /// <param name="option">Options that configure PSRule.</param>
-        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <param name="hostContext">An implementation of a host context that will receive output and results.</param>
         /// <returns>A builder object to configure the pipeline.</returns>
         public static IInvokePipelineBuilder Invoke(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
@@ -60,11 +60,11 @@ namespace PSRule.Pipeline
         /// Used by Test-PSRule.
         /// </summary>
         /// <remarks>
-        /// Test piplines process objects and true or false the outcome of each rule.
+        /// Test pipelines process objects and true or false the outcome of each rule.
         /// </remarks>
         /// <param name="source">An array of sources.</param>
         /// <param name="option">Options that configure PSRule.</param>
-        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <param name="hostContext">An implementation of a host context that will receive output and results.</param>
         /// <returns>A builder object to configure the pipeline.</returns>
         public static IInvokePipelineBuilder Test(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
@@ -82,7 +82,7 @@ namespace PSRule.Pipeline
         /// </remarks>
         /// <param name="source">An array of sources.</param>
         /// <param name="option">Options that configure PSRule.</param>
-        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <param name="hostContext">An implementation of a host context that will receive output and results.</param>
         /// <returns>A builder object to configure the pipeline.</returns>
         public static IGetPipelineBuilder Get(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
@@ -100,7 +100,7 @@ namespace PSRule.Pipeline
         /// </remarks>
         /// <param name="source">An array of sources.</param>
         /// <param name="option">Options that configure PSRule.</param>
-        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <param name="hostContext">An implementation of a host context that will receive output and results.</param>
         /// <returns>A builder object to configure the pipeline.</returns>
         public static IHelpPipelineBuilder GetHelp(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
@@ -113,7 +113,7 @@ namespace PSRule.Pipeline
         /// Create a builder to define a list of rule sources.
         /// </summary>
         /// <param name="option">>Options that configure PSRule.</param>
-        /// <param name="hostContext">>An implementation of a host context that will recieve output and results.</param>
+        /// <param name="hostContext">>An implementation of a host context that will receive output and results.</param>
         /// <returns>A builder object to configure the source pipeline.</returns>
         public static ISourcePipelineBuilder RuleSource(PSRuleOption option, IHostContext hostContext)
         {
@@ -127,7 +127,7 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="source">An array of sources.</param>
         /// <param name="option">Options that configure PSRule.</param>
-        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <param name="hostContext">An implementation of a host context that will receive output and results.</param>
         /// <returns>A builder object to configure the pipeline.</returns>
         public static IPipelineBuilder GetBaseline(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
@@ -142,7 +142,7 @@ namespace PSRule.Pipeline
         /// </summary>
         /// <param name="source">An array of sources.</param>
         /// <param name="option">Options that configure PSRule.</param>
-        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <param name="hostContext">An implementation of a host context that will receive output and results.</param>
         /// <returns>A builder object to configure the pipeline.</returns>
         public static IPipelineBuilder ExportBaseline(Source[] source, PSRuleOption option, IHostContext hostContext)
         {
@@ -156,7 +156,7 @@ namespace PSRule.Pipeline
         /// Used by Get-PSRuleTarget.
         /// </summary>
         /// <param name="option">Options that configure PSRule.</param>
-        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <param name="hostContext">An implementation of a host context that will receive output and results.</param>
         /// <returns>A builder object to configure the pipeline.</returns>
         public static IGetTargetPipelineBuilder GetTarget(PSRuleOption option, IHostContext hostContext)
         {
@@ -200,7 +200,7 @@ namespace PSRule.Pipeline
         IPipelineResult Result { get; }
 
         /// <summary>
-        /// Initalize the pipeline and results. Call this method once prior to calling Process.
+        /// Initialize the pipeline and results. Call this method once prior to calling Process.
         /// </summary>
         void Begin();
 
@@ -361,15 +361,6 @@ namespace PSRule.Pipeline
 
         /// <inheritdoc/>
         public abstract IPipeline Build(IPipelineWriter writer = null);
-
-        /// <summary>
-        /// Use a baseline, either by name or by path.
-        /// </summary>
-        [Obsolete()]
-        public void UseBaseline(Configuration.BaselineOption baseline)
-        {
-            Baseline(baseline);
-        }
 
         /// <inheritdoc/>
         public void Baseline(Configuration.BaselineOption baseline)

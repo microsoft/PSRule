@@ -105,12 +105,6 @@ namespace PSRule.Rules
         [YamlIgnore]
         public ResourceFlags Flags { get; }
 
-        [Obsolete("Use Source property instead.")]
-        string ILanguageBlock.SourcePath => Source.Path;
-
-        [Obsolete("Use Source property instead.")]
-        string ILanguageBlock.Module => Source.Module;
-
         ResourceId[] IDependencyTarget.DependsOn => DependsOn;
 
         bool IDependencyTarget.Dependency => Source.IsDependency();
@@ -125,13 +119,9 @@ namespace PSRule.Rules
 
         IResourceHelpInfo IResource.Info => Info;
 
-        string IRuleV1.RuleName => Name;
-
         ResourceTags IRuleV1.Tag => Tag;
 
         string IRuleV1.Synopsis => Info.Synopsis;
-
-        string IRuleV1.Description => Info.Synopsis;
 
         InfoString IRuleV1.Recommendation => ((IRuleHelpInfoV2)Info)?.Recommendation;
 

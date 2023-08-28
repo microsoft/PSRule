@@ -157,7 +157,7 @@ function Invoke-PSRule {
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.Convention($Convention);
-        $builder.UseBaseline($Baseline);
+        $builder.Baseline($Baseline);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $builder.InputPath($InputPath);
@@ -591,7 +591,7 @@ function Assert-PSRule {
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.Convention($Convention);
-        $builder.UseBaseline($Baseline);
+        $builder.Baseline($Baseline);
         $builder.ResultVariable($ResultVariable);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
@@ -731,7 +731,7 @@ function Get-PSRule {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option, $hostContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
-        $builder.UseBaseline($Baseline);
+        $builder.Baseline($Baseline);
 
         if ($IncludeDependencies) {
             $builder.IncludeDependencies();

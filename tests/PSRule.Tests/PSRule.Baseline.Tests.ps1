@@ -809,7 +809,7 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result = @(Get-PSRule -Module TestModule6 -WarningVariable outWarn -WarningAction SilentlyContinue);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
-            $result[0].RuleName | Should -Be 'M6.Rule1';
+            $result[0].Name | Should -Be 'M6.Rule1';
             $warnings = @($outWarn);
             $warnings.Length | Should -Be 0;
 
@@ -818,7 +818,7 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result = @(Get-PSRule -Module TestModule7 -WarningVariable outWarn -WarningAction SilentlyContinue);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
-            $result[0].RuleName | Should -Be 'M7.Rule2';
+            $result[0].Name | Should -Be 'M7.Rule2';
             $warnings = @($outWarn);
             $warnings.Length | Should -Be 0;
         }
@@ -869,24 +869,24 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result = @(Get-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline1');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
-            $result[0].RuleName | Should -Be 'WithBaseline';
+            $result[0].Name | Should -Be 'WithBaseline';
 
             $result = @(Get-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline3');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
-            $result[0].RuleName | Should -Be 'WithBaseline';
-            $result[1].RuleName | Should -Be 'NotInBaseline';
+            $result[0].Name | Should -Be 'WithBaseline';
+            $result[1].Name | Should -Be 'NotInBaseline';
 
             $result = @(Get-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline4');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
-            $result[0].RuleName | Should -Be 'WithBaseline';
-            $result[1].RuleName | Should -Be 'NotInBaseline';
+            $result[0].Name | Should -Be 'WithBaseline';
+            $result[1].Name | Should -Be 'NotInBaseline';
 
             $result = @(Get-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline6');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
-            $result[0].RuleName | Should -Be 'WithBaseline';
+            $result[0].Name | Should -Be 'WithBaseline';
         }
     }
 }

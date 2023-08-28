@@ -398,60 +398,6 @@ namespace PSRule.Configuration
         }
 
         /// <summary>
-        /// Configures PSRule to use the culture of the current thread at runtime.
-        /// This method is deprecated. Use <see cref="Environment.UseCurrentCulture()"/> instead.
-        /// </summary>
-        [Obsolete("Use PSRule.Environment instead.")]
-        public static void UseCurrentCulture()
-        {
-            Environment.UseCurrentCulture();
-        }
-
-        /// <summary>
-        /// Configures PSRule to use the specified culture at runtime.
-        /// This method is deprecated. Use <see cref="Environment.UseCurrentCulture(string)"/> instead.
-        /// </summary>
-        /// <param name="culture">A valid culture.</param>
-        [Obsolete("Use PSRule.Environment instead.")]
-        public static void UseCurrentCulture(string culture)
-        {
-            Environment.UseCurrentCulture(culture);
-        }
-
-        /// <summary>
-        /// Configures PSRule to use the specified culture at runtime. 
-        /// This method is deprecated. Use <see cref="Environment.UseCurrentCulture(CultureInfo)"/> instead.
-        /// </summary>
-        /// <param name="culture">A valid culture.</param>
-        [Obsolete("Use PSRule.Environment instead.")]
-        public static void UseCurrentCulture(CultureInfo culture)
-        {
-            Environment.UseCurrentCulture(culture);
-        }
-
-        /// <summary>
-        /// Gets the current working path being used by PSRule.
-        /// This method is deprecated. Use <see cref="Environment.GetWorkingPath()"/> instead.
-        /// </summary>
-        /// <returns>The current working path.</returns>
-        [Obsolete("Use PSRule.Environment instead.")]
-        public static string GetWorkingPath()
-        {
-            return Environment.GetWorkingPath();
-        }
-
-        /// <summary>
-        /// Get the current culture being used by PSRule.
-        /// This method is deprecated. Use <see cref="Environment.GetCurrentCulture()"/> instead.
-        /// </summary>
-        /// <returns>The current culture.</returns>
-        [Obsolete("Use PSRule.Environment instead.")]
-        public static CultureInfo GetCurrentCulture()
-        {
-            return Environment.GetCurrentCulture();
-        }
-
-        /// <summary>
         /// Convert from hashtable to options by processing key values. This enables -Option @{ } from PowerShell.
         /// </summary>
         /// <param name="hashtable">A hashtable to read options from.</param>
@@ -562,7 +508,7 @@ namespace PSRule.Configuration
         /// Determines if the working path file system is case sensitive.
         /// </summary>
         [DebuggerStepThrough]
-        internal static bool IsCaseSentitive()
+        internal static bool IsCaseSensitive()
         {
             var lower = Environment.GetWorkingPath().ToLower(Thread.CurrentThread.CurrentCulture);
             if (!Directory.Exists(lower))

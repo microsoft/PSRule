@@ -30,12 +30,6 @@ namespace PSRule.Rules
 
         public ActionPreference ErrorAction { get; }
 
-        [Obsolete("Use Source property instead.")]
-        string ILanguageBlock.SourcePath => Source.Path;
-
-        [Obsolete("Use Source property instead.")]
-        string ILanguageBlock.Module => Source.Module;
-
         private void Dispose(bool disposing)
         {
             if (!_Disposed)

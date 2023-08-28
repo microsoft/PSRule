@@ -39,6 +39,7 @@ namespace PSRule.Pipeline.Output
             jsonSerializer.Converters.Add(new ErrorCategoryJsonConverter());
             jsonSerializer.Converters.Add(new PSObjectJsonConverter());
             jsonSerializer.Converters.Add(new StringEnumConverter());
+            jsonSerializer.Converters.Add(new ResourceIdConverter());
 
             // To avoid writing baselines with an extra outer array
             // We can serialize the first object which has all the baselines
