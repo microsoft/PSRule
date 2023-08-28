@@ -200,7 +200,7 @@
           <TableRowEntry>
             <TableColumnItems>
               <TableColumnItem>
-              <PropertyName>RuleName</PropertyName>
+              <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Source.Module</PropertyName>
@@ -240,7 +240,7 @@
             <Wrap/>
             <TableColumnItems>
               <TableColumnItem>
-                <PropertyName>RuleName</PropertyName>
+                <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Source.Module</PropertyName>
@@ -282,7 +282,7 @@
           <TableRowEntry>
             <TableColumnItems>
               <TableColumnItem>
-                <PropertyName>RuleName</PropertyName>
+                <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Outcome</PropertyName>
@@ -326,7 +326,7 @@
             <Wrap/>
             <TableColumnItems>
               <TableColumnItem>
-                <PropertyName>RuleName</PropertyName>
+                <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Outcome</PropertyName>
@@ -369,7 +369,7 @@
           <TableRowEntry>
             <TableColumnItems>
               <TableColumnItem>
-              <PropertyName>RuleName</PropertyName>
+              <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Pass</PropertyName>
@@ -525,7 +525,7 @@
               <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>ModuleName</PropertyName>
+                <PropertyName>Module</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Synopsis</PropertyName>
@@ -578,7 +578,7 @@
               <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Source.Module</PropertyName>
+                <PropertyName>Module</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Synopsis</PropertyName>

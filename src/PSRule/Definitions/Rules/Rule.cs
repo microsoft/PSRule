@@ -40,13 +40,6 @@ namespace PSRule.Definitions.Rules
     public interface IRuleV1 : IResource, IDependencyTarget
     {
         /// <summary>
-        /// Obsolete. The name of the rule.
-        /// Replaced by <see cref="IResource.Name"/>.
-        /// </summary>
-        [Obsolete("Use Name instead.")]
-        string RuleName { get; }
-
-        /// <summary>
         /// If the rule fails, how serious is the result.
         /// </summary>
         SeverityLevel Level { get; }
@@ -60,13 +53,6 @@ namespace PSRule.Definitions.Rules
         /// A short description of the rule.
         /// </summary>
         string Synopsis { get; }
-
-        /// <summary>
-        /// Obsolete. A short description of the rule.
-        /// Replaced by <see cref="Synopsis"/>.
-        /// </summary>
-        [Obsolete("Use Synopsis instead.")]
-        string Description { get; }
 
         /// <summary>
         /// Any additional tags assigned to the rule.
@@ -164,13 +150,7 @@ namespace PSRule.Definitions.Rules
         ResourceId[] IResource.Alias => Alias;
 
         /// <inheritdoc/>
-        string IRuleV1.RuleName => Name;
-
-        /// <inheritdoc/>
         ResourceTags IRuleV1.Tag => Metadata.Tags;
-
-        /// <inheritdoc/>
-        string IRuleV1.Description => Info.Synopsis.Text;
 
         /// <inheritdoc/>
         InfoString IRuleV1.Recommendation => InfoString.Create(Spec?.Recommend);

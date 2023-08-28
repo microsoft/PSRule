@@ -69,13 +69,6 @@ namespace PSRule.Pipeline
         public string Module { get; }
 
         /// <summary>
-        /// The name of the module if the source was loaded from a module.
-        /// </summary>
-        [JsonIgnore]
-        [Obsolete("Use Module property instead.")]
-        public string ModuleName => Module;
-
-        /// <summary>
         /// The type of source file.
         /// </summary>
         [YamlIgnore]

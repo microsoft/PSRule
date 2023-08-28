@@ -36,12 +36,6 @@ namespace PSRule.Definitions.Selectors
 
         public SourceFile Source { get; }
 
-        [Obsolete("Use Source property instead.")]
-        string ILanguageBlock.SourcePath => Source.Path;
-
-        [Obsolete("Use Source property instead.")]
-        string ILanguageBlock.Module => Source.Module;
-
         public bool Match(object o)
         {
             var context = new ExpressionContext(_Context, Source, ResourceKind.Selector, o);

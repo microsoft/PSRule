@@ -36,47 +36,10 @@ namespace PSRule.Rules
         public SeverityLevel Level { get; set; }
 
         /// <summary>
-        /// Legacy. A unique identifier for the rule.
-        /// </summary>
-        [JsonProperty(PropertyName = "ruleId", Required = Required.Always)]
-        [Obsolete("Use Id instead")]
-        public string RuleId => Id.Value;
-
-        /// <summary>
-        /// Legacy. The name of the rule.
-        /// </summary>
-        [JsonProperty(PropertyName = "ruleName", Required = Required.Always)]
-        [Obsolete("Use Name instead")]
-        public string RuleName => Name;
-
-        /// <summary>
-        /// The script file path where the rule is defined.
-        /// </summary>
-        [JsonIgnore]
-        [YamlIgnore]
-        [Obsolete("Use Source property instead.")]
-        public string SourcePath => Source.Path;
-
-        /// <summary>
-        /// The name of the module where the rule is defined, or null if the rule is not defined in a module.
-        /// </summary>
-        [JsonIgnore]
-        [YamlIgnore]
-        [Obsolete("Use Source property instead.")]
-        public string ModuleName => Source.Module;
-
-        /// <summary>
         /// A human readable block of text, used to identify the purpose of the rule.
         /// </summary>
         [JsonIgnore, YamlIgnore]
         public string Synopsis => Info.Synopsis;
-
-        /// <summary>
-        /// Legacy. Alias to <see cref="Synopsis"/>.
-        /// </summary>
-        [JsonIgnore, YamlIgnore]
-        [Obsolete("Use Synopsis instead.")]
-        public string Description => Info.Synopsis;
 
         /// <summary>
         /// One or more tags assigned to the rule. Tags are additional metadata used to select rules to execute and identify results.
@@ -130,12 +93,6 @@ namespace PSRule.Rules
         IResourceHelpInfo IResource.Info => Info;
 
         ResourceTags IResource.Tags => Tag;
-
-        [Obsolete("Use Source property instead.")]
-        string ILanguageBlock.SourcePath => Source.Path;
-
-        [Obsolete("Use Source property instead.")]
-        string ILanguageBlock.Module => Source.Module;
 
         InfoString IRuleV1.Recommendation => ((IRuleHelpInfoV2)Info)?.Recommendation;
 

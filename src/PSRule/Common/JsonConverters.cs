@@ -216,7 +216,7 @@ namespace PSRule
     }
 
     /// <summary>
-    /// A custom serializer to convert PSObjects that may or maynot be in a JSON array to an a PSObject array.
+    /// A custom serializer to convert PSObjects that may or may not be in a JSON array to an a PSObject array.
     /// </summary>
     internal sealed class PSObjectArrayJsonConverter : PSObjectBaseConverter
     {
@@ -336,6 +336,7 @@ namespace PSRule
             return base
                 .CreateProperties(type, memberSerialization)
                 .OrderBy(prop => prop.PropertyName)
+                .OrderBy(prop => prop.Order)
                 .ToList();
         }
     }
@@ -936,6 +937,23 @@ namespace PSRule
                 return expression != null;
             }
             return false;
+        }
+    }
+
+    /// <summary>
+    /// A converter for converting <see cref="ResourceId"/> to/ from JSON.
+    /// </summary>
+    internal sealed class ResourceIdConverter : JsonConverter<ResourceId>
+    {
+        public override ResourceId ReadJson(JsonReader reader, Type objectType, ResourceId existingValue, bool hasExistingValue, JsonSerializer serializer)
+        {
+            var value = reader.ReadAsString();
+            return value != null ? ResourceId.Parse(value) : default;
+        }
+
+        public override void WriteJson(JsonWriter writer, ResourceId value, JsonSerializer serializer)
+        {
+            writer.WriteValue(value.Value);
         }
     }
 }

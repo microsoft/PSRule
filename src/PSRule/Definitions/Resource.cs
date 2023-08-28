@@ -508,6 +508,12 @@ namespace PSRule.Definitions
         public string Name { get; }
 
         /// <summary>
+        /// The name of the module where the resource is defined.
+        /// </summary>
+        [YamlIgnore()]
+        public string Module => Source.Module;
+
+        /// <summary>
         /// The file path where the resource is defined.
         /// </summary>
         [YamlIgnore()]
@@ -566,10 +572,6 @@ namespace PSRule.Definitions
 
         [YamlIgnore()]
         internal ResourceFlags Flags { get; }
-
-        string ILanguageBlock.SourcePath => Source.Path;
-
-        string ILanguageBlock.Module => Source.Module;
 
         ResourceKind IResource.Kind => Kind;
 
