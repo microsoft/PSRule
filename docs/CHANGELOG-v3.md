@@ -48,8 +48,8 @@ What's changed since release v2.9.0:
     [#1602](https://github.com/microsoft/PSRule/pull/1602)
   - Bump Microsoft.CodeAnalysis.Common to v4.7.0.
     [#1593](https://github.com/microsoft/PSRule/pull/1593)
-  - Bump Microsoft.NET.Test.Sdk to v17.7.1.
-    [#1592](https://github.com/microsoft/PSRule/pull/1592)
+  - Bump Microsoft.NET.Test.Sdk to v17.7.2.
+    [#1608](https://github.com/microsoft/PSRule/pull/1608)
   - Bump YamlDotNet to v13.3.1.
     [#1607](https://github.com/microsoft/PSRule/issues/1607)
   - Bump xunit to v2.5.0.
