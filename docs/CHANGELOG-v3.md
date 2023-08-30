@@ -8,15 +8,6 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
   [1]: https://aka.ms/ps-rule/upgrade
 
-**Important notes**:
-
-- Several options have been renamed and the old names will be removed in v3.
-  See [deprecations][2] for details.
-- Several properties of rule and language block elements will be removed from v3.
-  See [deprecations][2] for details.
-
-  [2]: https://aka.ms/ps-rule/deprecations#deprecations-for-v3
-
 **Experimental features**:
 
 - Baseline groups allow you to use a friendly name to reference baselines.
@@ -53,14 +44,14 @@ What's changed since release v2.9.0:
     [#1521](https://github.com/microsoft/PSRule/issues/1521)
     - Added support for `.bicepparam`, `.tsp`, `.tsx`, `.editorconfig`, `.ipynb`, and `.toml` files.
 - Engineering:
-  - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.3.
-    [#1550](https://github.com/microsoft/PSRule/pull/1550)
+  - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.4.
+    [#1602](https://github.com/microsoft/PSRule/pull/1602)
   - Bump Microsoft.CodeAnalysis.Common to v4.7.0.
     [#1593](https://github.com/microsoft/PSRule/pull/1593)
   - Bump Microsoft.NET.Test.Sdk to v17.7.1.
     [#1592](https://github.com/microsoft/PSRule/pull/1592)
-  - Bump YamlDotNet to v13.2.0.
-    [#1589](https://github.com/microsoft/PSRule/issues/1589)
+  - Bump YamlDotNet to v13.3.1.
+    [#1607](https://github.com/microsoft/PSRule/issues/1607)
   - Bump xunit to v2.5.0.
     [#1562](https://github.com/microsoft/PSRule/pull/1562)
   - Bump xunit.runner.visualstudio to v2.5.0.
