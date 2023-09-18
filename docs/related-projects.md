@@ -21,6 +21,15 @@ Name                         | Description
 [PSRule.Rules.Kubernetes][8] | A suite of rules to validate Kubernetes resources using PSRule.
 [PSRule.Rules.MSFT.OSS][9]   | A suite of rules to validate repositories against Microsoft Open Source Software (OSS) requirements.
 
+## Community modules
+
+The following third-party modules are created, maintained, supported, and licensed by their respective authors.
+Before consuming these module, double check they meet your organization's support, security, and licensing expectations.
+
+Author       | Name                           | Description
+------       | ----                           | -----------
+cloudyspells | [PSRule.Rules.AzureDevOps][11] | A suite of rules to validate Azure DevOps projects using PSRule.
+
   [1]: https://github.com/microsoft/ps-rule
   [2]: https://github.com/microsoft/PSRule-pipelines
   [3]: https://github.com/microsoft/PSRule-vscode
@@ -31,3 +40,4 @@ Name                         | Description
   [8]: https://github.com/microsoft/PSRule.Rules.Kubernetes
   [9]: https://github.com/microsoft/PSRule.Rules.MSFT.OSS
   [10]: https://github.com/Azure/PSRule.Rules.Azure-quickstart
+  [11]: https://github.com/cloudyspells/PSRule.Rules.AzureDevOps
