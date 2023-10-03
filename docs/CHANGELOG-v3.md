@@ -1,5 +1,6 @@
 ---
 discussion: false
+link_users: true
 ---
 
 # Change log
@@ -44,8 +45,10 @@ What's changed since release v2.9.0:
     [#1521](https://github.com/microsoft/PSRule/issues/1521)
     - Added support for `.bicepparam`, `.tsp`, `.tsx`, `.editorconfig`, `.ipynb`, and `.toml` files.
 - Engineering:
-  - Bump development tools to .NET 7.0 SDK by @BernieWhite.
+  - **Breaking change:** Bump development tools to .NET 7.0 SDK by @BernieWhite.
     [#1631](https://github.com/microsoft/PSRule/issues/1631)
+    - Running PSRule from PowerShell 7.x is supported on 7.3 and above.
+    - Running PSRule from Windows PowerShell 5.1 is still supported but deprecated and will be removed in PSRule v4.
   - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.4.
     [#1602](https://github.com/microsoft/PSRule/pull/1602)
   - Bump Microsoft.CodeAnalysis.Common to v4.7.0.
