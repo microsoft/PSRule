@@ -29,6 +29,19 @@ To resolve any issue caused by this change, you can:
   [1]: https://aka.ms/ps-rule/options#bindingtargetname
   [2]: https://aka.ms/ps-rule/options#suppression
 
+### Using PowerShell 7.3 or later
+
+From _v3.0.0_, PSRule requires:
+
+- Windows PowerShell 5.1 for running as a PowerShell module. OR
+- PowerShell 7.3 or later for development, building locally, or running as a PowerShell module.
+
+Support for Windows PowerShell 5.1 is deprecated and will be removed in a future release of PSRule (v4).
+We recommend upgrading to PowerShell 7.3 or later.
+
+At the time of writing, PowerShell 7.3 is the most recent version of PowerShell.
+PowerShell 7.4 is expected, and PSRule v4 will aim to support the latest version of PowerShell as the minimum requirement.
+
 ## Upgrading to v2.0.0
 
 ### Resources naming restrictions
