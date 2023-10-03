@@ -44,6 +44,8 @@ What's changed since release v2.9.0:
     [#1521](https://github.com/microsoft/PSRule/issues/1521)
     - Added support for `.bicepparam`, `.tsp`, `.tsx`, `.editorconfig`, `.ipynb`, and `.toml` files.
 - Engineering:
+  - Bump development tools to .NET 7.0 SDK by @BernieWhite.
+    [#1631](https://github.com/microsoft/PSRule/issues/1631)
   - Bump Microsoft.CodeAnalysis.NetAnalyzers to v7.0.4.
     [#1602](https://github.com/microsoft/PSRule/pull/1602)
   - Bump Microsoft.CodeAnalysis.Common to v4.7.0.

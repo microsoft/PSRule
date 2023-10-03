@@ -91,17 +91,17 @@ You can also use this option to install on CI workers that are not natively supp
 The following platforms are supported:
 
 - Windows PowerShell 5.1 with .NET Framework 4.7.2 or greater.
-- PowerShell 7.2 or greater on MacOS, Linux, and Windows.
+- PowerShell 7.3 or greater on MacOS, Linux, and Windows.
 
 ### Installing PowerShell
 
 PowerShell 7.x can be installed on MacOS, Linux, and Windows but is not installed by default.
-For a list of platforms that PowerShell 7.2 is supported on and install instructions see [Get PowerShell][3].
+For a list of platforms that PowerShell 7.3 is supported on and install instructions see [Get PowerShell][3].
 
 !!! Note
     If you are using Windows PowerShell you may need to bootstrap NuGet before you can install modules.
     The NuGet package provider is not installed in Windows PowerShell be default.
-    For instructions see [Bootstraping NuGet][6].
+    For instructions see [Bootstrapping NuGet][6].
 
   [3]: https://github.com/PowerShell/PowerShell#get-powershell
   [6]: https://learn.microsoft.com/powershell/scripting/gallery/how-to/getting-support/bootstrapping-nuget
@@ -199,9 +199,9 @@ The following PowerShell modules will be automatically install if the required v
 
 These additional modules are only required for building PSRule.
 
-Additionally .NET SDK v6 is required.
+Additionally .NET SDK v7 is required.
 .NET will not be automatically downloaded and installed.
-To download and install the latest SDK see [Download .NET 6][dotnet].
+To download and install the latest SDK see [Download .NET 7.0][dotnet].
 
 ### Limited access networks
 
@@ -238,9 +238,9 @@ After downloading the modules, copy the module directories to devices with restr
 !!! Note
     If you are using Windows PowerShell you may need to bootstrap NuGet before you can install modules.
     The NuGet package provider is not installed in Windows PowerShell be default.
-    For instructions see [Bootstraping NuGet][6].
+    For instructions see [Bootstrapping NuGet][6].
 
 *[CI]: continuous integration
 
 [module]: https://www.powershellgallery.com/packages/PSRule
-[dotnet]: https://dotnet.microsoft.com/download/dotnet/6.0
+[dotnet]: https://dotnet.microsoft.com/download/dotnet/7.0
