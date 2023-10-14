@@ -58,9 +58,9 @@ What's changed since release v2.9.0:
   - Bump YamlDotNet to v13.7.0.
     [#1643](https://github.com/microsoft/PSRule/issues/1643)
   - Bump xunit to v2.5.2.
+    [#1645](https://github.com/microsoft/PSRule/pull/1645)
+  - Bump xunit.runner.visualstudio to v2.5.3.
     [#1644](https://github.com/microsoft/PSRule/pull/1644)
-  - Bump xunit.runner.visualstudio to v2.5.1.
-    [#1620](https://github.com/microsoft/PSRule/pull/1620)
   - Bump BenchmarkDotNet to v0.13.9.
     [#1638](https://github.com/microsoft/PSRule/pull/1638)
   - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.9.
