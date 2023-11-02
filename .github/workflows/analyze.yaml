@@ -107,3 +107,13 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
+        id: codeql-analyze
+
+      - name: Upload results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: CodeQL-Sarif
+          path: ${{ steps.codeql-analyze.outputs.sarif-output }}
+          retention-days: 1
+          if-no-files-found: error
