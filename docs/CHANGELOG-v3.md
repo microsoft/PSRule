@@ -61,7 +61,7 @@ What's changed since release v2.9.0:
     [#1648](https://github.com/microsoft/PSRule/pull/1648)
   - Bump xunit.runner.visualstudio to v2.5.3.
     [#1644](https://github.com/microsoft/PSRule/pull/1644)
-  - Bump BenchmarkDotNet to v0.13.9.
-    [#1638](https://github.com/microsoft/PSRule/pull/1638)
-  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.9.
-    [#1637](https://github.com/microsoft/PSRule/pull/1637)
+  - Bump BenchmarkDotNet to v0.13.10.
+    [#1654](https://github.com/microsoft/PSRule/pull/1654)
+  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.10.
+    [#1654](https://github.com/microsoft/PSRule/pull/1654)
