@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Pipeline.Dependencies;
 
 namespace PSRule.Pipeline
 {
@@ -42,17 +43,24 @@ namespace PSRule.Pipeline
         /// Assert pipelines process objects with rules and produce text-based output suitable for output to a CI pipeline.
         /// </remarks>
         /// <param name="module">The name of modules containing rules to process.</param>
+        /// <param name="file">An optional lock file.</param>
         /// <param name="option">Options that configure PSRule.</param>
         /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
         /// <returns>A builder object to configure the pipeline.</returns>
-        public static IInvokePipelineBuilder Assert(string[] module, PSRuleOption option, IHostContext hostContext)
+        public static IInvokePipelineBuilder Assert(string[] module, LockFile file, PSRuleOption option, IHostContext hostContext)
         {
             var sourcePipeline = new SourcePipelineBuilder(hostContext, option, GetLocalPath());
             for (var i = 0; module != null && i < module.Length; i++)
-                sourcePipeline.ModuleByName(module[i]);
+            {
+                var version = file != null && file.Modules.TryGetValue(module[i], out var entry) ? entry.Version.ToString() : null;
+                sourcePipeline.ModuleByName(module[i], version);
+            }
 
             for (var i = 0; option.Include.Module != null && i < option.Include.Module.Length; i++)
-                sourcePipeline.ModuleByName(option.Include.Module[i]);
+            {
+                var version = file != null && file.Modules.TryGetValue(module[i], out var entry) ? entry.Version.ToString() : null;
+                sourcePipeline.ModuleByName(option.Include.Module[i], version);
+            }
 
             var source = sourcePipeline.Build();
             var pipeline = new AssertPipelineBuilder(source, hostContext);

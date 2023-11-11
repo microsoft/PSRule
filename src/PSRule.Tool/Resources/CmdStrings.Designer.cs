@@ -61,7 +61,7 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run rule analysis.
+        ///   Looks up a localized string similar to Run rule analysis..
         /// </summary>
         internal static string Analyze_Description {
             get {
@@ -79,7 +79,79 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return debug output.
+        ///   Looks up a localized string similar to Add one or more modules to the lock file..
+        /// </summary>
+        internal static string Module_Add_Description {
+            get {
+                return ResourceManager.GetString("Module_Add_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Override the module even if it already is added to the module list..
+        /// </summary>
+        internal static string Module_Add_Force_Description {
+            get {
+                return ResourceManager.GetString("Module_Add_Force_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip verification of the module..
+        /// </summary>
+        internal static string Module_Add_SkipVerification_Description {
+            get {
+                return ResourceManager.GetString("Module_Add_SkipVerification_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target version of the module to add..
+        /// </summary>
+        internal static string Module_Add_Version_Description {
+            get {
+                return ResourceManager.GetString("Module_Add_Version_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage modules tracked by the PSRule lock file. To install modules within the lock file, use the `restore` command instead..
+        /// </summary>
+        internal static string Module_Description {
+            get {
+                return ResourceManager.GetString("Module_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of one or more modules..
+        /// </summary>
+        internal static string Module_Module_Description {
+            get {
+                return ResourceManager.GetString("Module_Module_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove one or more modules from the lock file..
+        /// </summary>
+        internal static string Module_Remove_Description {
+            get {
+                return ResourceManager.GetString("Module_Remove_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upgrade to the latest versions of any modules within the lock file..
+        /// </summary>
+        internal static string Module_Upgrade_Description {
+            get {
+                return ResourceManager.GetString("Module_Upgrade_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Return debug output..
         /// </summary>
         internal static string Options_Debug_Description {
             get {
@@ -88,7 +160,16 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An options file.
+        ///   Looks up a localized string similar to The name of one or more modules to use during analysis..
+        /// </summary>
+        internal static string Options_Module_Description {
+            get {
+                return ResourceManager.GetString("Options_Module_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specifies the path to an options file..
         /// </summary>
         internal static string Options_Option_Description {
             get {
@@ -97,7 +178,7 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to The path to run commands within. By default, this is the current working directory..
         /// </summary>
         internal static string Options_Path_Description {
             get {
@@ -106,7 +187,7 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return verbose output.
+        ///   Looks up a localized string similar to Return verbose output..
         /// </summary>
         internal static string Options_Verbose_Description {
             get {
@@ -115,7 +196,7 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restore PSRule modules.
+        ///   Looks up a localized string similar to Restore modules defined in configuration locally..
         /// </summary>
         internal static string Restore_Description {
             get {
@@ -124,7 +205,7 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Force restore of modules.
+        ///   Looks up a localized string similar to Restore modules even when an existing version that meets constaints is already installed locally..
         /// </summary>
         internal static string Restore_Force_Description {
             get {

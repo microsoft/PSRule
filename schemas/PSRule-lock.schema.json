@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "PSRule lock",
+  "description": "A schema for the PSRule lock file.",
+  "properties": {
+    "modules": {
+      "type": "object",
+      "title": "Modules",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "title": "Version"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "modules"
+  ],
+  "additionalProperties": false
+}

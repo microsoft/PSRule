@@ -35,6 +35,12 @@
         "/**/**.Rule.jsonc"
       ],
       "url": "./schemas/PSRule-resources.schema.json"
+    },
+    {
+      "fileMatch": [
+        "/**/ps-rule.lock.json"
+      ],
+      "url": "./schemas/PSRule-lock.schema.json"
     }
   ],
   "[json]": {

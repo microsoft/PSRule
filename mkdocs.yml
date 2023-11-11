@@ -65,6 +65,7 @@ nav:
           - Functions: expressions/functions.md
           - Grouping rules: concepts/grouping-rules.md
           - Sub-selectors: expressions/sub-selectors.md
+          - Lock file: concepts/lockfile.md
       - Scenarios:
           - Using within continuous integration: scenarios/validation-pipeline/validation-pipeline.md
       - Troubleshooting: troubleshooting.md
@@ -85,7 +86,7 @@ nav:
     #   - Configuring rule defaults: setup/configuring-rules.md
     #   - Configuring expansion: setup/configuring-expansion.md
   - Reference:
-      - Commands:
+      - PowerShell cmdlets:
           - Assert-PSRule: commands/PSRule/en-US/Assert-PSRule.md
           - Export-PSRuleBaseline: commands/PSRule/en-US/Export-PSRuleBaseline.md
           - Get-PSRule: commands/PSRule/en-US/Get-PSRule.md
@@ -96,6 +97,7 @@ nav:
           - New-PSRuleOption: commands/PSRule/en-US/New-PSRuleOption.md
           - Set-PSRuleOption: commands/PSRule/en-US/Set-PSRuleOption.md
           - Test-PSRuleTarget: commands/PSRule/en-US/Test-PSRuleTarget.md
+      - CLI commands: concepts/cli.md
       - Assertion methods: concepts/PSRule/en-US/about_PSRule_Assert.md
       - Baselines: concepts/PSRule/en-US/about_PSRule_Baseline.md
       - Badges: concepts/PSRule/en-US/about_PSRule_Badges.md

@@ -85,7 +85,8 @@ namespace PSRule.Pipeline
         /// Add a module source.
         /// </summary>
         /// <param name="name">The name of the module.</param>
-        void ModuleByName(string name);
+        /// <param name="version">A specific version of the module.</param>
+        void ModuleByName(string name, string version = null);
 
         /// <summary>
         /// Build a list of sources for executing within PSRule.
@@ -205,9 +206,9 @@ namespace PSRule.Pipeline
         }
 
         /// <inheritdoc/>
-        public void ModuleByName(string name)
+        public void ModuleByName(string name, string version = null)
         {
-            var basePath = FindModule(name);
+            var basePath = FindModule(name, version);
             if (basePath == null)
                 throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
 
@@ -227,10 +228,10 @@ namespace PSRule.Pipeline
             //    Module(module.RequiredModules[i], dependency: true);
         }
 
-        private string FindModule(string name)
+        private string FindModule(string name, string version)
         {
             return TryPackagedModule(name, out var path) ||
-                TryInstalledModule(name, out path) ? path : null;
+                TryInstalledModule(name, version, out path) ? path : null;
         }
 
         /// <summary>
@@ -250,7 +251,7 @@ namespace PSRule.Pipeline
         /// <summary>
         /// Try to find a module installed into PowerShell.
         /// </summary>
-        private bool TryInstalledModule(string name, out string path)
+        private bool TryInstalledModule(string name, string version, out string path)
         {
             path = null;
             if (!Environment.TryPathEnvironmentVariable("PSModulePath", out var searchPaths))
@@ -262,13 +263,31 @@ namespace PSRule.Pipeline
             {
                 Debug($"Looking for modules search paths: {searchPaths[i]}");
                 var searchPath = Environment.GetRootedBasePath(Path.Combine(searchPaths[i], name));
+
+                // Try a specific version.
+                if (!string.IsNullOrEmpty(version))
+                {
+                    var versionPath = Path.Combine(searchPath, version);
+                    var manifestPath = Path.Combine(versionPath, GetManifestName(name));
+                    if (File.Exists(manifestPath))
+                    {
+                        Debug($"Found module manifest: {manifestPath}");
+                        unsorted.Add(versionPath);
+                    }
+                    continue;
+                }
+
+                // Get other versions.
                 if (System.IO.Directory.Exists(searchPath))
                 {
                     foreach (var versionPath in System.IO.Directory.EnumerateDirectories(searchPath))
                     {
                         var manifestPath = Path.Combine(versionPath, GetManifestName(name));
                         if (File.Exists(manifestPath))
+                        {
+                            Debug($"Found module manifest: {manifestPath}");
                             unsorted.Add(versionPath);
+                        }
                     }
                 }
             }

@@ -956,4 +956,40 @@ namespace PSRule
             writer.WriteValue(value.Value);
         }
     }
+
+    /// <summary>
+    ///  A converter for converting <see cref="SemanticVersion.Version"/> to/ from JSON.
+    /// </summary>
+    internal sealed class SemanticVersionConverter : JsonConverter<SemanticVersion.Version>
+    {
+        public override SemanticVersion.Version ReadJson(JsonReader reader, Type objectType, SemanticVersion.Version existingValue, bool hasExistingValue, JsonSerializer serializer)
+        {
+            return reader.TokenType == JsonToken.String && SemanticVersion.TryParseVersion(reader.Value as string, out var version) ? version : default;
+        }
+
+        public override void WriteJson(JsonWriter writer, SemanticVersion.Version value, JsonSerializer serializer)
+        {
+            writer.WriteValue(value?.ToString());
+        }
+    }
+
+    internal sealed class CaseInsensitiveDictionaryConverter<TValue> : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(Dictionary<string, TValue>) || objectType == typeof(IDictionary<string, TValue>);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            existingValue ??= new Dictionary<string, TValue>(StringComparer.OrdinalIgnoreCase);
+            serializer.Deserialize<Dictionary<string, TValue>>(reader);
+            return existingValue;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value);
+        }
+    }
 }

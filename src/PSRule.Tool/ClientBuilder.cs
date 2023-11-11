@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.CommandLine;
+using System.CommandLine.Builder;
 using System.Reflection;
 using PSRule.Tool.Resources;
 
@@ -15,6 +16,9 @@ namespace PSRule.Tool
         private readonly Option<bool> _Verbose;
         private readonly Option<bool> _Debug;
         private readonly Option<bool> _RestoreForce;
+        private readonly Option<string> _ModuleAddVersion;
+        private readonly Option<bool> _ModuleAddForce;
+        private readonly Option<bool> _ModuleAddSkipVerification;
         private readonly Option<string[]> _Path;
         private readonly Option<DirectoryInfo> _OutputPath;
         private readonly Option<string> _OutputFormat;
@@ -27,7 +31,8 @@ namespace PSRule.Tool
             Command = cmd;
             _Option = new Option<string>(
                 new string[] { "--option" },
-                CmdStrings.Options_Option_Description
+                getDefaultValue: () => "ps-rule.yaml",
+                description: CmdStrings.Options_Option_Description
             );
             _Verbose = new Option<bool>(
                 new string[] { "--verbose" },
@@ -38,7 +43,8 @@ namespace PSRule.Tool
                 CmdStrings.Options_Debug_Description
             );
             _Path = new Option<string[]>(
-                new string[] { "-p", "--path" }
+                new string[] { "-p", "--path" },
+                CmdStrings.Options_Path_Description
             );
             _OutputPath = new Option<DirectoryInfo>(
                 new string[] { "--output-path" }
@@ -50,7 +56,8 @@ namespace PSRule.Tool
                 new string[] { "-f", "--input-path" }
             );
             _Module = new Option<string[]>(
-                new string[] { "-m", "--module" }
+                new string[] { "-m", "--module" },
+                CmdStrings.Options_Module_Description
             );
             _Baseline = new Option<string>(
                 new string[] { "--baseline" }
@@ -58,6 +65,19 @@ namespace PSRule.Tool
             _RestoreForce = new Option<bool>(
                 new string[] { "--force" },
                 CmdStrings.Restore_Force_Description
+            );
+            _ModuleAddVersion = new Option<string>
+            (
+                new string[] { "--version" },
+                CmdStrings.Module_Add_Version_Description
+            );
+            _ModuleAddForce = new Option<bool>(
+                new string[] { "--force" },
+                CmdStrings.Module_Add_Force_Description
+            );
+            _ModuleAddSkipVerification = new Option<bool>(
+                new string[] { "--skip-verification" },
+                CmdStrings.Module_Add_SkipVerification_Description
             );
 
             cmd.AddGlobalOption(_Option);
@@ -75,6 +95,7 @@ namespace PSRule.Tool
             };
             var builder = new ClientBuilder(cmd);
             builder.AddAnalyze();
+            builder.AddModule();
             builder.AddRestore();
             return builder.Command;
         }
@@ -124,6 +145,92 @@ namespace PSRule.Tool
                 var client = new ClientContext();
                 invocation.ExitCode = ClientHelper.RunRestore(option, client, invocation);
             });
+            Command.AddCommand(cmd);
+        }
+
+        private void AddModule()
+        {
+            var cmd = new Command("module", CmdStrings.Module_Description);
+
+            var moduleArg = new Argument<string[]>
+            (
+                "module",
+                CmdStrings.Module_Module_Description
+            );
+            moduleArg.Arity = ArgumentArity.OneOrMore;
+
+            // Add
+            var add = new Command(
+                "add",
+                CmdStrings.Module_Add_Description
+            );
+            add.AddArgument(moduleArg);
+            add.AddOption(_ModuleAddVersion);
+            add.AddOption(_ModuleAddForce);
+            add.AddOption(_ModuleAddSkipVerification);
+            add.SetHandler((invocation) =>
+            {
+                var option = new ModuleOptions
+                {
+                    Path = invocation.ParseResult.GetValueForOption(_Path),
+                    Option = invocation.ParseResult.GetValueForOption(_Option),
+                    Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
+                    Debug = invocation.ParseResult.GetValueForOption(_Debug),
+                    Module = invocation.ParseResult.GetValueForArgument(moduleArg),
+                    Version = invocation.ParseResult.GetValueForOption(_ModuleAddVersion),
+                    Force = invocation.ParseResult.GetValueForOption(_ModuleAddForce),
+                    SkipVerification = invocation.ParseResult.GetValueForOption(_ModuleAddSkipVerification),
+                };
+
+                var client = new ClientContext();
+                invocation.ExitCode = ClientHelper.AddModule(option, client, invocation);
+            });
+
+            // Remove
+            var remove = new Command(
+                "remove",
+                CmdStrings.Module_Remove_Description
+            );
+            remove.AddArgument(moduleArg);
+            remove.SetHandler((invocation) =>
+            {
+                var option = new ModuleOptions
+                {
+                    Path = invocation.ParseResult.GetValueForOption(_Path),
+                    Option = invocation.ParseResult.GetValueForOption(_Option),
+                    Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
+                    Debug = invocation.ParseResult.GetValueForOption(_Debug),
+                    Module = invocation.ParseResult.GetValueForArgument(moduleArg)
+                };
+
+                var client = new ClientContext();
+                invocation.ExitCode = ClientHelper.RemoveModule(option, client, invocation);
+            });
+
+            // Upgrade
+            var upgrade = new Command(
+                "upgrade",
+                CmdStrings.Module_Upgrade_Description
+            );
+            upgrade.SetHandler((invocation) =>
+            {
+                var option = new ModuleOptions
+                {
+                    Path = invocation.ParseResult.GetValueForOption(_Path),
+                    Option = invocation.ParseResult.GetValueForOption(_Option),
+                    Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
+                    Debug = invocation.ParseResult.GetValueForOption(_Debug)
+                };
+
+                var client = new ClientContext();
+                invocation.ExitCode = ClientHelper.UpgradeModule(option, client, invocation);
+            });
+
+            cmd.AddCommand(add);
+            cmd.AddCommand(remove);
+            cmd.AddCommand(upgrade);
+
+            cmd.AddOption(_Path);
             Command.AddCommand(cmd);
         }
     }
