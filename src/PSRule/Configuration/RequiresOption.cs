@@ -45,6 +45,20 @@ namespace PSRule.Configuration
         }
 
         /// <summary>
+        /// Return the module constaints as a dictionary indexed by module name.
+        /// </summary>
+        public IDictionary<string, ModuleConstraint> ToDictionary()
+        {
+            var result = new Dictionary<string, ModuleConstraint>(StringComparer.OrdinalIgnoreCase);
+            foreach (var kv in this)
+            {
+                if (SemanticVersion.TryParseConstraint(kv.Value, out var constraint))
+                    result.Add(kv.Key, new ModuleConstraint(kv.Key, constraint));
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
         /// Values from <paramref name="o1"/> that are set are not overridden.
         /// </summary>

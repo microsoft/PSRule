@@ -4,10 +4,14 @@
 using System.Collections;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.Diagnostics;
 using System.Management.Automation;
+using Microsoft.CodeAnalysis.Sarif;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline;
+using PSRule.Pipeline.Dependencies;
+using PSRule.Tool.Resources;
 using SemanticVersion = PSRule.Data.SemanticVersion;
 
 namespace PSRule.Tool
@@ -24,7 +28,12 @@ namespace PSRule.Tool
         /// <summary>
         /// Failed to install a module.
         /// </summary>
-        private const int ERROR_MODUILE_FAILEDTOINSTALL = 500;
+        private const int ERROR_MODUILE_FAILEDTOINSTALL = 501;
+
+        private const int ERROR_MODULE_FAILEDTOFIND = 502;
+
+        private const int ERROR_MODULE_ADD_VIOLATES_CONSTRAINT = 503;
+        
 
         /// <summary>
         /// One or more failures occurred.
@@ -43,6 +52,7 @@ namespace PSRule.Tool
             var exitCode = 0;
             var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
             var option = GetOption(host);
+            var file = LockFile.Read(null);
             var inputPath = operationOptions.InputPath == null || operationOptions.InputPath.Length == 0 ?
                 new string[] { Environment.GetWorkingPath() } : operationOptions.InputPath;
 
@@ -50,7 +60,7 @@ namespace PSRule.Tool
                 option.Include.Path = operationOptions.Path;
 
             // Build command
-            var builder = CommandLineBuilder.Assert(operationOptions.Module, option, host);
+            var builder = CommandLineBuilder.Assert(operationOptions.Module, file, option, host);
             builder.Baseline(BaselineOption.FromString(operationOptions.Baseline));
             builder.InputPath(inputPath);
             builder.UnblockPublisher(PUBLISHER);
@@ -70,47 +80,169 @@ namespace PSRule.Tool
         public static int RunRestore(RestoreOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
         {
             var exitCode = 0;
-            var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
-            var option = GetOption(host);
-            var requires = option.Requires.ToArray();
+            var file = LockFile.Read(null);
 
             using var pwsh = PowerShell.Create();
-            for (var i = 0; i < requires.Length; i++)
+            foreach (var kv in file.Modules)
             {
-                if (string.Equals(requires[i].Module, "PSRule", System.StringComparison.OrdinalIgnoreCase))
+                var module = kv.Key;
+                var targetVersion = kv.Value.Version;
+                if (string.Equals(module, "PSRule", StringComparison.OrdinalIgnoreCase))
                     continue;
 
-                invocation.Console.WriteLine($"Getting {requires[i].Module}.");
-                if (IsInstalled(pwsh, requires[i], out var installedVersion) && !operationOptions.Force)
-                    continue;
-
-                var idealVersion = FindVersion(pwsh, requires[i], installedVersion);
-                if (idealVersion != null)
+                invocation.Log(Messages.UsingModule, module, targetVersion.ToString());
+                if (IsInstalled(pwsh, module, targetVersion, out var installedVersion) && !operationOptions.Force)
                 {
-                    var version = idealVersion.ToString();
-                    invocation.Console.WriteLine($"Installing {requires[i].Module} v{version}.");
-                    InstallVersion(pwsh, requires[i].Module, version);
+                    if (operationOptions.Verbose)
+                    {
+                        invocation.Log($"The module {module} is already installed.");
+                    }
+                    continue;
                 }
+
+                var idealVersion = FindVersion(pwsh, module, null, targetVersion, null);
+                if (idealVersion != null)
+                    InstallVersion(invocation, pwsh, module, idealVersion.ToString());
 
                 if (pwsh.HadErrors || (idealVersion == null && installedVersion == null))
                 {
                     exitCode = ERROR_MODUILE_FAILEDTOINSTALL;
-                    invocation.Console.Error.Write($"Failed to install {requires[i].Module}.");
+                    invocation.LogError(Messages.Error_501, module, targetVersion);
                     foreach (var error in pwsh.Streams.Error)
                     {
-                        invocation.Console.Error.Write(error.Exception.Message);
+                        invocation.LogError(error.Exception.Message);
                     }
                 }
             }
             return exitCode;
         }
 
-        private static bool IsInstalled(PowerShell pwsh, ModuleConstraint constraint, out SemanticVersion.Version installedVersion)
+        /// <summary>
+        /// Add a module to the lock file.
+        /// </summary>
+        public static int AddModule(ModuleOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
+        {
+            var exitCode = 0;
+            var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
+            var option = GetOption(host);
+            var requires = option.Requires.ToDictionary();
+            var file = LockFile.Read(null);
+
+            using var pwsh = PowerShell.Create();
+            foreach (var module in operationOptions.Module)
+            {
+                if (!file.Modules.TryGetValue(module, out var item) || operationOptions.Force)
+                {
+                    // Get a constraint if set from options.
+                    var moduleConstraint = requires.TryGetValue(module, out var c) ? c : null;
+
+                    // Get target version if specified in command-line.
+                    var targetVersion = !string.IsNullOrEmpty(operationOptions.Version) && SemanticVersion.TryParseVersion(operationOptions.Version, out var v) && v != null ? v : null;
+
+                    // Check if the target version is valid with the constraint if set.
+                    if (targetVersion != null && moduleConstraint != null && !moduleConstraint.Constraint.Equals(targetVersion))
+                    {
+                        invocation.LogError(Messages.Error_503, operationOptions.Version);
+                        return ERROR_MODULE_ADD_VIOLATES_CONSTRAINT;
+                    }
+
+                    // Find the ideal version.
+                    var idealVersion = FindVersion(pwsh, module, moduleConstraint, targetVersion, null);
+                    if (idealVersion == null && targetVersion != null && operationOptions.SkipVerification)
+                        idealVersion = targetVersion;
+
+                    if (idealVersion == null)
+                    {
+                        invocation.LogError(Messages.Error_502, module);
+                        return ERROR_MODULE_FAILEDTOFIND;
+                    }
+
+                    invocation.Log(Messages.UsingModule, module, idealVersion.ToString());
+                    item = new LockEntry
+                    {
+                        Version = idealVersion
+                    };
+                    file.Modules[module] = item;
+                }
+                else
+                {
+
+                }
+            }
+
+            file.Write(null);
+            return exitCode;
+        }
+
+        /// <summary>
+        /// Remove a module from the lock file.
+        /// </summary>
+        public static int RemoveModule(ModuleOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
+        {
+            var exitCode = 0;
+            var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
+            var file = LockFile.Read(null);
+
+            foreach (var module in operationOptions.Module)
+            {
+                if (file.Modules.TryGetValue(module, out var constraint))
+                {
+                    file.Modules.Remove(module);
+                }
+                else
+                {
+
+                }
+            }
+
+            file.Write(null);
+            return exitCode;
+        }
+
+        /// <summary>
+        /// Upgrade a module within the lock file.
+        /// </summary>
+        public static int UpgradeModule(ModuleOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
+        {
+            var exitCode = 0;
+            var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
+            var option = GetOption(host);
+            var requires = option.Requires.ToDictionary();
+            var file = LockFile.Read(null);
+
+            using var pwsh = PowerShell.Create();
+            foreach (var kv in file.Modules)
+            {
+                // Get a constraint if set from options.
+                var moduleConstraint = requires.TryGetValue(kv.Key, out var c) ? c : null;
+
+                // Find the ideal version.
+                var idealVersion = FindVersion(pwsh, kv.Key, moduleConstraint, null, null);
+                if (idealVersion == null)
+                {
+                    invocation.LogError(Messages.Error_502, kv.Key);
+                    return ERROR_MODULE_FAILEDTOFIND;
+                }
+
+                if (idealVersion == kv.Value.Version)
+                    continue;
+
+                invocation.Log(Messages.UsingModule, kv.Key, idealVersion.ToString());
+
+                kv.Value.Version = idealVersion;
+                file.Modules[kv.Key] = kv.Value;
+            }
+
+            file.Write(null);
+            return exitCode;
+        }
+
+        private static bool IsInstalled(PowerShell pwsh, string module, SemanticVersion.Version targetVersion, out SemanticVersion.Version installedVersion)
         {
             pwsh.Commands.Clear();
             pwsh.Streams.ClearStreams();
             pwsh.AddCommand("Get-Module")
-                .AddParameter(PARAM_NAME, constraint.Module)
+                .AddParameter(PARAM_NAME, module)
                 .AddParameter("ListAvailable");
 
             var versions = pwsh.Invoke();
@@ -119,7 +251,7 @@ namespace PSRule.Tool
             {
                 if (TryModuleInfo(version, out var versionString) &&
                     SemanticVersion.TryParseVersion(versionString, out var v) &&
-                    constraint.Constraint.Equals(v) &&
+                    (targetVersion == null || targetVersion.Equals(v)) &&
                     v.CompareTo(installedVersion) > 0)
                     installedVersion = v;
             }
@@ -150,12 +282,12 @@ namespace PSRule.Tool
             return false;
         }
 
-        private static SemanticVersion.Version FindVersion(PowerShell pwsh, ModuleConstraint constraint, SemanticVersion.Version installedVersion)
+        private static SemanticVersion.Version FindVersion(PowerShell pwsh, string module, ModuleConstraint constraint, SemanticVersion.Version targetVersion, SemanticVersion.Version installedVersion)
         {
             pwsh.Commands.Clear();
             pwsh.Streams.ClearStreams();
             pwsh.AddCommand("Find-Module")
-                .AddParameter(PARAM_NAME, constraint.Module)
+                .AddParameter(PARAM_NAME, module)
                 .AddParameter("AllVersions");
 
             var versions = pwsh.Invoke();
@@ -164,7 +296,8 @@ namespace PSRule.Tool
             {
                 if (version.Properties[PARAM_VERSION].Value is string versionString &&
                     SemanticVersion.TryParseVersion(versionString, out var v) &&
-                    constraint.Constraint.Equals(v) &&
+                    (constraint == null || constraint.Constraint.Equals(v)) &&
+                    (targetVersion == null || targetVersion.Equals(v)) &&
                     v.CompareTo(result) > 0 &&
                     v.CompareTo(installedVersion) > 0)
                     result = v;
@@ -172,8 +305,10 @@ namespace PSRule.Tool
             return result;
         }
 
-        private static void InstallVersion(PowerShell pwsh, string name, string version)
+        private static void InstallVersion(InvocationContext invocation, PowerShell pwsh, string name, string version)
         {
+            invocation.Log(Messages.InstallingModule, name, version);
+
             pwsh.Commands.Clear();
             pwsh.Streams.ClearStreams();
             pwsh.AddCommand("Install-Module")

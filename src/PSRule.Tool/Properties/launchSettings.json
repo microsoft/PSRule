@@ -2,12 +2,17 @@
   "profiles": {
     "ps-rule analyze": {
       "commandName": "Project",
-      "commandLineArgs": "analyze",
+      "commandLineArgs": "analyze -m PSRule.Rules.Azure",
       "workingDirectory": "../../"
     },
     "ps-rule restore": {
       "commandName": "Project",
       "commandLineArgs": "restore",
+      "workingDirectory": "../../"
+    },
+    "ps-rule module add": {
+      "commandName": "Project",
+      "commandLineArgs": "module add abc --version 1.0.0",
       "workingDirectory": "../../"
     }
   }

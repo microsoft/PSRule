@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Diagnostics;
+using YamlDotNet.Core.Tokens;
 
 namespace PSRule.Data
 {
@@ -88,6 +90,12 @@ namespace PSRule.Data
         public sealed class VersionConstraint : ISemanticVersionConstraint
         {
             private List<ConstraintExpression>? _Constraints;
+            private string _Value;
+
+            internal VersionConstraint(string value)
+            {
+                _Value = value;
+            }
 
             /// <inheritdoc/>
             public bool Equals(Version version)
@@ -139,6 +147,18 @@ namespace PSRule.Data
                     join == JoinOperator.None ? JoinOperator.Or : join,
                     includePrerelease
                 ));
+            }
+
+            /// <inheritdoc/>
+            public override string ToString()
+            {
+                return _Value;
+            }
+
+            /// <inheritdoc/>
+            public override int GetHashCode()
+            {
+                return _Value.GetHashCode();
             }
         }
 
@@ -393,23 +413,40 @@ namespace PSRule.Data
                 }
             }
 
+            /// <inheritdoc/>
+            public static bool operator ==(Version? a, Version? b)
+            {
+                return a is null && b is null ||
+                    a is not null && a.Equals(b) ||
+                    b is not null && b.Equals(a);
+            }
+
+            /// <inheritdoc/>
+            public static bool operator !=(Version? a, Version? b)
+            {
+                return !(a is null && b is null ||
+                    a is not null && a.Equals(b) ||
+                    b is not null && b.Equals(a));
+            }
+
             /// <summary>
             /// Compare the version against another version.
             /// </summary>
-            public bool Equals(Version other)
+            public bool Equals(Version? other)
             {
                 return other != null &&
-                    Equals(other.Major, other.Minor, other.Patch);
+                    Equals(other.Major, other.Minor, other.Patch, other.Prerelease?.Value);
             }
 
             /// <summary>
             /// Compare the version against another version based on major.minor.patch.
             /// </summary>
-            public bool Equals(int major, int minor, int patch)
+            public bool Equals(int major, int minor, int patch, string? prerelease = null)
             {
                 return major == Major &&
                     minor == Minor &&
-                    patch == Patch;
+                    patch == Patch &&
+                    new PR(prerelease).Equals(Prerelease);
             }
 
             /// <summary>
@@ -447,10 +484,10 @@ namespace PSRule.Data
                 _Identifiers = null;
             }
 
-            internal PR(string value)
+            internal PR(string? value)
             {
-                Value = string.IsNullOrEmpty(value) ? string.Empty : value;
-                _Identifiers = string.IsNullOrEmpty(value) ? null : value.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
+                Value = value == null || string.IsNullOrEmpty(value) ? string.Empty : value;
+                _Identifiers = value == null || string.IsNullOrEmpty(value) ? null : value.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
             }
 
             /// <summary>
@@ -784,7 +821,7 @@ namespace PSRule.Data
         /// </summary>
         public static bool TryParseConstraint(string value, out ISemanticVersionConstraint constraint, bool includePrerelease = false)
         {
-            var c = new VersionConstraint();
+            var c = new VersionConstraint(value);
             constraint = c;
             if (string.IsNullOrEmpty(value))
                 return true;

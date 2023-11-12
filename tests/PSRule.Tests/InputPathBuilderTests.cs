@@ -52,7 +52,7 @@ namespace PSRule
 
             builder.Add("./*.json");
             actual = builder.Build();
-            Assert.True(actual.Length == 2);
+            Assert.True(actual.Length == 3);
 
             builder.Add("src/");
             actual = builder.Build();

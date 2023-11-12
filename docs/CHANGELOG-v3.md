@@ -29,6 +29,10 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since release v2.9.0:
 
+- New features:
+  - Added lock file support when using CLI and related tools by @BernieWhite.
+    [#1660](https://github.com/microsoft/PSRule/issues/1660)
+    - The lock file used used during analysis and when installing modules to select a specific version.
 - General improvements:
   - **Breaking change:** Switch to use SHA-512 for generating unbound objects by @BernieWhite.
     [#1155](https://github.com/microsoft/PSRule/issues/1155)
