@@ -1,6 +1,6 @@
 mkdocs==1.5.3
 mkdocs-material==9.4.8
-pymdown-extensions==10.3.1
+pymdown-extensions==10.4
 mike==2.0.0
 mkdocs-simple-hooks==0.1.5
 mkdocs-git-revision-date-plugin==0.3.2
