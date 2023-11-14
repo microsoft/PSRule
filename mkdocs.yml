@@ -74,9 +74,9 @@ nav:
       - Releases:
           - Change log:
               - v3: 'CHANGELOG-v3.md'
-              - v2: 'CHANGELOG-v2.md'
-              - v1: 'CHANGELOG-v1.md'
-              - v0: 'CHANGELOG-v0.md'
+              - v2: https://microsoft.github.io/PSRule/stable/CHANGELOG-v2/
+              - v1: https://microsoft.github.io/PSRule/stable/CHANGELOG-v1/
+              - v0: https://microsoft.github.io/PSRule/stable/CHANGELOG-v0/
           - Upgrade notes: upgrade-notes.md
           - Deprecations: deprecations.md
           - Changes and versioning: versioning.md
