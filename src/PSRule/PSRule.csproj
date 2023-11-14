@@ -19,6 +19,7 @@
     </PackageReference>
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" PrivateAssets="All" />
     <PackageReference Include="Sarif.Sdk" Version="4.3.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <!-- Add code generators -->

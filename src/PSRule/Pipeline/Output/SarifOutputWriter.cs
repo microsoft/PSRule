@@ -16,10 +16,11 @@ namespace PSRule.Pipeline.Output
     {
         private const string TOOL_NAME = "PSRule";
         private const string TOOL_ORG = "Microsoft Corporation";
-        private const string TOOL_GUID = "0130215d-58eb-4887-b6fa-31ed02500569";
         private const string RECOMMENDATION_MESSAGE_ID = "recommendation";
         private const string LOCATION_KIND_OBJECT = "object";
         private const string LOCATION_ID_REPOROOT = "REPOROOT";
+
+        private static readonly Guid _ToolGuid = new("0130215d-58eb-4887-b6fa-31ed02500569");
 
         private readonly Run _Run;
         private readonly Dictionary<string, ReportingDescriptorReference> _Rules;
@@ -104,7 +105,7 @@ namespace PSRule.Pipeline.Output
             };
 
             // SARIF2004: Use the RuleId property instead of Rule for standalone rules.
-            if (rule.ToolComponent.Guid == TOOL_GUID)
+            if (rule.ToolComponent.Guid == _ToolGuid)
             {
                 result.RuleId = rule.Id;
                 result.Rule = null;
@@ -291,7 +292,7 @@ namespace PSRule.Pipeline.Output
                     Name = TOOL_NAME,
                     SemanticVersion = version,
                     Organization = TOOL_ORG,
-                    Guid = TOOL_GUID,
+                    Guid = _ToolGuid,
                     Rules = new List<ReportingDescriptor>(),
                     InformationUri = new Uri("https://aka.ms/ps-rule", UriKind.Absolute),
                 },
@@ -313,7 +314,7 @@ namespace PSRule.Pipeline.Output
                     {
                         Name = source[i].Module.Name,
                         Version = source[i].Module.Version,
-                        Guid = source[i].Module.Guid,
+                        Guid = new Guid(source[i].Module.Guid),
                         AssociatedComponent = new ToolComponentReference
                         {
                             Name = TOOL_NAME,

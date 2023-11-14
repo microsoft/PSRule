@@ -27,6 +27,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0084:
+
+- Engineering:
+  - Bump Sarif.Sdk to v4.3.7.
+    [#1667](https://github.com/microsoft/PSRule/pull/1667)
+
 ## v3.0.0-B0084 (pre-release)
 
 What's changed since release v2.9.0:
