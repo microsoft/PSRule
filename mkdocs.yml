@@ -72,6 +72,7 @@ nav:
       - Related projects: related-projects.md
       - Releases:
           - Change log:
+              - v3: 'https://microsoft.github.io/PSRule/v3/CHANGELOG-v3/'
               - v2: 'CHANGELOG-v2.md'
               - v1: 'CHANGELOG-v1.md'
               - v0: 'CHANGELOG-v0.md'
