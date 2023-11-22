@@ -4,6 +4,8 @@
 using PSRule.Configuration;
 using PSRule.Pipeline.Dependencies;
 
+#nullable enable
+
 namespace PSRule.Pipeline
 {
     /// <summary>
@@ -15,20 +17,17 @@ namespace PSRule.Pipeline
         /// Create a builder for an Invoke pipeline.
         /// </summary>
         /// <remarks>
-        /// Invoke piplines process objects and produce records indicating the outcome of each rule.
+        /// Invoke pipelines process objects and produce records indicating the outcome of each rule.
         /// </remarks>
         /// <param name="module">The name of modules containing rules to process.</param>
         /// <param name="option">Options that configure PSRule.</param>
-        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <param name="hostContext">An implementation of a host context that will receive output and results.</param>
+        /// <param name="file">An optional lock file.</param>
         /// <returns>A builder object to configure the pipeline.</returns>
-        public static IInvokePipelineBuilder Invoke(string[] module, PSRuleOption option, IHostContext hostContext)
+        public static IInvokePipelineBuilder Invoke(string[] module, PSRuleOption option, IHostContext hostContext, LockFile? file = null)
         {
             var sourcePipeline = new SourcePipelineBuilder(hostContext, option, GetLocalPath());
-            for (var i = 0; i < module.Length; i++)
-                sourcePipeline.ModuleByName(module[i]);
-
-            for (var i = 0; option.Include.Module != null && i < option.Include.Module.Length; i++)
-                sourcePipeline.ModuleByName(option.Include.Module[i]);
+            LoadModules(sourcePipeline, module, option, file);
 
             var source = sourcePipeline.Build();
             var pipeline = new InvokeRulePipelineBuilder(source, hostContext);
@@ -43,24 +42,14 @@ namespace PSRule.Pipeline
         /// Assert pipelines process objects with rules and produce text-based output suitable for output to a CI pipeline.
         /// </remarks>
         /// <param name="module">The name of modules containing rules to process.</param>
-        /// <param name="file">An optional lock file.</param>
         /// <param name="option">Options that configure PSRule.</param>
-        /// <param name="hostContext">An implementation of a host context that will recieve output and results.</param>
+        /// <param name="hostContext">An implementation of a host context that will receive output and results.</param>
+        /// <param name="file">An optional lock file.</param>
         /// <returns>A builder object to configure the pipeline.</returns>
-        public static IInvokePipelineBuilder Assert(string[] module, LockFile file, PSRuleOption option, IHostContext hostContext)
+        public static IInvokePipelineBuilder Assert(string[] module, PSRuleOption option, IHostContext hostContext, LockFile? file = null)
         {
             var sourcePipeline = new SourcePipelineBuilder(hostContext, option, GetLocalPath());
-            for (var i = 0; module != null && i < module.Length; i++)
-            {
-                var version = file != null && file.Modules.TryGetValue(module[i], out var entry) ? entry.Version.ToString() : null;
-                sourcePipeline.ModuleByName(module[i], version);
-            }
-
-            for (var i = 0; option.Include.Module != null && i < option.Include.Module.Length; i++)
-            {
-                var version = file != null && file.Modules.TryGetValue(module[i], out var entry) ? entry.Version.ToString() : null;
-                sourcePipeline.ModuleByName(option.Include.Module[i], version);
-            }
+            LoadModules(sourcePipeline, module, option, file);
 
             var source = sourcePipeline.Build();
             var pipeline = new AssertPipelineBuilder(source, hostContext);
@@ -68,9 +57,26 @@ namespace PSRule.Pipeline
             return pipeline;
         }
 
-        internal static string GetLocalPath()
+        private static void LoadModules(SourcePipelineBuilder builder, string[] module, PSRuleOption option, LockFile? file)
+        {
+            for (var i = 0; module != null && i < module.Length; i++)
+            {
+                var version = file != null && file.Modules.TryGetValue(module[i], out var entry) ? entry.Version.ToString() : null;
+                builder.ModuleByName(module[i], version);
+            }
+
+            for (var i = 0; option.Include.Module != null && i < option.Include.Module.Length; i++)
+            {
+                var version = file != null && file.Modules.TryGetValue(option.Include.Module[i], out var entry) ? entry.Version.ToString() : null;
+                builder.ModuleByName(option.Include.Module[i], version);
+            }
+        }
+
+        private static string? GetLocalPath()
         {
             return string.IsNullOrEmpty(AppContext.BaseDirectory) ? null : Environment.GetRootedBasePath(AppContext.BaseDirectory);
         }
     }
 }
+
+#nullable restore

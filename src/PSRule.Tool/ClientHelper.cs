@@ -33,7 +33,7 @@ namespace PSRule.Tool
         private const int ERROR_MODULE_FAILEDTOFIND = 502;
 
         private const int ERROR_MODULE_ADD_VIOLATES_CONSTRAINT = 503;
-        
+
 
         /// <summary>
         /// One or more failures occurred.
@@ -60,7 +60,7 @@ namespace PSRule.Tool
                 option.Include.Path = operationOptions.Path;
 
             // Build command
-            var builder = CommandLineBuilder.Assert(operationOptions.Module, file, option, host);
+            var builder = CommandLineBuilder.Assert(operationOptions.Module, option, host, file);
             builder.Baseline(BaselineOption.FromString(operationOptions.Baseline));
             builder.InputPath(inputPath);
             builder.UnblockPublisher(PUBLISHER);

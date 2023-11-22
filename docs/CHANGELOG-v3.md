@@ -34,6 +34,9 @@ What's changed since pre-release v3.0.0-B0084:
     [#1656](https://github.com/microsoft/PSRule/pull/1656)
   - Bump System.Drawing.Common to v8.0.0.
     [#1669](https://github.com/microsoft/PSRule/pull/1669)
+- Bug fixes:
+  - Fixed CLI IndexOutOfRangeException with lock file by @BernieWhite.
+    [#1676](https://github.com/microsoft/PSRule/issues/1676)
 
 ## v3.0.0-B0084 (pre-release)
 
