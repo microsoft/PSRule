@@ -32,6 +32,8 @@ What's changed since pre-release v3.0.0-B0093:
 - Engineering:
   - Bump xunit to v2.6.2.
     [#1679](https://github.com/microsoft/PSRule/pull/1679)
+  - Bump Microsoft.NET.Test.Sdk to v17.8.0.
+    [#1659](https://github.com/microsoft/PSRule/pull/1659)
 
 ## v3.0.0-B0093 (pre-release)
 
