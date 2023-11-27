@@ -732,6 +732,8 @@ variables:
 
 ### Execution.AliasReference
 
+:octicons-milestone-24: v2.9.0
+
 Determines how to handle when an alias to a resource is used.
 By defaut, a warning is generated, however this behaviour can be modified by this option.
 
@@ -785,6 +787,8 @@ variables:
 ```
 
 ### Execution.DuplicateResourceId
+
+:octicons-milestone-24: v2.4.0
 
 Determines how to handle duplicate resources identifiers during execution.
 A duplicate resource identifier may exist if two resources are defined with the same name, ref, or alias.
@@ -843,6 +847,8 @@ variables:
 ```
 
 ### Execution.HashAlgorithm
+
+:octicons-milestone-24: v3.0.0
 
 Specifies the hashing algorithm used by the PSRule runtime.
 This hash algorithm is used when generating a resource identifier for an object that does not have a bound name.
@@ -931,6 +937,8 @@ variables:
 
 ### Execution.InvariantCulture
 
+:octicons-milestone-24: v2.9.0
+
 Determines how to report when an invariant culture is used.
 By defaut, a warning is generated, however this behaviour can be modified by this option.
 
@@ -985,6 +993,8 @@ variables:
 
 ### Execution.InitialSessionState
 
+:octicons-milestone-24: v2.5.0
+
 Determines how the initial session state for executing PowerShell code is created.
 
 The following preferences are available:
@@ -1033,6 +1043,8 @@ variables:
 ```
 
 ### Execution.RuleInconclusive
+
+:octicons-milestone-24: v2.9.0
 
 Determines how to handle rules that generate inconclusive results.
 By defaut, a warning is generated, however this behaviour can be modified by this option.
@@ -1087,6 +1099,8 @@ variables:
 ```
 
 ### Execution.SuppressionGroupExpired
+
+:octicons-milestone-24: v2.6.0
 
 Determines how to handle expired suppression groups.
 Regardless of the value, an expired suppression group will be ignored.
@@ -1143,6 +1157,8 @@ variables:
 
 ### Execution.RuleExcluded
 
+:octicons-milestone-24: v2.8.0
+
 Determines how to handle excluded rules.
 Regardless of the value, excluded rules are ignored.
 By defaut, a rule is excluded silently, however this behaviour can be modified by this option.
@@ -1198,6 +1214,8 @@ variables:
 
 ### Execution.RuleSuppressed
 
+:octicons-milestone-24: v2.8.0
+
 Determines how to handle suppressed rules.
 Regardless of the value, a suppressed rule is ignored.
 By defaut, a warning is generated, however this behaviour can be modified by this option.
@@ -1252,6 +1270,8 @@ variables:
 ```
 
 ### Execution.UnprocessedObject
+
+:octicons-milestone-24: v2.9.0
 
 Determines how to report objects that are not processed by any rule.
 By defaut, a warning is generated, however this behaviour can be modified by this option.
@@ -1668,6 +1688,8 @@ variables:
 ```
 
 ### Input.IgnoreUnchangedPath
+
+:octicons-milestone-24: v2.5.0
 
 By default, PSRule will process all files within an input path.
 For large repositories, this can result in a large number of files being processed.
@@ -2676,6 +2698,8 @@ variables:
 ```
 
 ### Output.JobSummaryPath
+
+:octicons-milestone-24: v2.6.0
 
 Configures the file path a job summary will be written to when using `Assert-PSRule`.
 A job summary is a markdown file that summarizes the results of a job.
