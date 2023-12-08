@@ -40,6 +40,8 @@ What's changed since pre-release v3.0.0-B0093:
     [#1674](https://github.com/microsoft/PSRule/pull/1674)
   - Bump Microsoft.CodeAnalysis.Common to v4.8.0.
     [#1686](https://github.com/microsoft/PSRule/pull/1686)
+  - Bump BenchmarkDotNet to v0.13.11.
+    [#1694](https://github.com/microsoft/PSRule/pull/1694)
 
 ## v3.0.0-B0093 (pre-release)
 
