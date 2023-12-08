@@ -38,6 +38,8 @@ What's changed since pre-release v3.0.0-B0093:
     [#1659](https://github.com/microsoft/PSRule/pull/1659)
   - Bump Microsoft.CodeAnalysis.NetAnalyzers to v8.0.0.
     [#1674](https://github.com/microsoft/PSRule/pull/1674)
+  - Bump Microsoft.CodeAnalysis.Common to v4.8.0.
+    [#1686](https://github.com/microsoft/PSRule/pull/1686)
 
 ## v3.0.0-B0093 (pre-release)
 
