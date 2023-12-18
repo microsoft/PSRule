@@ -42,6 +42,8 @@ What's changed since pre-release v3.0.0-B0093:
     [#1686](https://github.com/microsoft/PSRule/pull/1686)
   - Bump BenchmarkDotNet to v0.13.11.
     [#1694](https://github.com/microsoft/PSRule/pull/1694)
+  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.11.
+    [#1697](https://github.com/microsoft/PSRule/pull/1697)
 
 ## v3.0.0-B0093 (pre-release)
 
