@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Analyze_Baseline_Description" xml:space="preserve">
+    <value>The specific baseline to use.</value>
+  </data>
   <data name="Analyze_Description" xml:space="preserve">
     <value>Run rule analysis.</value>
+  </data>
+  <data name="Analyze_Outcome_Description" xml:space="preserve">
+    <value>Specifies the rule results to show in output. By default, Pass/ Fail/ Error results are shown.</value>
   </data>
   <data name="Cmd_Description" xml:space="preserve">
     <value>PSRule CLI</value>

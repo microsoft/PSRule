@@ -3,7 +3,6 @@
 
 using System.Collections;
 using System.Diagnostics;
-using System.Globalization;
 using System.Management.Automation;
 using Newtonsoft.Json;
 using PSRule.Converters.Yaml;

@@ -61,11 +61,29 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specific baseline to use..
+        /// </summary>
+        internal static string Analyze_Baseline_Description {
+            get {
+                return ResourceManager.GetString("Analyze_Baseline_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run rule analysis..
         /// </summary>
         internal static string Analyze_Description {
             get {
                 return ResourceManager.GetString("Analyze_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specifies the rule results to show in output. By default, Pass/ Fail/ Error results are shown..
+        /// </summary>
+        internal static string Analyze_Outcome_Description {
+            get {
+                return ResourceManager.GetString("Analyze_Outcome_Description", resourceCulture);
             }
         }
         
