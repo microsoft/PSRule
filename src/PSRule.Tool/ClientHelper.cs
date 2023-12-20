@@ -2,11 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Collections;
-using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.Diagnostics;
 using System.Management.Automation;
-using Microsoft.CodeAnalysis.Sarif;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline;
@@ -58,6 +55,9 @@ namespace PSRule.Tool
 
             if (operationOptions.Path != null)
                 option.Include.Path = operationOptions.Path;
+
+            if (operationOptions.Outcome != null && operationOptions.Outcome.Value != Rules.RuleOutcome.None)
+                option.Output.Outcome = operationOptions.Outcome;
 
             // Build command
             var builder = CommandLineBuilder.Assert(operationOptions.Module, option, host, file);

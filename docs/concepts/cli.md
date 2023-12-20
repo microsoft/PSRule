@@ -8,6 +8,22 @@
 
 Run rule analysis.
 
+### `--outcome`
+
+Allows filtering of results by outcome.
+The supported values are:
+
+- `Pass` - Results that passed.
+- `Fail` - Results that did not pass.
+- `Error` - Results that failed to be evaluted correctly due to an error.
+- `Processed` - All results that were processed.
+  This aggregated outcome includes `Pass`, `Fail`, or `Error` results.
+- `Problem` - Processed results that did not pass.
+  This aggregated outcome includes `Fail`, or `Error` results.
+
+To specify multiple values, specify the parameter multiple times.
+For example: `--outcome Pass --Outcome Fail`.
+
 ## `module add`
 
 Add one or more modules to the lock file.

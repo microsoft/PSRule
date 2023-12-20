@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 using System.CommandLine;
-using System.CommandLine.Builder;
 using System.Reflection;
+using PSRule.Rules;
 using PSRule.Tool.Resources;
 
 namespace PSRule.Tool
@@ -25,6 +25,7 @@ namespace PSRule.Tool
         private readonly Option<string[]> _InputPath;
         private readonly Option<string[]> _Module;
         private readonly Option<string> _Baseline;
+        private readonly Option<string[]> _Outcome;
 
         private ClientBuilder(RootCommand cmd)
         {
@@ -60,8 +61,15 @@ namespace PSRule.Tool
                 CmdStrings.Options_Module_Description
             );
             _Baseline = new Option<string>(
-                new string[] { "--baseline" }
+                new string[] { "--baseline" },
+                CmdStrings.Analyze_Baseline_Description
             );
+            _Outcome = new Option<string[]>(
+                new string[] { "--outcome" },
+                description: CmdStrings.Analyze_Outcome_Description
+            ).FromAmong("Pass", "Fail", "Error", "Processed", "Problem");
+            _Outcome.Arity = ArgumentArity.ZeroOrMore;
+
             _RestoreForce = new Option<bool>(
                 new string[] { "--force" },
                 CmdStrings.Restore_Force_Description
@@ -109,6 +117,7 @@ namespace PSRule.Tool
             cmd.AddOption(_InputPath);
             cmd.AddOption(_Module);
             cmd.AddOption(_Baseline);
+            cmd.AddOption(_Outcome);
             cmd.SetHandler((invocation) =>
             {
                 var option = new AnalyzerOptions
@@ -118,6 +127,7 @@ namespace PSRule.Tool
                     Module = invocation.ParseResult.GetValueForOption(_Module),
                     Option = invocation.ParseResult.GetValueForOption(_Option),
                     Baseline = invocation.ParseResult.GetValueForOption(_Baseline),
+                    Outcome = ParseOutcome(invocation.ParseResult.GetValueForOption(_Outcome)),
                     Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
                     Debug = invocation.ParseResult.GetValueForOption(_Debug),
                 };
@@ -232,6 +242,20 @@ namespace PSRule.Tool
 
             cmd.AddOption(_Path);
             Command.AddCommand(cmd);
+        }
+
+        /// <summary>
+        /// Convert string arguments to flags of <see cref="RuleOutcome"/>.
+        /// </summary>
+        private static RuleOutcome? ParseOutcome(string[] s)
+        {
+            var result = RuleOutcome.None;
+            for (var i = 0; s != null && i < s.Length; i++)
+            {
+                if (Enum.TryParse(s[i], ignoreCase: true, result: out RuleOutcome flag))
+                    result |= flag;
+            }
+            return result == RuleOutcome.None ? null : result;
         }
     }
 }
