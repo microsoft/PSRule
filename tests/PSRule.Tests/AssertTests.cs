@@ -211,9 +211,12 @@ public sealed class AssertTests
         SetContext();
         var assert = GetAssertionHelper();
 
+        const string DRAFT7_HTTP = "http://json-schema.org/draft-07/schema#";
+        const string DRAFT7_HTTPS = "https://json-schema.org/draft-07/schema#";
+
         var actual1 = GetObject((name: "$schema", value: "abc"));
         var actual2 = GetObject((name: "schema", value: "abc"));
-        var actual3 = GetObject((name: "$schema", value: "http://json-schema.org/draft-07/schema#"));
+        var actual3 = GetObject((name: "$schema", value: DRAFT7_HTTP));
         var actual4 = GetObject((name: "$schema", value: "http://json-schema.org/draft-07/schema#definition"));
         var actual5 = GetObject((name: "$schema", value: ""));
 
@@ -222,9 +225,9 @@ public sealed class AssertTests
         Assert.False(assert.HasJsonSchema(actual2, new string[] { "abc" }).Result);
         Assert.True(assert.HasJsonSchema(actual1, new string[] { "efg", "abc" }).Result);
         Assert.False(assert.HasJsonSchema(actual3, new string[] { "https://json-schema.org/draft-07/schema" }).Result);
-        Assert.True(assert.HasJsonSchema(actual3, new string[] { "https://json-schema.org/draft-07/schema#" }, true).Result);
-        Assert.True(assert.HasJsonSchema(actual3, new string[] { "https://json-schema.org/draft-07/schema#", "http://json-schema.org/draft-07/schema#" }).Result);
-        Assert.False(assert.HasJsonSchema(actual4, new string[] { "https://json-schema.org/draft-07/schema#" }, true).Result);
+        Assert.True(assert.HasJsonSchema(actual3, new string[] { DRAFT7_HTTPS }, true).Result);
+        Assert.True(assert.HasJsonSchema(actual3, new string[] { DRAFT7_HTTPS, DRAFT7_HTTP }).Result);
+        Assert.False(assert.HasJsonSchema(actual4, new string[] { DRAFT7_HTTPS }, true).Result);
         Assert.False(assert.HasJsonSchema(actual5, null).Result);
 
         Assert.Equal("$schema", assert.HasJsonSchema(actual2, new string[] { "abc" }).ToResultReason().FirstOrDefault().Path);

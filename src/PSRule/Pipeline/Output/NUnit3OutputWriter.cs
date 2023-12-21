@@ -39,7 +39,7 @@ internal sealed class NUnit3OutputWriter : SerializationOutputWriter<InvokeResul
         var fail = o.Sum(r => r.Fail);
 
         xml.WriteStartElement("test-results");
-        xml.WriteAttributeString("xsi", "noNamespaceSchemaLocation", "http://www.w3.org/2001/XMLSchema-instance", "nunit_schema_2.5.xsd");
+        xml.WriteAttributeString("xsi", "noNamespaceSchemaLocation", "https://www.w3.org/2001/XMLSchema-instance", "nunit_schema_2.5.xsd");
         xml.WriteAttributeString("name", "PSRule");
         xml.WriteAttributeString("total", total.ToString());
         xml.WriteAttributeString("errors", error.ToString());

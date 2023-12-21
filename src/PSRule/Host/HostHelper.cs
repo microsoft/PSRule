@@ -560,8 +560,8 @@ internal static class HostHelper
                     condition: new RuleVisitor(context, block.Id, block.Source, block.Spec),
                     alias: block.Alias,
                     tag: block.Metadata.Tags,
-                    dependsOn: null,  // TODO: No support for DependsOn yet
-                    configuration: null, // TODO: No support for rule configuration use module or workspace config
+                    dependsOn: null,  // No support for DependsOn yet
+                    configuration: null, // No support for rule configuration use module or workspace config
                     extent: null,
                     flags: block.Flags,
                     labels: block.Metadata.Labels
