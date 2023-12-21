@@ -5,42 +5,41 @@ using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 
-namespace PSRule.Converters.Yaml
+namespace PSRule.Converters.Yaml;
+
+/// <summary>
+/// A YAML converter for deserializing a string array.
+/// </summary>
+public sealed class StringArrayConverter : IYamlTypeConverter
 {
-    /// <summary>
-    /// A YAML converter for deserializing a string array.
-    /// </summary>
-    public sealed class StringArrayConverter : IYamlTypeConverter
+    /// <inheritdoc/>
+    bool IYamlTypeConverter.Accepts(Type type)
     {
-        /// <inheritdoc/>
-        bool IYamlTypeConverter.Accepts(Type type)
-        {
-            return type == typeof(string[]);
-        }
+        return type == typeof(string[]);
+    }
 
-        /// <inheritdoc/>
-        object? IYamlTypeConverter.ReadYaml(IParser parser, Type type)
+    /// <inheritdoc/>
+    object? IYamlTypeConverter.ReadYaml(IParser parser, Type type)
+    {
+        if (parser.TryConsume<SequenceStart>(out _))
         {
-            if (parser.TryConsume<SequenceStart>(out _))
-            {
-                var result = new List<string>();
-                while (parser.TryConsume<Scalar>(out var scalar))
-                    result.Add(scalar.Value);
+            var result = new List<string>();
+            while (parser.TryConsume<Scalar>(out var scalar))
+                result.Add(scalar.Value);
 
-                parser.Consume<SequenceEnd>();
-                return result.ToArray();
-            }
-            else if (parser.TryConsume<Scalar>(out var scalar))
-            {
-                return new string[] { scalar.Value };
-            }
-            return null;
+            parser.Consume<SequenceEnd>();
+            return result.ToArray();
         }
-
-        /// <inheritdoc/>
-        void IYamlTypeConverter.WriteYaml(IEmitter emitter, object? value, Type type)
+        else if (parser.TryConsume<Scalar>(out var scalar))
         {
-            throw new NotImplementedException();
+            return new string[] { scalar.Value };
         }
+        return null;
+    }
+
+    /// <inheritdoc/>
+    void IYamlTypeConverter.WriteYaml(IEmitter emitter, object? value, Type type)
+    {
+        throw new NotImplementedException();
     }
 }

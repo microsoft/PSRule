@@ -6,54 +6,53 @@ using Newtonsoft.Json.Converters;
 using PSRule.Configuration;
 using PSRule.Definitions.Baselines;
 
-namespace PSRule.Pipeline.Output
+namespace PSRule.Pipeline.Output;
+
+internal sealed class JsonOutputWriter : SerializationOutputWriter<object>
 {
-    internal sealed class JsonOutputWriter : SerializationOutputWriter<object>
+    internal JsonOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
+        : base(inner, option, shouldProcess) { }
+
+    protected override string Serialize(object[] o)
     {
-        internal JsonOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
-            : base(inner, option, shouldProcess) { }
+        return ToJson(o, Option.Output.JsonIndent);
+    }
 
-        protected override string Serialize(object[] o)
+    internal static string ToJson(object[] o, int? jsonIndent)
+    {
+        using var stringWriter = new StringWriter();
+        using var jsonTextWriter = new JsonCommentWriter(stringWriter);
+
+        var jsonSerializer = new JsonSerializer
         {
-            return ToJson(o, Option.Output.JsonIndent);
+            NullValueHandling = NullValueHandling.Ignore
+        };
+
+        var outputJsonIndent = jsonIndent ?? 0;
+        if (outputJsonIndent > 0)
+        {
+            jsonSerializer.Formatting = Formatting.Indented;
+            jsonTextWriter.Indentation = outputJsonIndent;
         }
 
-        internal static string ToJson(object[] o, int? jsonIndent)
+        jsonSerializer.ContractResolver = new OrderedPropertiesContractResolver();
+        jsonSerializer.Converters.Add(new ErrorCategoryJsonConverter());
+        jsonSerializer.Converters.Add(new PSObjectJsonConverter());
+        jsonSerializer.Converters.Add(new StringEnumConverter());
+        jsonSerializer.Converters.Add(new ResourceIdConverter());
+
+        // To avoid writing baselines with an extra outer array
+        // We can serialize the first object which has all the baselines
+        if (o[0] is IEnumerable<Baseline> baselines)
         {
-            using var stringWriter = new StringWriter();
-            using var jsonTextWriter = new JsonCommentWriter(stringWriter);
-
-            var jsonSerializer = new JsonSerializer
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            };
-
-            var outputJsonIndent = jsonIndent ?? 0;
-            if (outputJsonIndent > 0)
-            {
-                jsonSerializer.Formatting = Formatting.Indented;
-                jsonTextWriter.Indentation = outputJsonIndent;
-            }
-
-            jsonSerializer.ContractResolver = new OrderedPropertiesContractResolver();
-            jsonSerializer.Converters.Add(new ErrorCategoryJsonConverter());
-            jsonSerializer.Converters.Add(new PSObjectJsonConverter());
-            jsonSerializer.Converters.Add(new StringEnumConverter());
-            jsonSerializer.Converters.Add(new ResourceIdConverter());
-
-            // To avoid writing baselines with an extra outer array
-            // We can serialize the first object which has all the baselines
-            if (o[0] is IEnumerable<Baseline> baselines)
-            {
-                jsonSerializer.Converters.Add(new BaselineJsonConverter());
-                jsonSerializer.Serialize(jsonTextWriter, baselines);
-            }
-            else
-            {
-                jsonSerializer.Serialize(jsonTextWriter, o);
-            }
-
-            return stringWriter.ToString();
+            jsonSerializer.Converters.Add(new BaselineJsonConverter());
+            jsonSerializer.Serialize(jsonTextWriter, baselines);
         }
+        else
+        {
+            jsonSerializer.Serialize(jsonTextWriter, o);
+        }
+
+        return stringWriter.ToString();
     }
 }

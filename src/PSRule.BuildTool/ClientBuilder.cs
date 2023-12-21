@@ -6,34 +6,33 @@ using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
 using PSRule.BuildTool.Resources;
 
-namespace PSRule.BuildTool
+namespace PSRule.BuildTool;
+
+internal sealed class ClientBuilder : CommandBuilder
 {
-    internal sealed class ClientBuilder : CommandBuilder
+    private ClientBuilder(RootCommand cmd) : base(cmd) { }
+
+    public static ClientBuilder New()
     {
-        private ClientBuilder(RootCommand cmd) : base(cmd) { }
+        var cmd = new RootCommand();
+        return new ClientBuilder(cmd);
+    }
 
-        public static ClientBuilder New()
-        {
-            var cmd = new RootCommand();
-            return new ClientBuilder(cmd);
-        }
-
-        /// <summary>
-        /// Add badge resource.
-        /// This API is not supported on operating systems other than Windows 6.1 or later.
-        /// </summary>
-        public ClientBuilder AddBadgeResource()
-        {
-            if (!OperatingSystem.IsWindowsVersionAtLeast(6, 1))
-                return this;
-
-            var cmd = new Command("badge", CmdStrings.Badge_Description);
-            cmd.AddOption(new Option<string>(
-                new string[] { "--output-path" }
-            ));
-            cmd.Handler = CommandHandler.Create<BadgeResourceOption, InvocationContext>(BadgeResource.Build);
-            Command.AddCommand(cmd);
+    /// <summary>
+    /// Add badge resource.
+    /// This API is not supported on operating systems other than Windows 6.1 or later.
+    /// </summary>
+    public ClientBuilder AddBadgeResource()
+    {
+        if (!OperatingSystem.IsWindowsVersionAtLeast(6, 1))
             return this;
-        }
+
+        var cmd = new Command("badge", CmdStrings.Badge_Description);
+        cmd.AddOption(new Option<string>(
+            new string[] { "--output-path" }
+        ));
+        cmd.Handler = CommandHandler.Create<BadgeResourceOption, InvocationContext>(BadgeResource.Build);
+        Command.AddCommand(cmd);
+        return this;
     }
 }

@@ -3,22 +3,21 @@
 
 using System.Reflection;
 
-namespace PSRule
+namespace PSRule;
+
+internal static class TypeExtensions
 {
-    internal static class TypeExtensions
+    public static bool TryGetPropertyInfo(this Type type, string propertyName, out PropertyInfo? value)
     {
-        public static bool TryGetPropertyInfo(this Type type, string propertyName, out PropertyInfo? value)
-        {
-            value = null;
-            if (type == null || propertyName == null)
-                return false;
+        value = null;
+        if (type == null || propertyName == null)
+            return false;
 
-            var propertyInfo = type.GetProperty(propertyName);
-            if (propertyInfo == null)
-                return false;
+        var propertyInfo = type.GetProperty(propertyName);
+        if (propertyInfo == null)
+            return false;
 
-            value = propertyInfo;
-            return true;
-        }
+        value = propertyInfo;
+        return true;
     }
 }

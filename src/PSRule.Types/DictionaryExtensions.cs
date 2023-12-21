@@ -6,265 +6,264 @@ using System.Diagnostics;
 using PSRule.Converters;
 using PSRule.Data;
 
-namespace PSRule
+namespace PSRule;
+
+/// <summary>
+/// Extension methods for <see cref="IDictionary{TKey, TValue}"/>.
+/// </summary>
+public static class DictionaryExtensions
 {
     /// <summary>
-    /// Extension methods for <see cref="IDictionary{TKey, TValue}"/>.
+    /// Try to get a value and remove it from the dictionary.
     /// </summary>
-    public static class DictionaryExtensions
+    [DebuggerStepThrough]
+    public static bool TryPopValue(this IDictionary<string, object> dictionary, string key, out object value)
     {
-        /// <summary>
-        /// Try to get a value and remove it from the dictionary.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryPopValue(this IDictionary<string, object> dictionary, string key, out object value)
-        {
-            return dictionary.TryGetValue(key, out value) && dictionary.Remove(key);
-        }
+        return dictionary.TryGetValue(key, out value) && dictionary.Remove(key);
+    }
 
-        /// <summary>
-        /// Try to get a value and remove it from the dictionary.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryPopValue<T>(this IDictionary<string, object> dictionary, string key, out T? value)
+    /// <summary>
+    /// Try to get a value and remove it from the dictionary.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryPopValue<T>(this IDictionary<string, object> dictionary, string key, out T? value)
+    {
+        value = default;
+        if (dictionary.TryGetValue(key, out var v) && dictionary.Remove(key) && v is T result)
         {
-            value = default;
-            if (dictionary.TryGetValue(key, out var v) && dictionary.Remove(key) && v is T result)
-            {
-                value = result;
-                return true;
-            }
+            value = result;
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Try to get a <see cref="bool"/> and remove it from the dictionary.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryPopBool(this IDictionary<string, object> dictionary, string key, out bool value)
+    {
+        value = default;
+        return TryPopValue(dictionary, key, out var v) && bool.TryParse(v.ToString(), out value);
+    }
+
+    /// <summary>
+    /// Try to get a <typeparamref name="TEnum"/> and remove it from the dictionary.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryPopEnum<TEnum>(this IDictionary<string, object> dictionary, string key, out TEnum value) where TEnum : struct
+    {
+        value = default;
+        return TryPopValue(dictionary, key, out var v) && Enum.TryParse(v.ToString(), ignoreCase: true, result: out value);
+    }
+
+    /// <summary>
+    /// Try to get a <see cref="string"/> and remove it from the dictionary.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryPopString(this IDictionary<string, object> dictionary, string key, out string? value)
+    {
+        value = default;
+        if (TryPopValue(dictionary, key, out var v) && v is string svalue)
+        {
+            value = svalue;
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Try to get an array of strings and remove it from the dictionary.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryPopStringArray(this IDictionary<string, object> dictionary, string key, out string[]? value)
+    {
+        value = default;
+        return TryPopValue(dictionary, key, out var v) && TypeConverter.TryStringOrArray(v, convert: true, value: out value);
+    }
+
+    /// <summary>
+    /// Try to get a <see cref="StringArrayMap"/> and remove it from the dictionary.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryPopStringArrayMap(this IDictionary<string, object> dictionary, string key, out StringArrayMap? value)
+    {
+        value = default;
+        if (TryPopValue(dictionary, key, out var v) && v is StringArrayMap svalue)
+        {
+            value = svalue;
+            return true;
+        }
+        if (v is Hashtable hashtable)
+        {
+            value = StringArrayMap.FromHashtable(hashtable);
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Try to get the value as a <see cref="bool"/>.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryGetBool(this IDictionary<string, object> dictionary, string key, out bool? value)
+    {
+        value = null;
+        if (!dictionary.TryGetValue(key, out var o))
             return false;
-        }
 
-        /// <summary>
-        /// Try to get a <see cref="bool"/> and remove it from the dictionary.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryPopBool(this IDictionary<string, object> dictionary, string key, out bool value)
+        if (o is bool bvalue || (o is string svalue && bool.TryParse(svalue, out bvalue)))
         {
-            value = default;
-            return TryPopValue(dictionary, key, out var v) && bool.TryParse(v.ToString(), out value);
+            value = bvalue;
+            return true;
         }
+        return false;
+    }
 
-        /// <summary>
-        /// Try to get a <typeparamref name="TEnum"/> and remove it from the dictionary.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryPopEnum<TEnum>(this IDictionary<string, object> dictionary, string key, out TEnum value) where TEnum : struct
-        {
-            value = default;
-            return TryPopValue(dictionary, key, out var v) && Enum.TryParse(v.ToString(), ignoreCase: true, result: out value);
-        }
-
-        /// <summary>
-        /// Try to get a <see cref="string"/> and remove it from the dictionary.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryPopString(this IDictionary<string, object> dictionary, string key, out string? value)
-        {
-            value = default;
-            if (TryPopValue(dictionary, key, out var v) && v is string svalue)
-            {
-                value = svalue;
-                return true;
-            }
+    /// <summary>
+    /// Try to get the value as a <see cref="long"/>.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryGetLong(this IDictionary<string, object> dictionary, string key, out long? value)
+    {
+        value = null;
+        if (!dictionary.TryGetValue(key, out var o))
             return false;
-        }
 
-        /// <summary>
-        /// Try to get an array of strings and remove it from the dictionary.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryPopStringArray(this IDictionary<string, object> dictionary, string key, out string[]? value)
+        if (TypeConverter.TryLong(o, convert: true, value: out var i_value))
         {
-            value = default;
-            return TryPopValue(dictionary, key, out var v) && TypeConverter.TryStringOrArray(v, convert: true, value: out value);
+            value = i_value;
+            return true;
         }
+        return false;
+    }
 
-        /// <summary>
-        /// Try to get a <see cref="StringArrayMap"/> and remove it from the dictionary.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryPopStringArrayMap(this IDictionary<string, object> dictionary, string key, out StringArrayMap? value)
-        {
-            value = default;
-            if (TryPopValue(dictionary, key, out var v) && v is StringArrayMap svalue)
-            {
-                value = svalue;
-                return true;
-            }
-            if (v is Hashtable hashtable)
-            {
-                value = StringArrayMap.FromHashtable(hashtable);
-                return true;
-            }
+    /// <summary>
+    /// Try to get the value as a <see cref="int"/>.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryGetInt(this IDictionary<string, object> dictionary, string key, out int? value)
+    {
+        value = null;
+        if (!dictionary.TryGetValue(key, out var o))
             return false;
-        }
 
-        /// <summary>
-        /// Try to get the value as a <see cref="bool"/>.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryGetBool(this IDictionary<string, object> dictionary, string key, out bool? value)
+        if (TypeConverter.TryInt(o, convert: true, value: out var i_value))
         {
-            value = null;
-            if (!dictionary.TryGetValue(key, out var o))
-                return false;
+            value = i_value;
+            return true;
+        }
+        return false;
+    }
 
-            if (o is bool bvalue || (o is string svalue && bool.TryParse(svalue, out bvalue)))
-            {
-                value = bvalue;
-                return true;
-            }
+    /// <summary>
+    /// Try to get the value as a <see cref="char"/>.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryGetChar(this IDictionary<string, object> dictionary, string key, out char? value)
+    {
+        value = null;
+        if (!dictionary.TryGetValue(key, out var o))
             return false;
-        }
 
-        /// <summary>
-        /// Try to get the value as a <see cref="long"/>.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryGetLong(this IDictionary<string, object> dictionary, string key, out long? value)
+        if (o is string svalue && svalue.Length == 1)
         {
-            value = null;
-            if (!dictionary.TryGetValue(key, out var o))
-                return false;
+            value = svalue[0];
+            return true;
+        }
+        if (o is char cvalue)
+        {
+            value = cvalue;
+            return true;
+        }
+        return false;
+    }
 
-            if (TypeConverter.TryLong(o, convert: true, value: out var i_value))
-            {
-                value = i_value;
-                return true;
-            }
+    /// <summary>
+    /// Try to get the value as a <see cref="string"/>.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryGetString(this IDictionary<string, object> dictionary, string key, out string? value)
+    {
+        value = null;
+        if (!dictionary.TryGetValue(key, out var o))
             return false;
-        }
 
-        /// <summary>
-        /// Try to get the value as a <see cref="int"/>.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryGetInt(this IDictionary<string, object> dictionary, string key, out int? value)
+        if (o is string svalue)
         {
-            value = null;
-            if (!dictionary.TryGetValue(key, out var o))
-                return false;
+            value = svalue;
+            return true;
+        }
+        return false;
+    }
 
-            if (TypeConverter.TryInt(o, convert: true, value: out var i_value))
-            {
-                value = i_value;
-                return true;
-            }
+    /// <summary>
+    /// Try to get the value as an <see cref="IEnumerable"/>.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryGetEnumerable(this IDictionary<string, object> dictionary, string key, out IEnumerable? value)
+    {
+        value = null;
+        if (!dictionary.TryGetValue(key, out var o))
             return false;
-        }
 
-        /// <summary>
-        /// Try to get the value as a <see cref="char"/>.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryGetChar(this IDictionary<string, object> dictionary, string key, out char? value)
+        if (o is IEnumerable evalue)
         {
-            value = null;
-            if (!dictionary.TryGetValue(key, out var o))
-                return false;
-
-            if (o is string svalue && svalue.Length == 1)
-            {
-                value = svalue[0];
-                return true;
-            }
-            if (o is char cvalue)
-            {
-                value = cvalue;
-                return true;
-            }
-            return false;
+            value = evalue;
+            return true;
         }
+        return false;
+    }
 
-        /// <summary>
-        /// Try to get the value as a <see cref="string"/>.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryGetString(this IDictionary<string, object> dictionary, string key, out string? value)
+    /// <summary>
+    /// Try to get the value as an array of strings.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryGetStringArray(this IDictionary<string, object> dictionary, string key, out string[]? value)
+    {
+        value = null;
+        return dictionary.TryGetValue(key, out var o) && TypeConverter.TryStringOrArray(o, convert: true, value: out value);
+    }
+
+    /// <summary>
+    /// Add unique keys to the dictionary.
+    /// Duplicate keys are ignored.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static void AddUnique<T>(this IDictionary<string, T> dictionary, IEnumerable<KeyValuePair<string, T>> values) where T : class
+    {
+        if (values == null) return;
+
+        foreach (var kv in values)
         {
-            value = null;
-            if (!dictionary.TryGetValue(key, out var o))
-                return false;
-
-            if (o is string svalue)
-            {
-                value = svalue;
-                return true;
-            }
-            return false;
+            if (!dictionary.ContainsKey(kv.Key))
+                dictionary.Add(kv.Key, kv.Value);
         }
+    }
 
-        /// <summary>
-        /// Try to get the value as an <see cref="IEnumerable"/>.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryGetEnumerable(this IDictionary<string, object> dictionary, string key, out IEnumerable? value)
+    /// <summary>
+    /// Add unique keys to the dictionary.
+    /// Duplicate keys are ignored.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static void AddUnique(this IDictionary<string, string> dictionary, IEnumerable<KeyValuePair<string, string>> values)
+    {
+        if (values == null) return;
+
+        foreach (var kv in values)
         {
-            value = null;
-            if (!dictionary.TryGetValue(key, out var o))
-                return false;
-
-            if (o is IEnumerable evalue)
-            {
-                value = evalue;
-                return true;
-            }
-            return false;
+            if (!dictionary.ContainsKey(kv.Key))
+                dictionary.Add(kv.Key, kv.Value);
         }
+    }
 
-        /// <summary>
-        /// Try to get the value as an array of strings.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static bool TryGetStringArray(this IDictionary<string, object> dictionary, string key, out string[]? value)
-        {
-            value = null;
-            return dictionary.TryGetValue(key, out var o) && TypeConverter.TryStringOrArray(o, convert: true, value: out value);
-        }
+    internal static SortedDictionary<TKey, TValue> ToSortedDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
+    {
+        return new SortedDictionary<TKey, TValue>(dictionary);
+    }
 
-        /// <summary>
-        /// Add unique keys to the dictionary.
-        /// Duplicate keys are ignored.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static void AddUnique<T>(this IDictionary<string, T> dictionary, IEnumerable<KeyValuePair<string, T>> values) where T : class
-        {
-            if (values == null) return;
-
-            foreach (var kv in values)
-            {
-                if (!dictionary.ContainsKey(kv.Key))
-                    dictionary.Add(kv.Key, kv.Value);
-            }
-        }
-
-        /// <summary>
-        /// Add unique keys to the dictionary.
-        /// Duplicate keys are ignored.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static void AddUnique(this IDictionary<string, string> dictionary, IEnumerable<KeyValuePair<string, string>> values)
-        {
-            if (values == null) return;
-
-            foreach (var kv in values)
-            {
-                if (!dictionary.ContainsKey(kv.Key))
-                    dictionary.Add(kv.Key, kv.Value);
-            }
-        }
-
-        internal static SortedDictionary<TKey, TValue> ToSortedDictionary<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
-        {
-            return new SortedDictionary<TKey, TValue>(dictionary);
-        }
-
-        internal static bool NullOrEmpty<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
-        {
-            return dictionary == null || dictionary.Count == 0;
-        }
+    internal static bool NullOrEmpty<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
+    {
+        return dictionary == null || dictionary.Count == 0;
     }
 }

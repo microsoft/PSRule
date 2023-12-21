@@ -10,157 +10,156 @@ using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 
-namespace PSRule
+namespace PSRule;
+
+/// <summary>
+/// Tests for <see cref="OptionContext"/>.
+/// </summary>
+public sealed class OptionContextTests
 {
-    /// <summary>
-    /// Tests for <see cref="OptionContext"/>.
-    /// </summary>
-    public sealed class OptionContextTests
+    [Fact]
+    public void Build()
     {
-        [Fact]
-        public void Build()
-        {
-            // Create option context
-            var builder = new OptionContextBuilder(GetOption());
+        // Create option context
+        var builder = new OptionContextBuilder(GetOption());
 
-            // Check empty scope
-            var testScope = new LanguageScope(null, "Empty");
-            testScope.Configure(builder.Build(testScope.Name));
-            Assert.Equal(new string[] { "en-ZZ" }, testScope.Culture);
-        }
-
-        [Fact]
-        public void Order()
-        {
-            // Create option context
-            var builder = new OptionContextBuilder(GetOption());
-
-            var localScope = new LanguageScope(null, null);
-            localScope.Configure(builder.Build(null));
-
-            var ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
-            Assert.NotNull(ruleFilter);
-            Assert.True(ruleFilter.IncludeLocal);
-
-            // With explict baseline
-            builder = new OptionContextBuilder(GetOption());
-            builder.Baseline(ScopeType.Explicit, "BaselineExplicit", null, GetBaseline(ruleInclude: new[] { "abc" }), false);
-            localScope.Configure(builder.Build(localScope.Name));
-            ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
-            Assert.NotNull(ruleFilter);
-            Assert.False(ruleFilter.IncludeLocal);
-
-            // With include from parameters
-            builder = new OptionContextBuilder(GetOption(), include: new string[] { "abc" });
-            localScope.Configure(builder.Build(localScope.Name));
-            ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
-            Assert.NotNull(ruleFilter);
-            Assert.False(ruleFilter.IncludeLocal);
-
-            builder = new OptionContextBuilder(GetOption(ruleInclude: new[] { "abc" }));
-            localScope.Configure(builder.Build(localScope.Name));
-            ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
-            Assert.NotNull(ruleFilter);
-            Assert.True(ruleFilter.IncludeLocal);
-        }
-
-        /// <summary>
-        /// Test that options from separate files can be combined.
-        /// </summary>
-        [Fact]
-        public void Merge_multiple_options_from_file()
-        {
-            var builder = new OptionContextBuilder();
-
-            builder.Workspace(GetOptionFromFile("PSRule.Tests2.yml"));
-            builder.Workspace(GetOptionFromFile());
-            builder.Workspace(GetOption());
-
-            var context = builder.Build(null);
-
-            // With workspace options ordered by first
-            Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
-            Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
-            Assert.Equal(new[] { "virtualMachine", "virtualNetwork" }, context.Input.TargetType);
-            Assert.Equal(new[] { "en-CC", "en-DD" }, context.Output.Culture);
-            Assert.True(context.Configuration.TryGetStringArray("option5", out var option5));
-            Assert.Equal(new[] { "option5a", "option5b" }, option5);
-            Assert.True(context.Configuration.TryGetString("option6", out var option6));
-            Assert.Equal("value6", option6);
-
-            // With module default baseline
-            builder.Baseline(ScopeType.Module, "BaselineDefault", "Module1", GetBaseline(targetType: new[] { "defaultType" }, ruleInclude: new[] { "defaultRule" }), false);
-            context = builder.Build(null);
-
-            Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
-            Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
-            Assert.Equal(new[] { "rule1", "rule2" }, context.Rule.Include);
-
-            context = builder.Build("Module1");
-
-            Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
-            Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
-            Assert.Equal(new[] { "rule1", "rule2" }, context.Rule.Include);
-
-            // With explict baseline
-            builder.Baseline(ScopeType.Explicit, "BaselineExplicit", "Module1", GetBaseline(), false);
-            context = builder.Build(null);
-
-            Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
-            Assert.Equal(new[] { "typeName" }, context.Binding.TargetType);
-            Assert.Equal(new[] { "rule1" }, context.Rule.Include);
-
-            context = builder.Build("Module1");
-
-            Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
-            Assert.Equal(new[] { "typeName" }, context.Binding.TargetType);
-            Assert.Equal(new[] { "rule1" }, context.Rule.Include);
-        }
-
-        #region Helper methods
-
-        private static PSRuleOption GetOption(string[] culture = null, string[] ruleInclude = null)
-        {
-            var option = new PSRuleOption();
-
-            // Specify a culture otherwise it varies within CI.
-            option.Output.Culture = culture ?? new string[] { "en-ZZ" };
-
-            option.Rule.Include = ruleInclude;
-
-            // Add a configuration option.
-            option.Configuration.Add("option6", "value6");
-            option.Configuration.Add("option5", "value5");
-            return option;
-        }
-
-        private static PSRuleOption GetOptionFromFile(string file = "PSRule.Tests.yml")
-        {
-            return PSRuleOption.FromFileOrEmpty(GetSourcePath(file));
-        }
-
-        private static BaselineSpec GetBaseline(string[] targetType = null, string[] ruleInclude = null)
-        {
-            targetType ??= new[] { "typeName" };
-            ruleInclude ??= new[] { "rule1" };
-            return new BaselineSpec
-            {
-                Binding = new BindingOption
-                {
-                    TargetType = targetType
-                },
-                Rule = new RuleOption
-                {
-                    Include = ruleInclude
-                }
-            };
-        }
-
-        private static string GetSourcePath(string fileName)
-        {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-        }
-
-        #endregion Helper methods
+        // Check empty scope
+        var testScope = new LanguageScope(null, "Empty");
+        testScope.Configure(builder.Build(testScope.Name));
+        Assert.Equal(new string[] { "en-ZZ" }, testScope.Culture);
     }
+
+    [Fact]
+    public void Order()
+    {
+        // Create option context
+        var builder = new OptionContextBuilder(GetOption());
+
+        var localScope = new LanguageScope(null, null);
+        localScope.Configure(builder.Build(null));
+
+        var ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
+        Assert.NotNull(ruleFilter);
+        Assert.True(ruleFilter.IncludeLocal);
+
+        // With explict baseline
+        builder = new OptionContextBuilder(GetOption());
+        builder.Baseline(ScopeType.Explicit, "BaselineExplicit", null, GetBaseline(ruleInclude: new[] { "abc" }), false);
+        localScope.Configure(builder.Build(localScope.Name));
+        ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
+        Assert.NotNull(ruleFilter);
+        Assert.False(ruleFilter.IncludeLocal);
+
+        // With include from parameters
+        builder = new OptionContextBuilder(GetOption(), include: new string[] { "abc" });
+        localScope.Configure(builder.Build(localScope.Name));
+        ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
+        Assert.NotNull(ruleFilter);
+        Assert.False(ruleFilter.IncludeLocal);
+
+        builder = new OptionContextBuilder(GetOption(ruleInclude: new[] { "abc" }));
+        localScope.Configure(builder.Build(localScope.Name));
+        ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
+        Assert.NotNull(ruleFilter);
+        Assert.True(ruleFilter.IncludeLocal);
+    }
+
+    /// <summary>
+    /// Test that options from separate files can be combined.
+    /// </summary>
+    [Fact]
+    public void Merge_multiple_options_from_file()
+    {
+        var builder = new OptionContextBuilder();
+
+        builder.Workspace(GetOptionFromFile("PSRule.Tests2.yml"));
+        builder.Workspace(GetOptionFromFile());
+        builder.Workspace(GetOption());
+
+        var context = builder.Build(null);
+
+        // With workspace options ordered by first
+        Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
+        Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
+        Assert.Equal(new[] { "virtualMachine", "virtualNetwork" }, context.Input.TargetType);
+        Assert.Equal(new[] { "en-CC", "en-DD" }, context.Output.Culture);
+        Assert.True(context.Configuration.TryGetStringArray("option5", out var option5));
+        Assert.Equal(new[] { "option5a", "option5b" }, option5);
+        Assert.True(context.Configuration.TryGetString("option6", out var option6));
+        Assert.Equal("value6", option6);
+
+        // With module default baseline
+        builder.Baseline(ScopeType.Module, "BaselineDefault", "Module1", GetBaseline(targetType: new[] { "defaultType" }, ruleInclude: new[] { "defaultRule" }), false);
+        context = builder.Build(null);
+
+        Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
+        Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
+        Assert.Equal(new[] { "rule1", "rule2" }, context.Rule.Include);
+
+        context = builder.Build("Module1");
+
+        Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
+        Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
+        Assert.Equal(new[] { "rule1", "rule2" }, context.Rule.Include);
+
+        // With explict baseline
+        builder.Baseline(ScopeType.Explicit, "BaselineExplicit", "Module1", GetBaseline(), false);
+        context = builder.Build(null);
+
+        Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
+        Assert.Equal(new[] { "typeName" }, context.Binding.TargetType);
+        Assert.Equal(new[] { "rule1" }, context.Rule.Include);
+
+        context = builder.Build("Module1");
+
+        Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
+        Assert.Equal(new[] { "typeName" }, context.Binding.TargetType);
+        Assert.Equal(new[] { "rule1" }, context.Rule.Include);
+    }
+
+    #region Helper methods
+
+    private static PSRuleOption GetOption(string[] culture = null, string[] ruleInclude = null)
+    {
+        var option = new PSRuleOption();
+
+        // Specify a culture otherwise it varies within CI.
+        option.Output.Culture = culture ?? new string[] { "en-ZZ" };
+
+        option.Rule.Include = ruleInclude;
+
+        // Add a configuration option.
+        option.Configuration.Add("option6", "value6");
+        option.Configuration.Add("option5", "value5");
+        return option;
+    }
+
+    private static PSRuleOption GetOptionFromFile(string file = "PSRule.Tests.yml")
+    {
+        return PSRuleOption.FromFileOrEmpty(GetSourcePath(file));
+    }
+
+    private static BaselineSpec GetBaseline(string[] targetType = null, string[] ruleInclude = null)
+    {
+        targetType ??= new[] { "typeName" };
+        ruleInclude ??= new[] { "rule1" };
+        return new BaselineSpec
+        {
+            Binding = new BindingOption
+            {
+                TargetType = targetType
+            },
+            Rule = new RuleOption
+            {
+                Include = ruleInclude
+            }
+        };
+    }
+
+    private static string GetSourcePath(string fileName)
+    {
+        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+    }
+
+    #endregion Helper methods
 }

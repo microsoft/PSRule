@@ -4,115 +4,114 @@
 using System.Diagnostics;
 using PSRule.Pipeline;
 
-namespace PSRule.Definitions.Expressions
+namespace PSRule.Definitions.Expressions;
+
+internal interface ILanguageExpresssionDescriptor
 {
-    internal interface ILanguageExpresssionDescriptor
+    string Name { get; }
+
+    LanguageExpressionType Type { get; }
+
+    LanguageExpression CreateInstance(SourceFile source, LanguageExpression.PropertyBag properties);
+}
+
+internal sealed class LanguageExpresssionDescriptor : ILanguageExpresssionDescriptor
+{
+    public LanguageExpresssionDescriptor(string name, LanguageExpressionType type, LanguageExpressionFn fn)
     {
-        string Name { get; }
-
-        LanguageExpressionType Type { get; }
-
-        LanguageExpression CreateInstance(SourceFile source, LanguageExpression.PropertyBag properties);
+        Name = name;
+        Type = type;
+        Fn = fn;
     }
 
-    internal sealed class LanguageExpresssionDescriptor : ILanguageExpresssionDescriptor
+    public string Name { get; }
+
+    public LanguageExpressionType Type { get; }
+
+    public LanguageExpressionFn Fn { get; }
+
+    public LanguageExpression CreateInstance(SourceFile source, LanguageExpression.PropertyBag properties)
     {
-        public LanguageExpresssionDescriptor(string name, LanguageExpressionType type, LanguageExpressionFn fn)
-        {
-            Name = name;
-            Type = type;
-            Fn = fn;
-        }
+        if (Type == LanguageExpressionType.Operator)
+            return new LanguageOperator(this, properties);
 
-        public string Name { get; }
+        if (Type == LanguageExpressionType.Condition)
+            return new LanguageCondition(this, properties);
 
-        public LanguageExpressionType Type { get; }
+        return Type == LanguageExpressionType.Function ? new LanguageFunction(this) : null;
+    }
+}
 
-        public LanguageExpressionFn Fn { get; }
-
-        public LanguageExpression CreateInstance(SourceFile source, LanguageExpression.PropertyBag properties)
-        {
-            if (Type == LanguageExpressionType.Operator)
-                return new LanguageOperator(this, properties);
-
-            if (Type == LanguageExpressionType.Condition)
-                return new LanguageCondition(this, properties);
-
-            return Type == LanguageExpressionType.Function ? new LanguageFunction(this) : null;
-        }
+internal abstract class LanguageExpression
+{
+    public LanguageExpression(LanguageExpresssionDescriptor descriptor)
+    {
+        Descriptor = descriptor;
     }
 
-    internal abstract class LanguageExpression
+    internal sealed class PropertyBag : KeyMapDictionary<object>
     {
-        public LanguageExpression(LanguageExpresssionDescriptor descriptor)
-        {
-            Descriptor = descriptor;
-        }
-
-        internal sealed class PropertyBag : KeyMapDictionary<object>
-        {
-            public PropertyBag()
-                : base() { }
-        }
-
-        public LanguageExpresssionDescriptor Descriptor { get; }
+        public PropertyBag()
+            : base() { }
     }
 
-    [DebuggerDisplay("Selector If")]
-    internal sealed class LanguageIf : LanguageExpression
-    {
-        public LanguageIf(LanguageExpression expression)
-            : base(null)
-        {
-            Expression = expression;
-        }
+    public LanguageExpresssionDescriptor Descriptor { get; }
+}
 
-        public LanguageExpression Expression { get; set; }
+[DebuggerDisplay("Selector If")]
+internal sealed class LanguageIf : LanguageExpression
+{
+    public LanguageIf(LanguageExpression expression)
+        : base(null)
+    {
+        Expression = expression;
     }
 
-    [DebuggerDisplay("Selector {Descriptor.Name}")]
-    internal sealed class LanguageOperator : LanguageExpression
+    public LanguageExpression Expression { get; set; }
+}
+
+[DebuggerDisplay("Selector {Descriptor.Name}")]
+internal sealed class LanguageOperator : LanguageExpression
+{
+    internal LanguageOperator(LanguageExpresssionDescriptor descriptor, PropertyBag properties)
+        : base(descriptor)
     {
-        internal LanguageOperator(LanguageExpresssionDescriptor descriptor, PropertyBag properties)
-            : base(descriptor)
-        {
-            Property = properties ?? new PropertyBag();
-            Children = new List<LanguageExpression>();
-        }
-
-        public LanguageExpression Subselector { get; set; }
-
-        public PropertyBag Property { get; }
-
-        public List<LanguageExpression> Children { get; }
-
-        public void Add(LanguageExpression item)
-        {
-            Children.Add(item);
-        }
+        Property = properties ?? new PropertyBag();
+        Children = new List<LanguageExpression>();
     }
 
-    [DebuggerDisplay("Selector {Descriptor.Name}")]
-    internal sealed class LanguageCondition : LanguageExpression
+    public LanguageExpression Subselector { get; set; }
+
+    public PropertyBag Property { get; }
+
+    public List<LanguageExpression> Children { get; }
+
+    public void Add(LanguageExpression item)
     {
-        internal LanguageCondition(LanguageExpresssionDescriptor descriptor, PropertyBag properties)
-            : base(descriptor)
-        {
-            Property = properties ?? new PropertyBag();
-        }
+        Children.Add(item);
+    }
+}
 
-        public PropertyBag Property { get; }
-
-        internal void Add(PropertyBag properties)
-        {
-            Property.AddUnique(properties);
-        }
+[DebuggerDisplay("Selector {Descriptor.Name}")]
+internal sealed class LanguageCondition : LanguageExpression
+{
+    internal LanguageCondition(LanguageExpresssionDescriptor descriptor, PropertyBag properties)
+        : base(descriptor)
+    {
+        Property = properties ?? new PropertyBag();
     }
 
-    [DebuggerDisplay("Selector {Descriptor.Name}")]
-    internal sealed class LanguageFunction : LanguageExpression
+    public PropertyBag Property { get; }
+
+    internal void Add(PropertyBag properties)
     {
-        internal LanguageFunction(LanguageExpresssionDescriptor descriptor)
-            : base(descriptor) { }
+        Property.AddUnique(properties);
     }
+}
+
+[DebuggerDisplay("Selector {Descriptor.Name}")]
+internal sealed class LanguageFunction : LanguageExpression
+{
+    internal LanguageFunction(LanguageExpresssionDescriptor descriptor)
+        : base(descriptor) { }
 }

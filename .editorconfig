@@ -21,14 +21,15 @@ indent_size = 2
 [*.cs]
 
 # Code style defaults
-csharp_using_directive_placement = outside_namespace:suggestion
+csharp_using_directive_placement = outside_namespace:error
 csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
 dotnet_sort_system_directives_first = true
 dotnet_style_readonly_field = true:suggestion
-csharp_style_namespace_declarations = file_scoped:suggestion
+csharp_style_namespace_declarations = file_scoped:error
 
 # License header
 file_header_template = Copyright (c) Microsoft Corporation.\nLicensed under the MIT License.
+dotnet_diagnostic.IDE0073.severity = error
 
 # Suggest more modern language features when available
 dotnet_style_object_initializer = true:suggestion

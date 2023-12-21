@@ -4,54 +4,53 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace PSRule.Rules
+namespace PSRule.Rules;
+
+/// <summary>
+/// The outcome of a rule.
+/// </summary>
+[JsonConverter(typeof(StringEnumConverter))]
+[Flags]
+public enum RuleOutcome
 {
     /// <summary>
-    /// The outcome of a rule.
+    /// The rule was not evaluated.
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    [Flags]
-    public enum RuleOutcome
-    {
-        /// <summary>
-        /// The rule was not evaluated.
-        /// </summary>
-        None = 0,
+    None = 0,
 
-        /// <summary>
-        /// The rule evaluated as false.
-        /// </summary>
-        Fail = 1,
+    /// <summary>
+    /// The rule evaluated as false.
+    /// </summary>
+    Fail = 1,
 
-        /// <summary>
-        /// The rule evaluated as true.
-        /// </summary>
-        Pass = 2,
+    /// <summary>
+    /// The rule evaluated as true.
+    /// </summary>
+    Pass = 2,
 
-        /// <summary>
-        /// The rule returned an error.
-        /// </summary>
-        Error = 4,
+    /// <summary>
+    /// The rule returned an error.
+    /// </summary>
+    Error = 4,
 
-        /// <summary>
-        /// Any outcome when the rule was processed.
-        /// </summary>
-        /// <remarks>
-        /// This flag is used to filter outcomes with Invoke-PSRule.
-        /// </remarks>
-        Processed = Pass | Fail | Error,
+    /// <summary>
+    /// Any outcome when the rule was processed.
+    /// </summary>
+    /// <remarks>
+    /// This flag is used to filter outcomes with Invoke-PSRule.
+    /// </remarks>
+    Processed = Pass | Fail | Error,
 
-        /// <summary>
-        /// Any outcome that is considered a problem that should be addressed.
-        /// </summary>
-        Problem = Fail | Error,
+    /// <summary>
+    /// Any outcome that is considered a problem that should be addressed.
+    /// </summary>
+    Problem = Fail | Error,
 
-        /// <summary>
-        /// Any outcome.
-        /// </summary>
-        /// <remarks>
-        /// This flag is used to filter outcomes with Invoke-PSRule.
-        /// </remarks>
-        All = 255
-    }
+    /// <summary>
+    /// Any outcome.
+    /// </summary>
+    /// <remarks>
+    /// This flag is used to filter outcomes with Invoke-PSRule.
+    /// </remarks>
+    All = 255
 }
