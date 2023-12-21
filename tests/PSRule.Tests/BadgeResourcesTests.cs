@@ -3,15 +3,14 @@
 
 using PSRule.Badges;
 
-namespace PSRule
+namespace PSRule;
+
+public sealed class BadgeResourcesTests
 {
-    public sealed class BadgeResourcesTests
+    [Fact]
+    public void TestResources()
     {
-        [Fact]
-        public void TestResources()
-        {
-            var width = BadgeResources.Measure("PSRule");
-            Assert.True(width > 0);
-        }
+        var width = BadgeResources.Measure("PSRule");
+        Assert.True(width > 0);
     }
 }

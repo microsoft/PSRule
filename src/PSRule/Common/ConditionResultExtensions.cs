@@ -3,23 +3,22 @@
 
 using PSRule.Definitions;
 
-namespace PSRule
+namespace PSRule;
+
+internal static class ConditionResultExtensions
 {
-    internal static class ConditionResultExtensions
+    public static bool AllOf(this IConditionResult result)
     {
-        public static bool AllOf(this IConditionResult result)
-        {
-            return result != null && result.Count > 0 && result.Pass == result.Count;
-        }
+        return result != null && result.Count > 0 && result.Pass == result.Count;
+    }
 
-        public static bool AnyOf(this IConditionResult result)
-        {
-            return result != null && result.Pass > 0;
-        }
+    public static bool AnyOf(this IConditionResult result)
+    {
+        return result != null && result.Pass > 0;
+    }
 
-        public static bool Skipped(this IConditionResult result)
-        {
-            return result == null;
-        }
+    public static bool Skipped(this IConditionResult result)
+    {
+        return result == null;
     }
 }

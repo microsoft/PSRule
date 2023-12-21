@@ -3,102 +3,101 @@
 
 using PSRule.Runtime;
 
-namespace PSRule.Definitions
+namespace PSRule.Definitions;
+
+internal sealed class ResultReason : IResultReasonV2
 {
-    internal sealed class ResultReason : IResultReasonV2
+    private string _Path;
+    private string _Formatted;
+    private string _Message;
+    private string _FullPath;
+    private readonly string _ParentPath;
+
+    internal ResultReason(string parentPath, IOperand operand, string text, object[] args)
     {
-        private string _Path;
-        private string _Formatted;
-        private string _Message;
-        private string _FullPath;
-        private readonly string _ParentPath;
+        _ParentPath = parentPath;
+        Operand = operand;
+        _Path = Operand?.Path;
+        Text = text;
+        Args = args;
+    }
 
-        internal ResultReason(string parentPath, IOperand operand, string text, object[] args)
+    internal IOperand Operand { get; }
+
+    /// <summary>
+    /// The object path that failed.
+    /// </summary>
+    public string Path
+    {
+        get
         {
-            _ParentPath = parentPath;
-            Operand = operand;
-            _Path = Operand?.Path;
-            Text = text;
-            Args = args;
+            _Path ??= GetPath();
+            return _Path;
         }
+    }
 
-        internal IOperand Operand { get; }
-
-        /// <summary>
-        /// The object path that failed.
-        /// </summary>
-        public string Path
+    /// <summary>
+    /// A prefix to add to the object path that failed.
+    /// </summary>
+    internal string Prefix
+    {
+        get { return Operand?.Prefix; }
+        set
         {
-            get
+            if (Operand != null && Operand.Prefix != value)
             {
-                _Path ??= GetPath();
-                return _Path;
+                Operand.Prefix = value;
+                _Formatted = _Path = _FullPath = null;
             }
         }
+    }
 
-        /// <summary>
-        /// A prefix to add to the object path that failed.
-        /// </summary>
-        internal string Prefix
+    /// <summary>
+    /// The object path including the path of the parent object.
+    /// </summary>
+    public string FullPath
+    {
+        get
         {
-            get { return Operand?.Prefix; }
-            set
-            {
-                if (Operand != null && Operand.Prefix != value)
-                {
-                    Operand.Prefix = value;
-                    _Formatted = _Path = _FullPath = null;
-                }
-            }
+            _FullPath ??= GetFullPath();
+            return _FullPath;
         }
+    }
 
-        /// <summary>
-        /// The object path including the path of the parent object.
-        /// </summary>
-        public string FullPath
+    public string Text { get; }
+
+    public object[] Args { get; }
+
+    public string Message
+    {
+        get
         {
-            get
-            {
-                _FullPath ??= GetFullPath();
-                return _FullPath;
-            }
+            _Message ??= Args == null || Args.Length == 0 ? Text : string.Format(Thread.CurrentThread.CurrentCulture, Text, Args);
+            return _Message;
         }
+    }
 
-        public string Text { get; }
+    public override string ToString()
+    {
+        return Format();
+    }
 
-        public object[] Args { get; }
+    public string Format()
+    {
+        _Formatted ??= string.Concat(
+            Operand?.ToString(),
+            Message
+        );
+        return _Formatted;
+    }
 
-        public string Message
-        {
-            get
-            {
-                _Message ??= Args == null || Args.Length == 0 ? Text : string.Format(Thread.CurrentThread.CurrentCulture, Text, Args);
-                return _Message;
-            }
-        }
+    private string GetPath()
+    {
+        return Runtime.Operand.JoinPath(Prefix, Operand?.Path);
+    }
 
-        public override string ToString()
-        {
-            return Format();
-        }
-
-        public string Format()
-        {
-            _Formatted ??= string.Concat(
-                Operand?.ToString(),
-                Message
-            );
-            return _Formatted;
-        }
-
-        private string GetPath()
-        {
-            return Runtime.Operand.JoinPath(Prefix, Operand?.Path);
-        }
-
-        private string GetFullPath()
-        {
-            return Runtime.Operand.JoinPath(_ParentPath, Path);
-        }
+    private string GetFullPath()
+    {
+        return Runtime.Operand.JoinPath(_ParentPath, Path);
     }
 }

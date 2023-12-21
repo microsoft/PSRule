@@ -8,132 +8,131 @@ using Newtonsoft.Json.Linq;
 using PSRule.Data;
 using PSRule.Definitions.Selectors;
 
-namespace PSRule.Pipeline
+namespace PSRule.Pipeline;
+
+internal abstract class TargetObjectAnnotation
 {
-    internal abstract class TargetObjectAnnotation
-    {
 
+}
+
+internal sealed class SelectorTargetAnnotation : TargetObjectAnnotation
+{
+    private readonly Dictionary<Guid, bool> _Results;
+
+    public SelectorTargetAnnotation()
+    {
+        _Results = new Dictionary<Guid, bool>();
     }
 
-    internal sealed class SelectorTargetAnnotation : TargetObjectAnnotation
+    public bool TryGetSelectorResult(SelectorVisitor selector, out bool result)
     {
-        private readonly Dictionary<Guid, bool> _Results;
-
-        public SelectorTargetAnnotation()
-        {
-            _Results = new Dictionary<Guid, bool>();
-        }
-
-        public bool TryGetSelectorResult(SelectorVisitor selector, out bool result)
-        {
-            return _Results.TryGetValue(selector.InstanceId, out result);
-        }
-
-        public void SetSelectorResult(SelectorVisitor selector, bool result)
-        {
-            _Results[selector.InstanceId] = result;
-        }
+        return _Results.TryGetValue(selector.InstanceId, out result);
     }
 
-    /// <summary>
-    /// An object processed by PSRule.
-    /// </summary>
-    public sealed class TargetObject : ITargetObject
+    public void SetSelectorResult(SelectorVisitor selector, bool result)
     {
-        private readonly Dictionary<Type, TargetObjectAnnotation> _Annotations;
+        _Results[selector.InstanceId] = result;
+    }
+}
 
-        private Hashtable _Data;
+/// <summary>
+/// An object processed by PSRule.
+/// </summary>
+public sealed class TargetObject : ITargetObject
+{
+    private readonly Dictionary<Type, TargetObjectAnnotation> _Annotations;
 
-        internal TargetObject(PSObject o)
-            : this(o, null) { }
+    private Hashtable _Data;
 
-        internal TargetObject(PSObject o, TargetSourceCollection source)
+    internal TargetObject(PSObject o)
+        : this(o, null) { }
+
+    internal TargetObject(PSObject o, TargetSourceCollection source)
+    {
+        o.ConvertTargetInfoProperty();
+        o.ConvertTargetInfoType();
+        Source = ReadSourceInfo(o, source);
+        Issue = ReadIssueInfo(o, null);
+        TargetName = o.GetTargetName();
+        TargetType = o.GetTargetType();
+        Scope = o.GetScope();
+        Path = ReadPath(o);
+        Value = Convert(o);
+        _Annotations = new Dictionary<Type, TargetObjectAnnotation>();
+    }
+
+    internal TargetObject(PSObject o, string targetName = null, string targetType = null, string[] scope = null)
+        : this(o, null)
+    {
+        if (!string.IsNullOrEmpty(targetName))
+            TargetName = targetName;
+
+        if (!string.IsNullOrEmpty(targetType))
+            TargetType = targetType;
+
+        if (scope != null && scope.Length > 0)
+            Scope = scope;
+    }
+
+    internal PSObject Value { get; }
+
+    internal TargetSourceCollection Source { get; private set; }
+
+    internal TargetIssueCollection Issue { get; private set; }
+
+    internal string TargetName { [DebuggerStepThrough] get; }
+
+    internal string TargetType { [DebuggerStepThrough] get; }
+
+    internal string[] Scope { [DebuggerStepThrough] get; }
+
+    internal string Path { [DebuggerStepThrough] get; }
+
+    internal Hashtable GetData()
+    {
+        return _Data == null || _Data.Count == 0 ? null : _Data;
+    }
+
+    internal Hashtable RequireData()
+    {
+        _Data ??= new Hashtable();
+        return _Data;
+    }
+
+    internal T GetAnnotation<T>() where T : TargetObjectAnnotation, new()
+    {
+        if (!_Annotations.TryGetValue(typeof(T), out var value))
         {
-            o.ConvertTargetInfoProperty();
-            o.ConvertTargetInfoType();
-            Source = ReadSourceInfo(o, source);
-            Issue = ReadIssueInfo(o, null);
-            TargetName = o.GetTargetName();
-            TargetType = o.GetTargetType();
-            Scope = o.GetScope();
-            Path = ReadPath(o);
-            Value = Convert(o);
-            _Annotations = new Dictionary<Type, TargetObjectAnnotation>();
+            value = new T();
+            _Annotations.Add(typeof(T), value);
         }
+        return (T)value;
+    }
 
-        internal TargetObject(PSObject o, string targetName = null, string targetType = null, string[] scope = null)
-            : this(o, null)
-        {
-            if (!string.IsNullOrEmpty(targetName))
-                TargetName = targetName;
+    private static string ReadPath(PSObject o)
+    {
+        return o.GetTargetPath();
+    }
 
-            if (!string.IsNullOrEmpty(targetType))
-                TargetType = targetType;
+    private static TargetSourceCollection ReadSourceInfo(PSObject o, TargetSourceCollection source)
+    {
+        var result = source ?? new TargetSourceCollection();
+        if (ExpressionHelpers.GetBaseObject(o) is ITargetInfo targetInfo)
+            result.Add(targetInfo.Source);
 
-            if (scope != null && scope.Length > 0)
-                Scope = scope;
-        }
+        result.AddRange(o.GetSourceInfo());
+        return result;
+    }
 
-        internal PSObject Value { get; }
+    private static TargetIssueCollection ReadIssueInfo(PSObject o, TargetIssueCollection issue)
+    {
+        var result = issue ?? new TargetIssueCollection();
+        result.AddRange(o.GetIssueInfo());
+        return result;
+    }
 
-        internal TargetSourceCollection Source { get; private set; }
-
-        internal TargetIssueCollection Issue { get; private set; }
-
-        internal string TargetName { [DebuggerStepThrough] get; }
-
-        internal string TargetType { [DebuggerStepThrough] get; }
-
-        internal string[] Scope { [DebuggerStepThrough] get; }
-
-        internal string Path { [DebuggerStepThrough] get; }
-
-        internal Hashtable GetData()
-        {
-            return _Data == null || _Data.Count == 0 ? null : _Data;
-        }
-
-        internal Hashtable RequireData()
-        {
-            _Data ??= new Hashtable();
-            return _Data;
-        }
-
-        internal T GetAnnotation<T>() where T : TargetObjectAnnotation, new()
-        {
-            if (!_Annotations.TryGetValue(typeof(T), out var value))
-            {
-                value = new T();
-                _Annotations.Add(typeof(T), value);
-            }
-            return (T)value;
-        }
-
-        private static string ReadPath(PSObject o)
-        {
-            return o.GetTargetPath();
-        }
-
-        private static TargetSourceCollection ReadSourceInfo(PSObject o, TargetSourceCollection source)
-        {
-            var result = source ?? new TargetSourceCollection();
-            if (ExpressionHelpers.GetBaseObject(o) is ITargetInfo targetInfo)
-                result.Add(targetInfo.Source);
-
-            result.AddRange(o.GetSourceInfo());
-            return result;
-        }
-
-        private static TargetIssueCollection ReadIssueInfo(PSObject o, TargetIssueCollection issue)
-        {
-            var result = issue ?? new TargetIssueCollection();
-            result.AddRange(o.GetIssueInfo());
-            return result;
-        }
-
-        private static PSObject Convert(PSObject o)
-        {
-            return o.BaseObject is JToken token ? JsonHelper.ToPSObject(token) : o;
-        }
+    private static PSObject Convert(PSObject o)
+    {
+        return o.BaseObject is JToken token ? JsonHelper.ToPSObject(token) : o;
     }
 }

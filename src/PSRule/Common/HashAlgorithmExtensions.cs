@@ -3,14 +3,13 @@
 
 using System.Security.Cryptography;
 
-namespace PSRule
+namespace PSRule;
+
+internal static class HashAlgorithmExtensions
 {
-    internal static class HashAlgorithmExtensions
+    public static string GetDigest(this HashAlgorithm algorithm, byte[] buffer)
     {
-        public static string GetDigest(this HashAlgorithm algorithm, byte[] buffer)
-        {
-            var hash = algorithm.ComputeHash(buffer);
-            return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
-        }
+        var hash = algorithm.ComputeHash(buffer);
+        return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
     }
 }

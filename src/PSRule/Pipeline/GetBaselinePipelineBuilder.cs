@@ -4,60 +4,59 @@
 using PSRule.Configuration;
 using PSRule.Definitions.Baselines;
 
-namespace PSRule.Pipeline
+namespace PSRule.Pipeline;
+
+internal sealed class GetBaselinePipelineBuilder : PipelineBuilderBase
 {
-    internal sealed class GetBaselinePipelineBuilder : PipelineBuilderBase
+    private string[] _Name;
+
+    internal GetBaselinePipelineBuilder(Source[] source, IHostContext hostContext)
+        : base(source, hostContext) { }
+
+    /// <summary>
+    /// Filter returned baselines by name.
+    /// </summary>
+    public new void Name(string[] name)
     {
-        private string[] _Name;
+        if (name == null || name.Length == 0)
+            return;
 
-        internal GetBaselinePipelineBuilder(Source[] source, IHostContext hostContext)
-            : base(source, hostContext) { }
+        _Name = name;
+    }
 
-        /// <summary>
-        /// Filter returned baselines by name.
-        /// </summary>
-        public new void Name(string[] name)
-        {
-            if (name == null || name.Length == 0)
-                return;
-
-            _Name = name;
-        }
-
-        public override IPipelineBuilder Configure(PSRuleOption option)
-        {
-            if (option == null)
-                return this;
-
-            Option.Baseline = new Options.BaselineOption(option.Baseline);
-            Option.Output.As = ResultFormat.Detail;
-            Option.Output.Culture = GetCulture(option.Output.Culture);
-            Option.Output.Format = SuppressFormat(option.Output.Format);
-            Option.Output.JsonIndent = NormalizeJsonIndentRange(option.Output.JsonIndent);
+    public override IPipelineBuilder Configure(PSRuleOption option)
+    {
+        if (option == null)
             return this;
-        }
 
-        public override IPipeline Build(IPipelineWriter writer = null)
-        {
-            var filter = new BaselineFilter(ResolveBaselineGroup(_Name));
-            return new GetBaselinePipeline(
-                pipeline: PrepareContext(
-                    bindTargetName: null,
-                    bindTargetType: null,
-                    bindField: null
-                ),
-                source: Source,
-                reader: PrepareReader(),
-                writer: writer ?? PrepareWriter(),
-                filter: filter
-            );
-        }
+        Option.Baseline = new Options.BaselineOption(option.Baseline);
+        Option.Output.As = ResultFormat.Detail;
+        Option.Output.Culture = GetCulture(option.Output.Culture);
+        Option.Output.Format = SuppressFormat(option.Output.Format);
+        Option.Output.JsonIndent = NormalizeJsonIndentRange(option.Output.JsonIndent);
+        return this;
+    }
 
-        private static OutputFormat SuppressFormat(OutputFormat? format)
-        {
-            return !format.HasValue ||
-                !(format == OutputFormat.Yaml ||
-                format == OutputFormat.Json) ? OutputFormat.None : format.Value;
-        }
+    public override IPipeline Build(IPipelineWriter writer = null)
+    {
+        var filter = new BaselineFilter(ResolveBaselineGroup(_Name));
+        return new GetBaselinePipeline(
+            pipeline: PrepareContext(
+                bindTargetName: null,
+                bindTargetType: null,
+                bindField: null
+            ),
+            source: Source,
+            reader: PrepareReader(),
+            writer: writer ?? PrepareWriter(),
+            filter: filter
+        );
+    }
+
+    private static OutputFormat SuppressFormat(OutputFormat? format)
+    {
+        return !format.HasValue ||
+            !(format == OutputFormat.Yaml ||
+            format == OutputFormat.Json) ? OutputFormat.None : format.Value;
     }
 }

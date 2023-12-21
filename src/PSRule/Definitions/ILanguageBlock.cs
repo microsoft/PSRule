@@ -3,21 +3,20 @@
 
 using PSRule.Pipeline;
 
-namespace PSRule.Definitions
+namespace PSRule.Definitions;
+
+/// <summary>
+/// A language block.
+/// </summary>
+public interface ILanguageBlock
 {
     /// <summary>
-    /// A language block.
+    /// The unique identifier for the block.
     /// </summary>
-    public interface ILanguageBlock
-    {
-        /// <summary>
-        /// The unique identifier for the block.
-        /// </summary>
-        ResourceId Id { get; }
+    ResourceId Id { get; }
 
-        /// <summary>
-        /// The source location for the block.
-        /// </summary>
-        SourceFile Source { get; }
-    }
+    /// <summary>
+    /// The source location for the block.
+    /// </summary>
+    SourceFile Source { get; }
 }

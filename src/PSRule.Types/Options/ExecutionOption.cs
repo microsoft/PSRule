@@ -3,452 +3,451 @@
 
 using System.ComponentModel;
 
-namespace PSRule.Options
+namespace PSRule.Options;
+
+/// <summary>
+/// Options that configure the execution sandbox.
+/// </summary>
+/// <remarks>
+/// See <see href="https://aka.ms/ps-rule/options"/>.
+/// </remarks>
+public interface IExecutionOption : IOption
 {
     /// <summary>
-    /// Options that configure the execution sandbox.
+    /// Determines how to handle duplicate resources identifiers during execution.
+    /// Regardless of the value, only the first resource will be used.
+    /// By defaut, an error is thrown.
+    /// When set to Warn, a warning is generated.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
     /// </summary>
-    /// <remarks>
-    /// See <see href="https://aka.ms/ps-rule/options"/>.
-    /// </remarks>
-    public interface IExecutionOption : IOption
+    ExecutionActionPreference DuplicateResourceId { get; }
+
+    /// <summary>
+    /// Configures the hashing algorithm used by the PSRule runtime.
+    /// </summary>
+    HashAlgorithm HashAlgorithm { get; }
+
+    /// <summary>
+    /// The langauge mode to execute PowerShell code with.
+    /// </summary>
+    LanguageMode LanguageMode { get; }
+
+    /// <summary>
+    /// Determines how the initial session state for executing PowerShell code is created.
+    /// The default is <see cref="SessionState.BuiltIn"/>.
+    /// </summary>
+    SessionState InitialSessionState { get; }
+
+    /// <summary>
+    /// Determines how to handle expired suppression groups.
+    /// Regardless of the value, an expired suppression group will be ignored.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    ExecutionActionPreference SuppressionGroupExpired { get; }
+
+    /// <summary>
+    /// Determines how to handle rules that are excluded.
+    /// By default, excluded rules do not generated any output.
+    /// When set to Error, an error is thrown.
+    /// When set to Warn, a warning is generated.
+    /// When set to Debug, a message is written to the debug log.
+    /// </summary>
+    ExecutionActionPreference RuleExcluded { get; }
+
+    /// <summary>
+    /// Determines how to handle rules that are suppressed.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    ExecutionActionPreference RuleSuppressed { get; }
+
+    /// <summary>
+    /// Determines how to handle when an alias to a resource is used.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    ExecutionActionPreference AliasReference { get; }
+
+    /// <summary>
+    /// Determines how to handle rules that generate inconclusive results.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    ExecutionActionPreference RuleInconclusive { get; }
+
+    /// <summary>
+    /// Determines how to report when an invariant culture is used.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    ExecutionActionPreference InvariantCulture { get; }
+
+    /// <summary>
+    /// Determines how to report objects that are not processed by any rule.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    ExecutionActionPreference UnprocessedObject { get; }
+}
+
+/// <summary>
+/// Options that configure the execution sandbox.
+/// </summary>
+/// <remarks>
+/// See <see href="https://aka.ms/ps-rule/options"/>.
+/// </remarks>
+public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOption
+{
+    private const LanguageMode DEFAULT_LANGUAGEMODE = Options.LanguageMode.FullLanguage;
+    private const ExecutionActionPreference DEFAULT_DUPLICATERESOURCEID = ExecutionActionPreference.Error;
+    private const SessionState DEFAULT_INITIALSESSIONSTATE = SessionState.BuiltIn;
+    private const ExecutionActionPreference DEFAULT_SUPPRESSIONGROUPEXPIRED = ExecutionActionPreference.Warn;
+    private const ExecutionActionPreference DEFAULT_RULEEXCLUDED = ExecutionActionPreference.Ignore;
+    private const ExecutionActionPreference DEFAULT_RULESUPPRESSED = ExecutionActionPreference.Warn;
+    private const ExecutionActionPreference DEFAULT_ALIASREFERENCE = ExecutionActionPreference.Warn;
+    private const ExecutionActionPreference DEFAULT_RULEINCONCLUSIVE = ExecutionActionPreference.Warn;
+    private const ExecutionActionPreference DEFAULT_INVARIANTCULTURE = ExecutionActionPreference.Warn;
+    private const ExecutionActionPreference DEFAULT_UNPROCESSEDOBJECT = ExecutionActionPreference.Warn;
+    private const HashAlgorithm DEFAULT_HASHALGORITHM = Options.HashAlgorithm.SHA512;
+
+    internal static readonly ExecutionOption Default = new()
     {
-        /// <summary>
-        /// Determines how to handle duplicate resources identifiers during execution.
-        /// Regardless of the value, only the first resource will be used.
-        /// By defaut, an error is thrown.
-        /// When set to Warn, a warning is generated.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        ExecutionActionPreference DuplicateResourceId { get; }
+        DuplicateResourceId = DEFAULT_DUPLICATERESOURCEID,
+        HashAlgorithm = DEFAULT_HASHALGORITHM,
+        LanguageMode = DEFAULT_LANGUAGEMODE,
+        InitialSessionState = DEFAULT_INITIALSESSIONSTATE,
+        SuppressionGroupExpired = DEFAULT_SUPPRESSIONGROUPEXPIRED,
+        RuleExcluded = DEFAULT_RULEEXCLUDED,
+        RuleSuppressed = DEFAULT_RULESUPPRESSED,
+        AliasReference = DEFAULT_ALIASREFERENCE,
+        RuleInconclusive = DEFAULT_RULEINCONCLUSIVE,
+        InvariantCulture = DEFAULT_INVARIANTCULTURE,
+        UnprocessedObject = DEFAULT_UNPROCESSEDOBJECT,
+    };
 
-        /// <summary>
-        /// Configures the hashing algorithm used by the PSRule runtime.
-        /// </summary>
-        HashAlgorithm HashAlgorithm { get; }
-
-        /// <summary>
-        /// The langauge mode to execute PowerShell code with.
-        /// </summary>
-        LanguageMode LanguageMode { get; }
-
-        /// <summary>
-        /// Determines how the initial session state for executing PowerShell code is created.
-        /// The default is <see cref="SessionState.BuiltIn"/>.
-        /// </summary>
-        SessionState InitialSessionState { get; }
-
-        /// <summary>
-        /// Determines how to handle expired suppression groups.
-        /// Regardless of the value, an expired suppression group will be ignored.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        ExecutionActionPreference SuppressionGroupExpired { get; }
-
-        /// <summary>
-        /// Determines how to handle rules that are excluded.
-        /// By default, excluded rules do not generated any output.
-        /// When set to Error, an error is thrown.
-        /// When set to Warn, a warning is generated.
-        /// When set to Debug, a message is written to the debug log.
-        /// </summary>
-        ExecutionActionPreference RuleExcluded { get; }
-
-        /// <summary>
-        /// Determines how to handle rules that are suppressed.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        ExecutionActionPreference RuleSuppressed { get; }
-
-        /// <summary>
-        /// Determines how to handle when an alias to a resource is used.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        ExecutionActionPreference AliasReference { get; }
-
-        /// <summary>
-        /// Determines how to handle rules that generate inconclusive results.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        ExecutionActionPreference RuleInconclusive { get; }
-
-        /// <summary>
-        /// Determines how to report when an invariant culture is used.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        ExecutionActionPreference InvariantCulture { get; }
-
-        /// <summary>
-        /// Determines how to report objects that are not processed by any rule.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        ExecutionActionPreference UnprocessedObject { get; }
+    /// <summary>
+    /// Creates an empty execution option.
+    /// </summary>
+    public ExecutionOption()
+    {
+        DuplicateResourceId = null;
+        HashAlgorithm = null;
+        LanguageMode = null;
+        InitialSessionState = null;
+        SuppressionGroupExpired = null;
+        RuleExcluded = null;
+        RuleSuppressed = null;
+        AliasReference = null;
+        RuleInconclusive = null;
+        InvariantCulture = null;
+        UnprocessedObject = null;
     }
 
     /// <summary>
-    /// Options that configure the execution sandbox.
+    /// Creates a execution option by copying an existing instance.
     /// </summary>
-    /// <remarks>
-    /// See <see href="https://aka.ms/ps-rule/options"/>.
-    /// </remarks>
-    public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOption
+    /// <param name="option">The option instance to copy.</param>
+    public ExecutionOption(ExecutionOption option)
     {
-        private const LanguageMode DEFAULT_LANGUAGEMODE = Options.LanguageMode.FullLanguage;
-        private const ExecutionActionPreference DEFAULT_DUPLICATERESOURCEID = ExecutionActionPreference.Error;
-        private const SessionState DEFAULT_INITIALSESSIONSTATE = SessionState.BuiltIn;
-        private const ExecutionActionPreference DEFAULT_SUPPRESSIONGROUPEXPIRED = ExecutionActionPreference.Warn;
-        private const ExecutionActionPreference DEFAULT_RULEEXCLUDED = ExecutionActionPreference.Ignore;
-        private const ExecutionActionPreference DEFAULT_RULESUPPRESSED = ExecutionActionPreference.Warn;
-        private const ExecutionActionPreference DEFAULT_ALIASREFERENCE = ExecutionActionPreference.Warn;
-        private const ExecutionActionPreference DEFAULT_RULEINCONCLUSIVE = ExecutionActionPreference.Warn;
-        private const ExecutionActionPreference DEFAULT_INVARIANTCULTURE = ExecutionActionPreference.Warn;
-        private const ExecutionActionPreference DEFAULT_UNPROCESSEDOBJECT = ExecutionActionPreference.Warn;
-        private const HashAlgorithm DEFAULT_HASHALGORITHM = Options.HashAlgorithm.SHA512;
+        if (option == null)
+            return;
 
-        internal static readonly ExecutionOption Default = new()
+        DuplicateResourceId = option.DuplicateResourceId;
+        HashAlgorithm = option.HashAlgorithm;
+        LanguageMode = option.LanguageMode;
+        InitialSessionState = option.InitialSessionState;
+        SuppressionGroupExpired = option.SuppressionGroupExpired;
+        RuleExcluded = option.RuleExcluded;
+        RuleSuppressed = option.RuleSuppressed;
+        AliasReference = option.AliasReference;
+        RuleInconclusive = option.RuleInconclusive;
+        InvariantCulture = option.InvariantCulture;
+        UnprocessedObject = option.UnprocessedObject;
+    }
+
+    /// <inheritdoc/>
+    public override bool Equals(object obj)
+    {
+        return obj is ExecutionOption option && Equals(option);
+    }
+
+    /// <inheritdoc/>
+    public bool Equals(ExecutionOption other)
+    {
+        return other != null &&
+            DuplicateResourceId == other.DuplicateResourceId &&
+            HashAlgorithm == other.HashAlgorithm &&
+            LanguageMode == other.LanguageMode &&
+            InitialSessionState == other.InitialSessionState &&
+            SuppressionGroupExpired == other.SuppressionGroupExpired &&
+            RuleExcluded == other.RuleExcluded &&
+            RuleSuppressed == other.RuleSuppressed &&
+            AliasReference == other.AliasReference &&
+            RuleInconclusive == other.RuleInconclusive &&
+            InvariantCulture == other.InvariantCulture &&
+            UnprocessedObject == other.UnprocessedObject;
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        unchecked // Overflow is fine
         {
-            DuplicateResourceId = DEFAULT_DUPLICATERESOURCEID,
-            HashAlgorithm = DEFAULT_HASHALGORITHM,
-            LanguageMode = DEFAULT_LANGUAGEMODE,
-            InitialSessionState = DEFAULT_INITIALSESSIONSTATE,
-            SuppressionGroupExpired = DEFAULT_SUPPRESSIONGROUPEXPIRED,
-            RuleExcluded = DEFAULT_RULEEXCLUDED,
-            RuleSuppressed = DEFAULT_RULESUPPRESSED,
-            AliasReference = DEFAULT_ALIASREFERENCE,
-            RuleInconclusive = DEFAULT_RULEINCONCLUSIVE,
-            InvariantCulture = DEFAULT_INVARIANTCULTURE,
-            UnprocessedObject = DEFAULT_UNPROCESSEDOBJECT,
+            var hash = 17;
+            hash = hash * 23 + (DuplicateResourceId.HasValue ? DuplicateResourceId.Value.GetHashCode() : 0);
+            hash = hash * 23 + (HashAlgorithm.HasValue ? HashAlgorithm.Value.GetHashCode() : 0);
+            hash = hash * 23 + (LanguageMode.HasValue ? LanguageMode.Value.GetHashCode() : 0);
+            hash = hash * 23 + (InitialSessionState.HasValue ? InitialSessionState.Value.GetHashCode() : 0);
+            hash = hash * 23 + (SuppressionGroupExpired.HasValue ? SuppressionGroupExpired.Value.GetHashCode() : 0);
+            hash = hash * 23 + (RuleExcluded.HasValue ? RuleExcluded.Value.GetHashCode() : 0);
+            hash = hash * 23 + (RuleSuppressed.HasValue ? RuleSuppressed.Value.GetHashCode() : 0);
+            hash = hash * 23 + (AliasReference.HasValue ? AliasReference.Value.GetHashCode() : 0);
+            hash = hash * 23 + (RuleInconclusive.HasValue ? RuleInconclusive.Value.GetHashCode() : 0);
+            hash = hash * 23 + (InvariantCulture.HasValue ? InvariantCulture.Value.GetHashCode() : 0);
+            hash = hash * 23 + (UnprocessedObject.HasValue ? UnprocessedObject.Value.GetHashCode() : 0);
+            return hash;
+        }
+    }
+
+    /// <summary>
+    /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+    /// Values from <paramref name="o1"/> that are set are not overridden.
+    /// </summary>
+    internal static ExecutionOption Combine(ExecutionOption o1, ExecutionOption o2)
+    {
+        var result = new ExecutionOption(o1)
+        {
+            DuplicateResourceId = o1?.DuplicateResourceId ?? o2?.DuplicateResourceId,
+            HashAlgorithm = o1?.HashAlgorithm ?? o2?.HashAlgorithm,
+            LanguageMode = o1?.LanguageMode ?? o2?.LanguageMode,
+            InitialSessionState = o1?.InitialSessionState ?? o2?.InitialSessionState,
+            SuppressionGroupExpired = o1?.SuppressionGroupExpired ?? o2?.SuppressionGroupExpired,
+            RuleExcluded = o1?.RuleExcluded ?? o2?.RuleExcluded,
+            RuleSuppressed = o1?.RuleSuppressed ?? o2?.RuleSuppressed,
+            AliasReference = o1?.AliasReference ?? o2?.AliasReference,
+            RuleInconclusive = o1?.RuleInconclusive ?? o2?.RuleInconclusive,
+            InvariantCulture = o1?.InvariantCulture ?? o2?.InvariantCulture,
+            UnprocessedObject = o1?.UnprocessedObject ?? o2?.UnprocessedObject,
         };
+        return result;
+    }
 
-        /// <summary>
-        /// Creates an empty execution option.
-        /// </summary>
-        public ExecutionOption()
-        {
-            DuplicateResourceId = null;
-            HashAlgorithm = null;
-            LanguageMode = null;
-            InitialSessionState = null;
-            SuppressionGroupExpired = null;
-            RuleExcluded = null;
-            RuleSuppressed = null;
-            AliasReference = null;
-            RuleInconclusive = null;
-            InvariantCulture = null;
-            UnprocessedObject = null;
-        }
+    /// <summary>
+    /// Determines how to handle duplicate resources identifiers during execution.
+    /// Regardless of the value, only the first resource will be used.
+    /// By default, an error is thrown.
+    /// When set to Warn, a warning is generated.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    [DefaultValue(null)]
+    public ExecutionActionPreference? DuplicateResourceId { get; set; }
 
-        /// <summary>
-        /// Creates a execution option by copying an existing instance.
-        /// </summary>
-        /// <param name="option">The option instance to copy.</param>
-        public ExecutionOption(ExecutionOption option)
-        {
-            if (option == null)
-                return;
+    /// <summary>
+    /// Configures the hashing algorithm used by the PSRule runtime.
+    /// </summary>
+    [DefaultValue(null)]
+    public HashAlgorithm? HashAlgorithm { get; set; }
 
-            DuplicateResourceId = option.DuplicateResourceId;
-            HashAlgorithm = option.HashAlgorithm;
-            LanguageMode = option.LanguageMode;
-            InitialSessionState = option.InitialSessionState;
-            SuppressionGroupExpired = option.SuppressionGroupExpired;
-            RuleExcluded = option.RuleExcluded;
-            RuleSuppressed = option.RuleSuppressed;
-            AliasReference = option.AliasReference;
-            RuleInconclusive = option.RuleInconclusive;
-            InvariantCulture = option.InvariantCulture;
-            UnprocessedObject = option.UnprocessedObject;
-        }
+    /// <summary>
+    /// The langauge mode to execute PowerShell code with.
+    /// </summary>
+    [DefaultValue(null)]
+    public LanguageMode? LanguageMode { get; set; }
 
-        /// <inheritdoc/>
-        public override bool Equals(object obj)
-        {
-            return obj is ExecutionOption option && Equals(option);
-        }
+    /// <summary>
+    /// Determines how the initial session state for executing PowerShell code is created.
+    /// The default is <see cref="SessionState.BuiltIn"/>.
+    /// </summary>
+    [DefaultValue(null)]
+    public SessionState? InitialSessionState { get; set; }
 
-        /// <inheritdoc/>
-        public bool Equals(ExecutionOption other)
-        {
-            return other != null &&
-                DuplicateResourceId == other.DuplicateResourceId &&
-                HashAlgorithm == other.HashAlgorithm &&
-                LanguageMode == other.LanguageMode &&
-                InitialSessionState == other.InitialSessionState &&
-                SuppressionGroupExpired == other.SuppressionGroupExpired &&
-                RuleExcluded == other.RuleExcluded &&
-                RuleSuppressed == other.RuleSuppressed &&
-                AliasReference == other.AliasReference &&
-                RuleInconclusive == other.RuleInconclusive &&
-                InvariantCulture == other.InvariantCulture &&
-                UnprocessedObject == other.UnprocessedObject;
-        }
+    /// <summary>
+    /// Determines how to handle expired suppression groups.
+    /// Regardless of the value, an expired suppression group will be ignored.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    [DefaultValue(null)]
+    public ExecutionActionPreference? SuppressionGroupExpired { get; set; }
 
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine
-            {
-                var hash = 17;
-                hash = hash * 23 + (DuplicateResourceId.HasValue ? DuplicateResourceId.Value.GetHashCode() : 0);
-                hash = hash * 23 + (HashAlgorithm.HasValue ? HashAlgorithm.Value.GetHashCode() : 0);
-                hash = hash * 23 + (LanguageMode.HasValue ? LanguageMode.Value.GetHashCode() : 0);
-                hash = hash * 23 + (InitialSessionState.HasValue ? InitialSessionState.Value.GetHashCode() : 0);
-                hash = hash * 23 + (SuppressionGroupExpired.HasValue ? SuppressionGroupExpired.Value.GetHashCode() : 0);
-                hash = hash * 23 + (RuleExcluded.HasValue ? RuleExcluded.Value.GetHashCode() : 0);
-                hash = hash * 23 + (RuleSuppressed.HasValue ? RuleSuppressed.Value.GetHashCode() : 0);
-                hash = hash * 23 + (AliasReference.HasValue ? AliasReference.Value.GetHashCode() : 0);
-                hash = hash * 23 + (RuleInconclusive.HasValue ? RuleInconclusive.Value.GetHashCode() : 0);
-                hash = hash * 23 + (InvariantCulture.HasValue ? InvariantCulture.Value.GetHashCode() : 0);
-                hash = hash * 23 + (UnprocessedObject.HasValue ? UnprocessedObject.Value.GetHashCode() : 0);
-                return hash;
-            }
-        }
+    /// <summary>
+    /// Determines how to handle rules that are excluded.
+    /// By default, excluded rules do not generated any output.
+    /// When set to Error, an error is thrown.
+    /// When set to Warn, a warning is generated.
+    /// When set to Debug, a message is written to the debug log.
+    /// </summary>
+    [DefaultValue(null)]
+    public ExecutionActionPreference? RuleExcluded { get; set; }
 
-        /// <summary>
-        /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
-        /// Values from <paramref name="o1"/> that are set are not overridden.
-        /// </summary>
-        internal static ExecutionOption Combine(ExecutionOption o1, ExecutionOption o2)
-        {
-            var result = new ExecutionOption(o1)
-            {
-                DuplicateResourceId = o1?.DuplicateResourceId ?? o2?.DuplicateResourceId,
-                HashAlgorithm = o1?.HashAlgorithm ?? o2?.HashAlgorithm,
-                LanguageMode = o1?.LanguageMode ?? o2?.LanguageMode,
-                InitialSessionState = o1?.InitialSessionState ?? o2?.InitialSessionState,
-                SuppressionGroupExpired = o1?.SuppressionGroupExpired ?? o2?.SuppressionGroupExpired,
-                RuleExcluded = o1?.RuleExcluded ?? o2?.RuleExcluded,
-                RuleSuppressed = o1?.RuleSuppressed ?? o2?.RuleSuppressed,
-                AliasReference = o1?.AliasReference ?? o2?.AliasReference,
-                RuleInconclusive = o1?.RuleInconclusive ?? o2?.RuleInconclusive,
-                InvariantCulture = o1?.InvariantCulture ?? o2?.InvariantCulture,
-                UnprocessedObject = o1?.UnprocessedObject ?? o2?.UnprocessedObject,
-            };
-            return result;
-        }
+    /// <summary>
+    /// Determines how to handle rules that are suppressed.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    [DefaultValue(null)]
+    public ExecutionActionPreference? RuleSuppressed { get; set; }
 
-        /// <summary>
-        /// Determines how to handle duplicate resources identifiers during execution.
-        /// Regardless of the value, only the first resource will be used.
-        /// By default, an error is thrown.
-        /// When set to Warn, a warning is generated.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        [DefaultValue(null)]
-        public ExecutionActionPreference? DuplicateResourceId { get; set; }
+    /// <summary>
+    /// Determines how to handle when an alias to a resource is used.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    [DefaultValue(null)]
+    public ExecutionActionPreference? AliasReference { get; set; }
 
-        /// <summary>
-        /// Configures the hashing algorithm used by the PSRule runtime.
-        /// </summary>
-        [DefaultValue(null)]
-        public HashAlgorithm? HashAlgorithm { get; set; }
+    /// <summary>
+    /// Determines how to handle rules that generate inconclusive results.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    [DefaultValue(null)]
+    public ExecutionActionPreference? RuleInconclusive { get; set; }
 
-        /// <summary>
-        /// The langauge mode to execute PowerShell code with.
-        /// </summary>
-        [DefaultValue(null)]
-        public LanguageMode? LanguageMode { get; set; }
+    /// <summary>
+    /// Determines how to report when an invariant culture is used.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    [DefaultValue(null)]
+    public ExecutionActionPreference? InvariantCulture { get; set; }
 
-        /// <summary>
-        /// Determines how the initial session state for executing PowerShell code is created.
-        /// The default is <see cref="SessionState.BuiltIn"/>.
-        /// </summary>
-        [DefaultValue(null)]
-        public SessionState? InitialSessionState { get; set; }
+    /// <summary>
+    /// Determines how to report objects that are not processed by any rule.
+    /// By default, a warning is generated.
+    /// When set to Error, an error is thrown.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    [DefaultValue(null)]
+    public ExecutionActionPreference? UnprocessedObject { get; set; }
 
-        /// <summary>
-        /// Determines how to handle expired suppression groups.
-        /// Regardless of the value, an expired suppression group will be ignored.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        [DefaultValue(null)]
-        public ExecutionActionPreference? SuppressionGroupExpired { get; set; }
+    #region IExecutionOption
 
-        /// <summary>
-        /// Determines how to handle rules that are excluded.
-        /// By default, excluded rules do not generated any output.
-        /// When set to Error, an error is thrown.
-        /// When set to Warn, a warning is generated.
-        /// When set to Debug, a message is written to the debug log.
-        /// </summary>
-        [DefaultValue(null)]
-        public ExecutionActionPreference? RuleExcluded { get; set; }
+    ExecutionActionPreference IExecutionOption.DuplicateResourceId => DuplicateResourceId ?? DEFAULT_DUPLICATERESOURCEID;
 
-        /// <summary>
-        /// Determines how to handle rules that are suppressed.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        [DefaultValue(null)]
-        public ExecutionActionPreference? RuleSuppressed { get; set; }
+    HashAlgorithm IExecutionOption.HashAlgorithm => HashAlgorithm ?? DEFAULT_HASHALGORITHM;
 
-        /// <summary>
-        /// Determines how to handle when an alias to a resource is used.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        [DefaultValue(null)]
-        public ExecutionActionPreference? AliasReference { get; set; }
+    LanguageMode IExecutionOption.LanguageMode => LanguageMode ?? DEFAULT_LANGUAGEMODE;
 
-        /// <summary>
-        /// Determines how to handle rules that generate inconclusive results.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        [DefaultValue(null)]
-        public ExecutionActionPreference? RuleInconclusive { get; set; }
+    SessionState IExecutionOption.InitialSessionState => InitialSessionState ?? DEFAULT_INITIALSESSIONSTATE;
 
-        /// <summary>
-        /// Determines how to report when an invariant culture is used.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        [DefaultValue(null)]
-        public ExecutionActionPreference? InvariantCulture { get; set; }
+    ExecutionActionPreference IExecutionOption.SuppressionGroupExpired => SuppressionGroupExpired ?? DEFAULT_SUPPRESSIONGROUPEXPIRED;
 
-        /// <summary>
-        /// Determines how to report objects that are not processed by any rule.
-        /// By default, a warning is generated.
-        /// When set to Error, an error is thrown.
-        /// When set to Debug, a message is written to the debug log.
-        /// When set to Ignore, no output will be displayed.
-        /// </summary>
-        [DefaultValue(null)]
-        public ExecutionActionPreference? UnprocessedObject { get; set; }
+    ExecutionActionPreference IExecutionOption.RuleExcluded => RuleExcluded ?? DEFAULT_RULEEXCLUDED;
 
-        #region IExecutionOption
+    ExecutionActionPreference IExecutionOption.RuleSuppressed => RuleSuppressed ?? DEFAULT_RULESUPPRESSED;
 
-        ExecutionActionPreference IExecutionOption.DuplicateResourceId => DuplicateResourceId ?? DEFAULT_DUPLICATERESOURCEID;
+    ExecutionActionPreference IExecutionOption.AliasReference => AliasReference ?? DEFAULT_ALIASREFERENCE;
 
-        HashAlgorithm IExecutionOption.HashAlgorithm => HashAlgorithm ?? DEFAULT_HASHALGORITHM;
+    ExecutionActionPreference IExecutionOption.RuleInconclusive => RuleInconclusive ?? DEFAULT_RULEINCONCLUSIVE;
 
-        LanguageMode IExecutionOption.LanguageMode => LanguageMode ?? DEFAULT_LANGUAGEMODE;
+    ExecutionActionPreference IExecutionOption.InvariantCulture => InvariantCulture ?? DEFAULT_INVARIANTCULTURE;
 
-        SessionState IExecutionOption.InitialSessionState => InitialSessionState ?? DEFAULT_INITIALSESSIONSTATE;
+    ExecutionActionPreference IExecutionOption.UnprocessedObject => UnprocessedObject ?? DEFAULT_UNPROCESSEDOBJECT;
 
-        ExecutionActionPreference IExecutionOption.SuppressionGroupExpired => SuppressionGroupExpired ?? DEFAULT_SUPPRESSIONGROUPEXPIRED;
+    #endregion IExecutionOption
 
-        ExecutionActionPreference IExecutionOption.RuleExcluded => RuleExcluded ?? DEFAULT_RULEEXCLUDED;
+    /// <summary>
+    /// Load from environment variables.
+    /// </summary>
+    internal void Load()
+    {
+        if (Environment.TryEnum("PSRULE_EXECUTION_HASHALGORITHM", out HashAlgorithm hashAlgorithm))
+            HashAlgorithm = hashAlgorithm;
 
-        ExecutionActionPreference IExecutionOption.RuleSuppressed => RuleSuppressed ?? DEFAULT_RULESUPPRESSED;
+        if (Environment.TryEnum("PSRULE_EXECUTION_DUPLICATERESOURCEID", out ExecutionActionPreference duplicateResourceId))
+            DuplicateResourceId = duplicateResourceId;
 
-        ExecutionActionPreference IExecutionOption.AliasReference => AliasReference ?? DEFAULT_ALIASREFERENCE;
+        if (Environment.TryEnum("PSRULE_EXECUTION_LANGUAGEMODE", out LanguageMode languageMode))
+            LanguageMode = languageMode;
 
-        ExecutionActionPreference IExecutionOption.RuleInconclusive => RuleInconclusive ?? DEFAULT_RULEINCONCLUSIVE;
+        if (Environment.TryEnum("PSRULE_EXECUTION_INITIALSESSIONSTATE", out SessionState initialSessionState))
+            InitialSessionState = initialSessionState;
 
-        ExecutionActionPreference IExecutionOption.InvariantCulture => InvariantCulture ?? DEFAULT_INVARIANTCULTURE;
+        if (Environment.TryEnum("PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED", out ExecutionActionPreference suppressionGroupExpired))
+            SuppressionGroupExpired = suppressionGroupExpired;
 
-        ExecutionActionPreference IExecutionOption.UnprocessedObject => UnprocessedObject ?? DEFAULT_UNPROCESSEDOBJECT;
+        if (Environment.TryEnum("PSRULE_EXECUTION_RULEEXCLUDED", out ExecutionActionPreference ruleExcluded))
+            RuleExcluded = ruleExcluded;
 
-        #endregion IExecutionOption
+        if (Environment.TryEnum("PSRULE_EXECUTION_RULESUPPRESSED", out ExecutionActionPreference ruleSuppressed))
+            RuleSuppressed = ruleSuppressed;
 
-        /// <summary>
-        /// Load from environment variables.
-        /// </summary>
-        internal void Load()
-        {
-            if (Environment.TryEnum("PSRULE_EXECUTION_HASHALGORITHM", out HashAlgorithm hashAlgorithm))
-                HashAlgorithm = hashAlgorithm;
+        if (Environment.TryEnum("PSRULE_EXECUTION_ALIASREFERENCE", out ExecutionActionPreference aliasReference))
+            AliasReference = aliasReference;
 
-            if (Environment.TryEnum("PSRULE_EXECUTION_DUPLICATERESOURCEID", out ExecutionActionPreference duplicateResourceId))
-                DuplicateResourceId = duplicateResourceId;
+        if (Environment.TryEnum("PSRULE_EXECUTION_RULEINCONCLUSIVE", out ExecutionActionPreference ruleInconclusive))
+            RuleInconclusive = ruleInconclusive;
 
-            if (Environment.TryEnum("PSRULE_EXECUTION_LANGUAGEMODE", out LanguageMode languageMode))
-                LanguageMode = languageMode;
+        if (Environment.TryEnum("PSRULE_EXECUTION_INVARIANTCULTURE", out ExecutionActionPreference invariantCulture))
+            InvariantCulture = invariantCulture;
 
-            if (Environment.TryEnum("PSRULE_EXECUTION_INITIALSESSIONSTATE", out SessionState initialSessionState))
-                InitialSessionState = initialSessionState;
+        if (Environment.TryEnum("PSRULE_EXECUTION_UNPROCESSEDOBJECT", out ExecutionActionPreference unprocessedObject))
+            UnprocessedObject = unprocessedObject;
+    }
 
-            if (Environment.TryEnum("PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED", out ExecutionActionPreference suppressionGroupExpired))
-                SuppressionGroupExpired = suppressionGroupExpired;
+    /// <summary>
+    /// Load from dictionary.
+    /// </summary>
+    internal void Load(Dictionary<string, object> index)
+    {
+        if (index.TryPopEnum("Execution.HashAlgorithm", out HashAlgorithm hashAlgorithm))
+            HashAlgorithm = hashAlgorithm;
 
-            if (Environment.TryEnum("PSRULE_EXECUTION_RULEEXCLUDED", out ExecutionActionPreference ruleExcluded))
-                RuleExcluded = ruleExcluded;
+        if (index.TryPopEnum("Execution.DuplicateResourceId", out ExecutionActionPreference duplicateResourceId))
+            DuplicateResourceId = duplicateResourceId;
 
-            if (Environment.TryEnum("PSRULE_EXECUTION_RULESUPPRESSED", out ExecutionActionPreference ruleSuppressed))
-                RuleSuppressed = ruleSuppressed;
+        if (index.TryPopEnum("Execution.LanguageMode", out LanguageMode languageMode))
+            LanguageMode = languageMode;
 
-            if (Environment.TryEnum("PSRULE_EXECUTION_ALIASREFERENCE", out ExecutionActionPreference aliasReference))
-                AliasReference = aliasReference;
+        if (index.TryPopEnum("Execution.InitialSessionState", out SessionState initialSessionState))
+            InitialSessionState = initialSessionState;
 
-            if (Environment.TryEnum("PSRULE_EXECUTION_RULEINCONCLUSIVE", out ExecutionActionPreference ruleInconclusive))
-                RuleInconclusive = ruleInconclusive;
+        if (index.TryPopEnum("Execution.SuppressionGroupExpired", out ExecutionActionPreference suppressionGroupExpired))
+            SuppressionGroupExpired = suppressionGroupExpired;
 
-            if (Environment.TryEnum("PSRULE_EXECUTION_INVARIANTCULTURE", out ExecutionActionPreference invariantCulture))
-                InvariantCulture = invariantCulture;
+        if (index.TryPopEnum("Execution.RuleExcluded", out ExecutionActionPreference ruleExcluded))
+            RuleExcluded = ruleExcluded;
 
-            if (Environment.TryEnum("PSRULE_EXECUTION_UNPROCESSEDOBJECT", out ExecutionActionPreference unprocessedObject))
-                UnprocessedObject = unprocessedObject;
-        }
+        if (index.TryPopEnum("Execution.RuleSuppressed", out ExecutionActionPreference ruleSuppressed))
+            RuleSuppressed = ruleSuppressed;
 
-        /// <summary>
-        /// Load from dictionary.
-        /// </summary>
-        internal void Load(Dictionary<string, object> index)
-        {
-            if (index.TryPopEnum("Execution.HashAlgorithm", out HashAlgorithm hashAlgorithm))
-                HashAlgorithm = hashAlgorithm;
+        if (index.TryPopEnum("Execution.AliasReference", out ExecutionActionPreference aliasReference))
+            AliasReference = aliasReference;
 
-            if (index.TryPopEnum("Execution.DuplicateResourceId", out ExecutionActionPreference duplicateResourceId))
-                DuplicateResourceId = duplicateResourceId;
+        if (index.TryPopEnum("Execution.RuleInconclusive", out ExecutionActionPreference ruleInconclusive))
+            RuleInconclusive = ruleInconclusive;
 
-            if (index.TryPopEnum("Execution.LanguageMode", out LanguageMode languageMode))
-                LanguageMode = languageMode;
+        if (index.TryPopEnum("Execution.InvariantCulture", out ExecutionActionPreference invariantCulture))
+            InvariantCulture = invariantCulture;
 
-            if (index.TryPopEnum("Execution.InitialSessionState", out SessionState initialSessionState))
-                InitialSessionState = initialSessionState;
-
-            if (index.TryPopEnum("Execution.SuppressionGroupExpired", out ExecutionActionPreference suppressionGroupExpired))
-                SuppressionGroupExpired = suppressionGroupExpired;
-
-            if (index.TryPopEnum("Execution.RuleExcluded", out ExecutionActionPreference ruleExcluded))
-                RuleExcluded = ruleExcluded;
-
-            if (index.TryPopEnum("Execution.RuleSuppressed", out ExecutionActionPreference ruleSuppressed))
-                RuleSuppressed = ruleSuppressed;
-
-            if (index.TryPopEnum("Execution.AliasReference", out ExecutionActionPreference aliasReference))
-                AliasReference = aliasReference;
-
-            if (index.TryPopEnum("Execution.RuleInconclusive", out ExecutionActionPreference ruleInconclusive))
-                RuleInconclusive = ruleInconclusive;
-
-            if (index.TryPopEnum("Execution.InvariantCulture", out ExecutionActionPreference invariantCulture))
-                InvariantCulture = invariantCulture;
-
-            if (index.TryPopEnum("Execution.UnprocessedObject", out ExecutionActionPreference unprocessedObject))
-                UnprocessedObject = unprocessedObject;
-        }
+        if (index.TryPopEnum("Execution.UnprocessedObject", out ExecutionActionPreference unprocessedObject))
+            UnprocessedObject = unprocessedObject;
     }
 }
