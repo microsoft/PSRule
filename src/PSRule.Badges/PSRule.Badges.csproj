@@ -6,6 +6,7 @@
     <PackageId>Microsoft.PSRule.Badges</PackageId>
     <OutputType>Library</OutputType>
     <ProjectGuid>{309bed8b-4e60-4c42-a2b4-37a2e7ebef3f}</ProjectGuid>
+    <Nullable>enable</Nullable>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
@@ -20,6 +21,21 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Messages.Designer.cs">
+      <DependentUpon>Messages.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Messages.resx">
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

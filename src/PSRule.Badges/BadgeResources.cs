@@ -1,8 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Reflection;
 using Newtonsoft.Json;
+using PSRule.Badges.Resources;
 
 namespace PSRule.Badges;
 
@@ -13,8 +14,8 @@ internal static class BadgeResources
 {
     private const string DEFAULT_CULTURE_RESOURCE = "PSRule.Badges.Resources.en.json";
 
-    private static char[] _Char;
-    private static double[] _Width;
+    private static char[]? _Char;
+    private static double[]? _Width;
 
     /// <summary>
     /// Load pre-calculated widths for characters.
@@ -29,6 +30,9 @@ internal static class BadgeResources
         using var reader = new StreamReader(stream);
         var json = reader.ReadToEnd();
         var d = JsonConvert.DeserializeObject<object[][]>(json);
+        if (d == null)
+            throw new BadgeException(Messages.LoadException);
+
         _Char = new char[d.Length];
         _Width = new double[d.Length];
         for (var i = 0; i < d.Length; i++)
@@ -52,6 +56,8 @@ internal static class BadgeResources
     /// </summary>
     private static double Find(char c)
     {
+        if (_Char == null || _Width == null)  return 0d;
+
         var index = Array.BinarySearch(_Char, c);
         return index >= 0 ? _Width[index] : 0d;
     }
@@ -59,7 +65,7 @@ internal static class BadgeResources
     public static double Measure(string s)
     {
         var length = 0d;
-        for (var i = 0; i < s.Length; i++)
+        for (var i = 0; s != null && i < s.Length; i++)
             length += GetWidth(s[i]);
 
         return length;
