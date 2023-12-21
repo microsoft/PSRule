@@ -4,6 +4,7 @@
 using System.CommandLine.Invocation;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using Newtonsoft.Json;
 
 namespace PSRule.BuildTool
@@ -16,6 +17,7 @@ namespace PSRule.BuildTool
     /// <summary>
     /// Builds badge resources such as measuring characters.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     internal sealed class BadgeResource
     {
         public static void Build(BadgeResourceOption options, InvocationContext invocation)

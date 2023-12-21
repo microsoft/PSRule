@@ -25,6 +25,7 @@ csharp_using_directive_placement = outside_namespace:suggestion
 csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
 dotnet_sort_system_directives_first = true
 dotnet_style_readonly_field = true:suggestion
+csharp_style_namespace_declarations = file_scoped:suggestion
 
 # License header
 file_header_template = Copyright (c) Microsoft Corporation.\nLicensed under the MIT License.

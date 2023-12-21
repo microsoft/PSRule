@@ -206,7 +206,7 @@ namespace PSRule.Pipeline
             }
             else
             {
-                return new TargetObject[] { new TargetObject(PSObject.AsPSObject(nestedObject), targetObject.Source) };
+                return new TargetObject[] { new(PSObject.AsPSObject(nestedObject), targetObject.Source) };
             }
         }
 

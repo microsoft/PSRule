@@ -116,16 +116,16 @@ namespace PSRule.Host
         /// </summary>
         private static readonly SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
         {
-            new SessionStateCmdletEntry("New-RuleDefinition", typeof(NewRuleDefinitionCommand), null),
-            new SessionStateCmdletEntry("Export-PSRuleConvention", typeof(ExportConventionCommand), null),
-            new SessionStateCmdletEntry("Write-Recommendation", typeof(WriteRecommendationCommand), null),
-            new SessionStateCmdletEntry("Write-Reason", typeof(WriteReasonCommand), null),
-            new SessionStateCmdletEntry("Assert-Exists", typeof(AssertExistsCommand), null),
-            new SessionStateCmdletEntry("Assert-Within", typeof(AssertWithinCommand), null),
-            new SessionStateCmdletEntry("Assert-Match", typeof(AssertMatchCommand), null),
-            new SessionStateCmdletEntry("Assert-TypeOf", typeof(AssertTypeOfCommand), null),
-            new SessionStateCmdletEntry("Assert-AllOf", typeof(AssertAllOfCommand), null),
-            new SessionStateCmdletEntry("Assert-AnyOf", typeof(AssertAnyOfCommand), null),
+            new("New-RuleDefinition", typeof(NewRuleDefinitionCommand), null),
+            new("Export-PSRuleConvention", typeof(ExportConventionCommand), null),
+            new("Write-Recommendation", typeof(WriteRecommendationCommand), null),
+            new("Write-Reason", typeof(WriteReasonCommand), null),
+            new("Assert-Exists", typeof(AssertExistsCommand), null),
+            new("Assert-Within", typeof(AssertWithinCommand), null),
+            new("Assert-Match", typeof(AssertMatchCommand), null),
+            new("Assert-TypeOf", typeof(AssertTypeOfCommand), null),
+            new("Assert-AllOf", typeof(AssertAllOfCommand), null),
+            new("Assert-AnyOf", typeof(AssertAnyOfCommand), null),
         };
 
         /// <summary>
@@ -133,15 +133,15 @@ namespace PSRule.Host
         /// </summary>
         private static readonly SessionStateAliasEntry[] BuiltInAliases = new SessionStateAliasEntry[]
         {
-            new SessionStateAliasEntry(LanguageKeywords.Rule, "New-RuleDefinition", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry(LanguageKeywords.Recommend, "Write-Recommendation", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry(LanguageKeywords.Reason, "Write-Reason", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry(LanguageKeywords.Exists, "Assert-Exists", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry(LanguageKeywords.Within, "Assert-Within", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry(LanguageKeywords.Match, "Assert-Match", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry(LanguageKeywords.TypeOf, "Assert-TypeOf", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry(LanguageKeywords.AllOf, "Assert-AllOf", string.Empty, ScopedItemOptions.ReadOnly),
-            new SessionStateAliasEntry(LanguageKeywords.AnyOf, "Assert-AnyOf", string.Empty, ScopedItemOptions.ReadOnly),
+            new(LanguageKeywords.Rule, "New-RuleDefinition", string.Empty, ScopedItemOptions.ReadOnly),
+            new(LanguageKeywords.Recommend, "Write-Recommendation", string.Empty, ScopedItemOptions.ReadOnly),
+            new(LanguageKeywords.Reason, "Write-Reason", string.Empty, ScopedItemOptions.ReadOnly),
+            new(LanguageKeywords.Exists, "Assert-Exists", string.Empty, ScopedItemOptions.ReadOnly),
+            new(LanguageKeywords.Within, "Assert-Within", string.Empty, ScopedItemOptions.ReadOnly),
+            new(LanguageKeywords.Match, "Assert-Match", string.Empty, ScopedItemOptions.ReadOnly),
+            new(LanguageKeywords.TypeOf, "Assert-TypeOf", string.Empty, ScopedItemOptions.ReadOnly),
+            new(LanguageKeywords.AllOf, "Assert-AllOf", string.Empty, ScopedItemOptions.ReadOnly),
+            new(LanguageKeywords.AnyOf, "Assert-AnyOf", string.Empty, ScopedItemOptions.ReadOnly),
         };
 
         /// <summary>

@@ -452,7 +452,7 @@ namespace PSRule.Pipeline
                 throw new FileNotFoundException(PSRuleResources.SourceNotFound, path);
 
             helpPath ??= Path.GetDirectoryName(path);
-            return new SourceFile[] { new SourceFile(path, null, GetSourceType(path), helpPath) };
+            return new SourceFile[] { new(path, null, GetSourceType(path), helpPath) };
         }
 
         private static SourceFile[] IncludePath(string path, string helpPath, string moduleName, bool excludeDefaultRulePath)

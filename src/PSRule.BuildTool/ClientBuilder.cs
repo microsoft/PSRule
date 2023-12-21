@@ -18,8 +18,15 @@ namespace PSRule.BuildTool
             return new ClientBuilder(cmd);
         }
 
+        /// <summary>
+        /// Add badge resource.
+        /// This API is not supported on operating systems other than Windows 6.1 or later.
+        /// </summary>
         public ClientBuilder AddBadgeResource()
         {
+            if (!OperatingSystem.IsWindowsVersionAtLeast(6, 1))
+                return this;
+
             var cmd = new Command("badge", CmdStrings.Badge_Description);
             cmd.AddOption(new Option<string>(
                 new string[] { "--output-path" }

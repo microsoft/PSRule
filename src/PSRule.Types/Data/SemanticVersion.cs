@@ -88,7 +88,7 @@ namespace PSRule.Data
         public sealed class VersionConstraint : ISemanticVersionConstraint
         {
             private List<ConstraintExpression>? _Constraints;
-            private string _Value;
+            private readonly string _Value;
 
             internal VersionConstraint(string value)
             {

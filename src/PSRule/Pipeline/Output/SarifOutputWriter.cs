@@ -51,8 +51,7 @@ namespace PSRule.Pipeline.Output
             var repository = option.Url;
             return new List<VersionControlDetails>()
             {
-                new VersionControlDetails
-                {
+                new() {
                     RepositoryUri = !string.IsNullOrEmpty(repository) ? new Uri(repository) : null,
                     RevisionId = !string.IsNullOrEmpty(repository) && GitHelper.TryRevision(out var revision) ? revision : null,
                     Branch = !string.IsNullOrEmpty(repository) && GitHelper.TryHeadBranch(out var branch) ? branch : null,

@@ -94,8 +94,8 @@ namespace PSRule
 
             var links = new List<Link>
             {
-                new Link { Name = "PSRule", Uri = "https://github.com/Microsoft/PSRule" },
-                new Link { Name = "Stable tags", Uri = "https://docs.microsoft.com/en-us/azure/container-registry/container-registry-image-tag-version#stable-tags" }
+                new() { Name = "PSRule", Uri = "https://github.com/Microsoft/PSRule" },
+                new() { Name = "Stable tags", Uri = "https://docs.microsoft.com/en-us/azure/container-registry/container-registry-image-tag-version#stable-tags" }
             };
 
             var result = new RuleDocument(name: "Use specific tags")
@@ -132,8 +132,8 @@ The latest tag automatically uses imagePullPolicy: Always instead of the default
 
             var links = new List<Link>
             {
-                new Link { Name = "Uso de la autenticación basada en identidad", Uri = "https://docs.microsoft.com/azure/architecture/framework/security/design-identity-authentication#use-identity-based-authentication" },
-                new Link { Name = "Autenticación con un registro de contenedor de Azure", Uri = "https://docs.microsoft.com/azure/container-registry/container-registry-authentication?tabs=azure-cli" }
+                new() { Name = "Uso de la autenticación basada en identidad", Uri = "https://docs.microsoft.com/azure/architecture/framework/security/design-identity-authentication#use-identity-based-authentication" },
+                new() { Name = "Autenticación con un registro de contenedor de Azure", Uri = "https://docs.microsoft.com/azure/container-registry/container-registry-authentication?tabs=azure-cli" }
             };
 
             var result = new RuleDocument(name: "Deshabilitar el usuario adminstrador para ACR")
