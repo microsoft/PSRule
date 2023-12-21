@@ -10,7 +10,7 @@ namespace PSRule.Tool;
 
 internal sealed class ClientBuilder
 {
-    private static readonly string _Version = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+    private static readonly string? _Version = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
 
     private readonly Option<string> _Option;
     private readonly Option<bool> _Verbose;
@@ -62,11 +62,11 @@ internal sealed class ClientBuilder
         );
         _Baseline = new Option<string>(
             new string[] { "--baseline" },
-            CmdStrings.Analyze_Baseline_Description
+            CmdStrings.Run_Baseline_Description
         );
         _Outcome = new Option<string[]>(
             new string[] { "--outcome" },
-            description: CmdStrings.Analyze_Outcome_Description
+            description: CmdStrings.Run_Outcome_Description
         ).FromAmong("Pass", "Fail", "Error", "Processed", "Problem");
         _Outcome.Arity = ArgumentArity.ZeroOrMore;
 
@@ -102,15 +102,15 @@ internal sealed class ClientBuilder
             Name = "ps-rule"
         };
         var builder = new ClientBuilder(cmd);
-        builder.AddAnalyze();
+        builder.AddRun();
         builder.AddModule();
         builder.AddRestore();
         return builder.Command;
     }
 
-    private void AddAnalyze()
+    private void AddRun()
     {
-        var cmd = new Command("analyze", CmdStrings.Analyze_Description);
+        var cmd = new Command("run", CmdStrings.Run_Description);
         cmd.AddOption(_Path);
         cmd.AddOption(_OutputPath);
         cmd.AddOption(_OutputFormat);
@@ -120,7 +120,7 @@ internal sealed class ClientBuilder
         cmd.AddOption(_Outcome);
         cmd.SetHandler((invocation) =>
         {
-            var option = new AnalyzerOptions
+            var option = new RunOptions
             {
                 Path = invocation.ParseResult.GetValueForOption(_Path),
                 InputPath = invocation.ParseResult.GetValueForOption(_InputPath),
@@ -247,7 +247,7 @@ internal sealed class ClientBuilder
     /// <summary>
     /// Convert string arguments to flags of <see cref="RuleOutcome"/>.
     /// </summary>
-    private static RuleOutcome? ParseOutcome(string[] s)
+    private static RuleOutcome? ParseOutcome(string[]? s)
     {
         var result = RuleOutcome.None;
         for (var i = 0; s != null && i < s.Length; i++)

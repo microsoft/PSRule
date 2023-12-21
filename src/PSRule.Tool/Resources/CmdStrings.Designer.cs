@@ -61,33 +61,6 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specific baseline to use..
-        /// </summary>
-        internal static string Analyze_Baseline_Description {
-            get {
-                return ResourceManager.GetString("Analyze_Baseline_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Run rule analysis..
-        /// </summary>
-        internal static string Analyze_Description {
-            get {
-                return ResourceManager.GetString("Analyze_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Specifies the rule results to show in output. By default, Pass/ Fail/ Error results are shown..
-        /// </summary>
-        internal static string Analyze_Outcome_Description {
-            get {
-                return ResourceManager.GetString("Analyze_Outcome_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to PSRule CLI.
         /// </summary>
         internal static string Cmd_Description {
@@ -228,6 +201,33 @@ namespace PSRule.Tool.Resources {
         internal static string Restore_Force_Description {
             get {
                 return ResourceManager.GetString("Restore_Force_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of a specific baseline to use..
+        /// </summary>
+        internal static string Run_Baseline_Description {
+            get {
+                return ResourceManager.GetString("Run_Baseline_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run rule analysis..
+        /// </summary>
+        internal static string Run_Description {
+            get {
+                return ResourceManager.GetString("Run_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specifies the rule results to show in output. By default, Pass/ Fail/ Error results are shown..
+        /// </summary>
+        internal static string Run_Outcome_Description {
+            get {
+                return ResourceManager.GetString("Run_Outcome_Description", resourceCulture);
             }
         }
     }

@@ -5,9 +5,9 @@ namespace PSRule.Tool;
 
 internal sealed class RestoreOptions
 {
-    public string[] Path { get; set; }
+    public string[]? Path { get; set; }
 
-    public string Option { get; set; }
+    public string? Option { get; set; }
 
     public bool Verbose { get; set; }
 
