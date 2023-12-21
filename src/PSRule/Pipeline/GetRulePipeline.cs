@@ -12,7 +12,7 @@ internal sealed class GetRulePipeline : RulePipeline, IPipeline
     internal GetRulePipeline(
         PipelineContext pipeline,
         Source[] source,
-        PipelineReader reader,
+        PipelineInputStream reader,
         IPipelineWriter writer,
         bool includeDependencies
     )

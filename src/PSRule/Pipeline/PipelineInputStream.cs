@@ -6,14 +6,17 @@ using System.Management.Automation;
 
 namespace PSRule.Pipeline;
 
-internal sealed class PipelineReader
+/// <summary>
+/// A stream of input objects that will be evaluated.
+/// </summary>
+internal sealed class PipelineInputStream
 {
     private readonly VisitTargetObject _Input;
     private readonly InputPathBuilder _InputPath;
     private readonly PathFilter _InputFilter;
     private readonly ConcurrentQueue<TargetObject> _Queue;
 
-    public PipelineReader(VisitTargetObject input, InputPathBuilder inputPath, PathFilter inputFilter)
+    public PipelineInputStream(VisitTargetObject input, InputPathBuilder inputPath, PathFilter inputFilter)
     {
         _Input = input;
         _InputPath = inputPath;
@@ -25,6 +28,12 @@ internal sealed class PipelineReader
 
     public bool IsEmpty => _Queue.IsEmpty;
 
+    /// <summary>
+    /// Add a new object into the stream.
+    /// </summary>
+    /// <param name="sourceObject">An object to process.</param>
+    /// <param name="targetType">A pre-bound type.</param>
+    /// <param name="skipExpansion">Determines if expansion is skipped.</param>
     public void Enqueue(PSObject sourceObject, string targetType = null, bool skipExpansion = false)
     {
         if (sourceObject == null)
@@ -46,6 +55,9 @@ internal sealed class PipelineReader
             EnqueueInternal(item);
     }
 
+    /// <summary>
+    /// Get the next object in the stream.
+    /// </summary>
     public bool TryDequeue(out TargetObject sourceObject)
     {
         return _Queue.TryDequeue(out sourceObject);

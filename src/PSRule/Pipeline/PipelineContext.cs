@@ -53,7 +53,7 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
     internal readonly Dictionary<string, SelectorVisitor> Selector;
     internal readonly List<SuppressionGroupVisitor> SuppressionGroup;
     internal readonly IHostContext HostContext;
-    internal readonly PipelineReader Reader;
+    internal readonly PipelineInputStream Reader;
     internal readonly BindTargetMethod BindTargetName;
     internal readonly BindTargetMethod BindTargetType;
     internal readonly BindTargetMethod BindField;
@@ -65,7 +65,7 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
 
     public System.Security.Cryptography.HashAlgorithm ObjectHashAlgorithm { get; }
 
-    private PipelineContext(PSRuleOption option, IHostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
+    private PipelineContext(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
     {
         _OptionBuilder = optionBuilder;
         Option = option;
@@ -90,7 +90,7 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
         _DefaultOptionContext = _OptionBuilder?.Build(null);
     }
 
-    public static PipelineContext New(PSRuleOption option, IHostContext hostContext, PipelineReader reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
+    public static PipelineContext New(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
     {
         var context = new PipelineContext(option, hostContext, reader, bindTargetName, bindTargetType, bindField, optionBuilder, unresolved);
         CurrentThread = context;

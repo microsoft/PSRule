@@ -468,9 +468,9 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         return baselines[0];
     }
 
-    protected virtual PipelineReader PrepareReader()
+    protected virtual PipelineInputStream PrepareReader()
     {
-        return new PipelineReader(null, null, GetInputObjectSourceFilter());
+        return new PipelineInputStream(null, null, GetInputObjectSourceFilter());
     }
 
     protected virtual PipelineWriter PrepareWriter()

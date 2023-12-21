@@ -176,7 +176,7 @@ internal sealed class GetRuleHelpPipelineBuilder : PipelineBuilderBase, IHelpPip
 
 internal sealed class GetRuleHelpPipeline : RulePipeline, IPipeline
 {
-    internal GetRuleHelpPipeline(PipelineContext pipeline, Source[] source, PipelineReader reader, IPipelineWriter writer)
+    internal GetRuleHelpPipeline(PipelineContext pipeline, Source[] source, PipelineInputStream reader, IPipelineWriter writer)
         : base(pipeline, source, reader, writer)
     {
         // Do nothing
