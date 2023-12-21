@@ -149,7 +149,7 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
         }
     }
 
-    protected override PipelineReader PrepareReader()
+    protected override PipelineInputStream PrepareReader()
     {
         if (!string.IsNullOrEmpty(Option.Input.ObjectPath))
         {
@@ -201,7 +201,7 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
                 return PipelineReceiverActions.DetectInputFormat(sourceObject, next);
             });
         }
-        return new PipelineReader(VisitTargetObject, _InputPath, GetInputObjectSourceFilter());
+        return new PipelineInputStream(VisitTargetObject, _InputPath, GetInputObjectSourceFilter());
     }
 }
 

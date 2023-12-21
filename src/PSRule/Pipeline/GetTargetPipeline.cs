@@ -72,7 +72,7 @@ internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTarget
     }
 
     /// <inheritdoc/>
-    protected override PipelineReader PrepareReader()
+    protected override PipelineInputStream PrepareReader()
     {
         if (!string.IsNullOrEmpty(Option.Input.ObjectPath))
         {
@@ -124,7 +124,7 @@ internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTarget
                 return PipelineReceiverActions.DetectInputFormat(sourceObject, next);
             });
         }
-        return new PipelineReader(VisitTargetObject, _InputPath, GetInputObjectSourceFilter());
+        return new PipelineInputStream(VisitTargetObject, _InputPath, GetInputObjectSourceFilter());
     }
 }
 
@@ -133,7 +133,7 @@ internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTarget
 /// </summary>
 internal sealed class GetTargetPipeline : RulePipeline
 {
-    internal GetTargetPipeline(PipelineContext context, PipelineReader reader, IPipelineWriter writer)
+    internal GetTargetPipeline(PipelineContext context, PipelineInputStream reader, IPipelineWriter writer)
         : base(context, null, reader, writer) { }
 
     public override void Process(PSObject sourceObject)

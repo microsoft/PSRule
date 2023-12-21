@@ -14,7 +14,7 @@ internal sealed class GetBaselinePipeline : RulePipeline
     internal GetBaselinePipeline(
         PipelineContext pipeline,
         Source[] source,
-        PipelineReader reader,
+        PipelineInputStream reader,
         IPipelineWriter writer,
         IResourceFilter filter
     )
