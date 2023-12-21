@@ -186,7 +186,7 @@ To do this you have two options:
 1. Exclude files from analysis &mdash; Configure the [Input.PathIgnore][9] option.
 2. Disable the warning entirely &mdash; Set the [Execution.UnprocessedObject][10] option to `Ignore`.
 
-  [10]: concepts/PSRule/en-US/about_PSRule_Options/#executionunprocessedobject
+  [10]: concepts/PSRule/en-US/about_PSRule_Options.md#executionunprocessedobject
 
 ## How do I layer on custom rules on top of an existing module?
 

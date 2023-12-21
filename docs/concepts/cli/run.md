@@ -1,4 +1,4 @@
-# `ps-rule run`
+# ps-rule run
 
 Run rule analysis.
 

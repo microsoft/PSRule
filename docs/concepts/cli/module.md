@@ -1,5 +1,5 @@
 
-# `ps-rule module`
+# ps-rule module
 
 ## `module add`
 
