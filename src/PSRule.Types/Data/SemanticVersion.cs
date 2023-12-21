@@ -450,7 +450,7 @@ public static class SemanticVersion
         /// <summary>
         /// Compare the version against another version.
         /// </summary>
-        public int CompareTo(Version other)
+        public int CompareTo(Version? other)
         {
             if (other == null)
                 return 1;

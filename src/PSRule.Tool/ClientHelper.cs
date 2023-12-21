@@ -44,7 +44,7 @@ internal sealed class ClientHelper
     private const string FIELD_PSDATA = "PSData";
     private const string PRERELEASE_SEPARATOR = "-";
 
-    public static int RunAnalyze(AnalyzerOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
+    public static int RunAnalyze(RunOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
     {
         var exitCode = 0;
         var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
@@ -60,7 +60,7 @@ internal sealed class ClientHelper
             option.Output.Outcome = operationOptions.Outcome;
 
         // Build command
-        var builder = CommandLineBuilder.Assert(operationOptions.Module, option, host, file);
+        var builder = CommandLineBuilder.Assert(operationOptions.Module ?? [], option, host, file);
         builder.Baseline(BaselineOption.FromString(operationOptions.Baseline));
         builder.InputPath(inputPath);
         builder.UnblockPublisher(PUBLISHER);
@@ -123,6 +123,8 @@ internal sealed class ClientHelper
     public static int AddModule(ModuleOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
     {
         var exitCode = 0;
+        if (operationOptions.Module == null || operationOptions.Module.Length == 0) return exitCode;
+        
         var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
         var option = GetOption(host);
         var requires = option.Requires.ToDictionary();
@@ -142,7 +144,7 @@ internal sealed class ClientHelper
                 // Check if the target version is valid with the constraint if set.
                 if (targetVersion != null && moduleConstraint != null && !moduleConstraint.Constraint.Equals(targetVersion))
                 {
-                    invocation.LogError(Messages.Error_503, operationOptions.Version);
+                    invocation.LogError(Messages.Error_503, operationOptions.Version!);
                     return ERROR_MODULE_ADD_VIOLATES_CONSTRAINT;
                 }
 
@@ -180,6 +182,8 @@ internal sealed class ClientHelper
     public static int RemoveModule(ModuleOptions operationOptions, ClientContext clientContext, InvocationContext invocation)
     {
         var exitCode = 0;
+        if (operationOptions.Module == null || operationOptions.Module.Length == 0) return exitCode;
+
         var host = new ClientHost(invocation, operationOptions.Verbose, operationOptions.Debug);
         var file = LockFile.Read(null);
 
@@ -237,7 +241,7 @@ internal sealed class ClientHelper
         return exitCode;
     }
 
-    private static bool IsInstalled(PowerShell pwsh, string module, SemanticVersion.Version targetVersion, out SemanticVersion.Version installedVersion)
+    private static bool IsInstalled(PowerShell pwsh, string module, SemanticVersion.Version targetVersion, out SemanticVersion.Version? installedVersion)
     {
         pwsh.Commands.Clear();
         pwsh.Streams.ClearStreams();
@@ -250,7 +254,9 @@ internal sealed class ClientHelper
         foreach (var version in versions)
         {
             if (TryModuleInfo(version, out var versionString) &&
+                versionString != null &&
                 SemanticVersion.TryParseVersion(versionString, out var v) &&
+                v != null &&
                 (targetVersion == null || targetVersion.Equals(v)) &&
                 v.CompareTo(installedVersion) > 0)
                 installedVersion = v;
@@ -258,20 +264,20 @@ internal sealed class ClientHelper
         return installedVersion != null;
     }
 
-    private static bool TryModuleInfo(PSObject value, out string version)
+    private static bool TryModuleInfo(PSObject value, out string? version)
     {
         version = null;
         if (value?.BaseObject is not PSModuleInfo info)
             return false;
 
         version = info.Version?.ToString();
-        if (TryPrivateData(info, FIELD_PSDATA, out var psData) && psData.ContainsKey(FIELD_PRERELEASE))
-            version = string.Concat(version, PRERELEASE_SEPARATOR, psData[FIELD_PRERELEASE].ToString());
+        if (TryPrivateData(info, FIELD_PSDATA, out var psData) && psData != null && psData.ContainsKey(FIELD_PRERELEASE))
+            version = string.Concat(version, PRERELEASE_SEPARATOR, psData[FIELD_PRERELEASE]?.ToString());
 
         return version != null;
     }
 
-    private static bool TryPrivateData(PSModuleInfo info, string propertyName, out Hashtable value)
+    private static bool TryPrivateData(PSModuleInfo info, string propertyName, out Hashtable? value)
     {
         value = null;
         if (info.PrivateData is Hashtable privateData && privateData.ContainsKey(propertyName) && privateData[propertyName] is Hashtable data)
@@ -282,7 +288,7 @@ internal sealed class ClientHelper
         return false;
     }
 
-    private static SemanticVersion.Version FindVersion(PowerShell pwsh, string module, ModuleConstraint constraint, SemanticVersion.Version targetVersion, SemanticVersion.Version installedVersion)
+    private static SemanticVersion.Version? FindVersion(PowerShell pwsh, string module, ModuleConstraint? constraint, SemanticVersion.Version? targetVersion, SemanticVersion.Version? installedVersion)
     {
         pwsh.Commands.Clear();
         pwsh.Streams.ClearStreams();
@@ -291,11 +297,12 @@ internal sealed class ClientHelper
             .AddParameter("AllVersions");
 
         var versions = pwsh.Invoke();
-        SemanticVersion.Version result = null;
+        SemanticVersion.Version? result = null;
         foreach (var version in versions)
         {
             if (version.Properties[PARAM_VERSION].Value is string versionString &&
                 SemanticVersion.TryParseVersion(versionString, out var v) &&
+                v != null &&
                 (constraint == null || constraint.Constraint.Equals(v)) &&
                 (targetVersion == null || targetVersion.Equals(v)) &&
                 v.CompareTo(result) > 0 &&

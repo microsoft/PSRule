@@ -5,6 +5,9 @@
     <PackageId>Microsoft.PSRule.Tool</PackageId>
     <RootNamespace>PSRule.Tool</RootNamespace>
     <OutputType>Exe</OutputType>
+    <ProjectGuid>{bddbfdb8-614f-4b8a-930c-dcb60144598c}</ProjectGuid>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
     <TargetFramework>net7.0</TargetFramework>
     <StartupObject>PSRule.Tool.Program</StartupObject>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>

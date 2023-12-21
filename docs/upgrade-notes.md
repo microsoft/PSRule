@@ -42,6 +42,16 @@ We recommend upgrading to PowerShell 7.3 or later.
 At the time of writing, PowerShell 7.3 is the most recent version of PowerShell.
 PowerShell 7.4 is expected, and PSRule v4 will aim to support the latest version of PowerShell as the minimum requirement.
 
+### Rename of analyze CLI command to run
+
+Previously in PSRule _v2.8.0_ to _v2.9.0, the CLI command used to run rules was `analyze`.
+From _v3.0.0_, the CLI command has been renamed to `run`.
+This change was made to simplify the CLI usage and reduce confusion that might occur between locales.
+
+For example: `ps-rule analyze` is now `ps-rule run`.
+
+The `run` command provides similar output to the `Assert-PSRule` cmdlet in PowerShell.
+
 ## Upgrading to v2.0.0
 
 ### Resources naming restrictions

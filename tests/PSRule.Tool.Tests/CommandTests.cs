@@ -11,13 +11,13 @@ namespace PSRule.Tool;
 public sealed class CommandTests
 {
     [Fact]
-    public async Task Analyze()
+    public async Task Run()
     {
         var console = new TestConsole();
         var builder = ClientBuilder.New();
-        Assert.NotNull(builder.Subcommands.FirstOrDefault(c => c.Name == "analyze"));
+        Assert.NotNull(builder.Subcommands.FirstOrDefault(c => c.Name == "run"));
 
-        await builder.InvokeAsync("analyze", console);
+        await builder.InvokeAsync("run", console);
         var output = console.Out.ToString();
 
         Assert.NotNull(output);

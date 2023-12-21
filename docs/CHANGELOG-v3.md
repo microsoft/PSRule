@@ -30,6 +30,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 What's changed since pre-release v3.0.0-B0093:
 
 - General improvements:
+  - **Breaking change:** Renamed `analyze` CLI command to `run` by @BernieWhite.
+    [#1713](https://github.com/microsoft/PSRule/issues/1713)
   - Added `--outcome` argument for CLI to support filtering output by @bernieWhite.
     [#1706](https://github.com/microsoft/PSRule/issues/1706)
 - Engineering:
