@@ -32,6 +32,8 @@ What's changed since pre-release v3.0.0-B0122:
 - Engineering:
   - Bump xunit to v2.6.4.
     [#1718](https://github.com/microsoft/PSRule/pull/1718)
+  - Bump xunit.runner.visualstudio to v2.5.6.
+    [#1717](https://github.com/microsoft/PSRule/pull/1717)
 
 ## v3.0.0-B0122 (pre-release)
 
