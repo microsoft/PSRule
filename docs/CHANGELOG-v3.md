@@ -27,6 +27,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0122:
+
+- Engineering:
+  - Bump xunit to v2.6.4.
+    [#1718](https://github.com/microsoft/PSRule/pull/1718)
+
 ## v3.0.0-B0122 (pre-release)
 
 What's changed since pre-release v3.0.0-B0093:
