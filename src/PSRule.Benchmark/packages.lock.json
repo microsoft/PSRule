@@ -4,11 +4,11 @@
     "net7.0": {
       "BenchmarkDotNet.Diagnostics.Windows": {
         "type": "Direct",
-        "requested": "[0.13.11, )",
-        "resolved": "0.13.11",
-        "contentHash": "L/x9mk8ERv0IC39xolg9NW4mY23AMqPlMClFYBuCW7lTNZxw62ASBuE/NxB6R0DfpGtICAQERdw2xqsa/rqg2g==",
+        "requested": "[0.13.12, )",
+        "resolved": "0.13.12",
+        "contentHash": "HdARbwcGFymgrSFoLVtuJaacyNW9WLuGljX0hsTarSO+80nI2OmbDS09R+I9kIeJ8Gn/1zJFjKgefmAlADhlww==",
         "dependencies": {
-          "BenchmarkDotNet": "0.13.11",
+          "BenchmarkDotNet": "0.13.12",
           "Microsoft.Diagnostics.Tracing.TraceEvent": "3.0.2"
         }
       },
@@ -91,10 +91,10 @@
       },
       "BenchmarkDotNet": {
         "type": "Transitive",
-        "resolved": "0.13.11",
-        "contentHash": "BSsrfesUFgrjy/MtlupiUrZKgcBCCKmFXmNaVQLrBCs0/2iE/qH1puN7lskTE9zM0+MdiCr09zKk6MXKmwmwxw==",
+        "resolved": "0.13.12",
+        "contentHash": "aKnzpUZJJfLBHG7zcfQZhCexZQKcJgElC8qcFUTXPMYFlVauJBobuOmtRnmrapqC2j7EjjZCsPxa3yLvFLx5/Q==",
         "dependencies": {
-          "BenchmarkDotNet.Annotations": "0.13.11",
+          "BenchmarkDotNet.Annotations": "0.13.12",
           "CommandLineParser": "2.9.1",
           "Gee.External.Capstone": "2.3.0",
           "Iced": "1.17.0",
@@ -108,8 +108,8 @@
       },
       "BenchmarkDotNet.Annotations": {
         "type": "Transitive",
-        "resolved": "0.13.11",
-        "contentHash": "JOX+Bhp+PNnAtu/er9iGiN8QRIrYzilxUcJbwrF8VYyTNE8r4jlewa17/FbW1G7Jp2JUZwVS1A8a0bGILKhikw=="
+        "resolved": "0.13.12",
+        "contentHash": "4zmFOOJqW1GrEP/t5XKgh97LH9r6zixGy2IA0JAaoTNNnZ8kPBt9u/XagsGNyV0e7rglOpFcWc6wI5EjefKpKA=="
       },
       "CommandLineParser": {
         "type": "Transitive",
