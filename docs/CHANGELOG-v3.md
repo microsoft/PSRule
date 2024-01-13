@@ -32,6 +32,8 @@ What's changed since pre-release v3.0.0-B0122:
 - Engineering:
   - Bump BenchmarkDotNet to v0.13.12.
     [#1725](https://github.com/microsoft/PSRule/pull/1725)
+  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.12.
+    [#1728](https://github.com/microsoft/PSRule/pull/1728)
   - Bump xunit to v2.6.5.
     [#1724](https://github.com/microsoft/PSRule/pull/1724)
   - Bump xunit.runner.visualstudio to v2.5.6.
