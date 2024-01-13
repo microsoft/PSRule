@@ -4,15 +4,25 @@
   "title": "PSRule lock",
   "description": "A schema for the PSRule lock file.",
   "properties": {
+    "version": {
+      "type": "integer",
+      "title": "Version",
+      "description": "The version of the lock file schema.",
+      "enum": [
+        1
+      ]
+    },
     "modules": {
       "type": "object",
       "title": "Modules",
+      "description": "A list of specific module versions for PSRule to restore.",
       "additionalProperties": {
         "type": "object",
         "properties": {
           "version": {
             "type": "string",
-            "title": "Version"
+            "title": "Module version",
+            "description": "The version of the module to use."
           }
         },
         "required": [
@@ -23,6 +33,7 @@
     }
   },
   "required": [
+    "version",
     "modules"
   ],
   "additionalProperties": false

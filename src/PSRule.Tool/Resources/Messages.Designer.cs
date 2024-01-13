@@ -61,7 +61,7 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to install module: {0} -- v{1}.
+        ///   Looks up a localized string similar to Failed to restore module: {0} -- v{1}.
         /// </summary>
         internal static string Error_501 {
             get {
@@ -88,11 +88,11 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installing module: {0} -- v{1}.
+        ///   Looks up a localized string similar to Restoring module: {0} -- v{1}.
         /// </summary>
-        internal static string InstallingModule {
+        internal static string RestoringModule {
             get {
-                return ResourceManager.GetString("InstallingModule", resourceCulture);
+                return ResourceManager.GetString("RestoringModule", resourceCulture);
             }
         }
         

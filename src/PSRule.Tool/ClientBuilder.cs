@@ -2,20 +2,29 @@
 // Licensed under the MIT License.
 
 using System.CommandLine;
+using System.CommandLine.Invocation;
 using System.Reflection;
 using PSRule.Rules;
+using PSRule.Tool.Commands;
+using PSRule.Tool.Models;
 using PSRule.Tool.Resources;
 
 namespace PSRule.Tool;
 
+/// <summary>
+/// A helper to build the command-line commands and options offered to the caller.
+/// </summary>
 internal sealed class ClientBuilder
 {
+    private const string ARG_FORCE = "--force";
+
     private static readonly string? _Version = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
 
     private readonly Option<string> _Option;
     private readonly Option<bool> _Verbose;
     private readonly Option<bool> _Debug;
-    private readonly Option<bool> _RestoreForce;
+    private readonly Option<bool> _ModuleRestoreForce;
+    private readonly Option<bool> _ModuleInitForce;
     private readonly Option<string> _ModuleAddVersion;
     private readonly Option<bool> _ModuleAddForce;
     private readonly Option<bool> _ModuleAddSkipVerification;
@@ -70,9 +79,10 @@ internal sealed class ClientBuilder
         ).FromAmong("Pass", "Fail", "Error", "Processed", "Problem");
         _Outcome.Arity = ArgumentArity.ZeroOrMore;
 
-        _RestoreForce = new Option<bool>(
-            new string[] { "--force" },
-            CmdStrings.Restore_Force_Description
+        // Options for the module command.
+        _ModuleInitForce = new Option<bool>(
+            new string[] { ARG_FORCE },
+            CmdStrings.Module_Init_Force_Description
         );
         _ModuleAddVersion = new Option<string>
         (
@@ -80,12 +90,16 @@ internal sealed class ClientBuilder
             CmdStrings.Module_Add_Version_Description
         );
         _ModuleAddForce = new Option<bool>(
-            new string[] { "--force" },
+            new string[] { ARG_FORCE },
             CmdStrings.Module_Add_Force_Description
         );
         _ModuleAddSkipVerification = new Option<bool>(
             new string[] { "--skip-verification" },
             CmdStrings.Module_Add_SkipVerification_Description
+        );
+        _ModuleRestoreForce = new Option<bool>(
+            new string[] { ARG_FORCE },
+            CmdStrings.Module_Restore_Force_Description
         );
 
         cmd.AddGlobalOption(_Option);
@@ -104,10 +118,12 @@ internal sealed class ClientBuilder
         var builder = new ClientBuilder(cmd);
         builder.AddRun();
         builder.AddModule();
-        builder.AddRestore();
         return builder.Command;
     }
 
+    /// <summary>
+    /// Add the <c>run</c> command.
+    /// </summary>
     private void AddRun()
     {
         var cmd = new Command("run", CmdStrings.Run_Description);
@@ -125,39 +141,18 @@ internal sealed class ClientBuilder
                 Path = invocation.ParseResult.GetValueForOption(_Path),
                 InputPath = invocation.ParseResult.GetValueForOption(_InputPath),
                 Module = invocation.ParseResult.GetValueForOption(_Module),
-                Option = invocation.ParseResult.GetValueForOption(_Option),
                 Baseline = invocation.ParseResult.GetValueForOption(_Baseline),
                 Outcome = ParseOutcome(invocation.ParseResult.GetValueForOption(_Outcome)),
-                Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
-                Debug = invocation.ParseResult.GetValueForOption(_Debug),
             };
-            var client = new ClientContext();
-            invocation.ExitCode = ClientHelper.RunAnalyze(option, client, invocation);
+            var client = GetClientContext(invocation);
+            invocation.ExitCode = RunCommand.Run(option, client);
         });
         Command.AddCommand(cmd);
     }
 
-    private void AddRestore()
-    {
-        var cmd = new Command("restore", CmdStrings.Restore_Description);
-        cmd.AddOption(_Path);
-        cmd.AddOption(_RestoreForce);
-        cmd.SetHandler((invocation) =>
-        {
-            var option = new RestoreOptions
-            {
-                Path = invocation.ParseResult.GetValueForOption(_Path),
-                Option = invocation.ParseResult.GetValueForOption(_Option),
-                Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
-                Debug = invocation.ParseResult.GetValueForOption(_Debug),
-                Force = invocation.ParseResult.GetValueForOption(_RestoreForce),
-            };
-            var client = new ClientContext();
-            invocation.ExitCode = ClientHelper.RunRestore(option, client, invocation);
-        });
-        Command.AddCommand(cmd);
-    }
-
+    /// <summary>
+    /// Add the <c>module</c> command.
+    /// </summary>
     private void AddModule()
     {
         var cmd = new Command("module", CmdStrings.Module_Description);
@@ -169,8 +164,50 @@ internal sealed class ClientBuilder
         );
         moduleArg.Arity = ArgumentArity.OneOrMore;
 
+        // Init
+        var init = new Command
+        (
+            "init",
+            CmdStrings.Module_Init_Description
+        );
+        init.AddOption(_ModuleInitForce);
+        init.SetHandler((invocation) =>
+        {
+            var option = new ModuleOptions
+            {
+                Path = invocation.ParseResult.GetValueForOption(_Path),
+                Version = invocation.ParseResult.GetValueForOption(_ModuleAddVersion),
+                Force = invocation.ParseResult.GetValueForOption(_ModuleAddForce),
+                SkipVerification = invocation.ParseResult.GetValueForOption(_ModuleAddSkipVerification),
+            };
+
+            var client = GetClientContext(invocation);
+            invocation.ExitCode = ModuleCommand.ModuleInit(option, client);
+        });
+
+        // List
+        var list = new Command
+        (
+            "list",
+            CmdStrings.Module_List_Description
+        );
+        list.SetHandler((invocation) =>
+        {
+            var option = new ModuleOptions
+            {
+                Path = invocation.ParseResult.GetValueForOption(_Path),
+                Version = invocation.ParseResult.GetValueForOption(_ModuleAddVersion),
+                Force = invocation.ParseResult.GetValueForOption(_ModuleAddForce),
+                SkipVerification = invocation.ParseResult.GetValueForOption(_ModuleAddSkipVerification),
+            };
+
+            var client = GetClientContext(invocation);
+            invocation.ExitCode = ModuleCommand.ModuleList(option, client);
+        });
+
         // Add
-        var add = new Command(
+        var add = new Command
+        (
             "add",
             CmdStrings.Module_Add_Description
         );
@@ -183,21 +220,19 @@ internal sealed class ClientBuilder
             var option = new ModuleOptions
             {
                 Path = invocation.ParseResult.GetValueForOption(_Path),
-                Option = invocation.ParseResult.GetValueForOption(_Option),
-                Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
-                Debug = invocation.ParseResult.GetValueForOption(_Debug),
                 Module = invocation.ParseResult.GetValueForArgument(moduleArg),
                 Version = invocation.ParseResult.GetValueForOption(_ModuleAddVersion),
                 Force = invocation.ParseResult.GetValueForOption(_ModuleAddForce),
                 SkipVerification = invocation.ParseResult.GetValueForOption(_ModuleAddSkipVerification),
             };
 
-            var client = new ClientContext();
-            invocation.ExitCode = ClientHelper.AddModule(option, client, invocation);
+            var client = GetClientContext(invocation);
+            invocation.ExitCode = ModuleCommand.ModuleAdd(option, client);
         });
 
         // Remove
-        var remove = new Command(
+        var remove = new Command
+        (
             "remove",
             CmdStrings.Module_Remove_Description
         );
@@ -207,18 +242,16 @@ internal sealed class ClientBuilder
             var option = new ModuleOptions
             {
                 Path = invocation.ParseResult.GetValueForOption(_Path),
-                Option = invocation.ParseResult.GetValueForOption(_Option),
-                Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
-                Debug = invocation.ParseResult.GetValueForOption(_Debug),
-                Module = invocation.ParseResult.GetValueForArgument(moduleArg)
+                Module = invocation.ParseResult.GetValueForArgument(moduleArg),
             };
 
-            var client = new ClientContext();
-            invocation.ExitCode = ClientHelper.RemoveModule(option, client, invocation);
+            var client = GetClientContext(invocation);
+            invocation.ExitCode = ModuleCommand.ModuleRemove(option, client);
         });
 
         // Upgrade
-        var upgrade = new Command(
+        var upgrade = new Command
+        (
             "upgrade",
             CmdStrings.Module_Upgrade_Description
         );
@@ -227,21 +260,51 @@ internal sealed class ClientBuilder
             var option = new ModuleOptions
             {
                 Path = invocation.ParseResult.GetValueForOption(_Path),
-                Option = invocation.ParseResult.GetValueForOption(_Option),
-                Verbose = invocation.ParseResult.GetValueForOption(_Verbose),
-                Debug = invocation.ParseResult.GetValueForOption(_Debug)
             };
 
-            var client = new ClientContext();
-            invocation.ExitCode = ClientHelper.UpgradeModule(option, client, invocation);
+            var client = GetClientContext(invocation);
+            invocation.ExitCode = ModuleCommand.ModuleUpgrade(option, client);
         });
 
+        // Restore
+        var restore = new Command("restore", CmdStrings.Module_Restore_Description);
+        // restore.AddOption(_Path);
+        restore.AddOption(_ModuleRestoreForce);
+        restore.SetHandler((invocation) =>
+        {
+            var option = new RestoreOptions
+            {
+                Path = invocation.ParseResult.GetValueForOption(_Path),
+                Force = invocation.ParseResult.GetValueForOption(_ModuleRestoreForce),
+            };
+            var client = GetClientContext(invocation);
+            invocation.ExitCode = ModuleCommand.ModuleRestore(option, client);
+        });
+
+        cmd.AddCommand(init);
+        cmd.AddCommand(list);
         cmd.AddCommand(add);
         cmd.AddCommand(remove);
         cmd.AddCommand(upgrade);
+        cmd.AddCommand(restore);
 
         cmd.AddOption(_Path);
         Command.AddCommand(cmd);
+    }
+
+    private ClientContext GetClientContext(InvocationContext invocation)
+    {
+        var option = invocation.ParseResult.GetValueForOption(_Option);
+        var verbose = invocation.ParseResult.GetValueForOption(_Verbose);
+        var debug = invocation.ParseResult.GetValueForOption(_Debug);
+
+        return new ClientContext
+        (
+            invocation: invocation,
+            option: option,
+            verbose: verbose,
+            debug: debug
+        );
     }
 
     /// <summary>

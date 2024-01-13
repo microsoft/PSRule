@@ -3,7 +3,7 @@
 
 using PSRule.Rules;
 
-namespace PSRule.Tool;
+namespace PSRule.Tool.Models;
 
 internal sealed class RunOptions
 {
@@ -11,15 +11,9 @@ internal sealed class RunOptions
 
     public string[]? Module { get; set; }
 
-    public string? Option { get; set; }
-
     public string? Baseline { get; set; }
 
     public RuleOutcome? Outcome { get; set; }
 
     public string[]? InputPath { get; set; }
-
-    public bool Verbose { get; set; }
-
-    public bool Debug { get; set; }
 }
