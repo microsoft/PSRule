@@ -28,10 +28,15 @@ public sealed class LockFile
     private const string DEFAULT_FILE = "ps-rule.lock.json";
 
     /// <summary>
+    /// The version of the lock file schema.
+    /// </summary>
+    [JsonProperty("version")]
+    public int Version { get; set; }
+
+    /// <summary>
     /// A mapping lock file entries for each module.
     /// </summary>
     [JsonProperty("modules")]
-    //[JsonConverter(typeof(CaseInsensitiveDictionaryConverter<LockEntry>))]
     public Dictionary<string, LockEntry> Modules { get; set; } = new Dictionary<string, LockEntry>(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
@@ -64,6 +69,8 @@ public sealed class LockFile
     /// <param name="path">An alternative path to the lock file.</param>
     public void Write(string path)
     {
+        Version = 1;
+
         path = Environment.GetRootedPath(path);
         path = Path.GetExtension(path) == "json" ? path : Path.Combine(path, DEFAULT_FILE);
         var json = JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings

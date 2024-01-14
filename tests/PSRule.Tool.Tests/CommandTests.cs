@@ -25,13 +25,16 @@ public sealed class CommandTests
     }
 
     [Fact]
-    public async Task Restore()
+    public async Task ModuleRestore()
     {
         var console = new TestConsole();
         var builder = ClientBuilder.New();
-        Assert.NotNull(builder.Subcommands.FirstOrDefault(c => c.Name == "restore"));
+        var module = builder.Subcommands.FirstOrDefault(c => c.Name == "module");
 
-        await builder.InvokeAsync("restore", console);
+        Assert.NotNull(module);
+        Assert.NotNull(module.Subcommands.FirstOrDefault(c => c.Name == "restore"));
+
+        await builder.InvokeAsync("module restore", console);
 
         var output = console.Out.ToString();
         Assert.NotNull(output);

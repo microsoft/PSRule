@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.CommandLine.IO;
 using System.Management.Automation;
 using PSRule.Pipeline;
@@ -11,15 +10,15 @@ namespace PSRule.Tool;
 
 internal sealed class ClientHost : HostContext
 {
-    private readonly InvocationContext _Invocation;
+    private readonly ClientContext _Context;
     private readonly bool _Verbose;
     private readonly bool _Debug;
     private readonly ConsoleColor _BackgroundColor;
     private readonly ConsoleColor _ForegroundColor;
 
-    public ClientHost(InvocationContext invocation, bool verbose, bool debug)
+    public ClientHost(ClientContext context, bool verbose, bool debug)
     {
-        _Invocation = invocation;
+        _Context = context;
         _Verbose = verbose;
         _Debug = debug;
         _BackgroundColor = Console.BackgroundColor;
@@ -41,13 +40,13 @@ internal sealed class ClientHost : HostContext
 
     public override void Error(ErrorRecord errorRecord)
     {
-        _Invocation.Console.Error.WriteLine(errorRecord.Exception.Message);
+        _Context.LogError(errorRecord.Exception.Message);
         base.Error(errorRecord);
     }
 
     public override void Warning(string text)
     {
-        _Invocation.Console.WriteLine(text);
+        _Context.Invocation.Console.WriteLine(text);
     }
 
     public override bool ShouldProcess(string target, string action)
@@ -61,9 +60,9 @@ internal sealed class ClientHost : HostContext
         {
             SetConsole(info);
             if (info.NoNewLine.GetValueOrDefault(false))
-                _Invocation.Console.Write(info.Message);
+                _Context.Invocation.Console.Write(info.Message);
             else
-                _Invocation.Console.WriteLine(info.Message);
+                _Context.Invocation.Console.WriteLine(info.Message);
 
             RevertConsole();
         }
@@ -86,7 +85,7 @@ internal sealed class ClientHost : HostContext
         if (!_Verbose)
             return;
 
-        _Invocation.Console.WriteLine(text);
+        _Context.LogVerbose(text);
     }
 
     public override void Debug(string text)
@@ -94,6 +93,6 @@ internal sealed class ClientHost : HostContext
         if (!_Debug)
             return;
 
-        _Invocation.Console.WriteLine(text);
+        _Context.Invocation.Console.WriteLine(text);
     }
 }

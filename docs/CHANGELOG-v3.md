@@ -29,6 +29,15 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v3.0.0-B0122:
 
+- General improvements:
+  - **Breaking change:** Moved the `restore` command to a sub-command of `module` by @BernieWhite.
+    [#1730](https://github.com/microsoft/PSRule/issues/1730)
+    - The functionality of the `restore` command is now available as `module restore`.
+  - Added CLI commands to list and report status of locked modules by @BernieWhite.
+    [#1729](https://github.com/microsoft/PSRule/issues/1729)
+    - Added `module init` sub-command to initialize the lock file from configured options.
+    - Added `module list` sub-command to list locked and unlocked modules associated with the workspace.
+    - Added `version` property to the lock file schema to support versioning of the lock file.
 - Engineering:
   - Bump BenchmarkDotNet to v0.13.12.
     [#1725](https://github.com/microsoft/PSRule/pull/1725)

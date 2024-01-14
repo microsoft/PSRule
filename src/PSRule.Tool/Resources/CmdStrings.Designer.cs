@@ -106,11 +106,38 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage modules tracked by the PSRule lock file. To install modules within the lock file, use the `restore` command instead..
+        ///   Looks up a localized string similar to Manage or restore modules tracked by the module lock file and configured options..
         /// </summary>
         internal static string Module_Description {
             get {
                 return ResourceManager.GetString("Module_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initialize a new or update an existing module lock file based on options..
+        /// </summary>
+        internal static string Module_Init_Description {
+            get {
+                return ResourceManager.GetString("Module_Init_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force the creation of a new module lock file, even if one already exists..
+        /// </summary>
+        internal static string Module_Init_Force_Description {
+            get {
+                return ResourceManager.GetString("Module_Init_Force_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List any module and the installed versions from the lock file..
+        /// </summary>
+        internal static string Module_List_Description {
+            get {
+                return ResourceManager.GetString("Module_List_Description", resourceCulture);
             }
         }
         
@@ -129,6 +156,24 @@ namespace PSRule.Tool.Resources {
         internal static string Module_Remove_Description {
             get {
                 return ResourceManager.GetString("Module_Remove_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore from the module lock file and configured options..
+        /// </summary>
+        internal static string Module_Restore_Description {
+            get {
+                return ResourceManager.GetString("Module_Restore_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore modules even when an existing version that meets constraints is already installed locally..
+        /// </summary>
+        internal static string Module_Restore_Force_Description {
+            get {
+                return ResourceManager.GetString("Module_Restore_Force_Description", resourceCulture);
             }
         }
         
@@ -183,24 +228,6 @@ namespace PSRule.Tool.Resources {
         internal static string Options_Verbose_Description {
             get {
                 return ResourceManager.GetString("Options_Verbose_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Restore modules defined in configuration locally..
-        /// </summary>
-        internal static string Restore_Description {
-            get {
-                return ResourceManager.GetString("Restore_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Restore modules even when an existing version that meets constaints is already installed locally..
-        /// </summary>
-        internal static string Restore_Force_Description {
-            get {
-                return ResourceManager.GetString("Restore_Force_Description", resourceCulture);
             }
         }
         
