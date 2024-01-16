@@ -592,7 +592,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install-instructions.md" class="md-nav__link">
+      <a href="../../../install/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2144,6 +2144,24 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#-input-path-f" class="md-nav__link">
+    <span class="md-ellipsis">
+      --input-path | -f
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-module-m" class="md-nav__link">
+    <span class="md-ellipsis">
+      --module | -m
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-baseline" class="md-nav__link">
     <span class="md-ellipsis">
       --baseline
@@ -2161,8 +2179,35 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#-output-o" class="md-nav__link">
+    <span class="md-ellipsis">
+      --output | -o
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-output-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      --output-path
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
   
 </li>
       
@@ -2572,6 +2617,24 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#-input-path-f" class="md-nav__link">
+    <span class="md-ellipsis">
+      --input-path | -f
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-module-m" class="md-nav__link">
+    <span class="md-ellipsis">
+      --module | -m
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-baseline" class="md-nav__link">
     <span class="md-ellipsis">
       --baseline
@@ -2589,8 +2652,35 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#-output-o" class="md-nav__link">
+    <span class="md-ellipsis">
+      --output | -o
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-output-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      --output-path
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
   
 </li>
       
@@ -2627,11 +2717,22 @@
 
 
 <h1 id="ps-rule-run">ps-rule run<a class="headerlink" href="#ps-rule-run" title="Permanent link">#</a></h1>
-<p>Run rule analysis.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Abstract</p>
+<p>Use the <code>run</code> command to run rules against an input path and output the results.</p>
+</div>
 <h2 id="optional-parameters">Optional parameters<a class="headerlink" href="#optional-parameters" title="Permanent link">#</a></h2>
+<h3 id="-input-path-f"><code>--input-path</code> | <code>-f</code><a class="headerlink" href="#-input-path-f" title="Permanent link">#</a></h3>
+<p>The file or directory path to search for input file to use during a run.
+By default, this is the current working path.</p>
+<h3 id="-module-m"><code>--module</code> | <code>-m</code><a class="headerlink" href="#-module-m" title="Permanent link">#</a></h3>
+<p>The name of one or more modules that contain rules or resources to use during a run.</p>
 <h3 id="-baseline"><code>--baseline</code><a class="headerlink" href="#-baseline" title="Permanent link">#</a></h3>
-<p>The name of a specific baseline to use.</p>
+<p>The name of a specific baseline to use.
+Currently, only a single baseline can be used during a run.</p>
 <h3 id="-outcome"><code>--outcome</code><a class="headerlink" href="#-outcome" title="Permanent link">#</a></h3>
+<p>Specifies the rule results to show in output.
+By default, <code>Pass</code>/ <code>Fail</code>/ <code>Error</code> results are shown.</p>
 <p>Allows filtering of results by outcome.
 The supported values are:</p>
 <ul>
@@ -2645,6 +2746,12 @@ The supported values are:</p>
 </ul>
 <p>To specify multiple values, specify the parameter multiple times.
 For example: <code>--outcome Pass --Outcome Fail</code>.</p>
+<h3 id="-output-o"><code>--output</code> | <code>-o</code><a class="headerlink" href="#-output-o" title="Permanent link">#</a></h3>
+<p>Specifies the format to use when outputting results.</p>
+<h3 id="-output-path"><code>--output-path</code><a class="headerlink" href="#-output-path" title="Permanent link">#</a></h3>
+<p>Specifies a path to write results to.</p>
+<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
+<p>To find out more about the commands available with the PSRule CLI, see <a href="../">PSRule CLI</a>.</p>
 
 
 
@@ -2667,7 +2774,7 @@ For example: <code>--outcome Pass --Outcome Fail</code>.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">December 21, 2023</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 16, 2024</span>
   </span>
 
     
@@ -2682,6 +2789,29 @@ For example: <code>--outcome Pass --Outcome Fail</code>.</p>
 
     
     
+    
+      
+  <span class="md-source-file__fact">
+    
+      
+  <span class="md-icon" title="Contributors">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
+  </span>
+  <span>GitHub</span>
+
+    
+    <nav>
+      
+        <a href="https://github.com/BernieWhite" class="md-author" title="@BernieWhite">
+          
+          <img src="https://avatars.githubusercontent.com/u/13513058?v=4&size=72" alt="BernieWhite">
+        </a>
+      
+      
+      
+    </nav>
+  </span>
+
     
   </aside>
 
