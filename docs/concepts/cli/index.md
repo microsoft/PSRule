@@ -8,8 +8,8 @@
 
 The following commands are available in the PSRule CLI:
 
-- [run](./run.md)
-- [module](./module.md)
+- [run](./run.md) &mdash; Run rules against an input path and output the results.
+- [module](./module.md) &mdash; Manage or restore modules tracked by the module lock file and configured options.
 
 ## Global options
 
