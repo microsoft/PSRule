@@ -1,13 +1,11 @@
 # ps-rule module
 
-Use this command to configure the module lock file (`ps-rule.lock.json`).
-The module lock file, provides consistent module versions across multiple machines and environments.
-
-!!! Tip
+!!! Abstract
+    Use the `module` command to manage or restore modules tracked by the module lock file and configured options. (`ps-rule.lock.json`).
     The module lock file, provides consistent module versions across multiple machines and environments.
     For more information, see [Lock file](../lockfile.md).
 
-The following subcommands are available:
+To use the `module` command, choose one of the available subcommands:
 
 - [module init](#module-init)
 - [module list](#module-list)
@@ -27,6 +25,18 @@ Any required version constraints set by the `Requires` option are taken into con
 Optional parameters:
 
 - `--force` - Force the creation of a new lock file, even if one already exists.
+
+For example:
+
+```bash title="PSRule CLI command-line"
+ps-rule module init
+```
+
+For example, force the creation of a new lock file, even if one already exists:
+
+```bash title="PSRule CLI command-line"
+ps-rule module init --force
+```
 
 ## `module list`
 
@@ -48,9 +58,27 @@ Optional parameters:
   By default, the latest stable version of the module is added.
   Any required version constraints set by the `Requires` option are taken into consideration.
 
+For example:
+
+```bash title="PSRule CLI command-line"
+ps-rule module add PSRule.Rules.Azure
+```
+
+For example, a specific version of the module is added:
+
+```bash title="PSRule CLI command-line"
+ps-rule module add PSRule.Rules.Azure --version 1.32.1
+```
+
 ## `module remove`
 
 Remove one or more modules from the lock file.
+
+For example:
+
+```bash title="PSRule CLI command-line"
+ps-rule module remove PSRule.Rules.Azure
+```
 
 ## `module restore`
 
@@ -60,10 +88,30 @@ Optional parameters:
 
 - `--force` - Restore modules even when an existing version that meets constraints is already installed locally.
 
+For example:
+
+```bash title="PSRule CLI command-line"
+ps-rule module restore
+```
+
+For example, force restore of all modules:
+
+```bash title="PSRule CLI command-line"
+ps-rule module restore --force
+```
+
 ## `module upgrade`
 
 Upgrade to the latest versions any modules within the lock file.
 
+For example:
+
+```bash title="PSRule CLI command-line"
+ps-rule module upgrade
+```
+
 ## Next steps
 
 For more information on the module lock file, see [Lock file](../lockfile.md).
+
+To find out more about the commands available with the PSRule CLI, see [PSRule CLI](./index.md).

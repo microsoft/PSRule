@@ -150,19 +150,19 @@
   <data name="Module_Upgrade_Description" xml:space="preserve">
     <value>Upgrade to the latest versions of any modules within the lock file.</value>
   </data>
-  <data name="Options_Debug_Description" xml:space="preserve">
+  <data name="Global_Debug_Description" xml:space="preserve">
     <value>Return debug output.</value>
   </data>
-  <data name="Options_Module_Description" xml:space="preserve">
-    <value>The name of one or more modules to use during analysis.</value>
+  <data name="Run_Module_Description" xml:space="preserve">
+    <value>The name of one or more modules that contain rules or resources to use during a run.</value>
   </data>
-  <data name="Options_Option_Description" xml:space="preserve">
+  <data name="Global_Option_Description" xml:space="preserve">
     <value>Specifies the path to an options file.</value>
   </data>
-  <data name="Options_Path_Description" xml:space="preserve">
+  <data name="Global_Path_Description" xml:space="preserve">
     <value>The path to run commands within. By default, this is the current working directory.</value>
   </data>
-  <data name="Options_Verbose_Description" xml:space="preserve">
+  <data name="Global_Verbose_Description" xml:space="preserve">
     <value>Return verbose output.</value>
   </data>
   <data name="Module_Restore_Description" xml:space="preserve">
@@ -175,12 +175,21 @@
     <value>The name of a specific baseline to use.</value>
   </data>
   <data name="Run_Description" xml:space="preserve">
-    <value>Run rule analysis.</value>
+    <value>Run rules against an input path and output the results.</value>
   </data>
   <data name="Run_Outcome_Description" xml:space="preserve">
     <value>Specifies the rule results to show in output. By default, Pass/ Fail/ Error results are shown.</value>
   </data>
   <data name="Module_Init_Force_Description" xml:space="preserve">
     <value>Force the creation of a new module lock file, even if one already exists.</value>
+  </data>
+  <data name="Run_InputPath_Description" xml:space="preserve">
+    <value>The file or directory path to search for input file to use during a run. By default, this is the current working path.</value>
+  </data>
+  <data name="Run_OutputFormat_Description" xml:space="preserve">
+    <value>Specifies the format to use when outputting results.</value>
+  </data>
+  <data name="Run_OutputPath_Description" xml:space="preserve">
+    <value>Specifies a path to write results to.</value>
   </data>
 </root>
