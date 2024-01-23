@@ -27,6 +27,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0137:
+
+- Engineering:
+  - Bump YamlDotNet to v15.1.0.
+    [#1737](https://github.com/microsoft/PSRule/pull/1737)
+
 ## v3.0.0-B0137 (pre-release)
 
 What's changed since pre-release v3.0.0-B0122:
