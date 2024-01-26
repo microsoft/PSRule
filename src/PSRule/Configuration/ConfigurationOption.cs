@@ -42,7 +42,7 @@ public sealed class ConfigurationOption : KeyMapDictionary<object>
     }
 
     /// <summary>
-    /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+    /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
     /// Values from <paramref name="o1"/> that are set are not overridden.
     /// </summary>
     internal static ConfigurationOption Combine(ConfigurationOption o1, ConfigurationOption o2)

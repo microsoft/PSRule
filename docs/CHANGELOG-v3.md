@@ -29,6 +29,11 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v3.0.0-B0137:
 
+- General improvements:
+  - SARIF output has been improved to include effective configuration from a run by @BernieWhite.
+    [#1739](https://github.com/microsoft/PSRule/issues/1739)
+  - SARIF output has been improved to include file hashes for source files from a run by @BernieWhite.
+    [#1740](https://github.com/microsoft/PSRule/issues/1740)
 - Engineering:
   - Bump YamlDotNet to v15.1.0.
     [#1737](https://github.com/microsoft/PSRule/pull/1737)

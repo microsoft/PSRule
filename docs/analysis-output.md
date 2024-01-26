@@ -257,4 +257,11 @@ To add the scans tab to build results the [SARIF SAST Scans Tab][2] extension ne
 
   [2]: https://marketplace.visualstudio.com/items?itemName=sariftools.scans
 
+### Verifying configuration
+
+:octicons-milestone-24: v3.0.0
+
+The configuration used to run PSRule is included in properties of the run.
+This can be used to verify the configuration used to run PSRule.
+
 *[SARIF]: Static Analysis Results Interchange Format

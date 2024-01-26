@@ -3,12 +3,14 @@
 
 using System.Collections;
 using System.Dynamic;
+using Newtonsoft.Json;
 
 namespace PSRule.Configuration;
 
 /// <summary>
 /// A mapping of fields to property names.
 /// </summary>
+[JsonConverter(typeof(FieldMapJsonConverter))]
 public sealed class FieldMap : DynamicObject, IEnumerable<KeyValuePair<string, string[]>>
 {
     private readonly Dictionary<string, string[]> _Map;

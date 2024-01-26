@@ -38,25 +38,31 @@ public sealed class OutputWriterTests
 
         var actual = JsonConvert.DeserializeObject<JObject>(output.Output.OfType<string>().FirstOrDefault());
         Assert.NotNull(actual);
-        Assert.Equal("PSRule", actual["runs"][0]["tool"]["driver"]["name"]);
+        Assert.Equal("PSRule", actual["runs"][0]["tool"]["driver"]["name"].Value<string>());
         Assert.Equal("0.0.1", actual["runs"][0]["tool"]["driver"]["semanticVersion"].Value<string>().Split('+')[0]);
         Assert.Equal("https://github.com/microsoft/PSRule.UnitTest", actual["runs"][0]["versionControlProvenance"][0]["repositoryUri"].Value<string>());
 
         // Pass
-        Assert.Equal("TestModule\\rule-001", actual["runs"][0]["results"][0]["ruleId"]);
-        Assert.Equal("none", actual["runs"][0]["results"][0]["level"]);
+        Assert.Equal("TestModule\\rule-001", actual["runs"][0]["results"][0]["ruleId"].Value<string>());
+        Assert.Equal("none", actual["runs"][0]["results"][0]["level"].Value<string>());
 
         // Fail with error
-        Assert.Equal("rid-002", actual["runs"][0]["results"][1]["ruleId"]);
-        Assert.Equal("error", actual["runs"][0]["results"][1]["level"]);
+        Assert.Equal("rid-002", actual["runs"][0]["results"][1]["ruleId"].Value<string>());
+        Assert.Equal("error", actual["runs"][0]["results"][1]["level"].Value<string>());
+        Assert.Equal("Custom annotation", actual["runs"][0]["results"][1]["properties"]["annotations"]["annotation-data"].Value<string>());
+        Assert.Equal("Custom field data", actual["runs"][0]["results"][1]["properties"]["fields"]["field-data"].Value<string>());
 
         // Fail with warning
-        Assert.Equal("rid-003", actual["runs"][0]["results"][2]["ruleId"]);
+        Assert.Equal("rid-003", actual["runs"][0]["results"][2]["ruleId"].Value<string>());
         Assert.Null(actual["runs"][0]["results"][2]["level"]);
 
         // Fail with note
-        Assert.Equal("rid-004", actual["runs"][0]["results"][3]["ruleId"]);
-        Assert.Equal("note", actual["runs"][0]["results"][3]["level"]);
+        Assert.Equal("rid-004", actual["runs"][0]["results"][3]["ruleId"].Value<string>());
+        Assert.Equal("note", actual["runs"][0]["results"][3]["level"].Value<string>());
+
+        // Check options
+        Assert.Equal(option.Repository.Url, actual["runs"][0]["properties"]["options"]["workspace"]["Repository"]["Url"].Value<string>());
+        Assert.False(actual["runs"][0]["properties"]["options"]["workspace"]["Output"]["SarifProblemsOnly"].Value<bool>());
     }
 
     [Fact]
@@ -76,20 +82,20 @@ public sealed class OutputWriterTests
 
         var actual = JsonConvert.DeserializeObject<JObject>(output.Output.OfType<string>().FirstOrDefault());
         Assert.NotNull(actual);
-        Assert.Equal("PSRule", actual["runs"][0]["tool"]["driver"]["name"]);
+        Assert.Equal("PSRule", actual["runs"][0]["tool"]["driver"]["name"].Value<string>());
         Assert.Equal("0.0.1", actual["runs"][0]["tool"]["driver"]["semanticVersion"].Value<string>().Split('+')[0]);
 
         // Fail with error
-        Assert.Equal("rid-002", actual["runs"][0]["results"][0]["ruleId"]);
-        Assert.Equal("error", actual["runs"][0]["results"][0]["level"]);
+        Assert.Equal("rid-002", actual["runs"][0]["results"][0]["ruleId"].Value<string>());
+        Assert.Equal("error", actual["runs"][0]["results"][0]["level"].Value<string>());
 
         // Fail with warning
-        Assert.Equal("rid-003", actual["runs"][0]["results"][1]["ruleId"]);
+        Assert.Equal("rid-003", actual["runs"][0]["results"][1]["ruleId"].Value<string>());
         Assert.Null(actual["runs"][0]["results"][1]["level"]);
 
         // Fail with note
-        Assert.Equal("rid-004", actual["runs"][0]["results"][2]["ruleId"]);
-        Assert.Equal("note", actual["runs"][0]["results"][2]["level"]);
+        Assert.Equal("rid-004", actual["runs"][0]["results"][2]["ruleId"].Value<string>());
+        Assert.Equal("note", actual["runs"][0]["results"][2]["level"].Value<string>());
     }
 
     [Fact]
@@ -125,7 +131,11 @@ public sealed class OutputWriterTests
   time: 500
 - detail:
     reason: []
+  field:
+    field-data: Custom field data
   info:
+    annotations:
+      annotation-data: Custom annotation
     moduleName: TestModule
     recommendation: Recommendation for rule 002
   level: Error
@@ -141,7 +151,11 @@ public sealed class OutputWriterTests
   time: 1000
 - detail:
     reason: []
+  field:
+    field-data: Custom field data
   info:
+    annotations:
+      annotation-data: Custom annotation
     moduleName: TestModule
     recommendation: Recommendation for rule 002
   level: Warning
@@ -157,7 +171,11 @@ public sealed class OutputWriterTests
   time: 1000
 - detail:
     reason: []
+  field:
+    field-data: Custom field data
   info:
+    annotations:
+      annotation-data: Custom annotation
     moduleName: TestModule
     recommendation: Recommendation for rule 002
   level: Information
@@ -214,7 +232,13 @@ public sealed class OutputWriterTests
   },
   {
     ""detail"": {},
+    ""field"": {
+      ""field-data"": ""Custom field data""
+    },
     ""info"": {
+      ""annotations"": {
+        ""annotation-data"": ""Custom annotation""
+      },
       ""displayName"": ""Rule 002"",
       ""moduleName"": ""TestModule"",
       ""name"": ""rule-002"",
@@ -235,7 +259,13 @@ public sealed class OutputWriterTests
   },
   {
     ""detail"": {},
+    ""field"": {
+      ""field-data"": ""Custom field data""
+    },
     ""info"": {
+      ""annotations"": {
+        ""annotation-data"": ""Custom annotation""
+      },
       ""displayName"": ""Rule 002"",
       ""moduleName"": ""TestModule"",
       ""name"": ""rule-002"",
@@ -256,7 +286,13 @@ public sealed class OutputWriterTests
   },
   {
     ""detail"": {},
+    ""field"": {
+      ""field-data"": ""Custom field data""
+    },
     ""info"": {
+      ""annotations"": {
+        ""annotation-data"": ""Custom annotation""
+      },
       ""displayName"": ""Rule 002"",
       ""moduleName"": ""TestModule"",
       ""name"": ""rule-002"",
@@ -359,6 +395,17 @@ public sealed class OutputWriterTests
 
     private static RuleRecord GetFail(string ruleRef = "rid-002", SeverityLevel level = SeverityLevel.Error, string synopsis = "This is rule 002.", string ruleId = "TestModule\\rule-002")
     {
+        var info = new RuleHelpInfo(
+            "rule-002",
+            "Rule 002",
+            "TestModule",
+            synopsis: new InfoString(synopsis),
+            recommendation: new InfoString("Recommendation for rule 002")
+        );
+        info.Annotations = new Hashtable
+        {
+            ["annotation-data"] = "Custom annotation"
+        };
         return new RuleRecord(
             runId: "run-001",
             ruleId: ResourceId.Parse(ruleId),
@@ -367,14 +414,11 @@ public sealed class OutputWriterTests
             targetName: "TestObject1",
             targetType: "TestType",
             tag: new ResourceTags(),
-            info: new RuleHelpInfo(
-                "rule-002",
-                "Rule 002",
-                "TestModule",
-                synopsis: new InfoString(synopsis),
-                recommendation: new InfoString("Recommendation for rule 002")
-            ),
-            field: new Hashtable(),
+            info: info,
+            field: new Hashtable
+            {
+                ["field-data"] = "Custom field data"
+            },
             level: level,
             extent: null,
             outcome: RuleOutcome.Fail,

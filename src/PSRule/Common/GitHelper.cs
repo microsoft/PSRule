@@ -130,17 +130,17 @@ internal static class GitHelper
         }
 
         // Try .git/
-        return false;
+        return TryGetOriginUrl(path, out value);
     }
 
     public static bool TryGetChangedFiles(string baseRef, string filter, string options, out string[] files)
     {
         // Get current tip
-        var source = TryRevision(out var source_sha) ? source_sha : "HEAD";
+        var source = TryRevision(out var source_sha) ? source_sha : GIT_HEAD;
         var target = !string.IsNullOrEmpty(baseRef) ? baseRef : "HEAD^";
 
         var bin = GetGitBinary();
-        var args = GetGitArgs(target, source, filter, options);
+        var args = GetDiffArgs(target, source, filter, options);
         var tool = ExternalTool.Get(null, bin);
 
         files = Array.Empty<string>();
@@ -157,7 +157,7 @@ internal static class GitHelper
             RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "git" : "git.exe";
     }
 
-    private static string GetGitArgs(string target, string source, string filter, string options)
+    private static string GetDiffArgs(string target, string source, string filter, string options)
     {
         return $"diff --diff-filter={filter} --ignore-submodules=all --name-only --no-renames {target}";
     }
@@ -195,8 +195,42 @@ internal static class GitHelper
         if (lines == null || lines.Length == 0)
             return false;
 
-        isRef = lines[0].StartsWith(GIT_REF_PREFIX, System.StringComparison.OrdinalIgnoreCase);
+        isRef = lines[0].StartsWith(GIT_REF_PREFIX, StringComparison.OrdinalIgnoreCase);
         value = isRef ? lines[0].Substring(5) : lines[0];
         return true;
+    }
+
+    /// <summary>
+    /// Try to get the origin URL from the git config.
+    /// </summary>
+    private static bool TryGetOriginUrl(string path, out string value)
+    {
+        value = null;
+
+        try
+        {
+            var bin = GetGitBinary();
+            var args = GetWorktreeConfigArgs();
+            var tool = ExternalTool.Get(null, bin);
+
+            string[] lines = null;
+            if (!tool.WaitForExit(args, out var exitCode) || exitCode != 0)
+                return false;
+
+            lines = tool.GetOutput().Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            var origin = lines.Where(line => line.StartsWith("remote.origin.url=", StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.Split('=')?[1];
+            value = origin;
+        }
+        catch
+        {
+            // Fail silently.
+        }
+
+        return value != null;
+    }
+
+    private static string GetWorktreeConfigArgs()
+    {
+        return "config --worktree --list";
     }
 }
