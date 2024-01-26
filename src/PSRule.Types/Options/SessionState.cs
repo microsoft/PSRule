@@ -1,11 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
+
 namespace PSRule.Options;
 
 /// <summary>
 /// Configures how the initial PowerShell sandbox for executing rules is created.
 /// </summary>
+[JsonConverter(typeof(StringEnumConverter))]
 public enum SessionState
 {
     /// <summary>

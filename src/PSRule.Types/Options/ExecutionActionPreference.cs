@@ -1,12 +1,16 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
+
 namespace PSRule.Options;
 
 /// <summary>
 /// Determines the action to take for execution behaviors.
 /// See <see cref="ExecutionOption"/> for the specific behaviors that are configurable.
 /// </summary>
+[JsonConverter(typeof(StringEnumConverter))]
 public enum ExecutionActionPreference
 {
     /// <summary>

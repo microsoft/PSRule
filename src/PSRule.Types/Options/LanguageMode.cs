@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
+
 namespace PSRule.Options;
 
 /// <summary>
@@ -8,6 +11,7 @@ namespace PSRule.Options;
 /// Does not affect YAML or JSON expressions.
 /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Options/#executionlanguagemode"/>
 /// </summary>
+[JsonConverter(typeof(StringEnumConverter))]
 public enum LanguageMode
 {
     /// <summary>

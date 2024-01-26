@@ -84,7 +84,7 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
         _Unresolved = unresolved ?? new List<ResourceRef>();
         _TrackedIssues = new List<ResourceIssue>();
 
-        ObjectHashAlgorithm = GetHashAlgorithm(option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm.Value));
+        ObjectHashAlgorithm = option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm.Value).GetHashAlgorithm();
         RunId = Environment.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
         RunTime = Stopwatch.StartNew();
         _DefaultOptionContext = _OptionBuilder?.Build(null);
@@ -289,14 +289,6 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
         //for (var i = 0; _TrackedIssues != null && i < _TrackedIssues.Count; i++)
         //if (_TrackedIssues[i].Issue == ResourceIssueType.MissingApiVersion)
         //    runspaceContext.WarnMissingApiVersion(_TrackedIssues[i].Kind, _TrackedIssues[i].Id);
-    }
-
-    private static System.Security.Cryptography.HashAlgorithm GetHashAlgorithm(Options.HashAlgorithm hashAlgorithm)
-    {
-        if (hashAlgorithm == Options.HashAlgorithm.SHA256)
-            return SHA256.Create();
-
-        return hashAlgorithm == Options.HashAlgorithm.SHA384 ? SHA384.Create() : SHA512.Create();
     }
 
     #region IBindingContext
