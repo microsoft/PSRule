@@ -297,6 +297,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Execution.LanguageMode](https://aka.ms/ps-rule/options#executionlanguagemode)
   - [Execution.InvariantCulture](https://aka.ms/ps-rule/options#executioninvariantculture)
   - [Execution.InitialSessionState](https://aka.ms/ps-rule/options#executioninitialsessionstate)
+  - [Execution.RestrictScriptSource](https://aka.ms/ps-rule/options#executionrestrictscriptsource)
   - [Execution.RuleInconclusive](https://aka.ms/ps-rule/options#executionruleinconclusive)
   - [Execution.SuppressionGroupExpired](https://aka.ms/ps-rule/options#executionsuppressiongroupexpired)
   - [Execution.UnprocessedObject](https://aka.ms/ps-rule/options#executionunprocessedobject)

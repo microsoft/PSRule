@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections;
 using Microsoft.CodeAnalysis.Sarif;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
 using PSRule.Data;
-using PSRule.Definitions.Rules;
 using PSRule.Definitions;
+using PSRule.Definitions.Rules;
+using PSRule.Options;
 using PSRule.Resources;
 using PSRule.Rules;
-using PSRule.Options;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System.Collections;
 
 namespace PSRule.Pipeline.Output;
 

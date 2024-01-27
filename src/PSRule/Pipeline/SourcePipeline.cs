@@ -5,6 +5,7 @@ using System.Collections;
 using System.Management.Automation;
 using System.Reflection;
 using PSRule.Configuration;
+using PSRule.Options;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;
 
@@ -114,6 +115,8 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     private readonly HostPipelineWriter _Writer;
     private readonly bool _UseDefaultPath;
     private readonly string _LocalPath;
+    private readonly RestrictScriptSource _RestrictScriptSource;
+    private readonly string _WorkspacePath;
 
     internal SourcePipelineBuilder(IHostContext hostContext, PSRuleOption option, string localPath = null)
     {
@@ -123,6 +126,8 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         _Writer.EnterScope("[Discovery.Source]");
         _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
         _LocalPath = localPath;
+        _RestrictScriptSource = option?.Execution?.RestrictScriptSource ?? ExecutionOption.Default.RestrictScriptSource.Value;
+        _WorkspacePath = Environment.GetRootedBasePath(null);
 
         // Include paths from options
         if (!_UseDefaultPath)
@@ -188,7 +193,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
 
         VerboseScanSource(path);
         path = Environment.GetRootedPath(path);
-        var files = GetFiles(path, null, excludeDefaultRulePath);
+        var files = GetFiles(path, null, excludeDefaultRulePath, restrictScriptSource: _RestrictScriptSource, workspacePath: _WorkspacePath);
         if (files == null || files.Length == 0)
             return;
 
@@ -208,16 +213,11 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     /// <inheritdoc/>
     public void ModuleByName(string name, string version = null)
     {
-        var basePath = FindModule(name, version);
-        if (basePath == null)
-            throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
-
-        var info = LoadManifest(basePath);
-        if (info == null)
-            throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
+        var basePath = FindModule(name, version) ?? throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
+        var info = LoadManifest(basePath) ?? throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
 
         VerboseScanModule(info.Name);
-        var files = GetFiles(basePath, basePath, excludeDefaultRulePath: false, info.Name);
+        var files = GetFiles(basePath, basePath, excludeDefaultRulePath: false, restrictScriptSource: _RestrictScriptSource, info.Name);
         if (files == null || files.Length == 0)
             return;
 
@@ -373,7 +373,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
             return;
 
         VerboseScanModule(module.Name);
-        var files = GetFiles(module.ModuleBase, module.ModuleBase, excludeDefaultRulePath: false, module.Name);
+        var files = GetFiles(module.ModuleBase, module.ModuleBase, excludeDefaultRulePath: false, restrictScriptSource: _RestrictScriptSource, workspacePath: _WorkspacePath, moduleName: module.Name);
         if (files == null || files.Length == 0)
             return;
 
@@ -422,17 +422,17 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         _Source[key] = source;
     }
 
-    private static SourceFile[] GetFiles(string path, string helpPath, bool excludeDefaultRulePath, string moduleName = null)
+    private static SourceFile[] GetFiles(string path, string helpPath, bool excludeDefaultRulePath, RestrictScriptSource restrictScriptSource, string workspacePath, string moduleName = null)
     {
         var rootedPath = Environment.GetRootedPath(path);
         var extension = Path.GetExtension(rootedPath);
         if (IsSourceFile(extension))
         {
-            return IncludeFile(rootedPath, helpPath);
+            return IncludeFile(rootedPath, helpPath, restrictScriptSource, workspacePath);
         }
         else if (System.IO.Directory.Exists(rootedPath))
         {
-            return IncludePath(rootedPath, helpPath, moduleName, excludeDefaultRulePath);
+            return IncludePath(rootedPath, helpPath, moduleName, excludeDefaultRulePath, restrictScriptSource, workspacePath);
         }
         return null;
     }
@@ -446,24 +446,28 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
             path.EndsWith(".rule.jsonc", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static SourceFile[] IncludeFile(string path, string helpPath)
+    private static SourceFile[] IncludeFile(string path, string helpPath, RestrictScriptSource restrictScriptSource, string workspacePath)
     {
         if (!File.Exists(path))
             throw new FileNotFoundException(PSRuleResources.SourceNotFound, path);
 
+        var sourceType = GetSourceType(path);
+        if (sourceType == SourceType.Script && IgnoreScript(path, restrictScriptSource, workspacePath))
+            return null;
+
         helpPath ??= Path.GetDirectoryName(path);
-        return new SourceFile[] { new(path, null, GetSourceType(path), helpPath) };
+        return new SourceFile[] { new(path, null, sourceType, helpPath) };
     }
 
-    private static SourceFile[] IncludePath(string path, string helpPath, string moduleName, bool excludeDefaultRulePath)
+    private static SourceFile[] IncludePath(string path, string helpPath, string moduleName, bool excludeDefaultRulePath, RestrictScriptSource restrictScriptSource, string workspacePath)
     {
         if (!excludeDefaultRulePath)
         {
             var allFiles = System.IO.Directory.EnumerateFiles(path, SOURCE_FILE_PATTERN, SearchOption.AllDirectories);
-            return GetSourceFiles(allFiles, helpPath, moduleName);
+            return GetSourceFiles(allFiles, helpPath, moduleName, restrictScriptSource, workspacePath);
         }
         var filteredFiles = FilterFiles(path, SOURCE_FILE_PATTERN, dir => !PathContainsDefaultRulePath(dir));
-        return GetSourceFiles(filteredFiles, helpPath, moduleName);
+        return GetSourceFiles(filteredFiles, helpPath, moduleName, restrictScriptSource, workspacePath);
     }
 
     private static bool PathContainsDefaultRulePath(string path)
@@ -471,18 +475,31 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         return path.Contains(DEFAULT_RULE_PATH.TrimEnd(Path.AltDirectorySeparatorChar), StringComparison.OrdinalIgnoreCase);
     }
 
-    private static SourceFile[] GetSourceFiles(IEnumerable<string> files, string helpPath, string moduleName)
+    private static SourceFile[] GetSourceFiles(IEnumerable<string> files, string helpPath, string moduleName, RestrictScriptSource restrictScriptSource, string workspacePath)
     {
         var result = new List<SourceFile>();
         foreach (var file in files)
         {
             if (ShouldInclude(file))
             {
+                var sourceType = GetSourceType(file);
+                if (sourceType == SourceType.Script && IgnoreScript(file, restrictScriptSource, workspacePath))
+                    continue;
+
                 helpPath ??= Path.GetDirectoryName(file);
-                result.Add(new SourceFile(file, moduleName, GetSourceType(file), helpPath));
+                result.Add(new SourceFile(file, moduleName, sourceType, helpPath));
             }
         }
         return result.ToArray();
+    }
+
+    private static bool IgnoreScript(string path, RestrictScriptSource restrictScriptSource, string workspacePath)
+    {
+        if (restrictScriptSource == RestrictScriptSource.DisablePowerShell) return true;
+        if (restrictScriptSource == RestrictScriptSource.Unrestricted) return false;
+
+        path = Environment.GetRootedPath(path);
+        return path.StartsWith(workspacePath);
     }
 
     private static IEnumerable<string> FilterFiles(string path, string filePattern, Func<string, bool> directoryFilter)

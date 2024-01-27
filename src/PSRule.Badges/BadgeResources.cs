@@ -56,7 +56,7 @@ internal static class BadgeResources
     /// </summary>
     private static double Find(char c)
     {
-        if (_Char == null || _Width == null)  return 0d;
+        if (_Char == null || _Width == null) return 0d;
 
         var index = Array.BinarySearch(_Char, c);
         return index >= 0 ? _Width[index] : 0d;

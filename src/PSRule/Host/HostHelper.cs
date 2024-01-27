@@ -167,6 +167,9 @@ internal static class HostHelper
     /// </summary>
     private static ILanguageBlock[] GetPSLanguageBlocks(RunspaceContext context, Source[] sources)
     {
+        if (context.Pipeline.Option.Execution.RestrictScriptSource == Options.RestrictScriptSource.DisablePowerShell)
+            return Array.Empty<ILanguageBlock>();
+
         var results = new List<ILanguageBlock>();
         var ps = context.GetPowerShell();
 
@@ -250,7 +253,7 @@ internal static class HostHelper
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .WithTypeConverter(new FieldMapYamlTypeConverter())
             .WithTypeConverter(new StringArrayMapConverter())
-            .WithTypeConverter(new Converters.Yaml.StringArrayConverter())
+            .WithTypeConverter(new StringArrayConverter())
             .WithTypeConverter(new PSObjectYamlTypeConverter())
             .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
             .WithNodeDeserializer(
@@ -652,7 +655,7 @@ internal static class HostHelper
         if (blocks == null)
             return Array.Empty<SuppressionGroupV1>();
 
-        // Index suppression groups by Id
+        // Index suppression groups by Id.
         var results = new Dictionary<string, SuppressionGroupV1>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var block in blocks.OfType<SuppressionGroupV1>().ToArray())
@@ -660,7 +663,7 @@ internal static class HostHelper
             context.EnterLanguageScope(block.Source);
             try
             {
-                // Ignore suppression groups that don't match
+                // Ignore suppression groups that don't match.
                 if (!Match(context, block))
                     continue;
 
@@ -681,7 +684,7 @@ internal static class HostHelper
         if (blocks == null)
             return Array.Empty<ModuleConfigV1>();
 
-        // Index configurations by Name
+        // Index configurations by Name.
         var results = new Dictionary<string, ModuleConfigV1>(StringComparer.OrdinalIgnoreCase);
         foreach (var block in blocks.OfType<ModuleConfigV1>().ToArray())
         {
@@ -696,7 +699,7 @@ internal static class HostHelper
     /// </summary>
     private static IConvention[] GetConventions(ILanguageBlock[] blocks, RunspaceContext context)
     {
-        // Index by Id
+        // Index by Id.
         var index = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var results = new List<IConvention>(blocks.Length);
 
@@ -705,7 +708,7 @@ internal static class HostHelper
             context.EnterLanguageScope(block.Source);
             try
             {
-                // Ignore blocks that don't match
+                // Ignore blocks that don't match.
                 if (!Match(context, block))
                     continue;
 
@@ -726,7 +729,7 @@ internal static class HostHelper
         if (blocks == null)
             return Array.Empty<SelectorV1>();
 
-        // Index selectors by Id
+        // Index selectors by Id.
         var results = new Dictionary<string, SelectorV1>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var block in blocks.OfType<SelectorV1>().ToArray())
@@ -734,7 +737,7 @@ internal static class HostHelper
             context.EnterLanguageScope(block.Source);
             try
             {
-                // Ignore selectors that don't match
+                // Ignore selectors that don't match.
                 if (!Match(context, block))
                     continue;
 
