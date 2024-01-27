@@ -554,8 +554,16 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     protected static ExecutionOption GetExecutionOption(ExecutionOption option)
     {
         var result = ExecutionOption.Combine(option, ExecutionOption.Default);
+
+        // Handle when preference is set to none. The default should be used.
+        result.AliasReference = result.AliasReference == ExecutionActionPreference.None ? ExecutionOption.Default.AliasReference.Value : result.AliasReference;
         result.DuplicateResourceId = result.DuplicateResourceId == ExecutionActionPreference.None ? ExecutionOption.Default.DuplicateResourceId.Value : result.DuplicateResourceId;
+        result.InvariantCulture = result.InvariantCulture == ExecutionActionPreference.None ? ExecutionOption.Default.InvariantCulture.Value : result.InvariantCulture;
+        result.RuleExcluded = result.RuleExcluded == ExecutionActionPreference.None ? ExecutionOption.Default.RuleExcluded.Value : result.RuleExcluded;
+        result.RuleInconclusive = result.RuleInconclusive == ExecutionActionPreference.None ? ExecutionOption.Default.RuleInconclusive.Value : result.RuleInconclusive;
+        result.RuleSuppressed = result.RuleSuppressed == ExecutionActionPreference.None ? ExecutionOption.Default.RuleSuppressed.Value : result.RuleSuppressed;
         result.SuppressionGroupExpired = result.SuppressionGroupExpired == ExecutionActionPreference.None ? ExecutionOption.Default.SuppressionGroupExpired.Value : result.SuppressionGroupExpired;
+        result.UnprocessedObject = result.UnprocessedObject == ExecutionActionPreference.None ? ExecutionOption.Default.UnprocessedObject.Value : result.UnprocessedObject;
         return result;
     }
 

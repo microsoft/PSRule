@@ -25,11 +25,13 @@ public interface IExecutionOption : IOption
 
     /// <summary>
     /// Configures the hashing algorithm used by the PSRule runtime.
+    /// The default is <see cref="HashAlgorithm.SHA512"/>.
     /// </summary>
     HashAlgorithm HashAlgorithm { get; }
 
     /// <summary>
-    /// The langauge mode to execute PowerShell code with.
+    /// The language mode to execute PowerShell code with.
+    /// The default is <see cref="LanguageMode.FullLanguage"/>.
     /// </summary>
     LanguageMode LanguageMode { get; }
 
@@ -38,6 +40,12 @@ public interface IExecutionOption : IOption
     /// The default is <see cref="SessionState.BuiltIn"/>.
     /// </summary>
     SessionState InitialSessionState { get; }
+
+    /// <summary>
+    /// Configures where to allow PowerShell language features (such as rules and conventions) to run from.
+    /// The default is <see cref="RestrictScriptSource.Unrestricted"/>.
+    /// </summary>
+    RestrictScriptSource RestrictScriptSource { get; }
 
     /// <summary>
     /// Determines how to handle expired suppression groups.
@@ -115,6 +123,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     private const LanguageMode DEFAULT_LANGUAGEMODE = Options.LanguageMode.FullLanguage;
     private const ExecutionActionPreference DEFAULT_DUPLICATERESOURCEID = ExecutionActionPreference.Error;
     private const SessionState DEFAULT_INITIALSESSIONSTATE = SessionState.BuiltIn;
+    private const RestrictScriptSource DEFAULT_RESTRICTSCRIPTSOURCE = Options.RestrictScriptSource.Unrestricted;
     private const ExecutionActionPreference DEFAULT_SUPPRESSIONGROUPEXPIRED = ExecutionActionPreference.Warn;
     private const ExecutionActionPreference DEFAULT_RULEEXCLUDED = ExecutionActionPreference.Ignore;
     private const ExecutionActionPreference DEFAULT_RULESUPPRESSED = ExecutionActionPreference.Warn;
@@ -130,6 +139,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
         HashAlgorithm = DEFAULT_HASHALGORITHM,
         LanguageMode = DEFAULT_LANGUAGEMODE,
         InitialSessionState = DEFAULT_INITIALSESSIONSTATE,
+        RestrictScriptSource = DEFAULT_RESTRICTSCRIPTSOURCE,
         SuppressionGroupExpired = DEFAULT_SUPPRESSIONGROUPEXPIRED,
         RuleExcluded = DEFAULT_RULEEXCLUDED,
         RuleSuppressed = DEFAULT_RULESUPPRESSED,
@@ -148,6 +158,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
         HashAlgorithm = null;
         LanguageMode = null;
         InitialSessionState = null;
+        RestrictScriptSource = null;
         SuppressionGroupExpired = null;
         RuleExcluded = null;
         RuleSuppressed = null;
@@ -170,6 +181,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
         HashAlgorithm = option.HashAlgorithm;
         LanguageMode = option.LanguageMode;
         InitialSessionState = option.InitialSessionState;
+        RestrictScriptSource = option.RestrictScriptSource;
         SuppressionGroupExpired = option.SuppressionGroupExpired;
         RuleExcluded = option.RuleExcluded;
         RuleSuppressed = option.RuleSuppressed;
@@ -193,6 +205,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
             HashAlgorithm == other.HashAlgorithm &&
             LanguageMode == other.LanguageMode &&
             InitialSessionState == other.InitialSessionState &&
+            RestrictScriptSource == other.RestrictScriptSource &&
             SuppressionGroupExpired == other.SuppressionGroupExpired &&
             RuleExcluded == other.RuleExcluded &&
             RuleSuppressed == other.RuleSuppressed &&
@@ -212,6 +225,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
             hash = hash * 23 + (HashAlgorithm.HasValue ? HashAlgorithm.Value.GetHashCode() : 0);
             hash = hash * 23 + (LanguageMode.HasValue ? LanguageMode.Value.GetHashCode() : 0);
             hash = hash * 23 + (InitialSessionState.HasValue ? InitialSessionState.Value.GetHashCode() : 0);
+            hash = hash * 23 + (RestrictScriptSource.HasValue ? RestrictScriptSource.Value.GetHashCode() : 0);
             hash = hash * 23 + (SuppressionGroupExpired.HasValue ? SuppressionGroupExpired.Value.GetHashCode() : 0);
             hash = hash * 23 + (RuleExcluded.HasValue ? RuleExcluded.Value.GetHashCode() : 0);
             hash = hash * 23 + (RuleSuppressed.HasValue ? RuleSuppressed.Value.GetHashCode() : 0);
@@ -235,6 +249,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
             HashAlgorithm = o1?.HashAlgorithm ?? o2?.HashAlgorithm,
             LanguageMode = o1?.LanguageMode ?? o2?.LanguageMode,
             InitialSessionState = o1?.InitialSessionState ?? o2?.InitialSessionState,
+            RestrictScriptSource = o1?.RestrictScriptSource ?? o2?.RestrictScriptSource,
             SuppressionGroupExpired = o1?.SuppressionGroupExpired ?? o2?.SuppressionGroupExpired,
             RuleExcluded = o1?.RuleExcluded ?? o2?.RuleExcluded,
             RuleSuppressed = o1?.RuleSuppressed ?? o2?.RuleSuppressed,
@@ -264,7 +279,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     public HashAlgorithm? HashAlgorithm { get; set; }
 
     /// <summary>
-    /// The langauge mode to execute PowerShell code with.
+    /// The language mode to execute PowerShell code with.
     /// </summary>
     [DefaultValue(null)]
     public LanguageMode? LanguageMode { get; set; }
@@ -275,6 +290,13 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     /// </summary>
     [DefaultValue(null)]
     public SessionState? InitialSessionState { get; set; }
+
+    /// <summary>
+    /// Configures where to allow PowerShell language features (such as rules and conventions) to run from.
+    /// The default is <see cref="RestrictScriptSource.Unrestricted"/>.
+    /// </summary>
+    [DefaultValue(null)]
+    public RestrictScriptSource? RestrictScriptSource { get; set; }
 
     /// <summary>
     /// Determines how to handle expired suppression groups.
@@ -357,6 +379,8 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
 
     SessionState IExecutionOption.InitialSessionState => InitialSessionState ?? DEFAULT_INITIALSESSIONSTATE;
 
+    RestrictScriptSource IExecutionOption.RestrictScriptSource => RestrictScriptSource ?? DEFAULT_RESTRICTSCRIPTSOURCE;
+
     ExecutionActionPreference IExecutionOption.SuppressionGroupExpired => SuppressionGroupExpired ?? DEFAULT_SUPPRESSIONGROUPEXPIRED;
 
     ExecutionActionPreference IExecutionOption.RuleExcluded => RuleExcluded ?? DEFAULT_RULEEXCLUDED;
@@ -389,6 +413,9 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
 
         if (Environment.TryEnum("PSRULE_EXECUTION_INITIALSESSIONSTATE", out SessionState initialSessionState))
             InitialSessionState = initialSessionState;
+
+        if (Environment.TryEnum("PSRULE_EXECUTION_RESTRICTSCRIPTSOURCE", out RestrictScriptSource restrictScriptSource))
+            RestrictScriptSource = restrictScriptSource;
 
         if (Environment.TryEnum("PSRULE_EXECUTION_SUPPRESSIONGROUPEXPIRED", out ExecutionActionPreference suppressionGroupExpired))
             SuppressionGroupExpired = suppressionGroupExpired;
@@ -428,6 +455,9 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
 
         if (index.TryPopEnum("Execution.InitialSessionState", out SessionState initialSessionState))
             InitialSessionState = initialSessionState;
+
+        if (index.TryPopEnum("Execution.RestrictScriptSource", out RestrictScriptSource restrictScriptSource))
+            RestrictScriptSource = restrictScriptSource;
 
         if (index.TryPopEnum("Execution.SuppressionGroupExpired", out ExecutionActionPreference suppressionGroupExpired))
             SuppressionGroupExpired = suppressionGroupExpired;

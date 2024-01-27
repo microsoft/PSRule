@@ -5,7 +5,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using System.Security.Cryptography;
 using System.Text;
 using PSRule.Configuration;
 using PSRule.Definitions;

@@ -1101,6 +1101,45 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Execution.RestrictScriptSource' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.RestrictScriptSource | Should -Be 'Unrestricted';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.RestrictScriptSource' = 'ModuleOnly' };
+            $option.Execution.RestrictScriptSource | Should -Be 'ModuleOnly';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.RestrictScriptSource | Should -Be 'ModuleOnly';
+        }
+
+        It 'from Environment' {
+            try {
+                # With bool
+                $Env:PSRULE_EXECUTION_RESTRICTSCRIPTSOURCE = 'moduleonly';
+                $option = New-PSRuleOption;
+                $option.Execution.RestrictScriptSource | Should -Be 'ModuleOnly';
+
+                # With int
+                $Env:PSRULE_EXECUTION_RESTRICTSCRIPTSOURCE = '1';
+                $option = New-PSRuleOption;
+                $option.Execution.RestrictScriptSource | Should -Be 'ModuleOnly';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_RESTRICTSCRIPTSOURCE' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -RestrictScriptSource 'ModuleOnly' -Path $emptyOptionsFilePath;
+            $option.Execution.RestrictScriptSource | Should -Be 'ModuleOnly';
+        }
+    }
+
     Context 'Read Include.Path' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

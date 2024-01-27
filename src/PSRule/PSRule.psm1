@@ -1173,6 +1173,11 @@ function New-PSRuleOption {
         [Alias('ExecutionInitialSessionState')]
         [PSRule.Options.SessionState]$InitialSessionState = [PSRule.Options.SessionState]::BuiltIn,
 
+        # Sets the Execution.RestrictScriptSource option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionRestrictScriptSource')]
+        [PSRule.Options.RestrictScriptSource]$RestrictScriptSource = [PSRule.Options.RestrictScriptSource]::Unrestricted,
+
         # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressionGroupExpired')]
@@ -1476,6 +1481,11 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInitialSessionState')]
         [PSRule.Options.SessionState]$InitialSessionState = [PSRule.Options.SessionState]::BuiltIn,
+
+        # Sets the Execution.RestrictScriptSource option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionRestrictScriptSource')]
+        [PSRule.Options.RestrictScriptSource]$RestrictScriptSource = [PSRule.Options.RestrictScriptSource]::Unrestricted,
 
         # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
@@ -2228,6 +2238,11 @@ function SetOptions {
         [Alias('ExecutionInitialSessionState')]
         [PSRule.Options.SessionState]$InitialSessionState = [PSRule.Options.SessionState]::BuiltIn,
 
+        # Sets the Execution.RestrictScriptSource option
+        [Parameter(Mandatory = $False)]
+        [Alias('ExecutionRestrictScriptSource')]
+        [PSRule.Options.RestrictScriptSource]$RestrictScriptSource = [PSRule.Options.RestrictScriptSource]::Unrestricted,
+
         # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressionGroupExpired')]
@@ -2442,6 +2457,11 @@ function SetOptions {
         # Sets option Execution.InitialSessionState
         if ($PSBoundParameters.ContainsKey('InitialSessionState')) {
             $Option.Execution.InitialSessionState = $InitialSessionState;
+        }
+
+        # Sets option Execution.RestrictScriptSource
+        if ($PSBoundParameters.ContainsKey('RestrictScriptSource')) {
+            $Option.Execution.RestrictScriptSource = $RestrictScriptSource;
         }
 
         # Sets option Execution.SuppressionGroupExpired

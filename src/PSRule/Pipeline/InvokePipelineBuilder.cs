@@ -132,8 +132,10 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
                     files.Add(Source[i].File[j].Path);
             }
         }
-        if (files.Count > 0)
+        if (files.Count > 0 && Option.Execution.RestrictScriptSource != Options.RestrictScriptSource.DisablePowerShell)
+        {
             HostHelper.UnblockFile(writer, _TrustedPublishers.ToArray(), files.ToArray());
+        }
     }
 
     private static bool IsBlocked(string path)

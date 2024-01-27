@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace PSRule.Options;
 
@@ -15,12 +15,12 @@ namespace PSRule.Options;
 public enum LanguageMode
 {
     /// <summary>
-    /// PowerShell code executes unconstrained.
+    /// Executes with all language features.
     /// </summary>
     FullLanguage = 0,
 
     /// <summary>
-    /// PowerShell code executes in constrained language mode that restricts the types and methods that can be used.
+    /// Executes in constrained language mode that restricts the types and methods that can be used.
     /// </summary>
     ConstrainedLanguage = 1
 }
