@@ -74,43 +74,46 @@ internal sealed class ModuleCommand
         }
 
         // Restore from included modules.
-        foreach (var includeModule in clientContext.Option.Include.Module)
+        if (clientContext.Option.Include?.Module != null && clientContext.Option.Include.Module.Length > 0)
         {
-            // Skip modules already in the lock unless force is used.
-            if (file.Modules.TryGetValue(includeModule, out var lockEntry))
-                continue;
+            foreach (var includeModule in clientContext.Option.Include.Module)
+            {
+                // Skip modules already in the lock unless force is used.
+                if (file.Modules.TryGetValue(includeModule, out var lockEntry))
+                    continue;
 
-            // Get a constraint if set from options.
-            var moduleConstraint = requires.TryGetValue(includeModule, out var c) ? c : null;
+                // Get a constraint if set from options.
+                var moduleConstraint = requires.TryGetValue(includeModule, out var c) ? c : null;
 
-            // Check if the installed version matches the constraint.
-            if (IsInstalled(pwsh, includeModule, null, out var installedVersion) &&
-                !operationOptions.Force &&
-                (moduleConstraint == null || moduleConstraint.Equals(installedVersion)))
-            {
-                // invocation.Log(Messages.UsingModule, includeModule, installedVersion.ToString());
-                clientContext.LogVerbose($"The module {includeModule} is already installed.");
-                continue;
-            }
-
-            // Find the ideal version.
-            var idealVersion = FindVersion(pwsh, includeModule, moduleConstraint, null, null);
-            if (idealVersion != null)
-            {
-                InstallVersion(clientContext, pwsh, includeModule, idealVersion.ToString());
-            }
-            else if (idealVersion == null)
-            {
-                clientContext.LogError(Messages.Error_502, includeModule);
-                exitCode = ERROR_MODULE_FAILED_TO_FIND;
-            }
-            else if (pwsh.HadErrors)
-            {
-                exitCode = ERROR_MODULE_FAILED_TO_INSTALL;
-                clientContext.LogError(Messages.Error_501, includeModule, idealVersion);
-                foreach (var error in pwsh.Streams.Error)
+                // Check if the installed version matches the constraint.
+                if (IsInstalled(pwsh, includeModule, null, out var installedVersion) &&
+                    !operationOptions.Force &&
+                    (moduleConstraint == null || moduleConstraint.Equals(installedVersion)))
                 {
-                    clientContext.LogError(error.Exception.Message);
+                    // invocation.Log(Messages.UsingModule, includeModule, installedVersion.ToString());
+                    clientContext.LogVerbose($"The module {includeModule} is already installed.");
+                    continue;
+                }
+
+                // Find the ideal version.
+                var idealVersion = FindVersion(pwsh, includeModule, moduleConstraint, null, null);
+                if (idealVersion != null)
+                {
+                    InstallVersion(clientContext, pwsh, includeModule, idealVersion.ToString());
+                }
+                else if (idealVersion == null)
+                {
+                    clientContext.LogError(Messages.Error_502, includeModule);
+                    exitCode = ERROR_MODULE_FAILED_TO_FIND;
+                }
+                else if (pwsh.HadErrors)
+                {
+                    exitCode = ERROR_MODULE_FAILED_TO_INSTALL;
+                    clientContext.LogError(Messages.Error_501, includeModule, idealVersion);
+                    foreach (var error in pwsh.Streams.Error)
+                    {
+                        clientContext.LogError(error.Exception.Message);
+                    }
                 }
             }
         }
@@ -134,32 +137,35 @@ internal sealed class ModuleCommand
         using var pwsh = PowerShell.Create();
 
         // Add for any included modules.
-        foreach (var includeModule in clientContext.Option.Include.Module)
+        if (clientContext.Option.Include?.Module != null && clientContext.Option.Include.Module.Length > 0)
         {
-            // Skip modules already in the lock unless force is used.
-            if (file.Modules.TryGetValue(includeModule, out var lockEntry))
-                continue;
-
-            // Get a constraint if set from options.
-            var moduleConstraint = requires.TryGetValue(includeModule, out var c) ? c : null;
-
-            // Find the ideal version.
-            var idealVersion = FindVersion(pwsh, includeModule, moduleConstraint, null, null);
-            if (idealVersion == null)
+            foreach (var includeModule in clientContext.Option.Include.Module)
             {
-                clientContext.LogError(Messages.Error_502, includeModule);
-                return ERROR_MODULE_FAILED_TO_FIND;
+                // Skip modules already in the lock unless force is used.
+                if (file.Modules.TryGetValue(includeModule, out var lockEntry))
+                    continue;
+
+                // Get a constraint if set from options.
+                var moduleConstraint = requires.TryGetValue(includeModule, out var c) ? c : null;
+
+                // Find the ideal version.
+                var idealVersion = FindVersion(pwsh, includeModule, moduleConstraint, null, null);
+                if (idealVersion == null)
+                {
+                    clientContext.LogError(Messages.Error_502, includeModule);
+                    return ERROR_MODULE_FAILED_TO_FIND;
+                }
+
+                if (lockEntry?.Version == idealVersion)
+                    continue;
+
+                // invocation.Log(Messages.UsingModule, includeModule, idealVersion.ToString());
+
+                file.Modules[includeModule] = new LockEntry
+                {
+                    Version = idealVersion
+                };
             }
-
-            if (lockEntry?.Version == idealVersion)
-                continue;
-
-            // invocation.Log(Messages.UsingModule, includeModule, idealVersion.ToString());
-
-            file.Modules[includeModule] = new LockEntry
-            {
-                Version = idealVersion
-            };
         }
 
         file.Write(null);
