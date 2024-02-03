@@ -25,6 +25,22 @@ public sealed class CommandTests
     }
 
     [Fact]
+    public async Task ModuleInit()
+    {
+        var console = new TestConsole();
+        var builder = ClientBuilder.New();
+        var module = builder.Subcommands.FirstOrDefault(c => c.Name == "module");
+
+        Assert.NotNull(module);
+        Assert.NotNull(module.Subcommands.FirstOrDefault(c => c.Name == "init"));
+
+        await builder.InvokeAsync("module init", console);
+
+        var output = console.Out.ToString();
+        Assert.NotNull(output);
+    }
+
+    [Fact]
     public async Task ModuleRestore()
     {
         var console = new TestConsole();
