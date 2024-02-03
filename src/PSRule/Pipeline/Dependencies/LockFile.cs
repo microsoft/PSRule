@@ -57,7 +57,6 @@ public sealed class LockFile
                 {
                     new SemanticVersionConverter()
                 },
-
             });
         }
         return new LockFile();
