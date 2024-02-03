@@ -1,6 +1,9 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
 {
-  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
-  "name": "PSRule dev",
+  "name": "PSRule development environment",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "image": "mcr.microsoft.com/devcontainers/dotnet:1-8.0-bookworm",
   "customizations": {
     "vscode": {
       "settings": {
@@ -23,20 +26,16 @@
     }
   },
   "features": {
-    "ghcr.io/devcontainers/features/github-cli": {
+    "ghcr.io/devcontainers/features/github-cli:1": {
       "version": "latest"
     },
-    "ghcr.io/devcontainers/features/powershell": {
+    "ghcr.io/devcontainers/features/powershell:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
       "version": "latest"
     }
   },
   "onCreateCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-build.ps1",
-  "postStartCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-start.ps1",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "args": {
-      "VARIANT": "6.0-bullseye-slim"
-    }
-  },
-  "remoteUser": "vscode"
+  "postStartCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-start.ps1"
 }

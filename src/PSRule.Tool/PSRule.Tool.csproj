@@ -8,7 +8,7 @@
     <ProjectGuid>{bddbfdb8-614f-4b8a-930c-dcb60144598c}</ProjectGuid>
     <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <StartupObject>PSRule.Tool.Program</StartupObject>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -19,8 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.3.7" />
-    <PackageReference Include="System.Management.Automation" Version="7.4.0" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.1" />
+    <PackageReference Include="System.Management.Automation" Version="7.4.1" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>

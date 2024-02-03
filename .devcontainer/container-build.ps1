@@ -10,6 +10,12 @@ sudo apt install python3-pip -y
 sudo python3 -m pip install --upgrade pip
 sudo python3 -m pip install wheel
 
+# Install Python packages
+pip install -r requirements-docs.txt
+
+# Restore .NET packages
+dotnet restore
+
 # Install PowerShell dependencies
 $ProgressPreference = [System.Management.Automation.ActionPreference]::SilentlyContinue;
 if ($Null -eq (Get-PackageProvider -Name NuGet -ErrorAction Ignore)) {
