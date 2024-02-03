@@ -104,7 +104,7 @@ task BuildDotNet {
     }
     exec {
         # Build library
-        dotnet build src/PSRule.Tool -c $Configuration -f net7.0 -p:version=$Build
+        dotnet build src/PSRule.Tool -c $Configuration -f net8.0 -p:version=$Build
         dotnet build src/PSRule.SDK -c $Configuration -f netstandard2.0 -p:version=$Build
         dotnet publish src/PSRule -c $Configuration -f netstandard2.0 -o $(Join-Path -Path $PWD -ChildPath out/modules/PSRule) -p:version=$Build
     }
@@ -327,7 +327,7 @@ task Rules {
 
 task Benchmark {
     if ($Benchmark -or $BuildTask -eq 'Benchmark') {
-        dotnet run --project src/PSRule.Benchmark -f net7.0 -c Release -- benchmark --output $PWD;
+        dotnet run --project src/PSRule.Benchmark -f net8.0 -c Release -- benchmark --output $PWD;
     }
 }
 
