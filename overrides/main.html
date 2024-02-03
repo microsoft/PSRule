@@ -44,3 +44,10 @@
 
   {% include "partials/giscus.html" %}
 {% endblock %}
+
+{% block announce %}
+  You are viewing the next version PSRule.
+  <a href="{{ '../' ~ base_url }}"> 
+    <strong>Click here to go to latest stable version.</strong>
+  </a>
+{% endblock %}

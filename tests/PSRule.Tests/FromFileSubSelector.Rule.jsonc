@@ -1,66 +1,90 @@
 [
-    {
-        // Synopsis: A rule with sub-selector pre-condition.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "JsonRuleWithPrecondition"
-        },
-        "spec": {
-            "where": {
-                "field": "kind",
-                "equals": "test"
-            },
-            "condition": {
-                "field": "resources",
-                "count": 2
-            }
-        }
+  {
+    // Synopsis: A rule with sub-selector pre-condition.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "JsonRuleWithPrecondition"
     },
-    {
-        // Synopsis: A rule with sub-selector filter.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "JsonRuleWithSubselector"
-        },
-        "spec": {
-            "condition": {
-                "field": "resources",
-                "where": {
-                    "field": ".",
-                    "isString": true
-                },
-                "allOf": [
-                    {
-                        "field": ".",
-                        "equals": "abc"
-                    }
-                ]
-            }
-        }
-    },
-    {
-        // Synopsis: A rule with sub-selector filter.
-        "apiVersion": "github.com/microsoft/PSRule/v1",
-        "kind": "Rule",
-        "metadata": {
-            "name": "JsonRuleWithSubselectorReordered"
-        },
-        "spec": {
-            "condition": {
-                "allOf": [
-                    {
-                        "field": ".",
-                        "equals": "abc"
-                    }
-                ],
-                "field": "resources",
-                "where": {
-                    "field": ".",
-                    "equals": "abc"
-                }
-            }
-        }
+    "spec": {
+      "where": {
+        "field": "kind",
+        "equals": "test"
+      },
+      "condition": {
+        "field": "resources",
+        "count": 2
+      }
     }
+  },
+  {
+    // Synopsis: A rule with sub-selector filter.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "JsonRuleWithSubselector"
+    },
+    "spec": {
+      "condition": {
+        "field": "resources",
+        "where": {
+          "field": ".",
+          "isString": true
+        },
+        "allOf": [
+          {
+            "field": ".",
+            "equals": "abc"
+          }
+        ]
+      }
+    }
+  },
+  {
+    // Synopsis: A rule with sub-selector filter.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "JsonRuleWithSubselectorReordered"
+    },
+    "spec": {
+      "condition": {
+        "allOf": [
+          {
+            "field": ".",
+            "equals": "abc"
+          }
+        ],
+        "field": "resources",
+        "where": {
+          "field": ".",
+          "equals": "abc"
+        }
+      }
+    }
+  },
+  {
+    // Synopsis: A rule with a sub-selector quantifier.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Rule",
+    "metadata": {
+      "name": "JsonRuleWithQuantifier"
+    },
+    "spec": {
+      "condition": {
+        "field": "resources[*].properties.logs[*]",
+        "greaterOrEqual": 1,
+        "allOf": [
+          {
+            "field": "category",
+            "equals": "firewall"
+          },
+          {
+            "field": "enabled",
+            "equals": true
+          }
+        ]
+      }
+    }
+  }
 ]

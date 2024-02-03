@@ -1,49 +1,48 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace PSRule.Definitions
+namespace PSRule.Definitions;
+
+/// <summary>
+/// A source location for a PSRule expression.
+/// </summary>
+public interface ISourceExtent
 {
     /// <summary>
-    /// A source location for a PSRule expression.
+    /// The source file path.
     /// </summary>
-    public interface ISourceExtent
+    string File { get; }
+
+    /// <summary>
+    /// The first line of the expression.
+    /// </summary>
+    int? Line { get; }
+
+    /// <summary>
+    /// The first position of the expression.
+    /// </summary>
+    int? Position { get; }
+}
+
+internal sealed class SourceExtent : ISourceExtent
+{
+    internal SourceExtent(string file, int? line)
+        : this(file, line, null)
     {
-        /// <summary>
-        /// The source file path.
-        /// </summary>
-        string File { get; }
-
-        /// <summary>
-        /// The first line of the expression.
-        /// </summary>
-        int? Line { get; }
-
-        /// <summary>
-        /// The first position of the expression.
-        /// </summary>
-        int? Position { get; }
+        File = file;
+        Line = line;
     }
 
-    internal sealed class SourceExtent : ISourceExtent
+    internal SourceExtent(string file, int? line, int? position)
     {
-        internal SourceExtent(string file, int? line)
-            : this(file, line, null)
-        {
-            File = file;
-            Line = line;
-        }
-
-        internal SourceExtent(string file, int? line, int? position)
-        {
-            File = file;
-            Line = line;
-            Position = position;
-        }
-
-        public string File { get; }
-
-        public int? Line { get; }
-
-        public int? Position { get; }
+        File = file;
+        Line = line;
+        Position = position;
     }
+
+    public string File { get; }
+
+    public int? Line { get; }
+
+    public int? Position { get; }
 }

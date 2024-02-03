@@ -77,6 +77,10 @@ The `allOf` operator is used to require all nested expressions to match.
 When any nested expression does not match, `allOf` does not match.
 This is similar to a logical _and_ operation.
 
+Additionally sub-selectors can be used to modify the `allOf` operator.
+Sub-selectors allow filtering and looping through arrays of objects before the `allOf` operator is applied.
+See sub-selectors for more information.
+
 Syntax:
 
 ```yaml
@@ -120,6 +124,10 @@ spec:
 The `anyOf` operator is used to require one or more nested expressions to match.
 When any nested expression matches, `allOf` matches.
 This is similar to a logical _or_ operation.
+
+Additionally sub-selectors can be used to modify the `anyOf` operator.
+Sub-selectors allow filtering and looping through arrays of objects before the `anyOf` operator is applied.
+See sub-selectors for more information.
 
 Syntax:
 

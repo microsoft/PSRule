@@ -15,14 +15,16 @@ Sets options that configure PSRule execution.
 
 ```text
 Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force] [-AllowClobber]
- [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
- [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
- [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>] [-AliasReferenceWarning <Boolean>]
- [-DuplicateResourceId <ExecutionActionPreference>] [-InconclusiveWarning <Boolean>]
- [-InvariantCultureWarning <Boolean>] [-InitialSessionState <SessionState>] [-NotProcessedWarning <Boolean>]
- [-SuppressedRuleWarning <Boolean>] [-SuppressionGroupExpired <ExecutionActionPreference>]
- [-ExecutionRuleExcluded <ExecutionActionPreference>] [-ExecutionRuleSuppressed <ExecutionActionPreference>]
- [-IncludeModule <String[]>] [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
+ [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
+ [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
+ [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
+ [-DuplicateResourceId <ExecutionActionPreference>] [-InitialSessionState <SessionState>]
+ [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
+ [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-ExecutionRuleInconclusive <ExecutionActionPreference>]
+ [-ExecutionInvariantCulture <ExecutionActionPreference>]
+ [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
+ [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
  [-InputIgnoreObjectSource <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>]
  [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputPathIgnore <String[]>]
  [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
@@ -141,6 +143,24 @@ Overwrite YAML files that contain comments.
 
 ```yaml
 Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BaselineGroup
+
+Sets the option `Baseline.Group`.
+The option `Baseline.Group` allows a named group of baselines to be defined and later referenced.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: Hashtable
 Parameter Sets: (All)
 Aliases:
 
@@ -295,56 +315,74 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -InconclusiveWarning
+### -ExecutionAliasReference
 
-Sets the option `Execution.InconclusiveWarning`.
-The `Execution.InconclusiveWarning` option determines if a warning is generated when the outcome of a rule is inconclusive.
+Sets the `Execution.AliasReference` option.
+Determines how to handle when an alias to a resource is used.
 See about_PSRule_Options for more information.
 
 ```yaml
-Type: Boolean
+Type: ExecutionActionPreference
 Parameter Sets: (All)
-Aliases: ExecutionInconclusiveWarning
+Aliases:
 
 Required: False
 Position: Named
-Default value: True
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -NotProcessedWarning
+### -ExecutionInvariantCulture
 
-Sets the `Execution.NotProcessedWarning` option.
-The `Execution.NotProcessedWarning` option determines if a warning is generated when an object is not processed by any rule.
+Sets the `Execution.InvariantCulture` option.
+Determines how to report when an invariant culture is used.
 See about_PSRule_Options for more information.
 
 ```yaml
-Type: Boolean
+Type: ExecutionActionPreference
 Parameter Sets: (All)
-Aliases: ExecutionNotProcessedWarning
+Aliases:
 
 Required: False
 Position: Named
-Default value: True
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -SuppressedRuleWarning
+### -ExecutionRuleInconclusive
 
-Sets the `Execution.SuppressedRuleWarning` option.
-The `Execution.SuppressedRuleWarning` option determines if a warning is generated when a rule is suppressed.
+Sets the `Execution.RuleInconclusive` option.
+Determines how to handle rules that generate inconclusive results.
 See about_PSRule_Options for more information.
 
 ```yaml
-Type: Boolean
+Type: ExecutionActionPreference
 Parameter Sets: (All)
-Aliases: ExecutionSuppressedRuleWarning
+Aliases:
 
 Required: False
 Position: Named
-Default value: True
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionUnprocessedObject
+
+Sets the `Execution.UnprocessedObject` option.
+Determines how to report objects that are not processed by any rule.
+See about_PSRule_Options for more information.
+
+```yaml
+Type: ExecutionActionPreference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -883,40 +921,6 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -AliasReferenceWarning
-
-Sets the option `Execution.AliasReferenceWarning`.
-The `Execution.AliasReferenceWarning` option determines if a warning is logged when alises are referenced.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases: ExecutionAliasReferenceWarning
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -InvariantCultureWarning
-
-Sets the option `Execution.InvariantCultureWarning`.
-The `Execution.InvariantCultureWarning` option set if a warning is logged when invarient culture is detected.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases: ExecutionInvariantCultureWarning
-
-Required: False
-Position: Named
-Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

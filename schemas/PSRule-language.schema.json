@@ -845,14 +845,12 @@
         },
         {
           "type": "object",
-          "ztitle": "Value for object",
-          "zdescription": "A value to compare.",
+          "title": "Value for object",
+          "description": "A value to compare.",
           "not": {
-            "propertyNames": {
-              "enum": [
-                "$"
-              ]
-            }
+            "required": [
+              "$"
+            ]
           }
         },
         {
@@ -1365,15 +1363,7 @@
               "markdownDescription": "Must have the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
               "properties": {
                 "equals": {
-                  "title": "Equals",
-                  "description": "Must have the specified value.",
-                  "markdownDescription": "Must have the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#equals)",
-                  "default": "",
-                  "oneOf": [
-                    {
-                      "$ref": "#/definitions/selectorExpressionValue"
-                    }
-                  ]
+                  "$ref": "#/definitions/selectorExpressionValue"
                 },
                 "convert": {
                   "type": "boolean",
@@ -1415,7 +1405,8 @@
                 {
                   "$ref": "#/definitions/expressions/definitions/operands"
                 }
-              ]
+              ],
+              "additionalProperties": false
             },
             "count": {
               "type": "object",
@@ -1454,34 +1445,27 @@
               "required": [
                 "exists",
                 "field"
-              ]
+              ],
+              "additionalProperties": false
             },
             "notEquals": {
               "type": "object",
               "properties": {
                 "notEquals": {
-                  "title": "Not Equals",
-                  "description": "Must not have the specified value.",
-                  "markdownDescription": "Must not have the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
-                  "default": "",
-                  "oneOf": [
-                    {
-                      "$ref": "#/definitions/selectorExpressionValue"
-                    }
-                  ]
+                  "$ref": "#/definitions/selectorExpressionValue"
                 },
                 "convert": {
                   "type": "boolean",
                   "title": "Type conversion",
                   "description": "Convert type of compared operand.",
-                  "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
+                  "markdownDescription": "Convert type of compared operand.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
                   "default": false
                 },
                 "caseSensitive": {
                   "type": "boolean",
                   "title": "Case sensitive",
                   "description": "Determines if comparing values is case-sensitive. Only applies to string values.",
-                  "markdownDescription": "Determines if comparing values is case-sensitive. Only applies to string values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
+                  "markdownDescription": "Determines if comparing values is case-sensitive. Only applies to string values.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notequals)",
                   "default": false
                 },
                 "field": {
@@ -1510,7 +1494,8 @@
                 {
                   "$ref": "#/definitions/expressions/definitions/operands"
                 }
-              ]
+              ],
+              "additionalProperties": false
             },
             "hasValue": {
               "type": "object",
@@ -1536,7 +1521,8 @@
                 {
                   "$ref": "#/definitions/expressions/definitions/operands"
                 }
-              ]
+              ],
+              "additionalProperties": false
             },
             "match": {
               "type": "object",
@@ -1545,14 +1531,14 @@
                   "type": "string",
                   "title": "Match",
                   "description": "Must match the regular expression.",
-                  "markdownDescription": "Must match the regular expression. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#match)",
+                  "markdownDescription": "Must match the regular expression.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#match)",
                   "default": ""
                 },
                 "caseSensitive": {
                   "type": "boolean",
                   "title": "Case sensitive",
                   "description": "Determines if the regular expression uses case-sensitive matching.",
-                  "markdownDescription": "Determines if the regular expression uses case-sensitive matching. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#match)",
+                  "markdownDescription": "Determines if the regular expression uses case-sensitive matching.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#match)",
                   "default": false
                 },
                 "field": {
@@ -1590,14 +1576,14 @@
                   "type": "string",
                   "title": "Not Match",
                   "description": "Must not match the regular expression.",
-                  "markdownDescription": "Must not match the regular expression. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notmatch)",
+                  "markdownDescription": "Must not match the regular expression.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notmatch)",
                   "default": ""
                 },
                 "caseSensitive": {
                   "type": "boolean",
                   "title": "Case sensitive",
                   "description": "Determines if the regular expression uses case-sensitive matching.",
-                  "markdownDescription": "Determines if the regular expression uses case-sensitive matching. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notmatch)",
+                  "markdownDescription": "Determines if the regular expression uses case-sensitive matching.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notmatch)",
                   "default": false
                 },
                 "field": {
@@ -1635,7 +1621,7 @@
                   "type": "array",
                   "title": "In",
                   "description": "Must equal one of the specified values.",
-                  "markdownDescription": "Must equal one of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#in)",
+                  "markdownDescription": "Must equal one of the specified values.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#in)",
                   "default": [
                     ""
                   ],
@@ -1676,7 +1662,7 @@
                   "type": "array",
                   "title": "Not In",
                   "description": "Must not equal any of the specified values.",
-                  "markdownDescription": "Must not equal any of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notin)",
+                  "markdownDescription": "Must not equal any of the specified values.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notin)",
                   "default": [
                     ""
                   ],
@@ -1717,7 +1703,7 @@
                   "type": "array",
                   "title": "SetOf",
                   "description": "Must include all of but only specified values.",
-                  "markdownDescription": "Must include all of but only values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#setof)",
+                  "markdownDescription": "Must include all of but only values.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#setof)",
                   "default": [
                     ""
                   ],
@@ -1727,7 +1713,7 @@
                   "type": "boolean",
                   "title": "Case sensitive",
                   "description": "Determines if comparing values is case-sensitive.",
-                  "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#setof)",
+                  "markdownDescription": "Determines if comparing values is case-sensitive.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#setof)",
                   "default": false
                 },
                 "field": {
@@ -1762,7 +1748,7 @@
                   "type": "array",
                   "title": "Subset",
                   "description": "Must include all of the specified values.",
-                  "markdownDescription": "Must include all of the specified values. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#subset)",
+                  "markdownDescription": "Must include all of the specified values.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#subset)",
                   "default": [
                     ""
                   ],
@@ -1772,7 +1758,7 @@
                   "type": "boolean",
                   "title": "Case sensitive",
                   "description": "Determines if comparing values is case-sensitive.",
-                  "markdownDescription": "Determines if comparing values is case-sensitive. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#subset)",
+                  "markdownDescription": "Determines if comparing values is case-sensitive.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#subset)",
                   "default": false
                 },
                 "unique": {
@@ -1814,7 +1800,7 @@
                   "type": "integer",
                   "title": "NotCount",
                   "description": "Determines if operand does not have number of items.",
-                  "markdownDescription": "Determines if operand does not have number of items. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcount)",
+                  "markdownDescription": "Determines if operand does not have number of items.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#notcount)",
                   "minimum": 0,
                   "default": 0
                 },
@@ -1841,7 +1827,7 @@
                 "less": {
                   "title": "Less",
                   "description": "Must be less then the specified value.",
-                  "markdownDescription": "Must be less then the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                  "markdownDescription": "Must be less then the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
                   "default": 0,
                   "oneOf": [
                     {
@@ -1857,7 +1843,7 @@
                   "type": "boolean",
                   "title": "Type conversion",
                   "description": "Convert type of compared operand.",
-                  "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                  "markdownDescription": "Convert type of compared operand.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
                   "default": false
                 },
                 "field": {
@@ -1895,7 +1881,7 @@
                 "lessOrEquals": {
                   "title": "Less or Equal to",
                   "description": "Must be less or equal to the specified value.",
-                  "markdownDescription": "Must be less or equal to the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#lessorequals)",
+                  "markdownDescription": "Must be less or equal to the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#lessorequals)",
                   "default": 0,
                   "oneOf": [
                     {
@@ -1911,7 +1897,7 @@
                   "type": "boolean",
                   "title": "Type conversion",
                   "description": "Convert type of compared operand.",
-                  "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                  "markdownDescription": "Convert type of compared operand.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
                   "default": false
                 },
                 "field": {
@@ -1949,7 +1935,7 @@
                 "greater": {
                   "title": "Greater",
                   "description": "Must be greater then the specified value.",
-                  "markdownDescription": "Must be greater then the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greater)",
+                  "markdownDescription": "Must be greater then the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greater)",
                   "default": 0,
                   "oneOf": [
                     {
@@ -1965,7 +1951,7 @@
                   "type": "boolean",
                   "title": "Type conversion",
                   "description": "Convert type of compared operand.",
-                  "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                  "markdownDescription": "Convert type of compared operand.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
                   "default": false
                 },
                 "field": {
@@ -1999,57 +1985,232 @@
             },
             "greaterOrEquals": {
               "type": "object",
-              "properties": {
-                "greaterOrEquals": {
-                  "title": "Greater or Equal to",
-                  "description": "Must be greater or equal to the specified value.",
-                  "markdownDescription": "Must be greater or equal to the specified value. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greaterorequals)",
-                  "default": 0,
-                  "oneOf": [
-                    {
-                      "type": "integer"
-                    },
-                    {
-                      "type": "object",
-                      "$ref": "#/definitions/fn"
-                    }
-                  ]
-                },
-                "convert": {
-                  "type": "boolean",
-                  "title": "Type conversion",
-                  "description": "Convert type of compared operand.",
-                  "markdownDescription": "Convert type of compared operand. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
-                  "default": false
-                },
-                "field": {
-                  "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
-                },
-                "value": {
-                  "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
-                },
-                "type": {
-                  "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
-                },
-                "name": {
-                  "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
-                },
-                "source": {
-                  "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
-                },
-                "scope": {
-                  "$ref": "#/definitions/expressions/definitions/properties/definitions/scope"
-                }
-              },
-              "required": [
-                "greaterOrEquals"
-              ],
               "oneOf": [
                 {
-                  "$ref": "#/definitions/expressions/definitions/operands"
+                  "type": "object",
+                  "properties": {
+                    "greaterOrEquals": {
+                      "title": "Greater or Equal to",
+                      "description": "Must be greater or equal to the specified value.",
+                      "markdownDescription": "Must be greater or equal to the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greaterorequals)",
+                      "default": 0,
+                      "oneOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "object",
+                          "$ref": "#/definitions/fn"
+                        }
+                      ]
+                    },
+                    "convert": {
+                      "type": "boolean",
+                      "title": "Type conversion",
+                      "description": "Convert type of compared operand.",
+                      "markdownDescription": "Convert type of compared operand.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                      "default": false
+                    },
+                    "field": {
+                      "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                    }
+                  },
+                  "required": [
+                    "greaterOrEquals",
+                    "field"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "greaterOrEquals": {
+                      "title": "Greater or Equal to",
+                      "description": "Must be greater or equal to the specified value.",
+                      "markdownDescription": "Must be greater or equal to the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greaterorequals)",
+                      "default": 0,
+                      "oneOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "object",
+                          "$ref": "#/definitions/fn"
+                        }
+                      ]
+                    },
+                    "convert": {
+                      "type": "boolean",
+                      "title": "Type conversion",
+                      "description": "Convert type of compared operand.",
+                      "markdownDescription": "Convert type of compared operand.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                      "default": false
+                    },
+                    "value": {
+                      "$ref": "#/definitions/expressions/definitions/properties/definitions/value"
+                    }
+                  },
+                  "required": [
+                    "greaterOrEquals",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "greaterOrEquals": {
+                      "title": "Greater or Equal to",
+                      "description": "Must be greater or equal to the specified value.",
+                      "markdownDescription": "Must be greater or equal to the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greaterorequals)",
+                      "default": 0,
+                      "oneOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "object",
+                          "$ref": "#/definitions/fn"
+                        }
+                      ]
+                    },
+                    "convert": {
+                      "type": "boolean",
+                      "title": "Type conversion",
+                      "description": "Convert type of compared operand.",
+                      "markdownDescription": "Convert type of compared operand.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                      "default": false
+                    },
+                    "type": {
+                      "$ref": "#/definitions/expressions/definitions/properties/definitions/type"
+                    }
+                  },
+                  "required": [
+                    "greaterOrEquals",
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "greaterOrEquals": {
+                      "title": "Greater or Equal to",
+                      "description": "Must be greater or equal to the specified value.",
+                      "markdownDescription": "Must be greater or equal to the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greaterorequals)",
+                      "default": 0,
+                      "oneOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "object",
+                          "$ref": "#/definitions/fn"
+                        }
+                      ]
+                    },
+                    "convert": {
+                      "type": "boolean",
+                      "title": "Type conversion",
+                      "description": "Convert type of compared operand.",
+                      "markdownDescription": "Convert type of compared operand.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                      "default": false
+                    },
+                    "name": {
+                      "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
+                    }
+                  },
+                  "required": [
+                    "greaterOrEquals",
+                    "name"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "greaterOrEquals": {
+                      "title": "Greater or Equal to",
+                      "description": "Must be greater or equal to the specified value.",
+                      "markdownDescription": "Must be greater or equal to the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greaterorequals)",
+                      "default": 0,
+                      "oneOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "object",
+                          "$ref": "#/definitions/fn"
+                        }
+                      ]
+                    },
+                    "convert": {
+                      "type": "boolean",
+                      "title": "Type conversion",
+                      "description": "Convert type of compared operand.",
+                      "markdownDescription": "Convert type of compared operand.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                      "default": false
+                    },
+                    "source": {
+                      "$ref": "#/definitions/expressions/definitions/properties/definitions/source"
+                    }
+                  },
+                  "required": [
+                    "greaterOrEquals",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "greaterOrEquals": {
+                      "title": "Greater or Equal to",
+                      "description": "Must be greater or equal to the specified value.",
+                      "markdownDescription": "Must be greater or equal to the specified value.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#greaterorequals)",
+                      "default": 0,
+                      "oneOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "object",
+                          "$ref": "#/definitions/fn"
+                        }
+                      ]
+                    },
+                    "convert": {
+                      "type": "boolean",
+                      "title": "Type conversion",
+                      "description": "Convert type of compared operand.",
+                      "markdownDescription": "Convert type of compared operand.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#less)",
+                      "default": false
+                    },
+                    "scope": {
+                      "$ref": "#/definitions/expressions/definitions/properties/definitions/scope"
+                    }
+                  },
+                  "required": [
+                    "greaterOrEquals",
+                    "scope"
+                  ],
+                  "additionalProperties": false
                 }
               ],
-              "additionalProperties": false
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "allOf"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "anyOf"
+                    ]
+                  }
+                ]
+              }
             },
             "startsWith": {
               "type": "object",
@@ -2977,75 +3138,149 @@
               "title": "allOf",
               "description": "All of the expressions must be true.",
               "markdownDescription": "All of the expressions must be true.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#allof)",
-              "properties": {
-                "allOf": {
-                  "type": "array",
-                  "title": "AllOf",
-                  "description": "All of the expressions must be true.",
-                  "markdownDescription": "All of the expressions must be true.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#allof)",
-                  "items": {
-                    "$ref": "#/definitions/expressions"
-                  }
-                },
-                "field": {
-                  "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
-                },
-                "where": {
-                  "$ref": "#/definitions/expressions/definitions/properties/definitions/where"
-                }
-              },
-              "required": [
-                "allOf"
-              ],
               "oneOf": [
                 {
+                  "type": "object",
                   "properties": {
+                    "allOf": {
+                      "type": "array",
+                      "title": "AllOf",
+                      "description": "All of the expressions must be true.",
+                      "markdownDescription": "All of the expressions must be true.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#allof)",
+                      "items": {
+                        "$ref": "#/definitions/expressions"
+                      }
+                    }
+                  },
+                  "required": [
+                    "allOf"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "allOf": {
+                      "type": "array",
+                      "title": "AllOf",
+                      "description": "All of the expressions must be true.",
+                      "markdownDescription": "All of the expressions must be true.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#allof)",
+                      "items": {
+                        "$ref": "#/definitions/expressions"
+                      }
+                    },
                     "field": {
                       "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
                     },
                     "where": {
                       "$ref": "#/definitions/expressions/definitions/properties/definitions/where"
+                    },
+                    "less": {
+                      "type": "integer",
+                      "title": "Less than",
+                      "minimum": 0
+                    },
+                    "lessOrEqual": {
+                      "type": "integer",
+                      "title": "Less or equal to",
+                      "minimum": 0
+                    },
+                    "greater": {
+                      "type": "integer",
+                      "title": "Greater than",
+                      "minimum": 0
+                    },
+                    "greaterOrEqual": {
+                      "type": "integer",
+                      "title": "Greater or equal to",
+                      "minimum": 0
+                    },
+                    "count": {
+                      "type": "integer",
+                      "title": "Count",
+                      "minimum": 0
                     }
-                  }
+                  },
+                  "required": [
+                    "allOf",
+                    "field"
+                  ],
+                  "additionalProperties": false
                 }
-              ],
-              "additionalProperties": false
+              ]
             },
             "anyOf": {
               "type": "object",
-              "properties": {
-                "anyOf": {
-                  "type": "array",
-                  "title": "AnyOf",
-                  "description": "One of the expressions must be true.",
-                  "markdownDescription": "All of the expressions must be true.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#anyof)",
-                  "items": {
-                    "$ref": "#/definitions/expressions"
-                  }
-                },
-                "field": {
-                  "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
-                },
-                "where": {
-                  "$ref": "#/definitions/expressions/definitions/properties/definitions/where"
-                }
-              },
-              "required": [
-                "anyOf"
-              ],
               "oneOf": [
                 {
+                  "type": "object",
                   "properties": {
+                    "anyOf": {
+                      "type": "array",
+                      "title": "AnyOf",
+                      "description": "One of the expressions must be true.",
+                      "markdownDescription": "All of the expressions must be true.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#anyof)",
+                      "items": {
+                        "$ref": "#/definitions/expressions"
+                      }
+                    }
+                  },
+                  "required": [
+                    "anyOf"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "anyOf": {
+                      "type": "array",
+                      "title": "AnyOf",
+                      "description": "One of the expressions must be true.",
+                      "markdownDescription": "All of the expressions must be true.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#anyof)",
+                      "items": {
+                        "$ref": "#/definitions/expressions"
+                      }
+                    },
                     "field": {
                       "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
                     },
                     "where": {
                       "$ref": "#/definitions/expressions/definitions/properties/definitions/where"
+                    },
+                    "less": {
+                      "type": "integer",
+                      "title": "Less than",
+                      "minimum": 0
+                    },
+                    "lessOrEqual": {
+                      "type": "integer",
+                      "title": "Less or equal to",
+                      "minimum": 0
+                    },
+                    "greater": {
+                      "type": "integer",
+                      "title": "Greater than",
+                      "minimum": 0
+                    },
+                    "greaterOrEqual": {
+                      "type": "integer",
+                      "title": "Greater or equal to",
+                      "minimum": 0
+                    },
+                    "count": {
+                      "type": "integer",
+                      "title": "Count",
+                      "minimum": 0
                     }
-                  }
+                  },
+                  "required": [
+                    "anyOf",
+                    "field"
+                  ],
+                  "additionalProperties": false
                 }
-              ],
-              "additionalProperties": false
+              ]
             },
             "not": {
               "type": "object",
@@ -3068,9 +3303,10 @@
       }
     },
     "fn": {
-      "ztitle": "Value from function",
-      "zdescription": "A function expression that once evaluated specifies the value.",
-      "zmarkdownDescription": "A function expression that once evaluated specifies the value.",
+      "type": "object",
+      "title": "Value from function",
+      "description": "A function expression that once evaluated specifies the value.",
+      "markdownDescription": "A function expression that once evaluated specifies the value.",
       "properties": {
         "$": {
           "type": "object",
@@ -3121,6 +3357,12 @@
             },
             {
               "$ref": "#/definitions/fn/definitions/function/definitions/split"
+            },
+            {
+              "$ref": "#/definitions/fn/definitions/function/definitions/padLeft"
+            },
+            {
+              "$ref": "#/definitions/fn/definitions/function/definitions/padRight"
             }
           ],
           "definitions": {
@@ -3507,13 +3749,13 @@
                   "oneOf": [
                     {
                       "type": "string",
-                      "description": "The split function returns converts a string into an array by spliting based on a delimiter.",
-                      "markdownDescription": "The `split` function returns converts a string into an array by spliting based on a delimiter."
+                      "description": "The split function converts a string into an array by spliting based on a delimiter.",
+                      "markdownDescription": "The `split` function converts a string into an array by spliting based on a delimiter."
                     },
                     {
                       "type": "object",
-                      "description": "The split function returns converts a string into an array by spliting based on a delimiter.",
-                      "markdownDescription": "The `split` function returns converts a string into an array by spliting based on a delimiter.",
+                      "description": "The split function converts a string into an array by spliting based on a delimiter.",
+                      "markdownDescription": "The `split` function converts a string into an array by spliting based on a delimiter.",
                       "$ref": "#/definitions/fn/definitions/function"
                     }
                   ],
@@ -3544,6 +3786,90 @@
               "required": [
                 "split",
                 "delimiter"
+              ]
+            },
+            "padLeft": {
+              "type": "object",
+              "properties": {
+                "padLeft": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "title": "Pad Left",
+                      "description": "The padLeft function returns a string with a minimum of the specified length.",
+                      "markdownDescription": "The `padLeft` function returns a string with a minimum of the specified length."
+                    },
+                    {
+                      "type": "object",
+                      "title": "Pad Left",
+                      "description": "The padLeft function returns a string with a minimum of the specified length.",
+                      "markdownDescription": "The `padLeft` function returns a string with a minimum of the specified length.",
+                      "$ref": "#/definitions/fn/definitions/function"
+                    }
+                  ],
+                  "default": {}
+                },
+                "totalLength": {
+                  "type": "integer",
+                  "title": "Total length",
+                  "description": "Sets the number of characters to pad the string to. If the string is less then the specified number of characters one or more padding characters will be added until the length is reached.",
+                  "minimum": 1
+                },
+                "paddingCharacter": {
+                  "type": "string",
+                  "title": "Padding characters",
+                  "description": "Sets the character to use for padding the string to reach the configured total length.",
+                  "minLength": 1,
+                  "maxLength": 1,
+                  "default": " "
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "padLeft",
+                "totalLength"
+              ]
+            },
+            "padRight": {
+              "type": "object",
+              "properties": {
+                "padRight": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "title": "Pad Right",
+                      "description": "The padRight function returns a string with a minimum of the specified length.",
+                      "markdownDescription": "The `padRight` function returns a string with a minimum of the specified length."
+                    },
+                    {
+                      "type": "object",
+                      "title": "Pad Right",
+                      "description": "The padRight function returns a string with a minimum of the specified length.",
+                      "markdownDescription": "The `padRight` function returns a string with a minimum of the specified length.",
+                      "$ref": "#/definitions/fn/definitions/function"
+                    }
+                  ],
+                  "default": {}
+                },
+                "totalLength": {
+                  "type": "integer",
+                  "title": "Total length",
+                  "description": "Sets the number of characters to pad the string to. If the string is less then the specified number of characters one or more padding characters will be added until the length is reached.",
+                  "minimum": 1
+                },
+                "paddingCharacter": {
+                  "type": "string",
+                  "title": "Padding characters",
+                  "description": "Sets the character to use for padding the string to reach the configured total length.",
+                  "minLength": 1,
+                  "maxLength": 1,
+                  "default": " "
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "padRight",
+                "totalLength"
               ]
             }
           }

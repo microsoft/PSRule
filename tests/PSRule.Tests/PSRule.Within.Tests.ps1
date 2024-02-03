@@ -125,7 +125,7 @@ Describe 'PSRule -- Within keyword' -Tag 'Within' {
                     Name = 'TestObject2'
                 }
             )
-            $option = New-PSRuleOption -NotProcessedWarning $False
+            $option = New-PSRuleOption -ExecutionUnprocessedObject Ignore;
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'WithinCondition' -Outcome All -Option $option;
 
             # Test positive cases

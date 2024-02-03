@@ -3,28 +3,27 @@
 
 using System.Management.Automation;
 using PSRule.Host;
-using Xunit;
 
-namespace PSRule
+namespace PSRule;
+
+public sealed class LanguageVisitorTests
 {
-    public sealed class LanguageVisitorTests
+    [Fact]
+    public void NestedRule()
     {
-        [Fact]
-        public void NestedRule()
-        {
-            var content = @"
+        var content = @"
 # Header comment
 Rule 'Rule1' {
 
 }
 ";
-            var scriptAst = ScriptBlock.Create(content).Ast;
-            var visitor = new RuleLanguageAst();
-            scriptAst.Visit(visitor);
+        var scriptAst = ScriptBlock.Create(content).Ast;
+        var visitor = new RuleLanguageAst();
+        scriptAst.Visit(visitor);
 
-            Assert.Null(visitor.Errors);
+        Assert.Null(visitor.Errors);
 
-            content = @"
+        content = @"
 # Header comment
 Rule 'Rule1' {
     Rule 'Rule2' {
@@ -32,17 +31,17 @@ Rule 'Rule1' {
     }
 }
 ";
-            scriptAst = ScriptBlock.Create(content).Ast;
-            visitor = new RuleLanguageAst();
-            scriptAst.Visit(visitor);
+        scriptAst = ScriptBlock.Create(content).Ast;
+        visitor = new RuleLanguageAst();
+        scriptAst.Visit(visitor);
 
-            Assert.Single(visitor.Errors);
-        }
+        Assert.Single(visitor.Errors);
+    }
 
-        [Fact]
-        public void UnvalidRule()
-        {
-            var content = @"
+    [Fact]
+    public void UnvalidRule()
+    {
+        var content = @"
 Rule '' {
 
 }
@@ -71,12 +70,11 @@ Rule -Name 'Rule3' -Body {
 
 ";
 
-            var scriptAst = ScriptBlock.Create(content).Ast;
-            var visitor = new RuleLanguageAst();
-            scriptAst.Visit(visitor);
+        var scriptAst = ScriptBlock.Create(content).Ast;
+        var visitor = new RuleLanguageAst();
+        scriptAst.Visit(visitor);
 
-            Assert.NotNull(visitor.Errors);
-            Assert.Equal(4, visitor.Errors.Count);
-        }
+        Assert.NotNull(visitor.Errors);
+        Assert.Equal(4, visitor.Errors.Count);
     }
 }

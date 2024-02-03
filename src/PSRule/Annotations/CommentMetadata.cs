@@ -3,14 +3,13 @@
 
 using System.Diagnostics;
 
-namespace PSRule.Annotations
+namespace PSRule.Annotations;
+
+/// <summary>
+/// Metadata properties that can be exposed by comment help.
+/// </summary>
+[DebuggerDisplay("Synopsis = {Synopsis}")]
+internal sealed class CommentMetadata
 {
-    /// <summary>
-    /// Metadata properties that can be exposed by comment help.
-    /// </summary>
-    [DebuggerDisplay("Synopsis = {Synopsis}")]
-    internal sealed class CommentMetadata
-    {
-        public string Synopsis;
-    }
+    public string Synopsis;
 }

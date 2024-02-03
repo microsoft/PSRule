@@ -6,68 +6,67 @@ using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
 
-namespace PSRule.Commands
+namespace PSRule.Commands;
+
+internal sealed class InvokeConventionCommand : Cmdlet
 {
-    internal sealed class InvokeConventionCommand : Cmdlet
+    [Parameter()]
+    public ScriptBlock If;
+
+    [Parameter()]
+    public ScriptBlock Body;
+
+    [Parameter()]
+    public RunspaceScope Scope;
+
+    protected override void ProcessRecord()
     {
-        [Parameter()]
-        public ScriptBlock If;
-
-        [Parameter()]
-        public ScriptBlock Body;
-
-        [Parameter()]
-        public RunspaceScope Scope;
-
-        protected override void ProcessRecord()
+        var context = RunspaceContext.CurrentThread;
+        try
         {
-            var context = RunspaceContext.CurrentThread;
-            try
+            if (Body == null)
+                return;
+
+            // Evaluate script pre-condition
+            if (If != null)
             {
-                if (Body == null)
-                    return;
-
-                // Evaluate script pre-condition
-                if (If != null)
-                {
-                    try
-                    {
-                        context.PushScope(RunspaceScope.Precondition);
-                        var ifResult = RuleConditionHelper.Create(If.Invoke());
-                        if (!ifResult.AllOf())
-                        {
-                            context.Writer.DebugMessage(PSRuleResources.DebugTargetIfMismatch);
-                            return;
-                        }
-                    }
-                    finally
-                    {
-                        context.PopScope(RunspaceScope.Precondition);
-                    }
-                }
-
                 try
                 {
-                    // Evaluate script block
-                    context.PushScope(Scope);
-                    Body.Invoke();
+                    context.PushScope(RunspaceScope.Precondition);
+                    var ifResult = RuleConditionHelper.Create(If.Invoke());
+                    if (!ifResult.AllOf())
+                    {
+                        context.Writer.DebugMessage(PSRuleResources.DebugTargetIfMismatch);
+                        return;
+                    }
                 }
                 finally
                 {
-                    context.PopScope(Scope);
+                    context.PopScope(RunspaceScope.Precondition);
                 }
             }
-            catch (ActionPreferenceStopException ex)
-            {
-                context.Error(ex);
-            }
-            catch (System.Management.Automation.RuntimeException ex)
-            {
-                if (ex.ErrorRecord.FullyQualifiedErrorId == "MethodInvocationNotSupportedInConstrainedLanguage")
-                    throw;
 
-                context.Error(ex);
+            try
+            {
+                // Evaluate script block
+                context.PushScope(Scope);
+                Body.Invoke();
             }
+            finally
+            {
+                context.PopScope(Scope);
+            }
+        }
+        catch (ActionPreferenceStopException ex)
+        {
+            context.Error(ex);
+        }
+        catch (System.Management.Automation.RuntimeException ex)
+        {
+            if (ex.ErrorRecord.FullyQualifiedErrorId == "MethodInvocationNotSupportedInConstrainedLanguage")
+                throw;
+
+            context.Error(ex);
         }
     }
 }

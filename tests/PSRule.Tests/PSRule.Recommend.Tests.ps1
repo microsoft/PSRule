@@ -34,7 +34,7 @@ Describe 'PSRule -- Recommend keyword' -Tag 'Recommend' {
         }
 
         It 'Sets result properties' {
-            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $option = @{ 'Execution.RuleInconclusive' = 'Ignore' };
             $result = @($testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Option $option -Name 'RecommendTest' -Outcome All -WarningVariable outWarning);
             $warningMessages = @($outWarning);
             $result | Should -Not -BeNullOrEmpty;
@@ -45,7 +45,7 @@ Describe 'PSRule -- Recommend keyword' -Tag 'Recommend' {
         }
 
         It 'Uses comment metadata' {
-            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $option = @{ 'Execution.RuleInconclusive' = 'Ignore' };
             $result = @($testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Option $option -Name 'TestWithDescription', 'TestWithSynopsis' -Outcome All);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
@@ -54,7 +54,7 @@ Describe 'PSRule -- Recommend keyword' -Tag 'Recommend' {
         }
 
         It 'Uses documentation' {
-            $option = @{ 'Execution.InconclusiveWarning' = $False };
+            $option = @{ 'Execution.RuleInconclusive' = 'Ignore' };
             $result = @($testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFile.Rule.ps1') -Option $option -Name 'RecommendTest2' -Culture en-ZZ -Outcome All);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;

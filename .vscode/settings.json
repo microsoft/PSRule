@@ -25,20 +25,22 @@
       "/ps-rule.yaml"
     ],
     "./schemas/PSRule-language.schema.json": [
-      "/tests/PSRule.Tests/**.Rule.yaml",
-      "/tests/PSRule.Tests/**/**.Rule.yaml",
-      "/docs/scenarios/*/*.Rule.yaml",
-      "/docs/expressions/**/*.Rule.yaml"
+      "/**/**.Rule.yaml",
+      "/**/docs/scenarios/baselines/Baseline.rule.yaml"
     ]
   },
   "json.schemas": [
     {
       "fileMatch": [
-        "/tests/PSRule.Tests/**.Rule.jsonc",
-        "/tests/PSRule.Tests/**/**.Rule.jsonc",
-        "/docs/expressions/**/*.Rule.jsonc"
+        "/**/**.Rule.jsonc"
       ],
       "url": "./schemas/PSRule-resources.schema.json"
+    },
+    {
+      "fileMatch": [
+        "/**/ps-rule.lock.json"
+      ],
+      "url": "./schemas/PSRule-lock.schema.json"
     }
   ],
   "[json]": {
@@ -61,9 +63,18 @@
       "document"
     ]
   },
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
   "[powershell]": {
     "editor.formatOnSave": false,
     "editor.tabSize": 4
+  },
+  "[html]": {
+    "editor.formatOnSave": false,
+  },
+  "[xml]": {
+    "editor.formatOnSave": false,
   },
   "files.associations": {
     "**/.azure-pipelines/*.yaml": "azure-pipelines",
@@ -72,37 +83,48 @@
   },
   "cSpell.words": [
     "APPSERVICEMININSTANCECOUNT",
+    "Arity",
+    "CLIXML",
     "cmdlet",
     "cmdlets",
+    "codeql",
     "concat",
     "datetime",
     "deserialize",
     "deserialized",
     "deserializes",
+    "eastus",
     "Gitter",
     "hashtable",
+    "HEADREF",
     "Kubernetes",
+    "Multiformat",
     "Newtonsoft",
     "NOTCOUNT",
     "proxied",
+    "PSDATA",
     "PSRULE",
+    "pwsh",
     "quickstart",
+    "REPOROOT",
     "runspace",
     "runspaces",
     "SARIF",
     "SBOM",
+    "subselector",
     "unencrypted",
+    "Worktree",
     "xunit"
   ],
   "[csharp]": {
     "editor.tabSize": 4
   },
-  "omnisharp.enableImportCompletion": true,
   "omnisharp.organizeImportsOnFormat": true,
   "omnisharp.enableEditorConfigSupport": true,
   "omnisharp.enableRoslynAnalyzers": true,
   "git.branchProtection": [
     "main",
     "release/*"
-  ]
+  ],
+  "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true
 }

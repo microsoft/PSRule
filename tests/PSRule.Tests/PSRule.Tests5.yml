@@ -1,5 +1,4 @@
-
 # Options for processing with some rules
 execution:
-  inconclusiveWarning: false
-  invariantCultureWarning: false
+  ruleInconclusive: Ignore
+  invariantCulture: Ignore

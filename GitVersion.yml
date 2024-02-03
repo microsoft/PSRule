@@ -2,7 +2,7 @@
 # Configure GitVersion
 #
 
-next-version: 2.0.0
+next-version: 3.0.0
 branches:
   main:
     regex: ^main$
@@ -11,7 +11,7 @@ branches:
     is-mainline: true
   feature:
     regex: ^feature/
-    source-branches: [ 'main' ]
+    source-branches: ['main']
     increment: Inherit
     tag: B
   release:

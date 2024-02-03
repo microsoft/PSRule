@@ -1,5 +1,6 @@
 ---
 discussion: false
+link_users: true
 ---
 
 # Change log
@@ -10,6 +11,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 **Important notes**:
 
+- Several options have been renamed and the old names will be removed in v3.
+  See [deprecations][2] for details.
 - Several properties of rule and language block elements will be removed from v3.
   See [deprecations][2] for details.
 
@@ -17,6 +20,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 **Experimental features**:
 
+- Baseline groups allow you to use a friendly name to reference baselines.
+  See [baselines][6] for more information.
 - Functions within YAML and JSON expressions can be used to perform manipulation prior to testing a condition.
   See [functions][3] for more information.
 - Sub-selectors within YAML and JSON expressions can be used to filter rules and list properties.
@@ -27,15 +32,125 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
   [3]: expressions/functions.md
   [4]: expressions/sub-selectors.md
   [5]: creating-your-pipeline.md#processing-changed-files-only
+  [6]: concepts/baselines.md
 
-## Unreleased
+!!! Attention
+    We are currently working towards the next release of PSRule.
+    For more information see [v3][7] release notes.
+    Please check out our [upgrade notes][1] to get prepared for upgrading to the latest version.
+
+  [7]: https://microsoft.github.io/PSRule/latest/CHANGELOG-v3/
+
+## v2.9.0
+
+What's changed since release v2.8.1:
+
+- New features:
+  - Added sub-selector quantifiers for `allOf` or `anyOf` operators by @BernieWhite.
+    [#1423](https://github.com/microsoft/PSRule/issues/1423)
+    - Quantifiers allow you to specify the number of matches with `count`, `less`, `lessOrEqual`, `greater`, or `greaterOrEqual`.
+    - See [Sub-selectors][4] for more information.
+  - Added support for new functions by @BernieWhite.
+    [#1422](https://github.com/microsoft/PSRule/issues/1422)
+    - Added support for `padLeft`, and `padRight`.
+  - **Experimental**: Added support for baseline groups by @BernieWhite.
+    [#1541](https://github.com/microsoft/PSRule/issues/1541)
+    - Baseline groups allow you to reference a baseline by a friendly name.
+    - Update the baseline group to point to a new baseline.
+    - Currently only a single baseline can be referenced by a baseline group.
+    - See [baselines][6] for more information.
+- General improvements:
+  - Added style and improved handling for restore command by @BernieWhite.
+    [#1152](https://github.com/microsoft/PSRule/issues/1152)
+  - **Important change**: Rename of execution options by @BernieWhite.
+    [#1456](https://github.com/microsoft/PSRule/issues/1456)
+    - Renamed options allow configuration of output level as `Ignore`, `Warn`, `Error`, or `Debug`.
+    - `Execution.AliasReferenceWarning` is replaced with `Execution.AliasReference`.
+    - `Execution.InconclusiveWarning` is replaced with `Execution.RuleInconclusive`.
+    - `Execution.InvariantCultureWarning` is replaced with `Execution.InvariantCulture`.
+    - `Execution.NotProcessedWarning` is replaced with `Execution.UnprocessedObject`.
+    - Deprecated `AliasReferenceWarning` option, which will be removed in v3.
+    - Deprecated `InconclusiveWarning` option, which will be removed in v3.
+    - Deprecated `InvariantCultureWarning` option, which will be removed in v3.
+    - Deprecated `NotProcessedWarning` option, which will be removed in v3.
+  - Improved schema display names by @BernieWhite.
+    [#1488](https://github.com/microsoft/PSRule/issues/1488)
+- Engineering:
+  - Bump Pester to v5.4.1.
+    [#1510](https://github.com/microsoft/PSRule/pull/1510)
+  - Bump Microsoft.NET.Test.Sdk to v17.6.2.
+    [#1544](https://github.com/microsoft/PSRule/pull/1544)
+  - Bump Microsoft.CodeAnalysis.Common to v4.6.0.
+    [#1534](https://github.com/microsoft/PSRule/pull/1534)
+- Bug fixes:
+  - Fixed tool output on access denied to path by @BernieWhite.
+    [#1490](https://github.com/microsoft/PSRule/issues/1490)
+  - Fixed tool exit code on error or failure by @BernieWhite.
+    [#1491](https://github.com/microsoft/PSRule/issues/1491)
+  - Fixed include local not automatically being enabled for default module baseline by @BernieWhite.
+    [#1506](https://github.com/microsoft/PSRule/issues/1506)
+
+What's changed since pre-release v2.9.0-B0068:
+
+- No additional changes.
+
+## v2.9.0-B0068 (pre-release)
+
+What's changed since pre-release v2.9.0-B0033:
+
+- New features:
+  - **Experimental**: Added support for baseline groups by @BernieWhite.
+    [#1541](https://github.com/microsoft/PSRule/issues/1541)
+    - Baseline groups allow you to reference a baseline by a friendly name.
+    - Update the baseline group to point to a new baseline.
+    - Currently only a single baseline can be referenced by a baseline group.
+    - See [baselines][6] for more information.
+- General improvements:
+  - Added style and improved handling for restore command by @BernieWhite.
+    [#1152](https://github.com/microsoft/PSRule/issues/1152)
+- Engineering:
+  - Bump Microsoft.NET.Test.Sdk to v17.6.2.
+    [#1544](https://github.com/microsoft/PSRule/pull/1544)
+  - Bump Microsoft.CodeAnalysis.Common to v4.6.0.
+    [#1534](https://github.com/microsoft/PSRule/pull/1534)
+- Bug fixes:
+  - Fixed include local not automatically being enabled for default module baseline by @BernieWhite.
+    [#1506](https://github.com/microsoft/PSRule/issues/1506)
+
+## v2.9.0-B0033 (pre-release)
+
+What's changed since pre-release v2.9.0-B0013:
+
+- New features:
+  - Added sub-selector quantifiers for `allOf` or `anyOf` operators by @BernieWhite.
+    [#1423](https://github.com/microsoft/PSRule/issues/1423)
+    - Quantifiers allow you to specify the number of matches with `count`, `less`, `lessOrEqual`, `greater`, or `greaterOrEqual`.
+    - See [Sub-selectors][4] for more information.
+  - Added support for new functions by @BernieWhite.
+    [#1422](https://github.com/microsoft/PSRule/issues/1422)
+    - Added support for `padLeft`, and `padRight`.
+
+## v2.9.0-B0013 (pre-release)
 
 What's changed since release v2.8.1:
 
 - General improvements:
+  - **Important change**: Rename of execution options by @BernieWhite.
+    [#1456](https://github.com/microsoft/PSRule/issues/1456)
+    - Renamed options allow configuration of output level as `Ignore`, `Warn`, `Error`, or `Debug`.
+    - `Execution.AliasReferenceWarning` is replaced with `Execution.AliasReference`.
+    - `Execution.InconclusiveWarning` is replaced with `Execution.RuleInconclusive`.
+    - `Execution.InvariantCultureWarning` is replaced with `Execution.InvariantCulture`.
+    - `Execution.NotProcessedWarning` is replaced with `Execution.UnprocessedObject`.
+    - Deprecated `AliasReferenceWarning` option, which will be removed in v3.
+    - Deprecated `InconclusiveWarning` option, which will be removed in v3.
+    - Deprecated `InvariantCultureWarning` option, which will be removed in v3.
+    - Deprecated `NotProcessedWarning` option, which will be removed in v3.
   - Improved schema display names by @BernieWhite.
     [#1488](https://github.com/microsoft/PSRule/issues/1488)
 - Engineering:
+  - Bump Pester to v5.4.1.
+    [#1510](https://github.com/microsoft/PSRule/pull/1510)
   - Bump Microsoft.CodeAnalysis.Common to v4.5.0.
     [#1455](https://github.com/microsoft/PSRule/pull/1455)
 - Bug fixes:
@@ -65,6 +180,7 @@ What's changed since release v2.7.0:
     - Deprecated `SuppressedRuleWarning` option, which will be removed in v3.
   - Added support for logging excluded rules by @BernieWhite.
     [#1432](https://github.com/microsoft/PSRule/issues/1432)
+    - Configure `Execution.RuleExcluded` to control output level of excluded rules as `Ignore`, `Warn`, `Error`, or `Debug`.
   - Added additional options to schema for PSRule for Azure by @BernieWhite.
     [#1446](https://github.com/microsoft/PSRule/issues/1446)
   - Improved error message for failing to read options file by @BernieWhite.

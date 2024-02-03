@@ -6,6 +6,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <ProjectGuid>{07a84e67-1ca3-4766-b9ea-1fdd9df6516f}</ProjectGuid>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

@@ -2,25 +2,23 @@
 // Licensed under the MIT License.
 
 using System.CommandLine;
-using System.Threading.Tasks;
 
-namespace PSRule.BuildTool
+namespace PSRule.BuildTool;
+
+static class Program
 {
-    static class Program
+    /// <summary>
+    /// Entry point for build tool.
+    /// </summary>
+    static async Task Main(string[] args)
     {
-        /// <summary>
-        /// Entry point for build tool.
-        /// </summary>
-        static async Task Main(string[] args)
-        {
-            await Build().InvokeAsync(args);
-        }
+        await Build().InvokeAsync(args);
+    }
 
-        private static Command Build()
-        {
-            var builder = ClientBuilder.New();
-            builder.AddBadgeResource();
-            return builder.Command;
-        }
+    private static Command Build()
+    {
+        var builder = ClientBuilder.New();
+        builder.AddBadgeResource();
+        return builder.Command;
     }
 }

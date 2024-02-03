@@ -1,10 +1,10 @@
 {
-    "recommendations": [
-        "ms-azure-devops.azure-pipelines",
-        "github.vscode-pull-request-github",
-        "davidanson.vscode-markdownlint",
-        "streetsidesoftware.code-spell-checker",
-        "bewhite.psrule-vscode-preview",
-        "ms-dotnettools.csharp"
-    ]
+  "recommendations": [
+    "ms-dotnettools.csharp",
+    "ms-vscode.powershell",
+    "github.vscode-pull-request-github",
+    "davidanson.vscode-markdownlint",
+    "streetsidesoftware.code-spell-checker",
+    "bewhite.psrule-vscode-preview"
+  ]
 }

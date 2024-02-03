@@ -52,7 +52,7 @@
           "title": "AKS cluster minimum version",
           "description": "This configuration option determines the minimum version of Kubernetes for AKS clusters and node pools. Rules that check the Kubernetes version fail when the version is older than the version specified.",
           "markdownDescription": "This configuration option determines the minimum version of Kubernetes for AKS clusters and node pools. Rules that check the Kubernetes version fail when the version is older than the version specified. [See help](https://azure.github.io/PSRule.Rules.Azure/setup/configuring-rules/#aks-minimum-kubernetes-version)\r\rApplies to: [PSRule for Azure](https://aka.ms/ps-rule-azure)",
-          "default": "1.25.4"
+          "default": "1.27.7"
         },
         "AZURE_PARAMETER_FILE_METADATA_LINK": {
           "type": "boolean",
@@ -204,6 +204,32 @@
       },
       "additionalProperties": false
     },
+    "baseline-option": {
+      "type": "object",
+      "title": "Baseline options",
+      "description": "Options that configure baselines.",
+      "properties": {
+        "group": {
+          "type": "object",
+          "title": "Baseline group",
+          "description": "Configure baseline group names.",
+          "additionalProperties": {
+            "title": "Group mapping",
+            "description": "Maps a group name to a baseline.",
+            "type": "string"
+          },
+          "defaultSnippets": [
+            {
+              "label": "Baseline group",
+              "body": {
+                "${1:Group}": "${2:Baseline}"
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
     "binding-option": {
       "type": "object",
       "title": "Object binding",
@@ -281,18 +307,11 @@
       "description": "Options that affect execution.",
       "markdownDescription": "Options that affect execution. [See help](https://aka.ms/ps-rule/options)",
       "properties": {
-        "aliasReferenceWarning": {
-          "type": "boolean",
-          "title": "Warn on resource aliases",
-          "description": "Enable or disable warnings when an alias to a resource is used. The default is true.",
-          "markdownDescription": "Enable or disable warnings when an alias to a resource is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionaliasreferencewarning)",
-          "default": true
-        },
         "duplicateResourceId": {
           "type": "string",
           "title": "Duplicate resource identifiers",
-          "description": "Determines how to handle duplicate resources identifiers during execution. Regardless of the value, only the first resource will be used. By defaut, an error is thrown. When set to Warn, a warning is generated. When set to Ignore, no output will be displayed.",
-          "markdownDescription": "Determines how to handle duplicate resources identifiers during execution.\n\nRegardless of the value, only the first resource will be used. By defaut, an error is thrown.\n\n- When set to `Warn`, a warning is generated.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionduplicateresourceid)",
+          "description": "Determines how to handle duplicate resources identifiers during execution. Regardless of the value, only the first resource will be used. By default, an error is thrown. When set to Warn, a warning is generated. When set to Ignore, no output will be displayed.",
+          "markdownDescription": "Determines how to handle duplicate resources identifiers during execution.\n\nRegardless of the value, only the first resource will be used. By default, an error is thrown.\n\n- When set to `Warn`, a warning is generated.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionduplicateresourceid)",
           "enum": [
             "Ignore",
             "Warn",
@@ -301,30 +320,40 @@
           ],
           "default": "Error"
         },
+        "hashAlgorithm": {
+          "type": "string",
+          "title": "Hash Algorithm",
+          "description": "Configures the hashing algorithm used by the PSRule runtime. The default is SHA512.",
+          "markdownDescription": "Configures the hashing algorithm used by the PSRule runtime. The default is `SHA512`.\n- When set to `SHA512` the SHA-512 algorithm is used for hashing functions.\n- When set to `SHA384` the SHA-384 algorithm is used for hashing functions.\n- When set to `SHA256` the SHA-256 algorithm is used for hashing functions.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionhashalgorithm)",
+          "enum": [
+            "SHA512",
+            "SHA384",
+            "SHA256"
+          ],
+          "default": "SHA512"
+        },
         "languageMode": {
           "type": "string",
-          "title": "Language mode",
+          "title": "Language Mode",
           "description": "The PowerShell language mode to use for rule execution. The default is FullLanguage.",
-          "markdownDescription": "The PowerShell language mode to use for rule execution. The default is `FullLanguage`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionlanguagemode)",
+          "markdownDescription": "The PowerShell language mode to use for rule execution. The default is `FullLanguage`.\n- `FullLanguage` - Executes with all language features.\n- `ConstrainedLanguage` - Executes in constrained language mode that restricts the types and methods that can be used.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionlanguagemode)",
           "enum": [
             "FullLanguage",
             "ConstrainedLanguage"
           ],
           "default": "FullLanguage"
         },
-        "inconclusiveWarning": {
-          "type": "boolean",
-          "title": "Warn on inconclusive rules",
-          "description": "Enable or disable warnings for inconclusive rules. The default is true.",
-          "markdownDescription": "Enable or disable warnings for inconclusive rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninconclusivewarning)",
-          "default": true
-        },
-        "invariantCultureWarning": {
-          "type": "boolean",
-          "title": "Warn on invariant culture",
-          "description": "Enable or disable warning when invariant culture is used. The default is true.",
-          "markdownDescription": "Enable or disable warning when invariant culture is used. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninvariantculturewarning)",
-          "default": true
+        "restrictScriptSource": {
+          "type": "string",
+          "title": "Restrict Script Source",
+          "description": "Configures where to allow PowerShell language features (such as rules and conventions) to run from. The default is Unrestricted.",
+          "markdownDescription": "Configures where to allow PowerShell language features (such as rules and conventions) to run from. The default is `Unrestricted`.\n- When set to `Unrestricted` PowerShell language features are allowed from workspace and modules.\n- When set to `ModuleOnly` PowerShell language features are allowed from loaded modules, but script files within the workspace are ignored.\n- When set to `DisablePowerShell` no PowerShell language features are used during PSRule run.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#executionrestrictscriptsource)",
+          "enum": [
+            "Unrestricted",
+            "ModuleOnly",
+            "DisablePowerShell"
+          ],
+          "default": "Unrestricted"
         },
         "initialSessionState": {
           "type": "string",
@@ -336,21 +365,6 @@
             "Minimal"
           ],
           "default": "BuiltIn"
-        },
-        "notProcessedWarning": {
-          "type": "boolean",
-          "title": "Warn on unprocessed objects",
-          "description": "Enable or disable warnings for objects that are not processed by any rule. The default is true.",
-          "markdownDescription": "Enable or disable warnings for objects that are not processed by any rule. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionnotprocessedwarning)",
-          "default": true
-        },
-        "suppressedRuleWarning": {
-          "type": "boolean",
-          "title": "Warn on suppressed rules | DEPRECATED",
-          "description": "This option has been deprecated and will be removed from v3 in favor of ruleSuppressed. Enable or disable warnings for suppressed rules. The default is true.",
-          "markdownDescription": "This option has been deprecated and will be removed from v3 in favor of `ruleSuppressed`.\n\nEnable or disable warnings for suppressed rules. The default is `true`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionsuppressedrulewarning)",
-          "default": true,
-          "deprecated": true
         },
         "suppressionGroupExpired": {
           "type": "string",
@@ -369,7 +383,7 @@
           "type": "string",
           "title": "Rule excluded",
           "description": "Determines how to handle excluded rules. Regardless of the value, excluded rules are ignored. By default, rules are excluded silently. When set to Error, an error is thrown. When set to Warn, a warning is generated. When set to Debug, a message is written to the debug log.",
-          "markdownDescription": "Determines how to handle excluded rules.\n\nRegardless of the value, excluded rules are ignored. By default, rules are excluded silently.\n\n- When set to `Error`, an error is thrown.\n- When set to `Warn`, a warning is generated.\n- When set to `Debug`, a message is written to the debug log.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionruleexecluded)",
+          "markdownDescription": "Determines how to handle excluded rules.\n\nRegardless of the value, excluded rules are ignored. By default, rules are excluded silently.\n\n- When set to `Error`, an error is thrown.\n- When set to `Warn`, a warning is generated.\n- When set to `Debug`, a message is written to the debug log.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionruleexcluded)",
           "enum": [
             "Ignore",
             "Warn",
@@ -381,8 +395,60 @@
         "ruleSuppressed": {
           "type": "string",
           "title": "Rule suppressed",
-          "description": "Determines how to handle suppressed rules. Regardless of the value, a suppressed rule is ignored. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed. This option replaces suppressedRuleWarning. You do not need to configure both options. If suppressedRuleWarning is configured, it will override ruleSuppressed with Warn or Ignore until removal in PSRule v3.",
-          "markdownDescription": "Determines how to handle suppressed rules.\n\nRegardless of the value, a suppressed rule is ignored. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\nThis option replaces `suppressedRuleWarning`. You do not need to configure both options. If `suppressedRuleWarning` is configured, it will override `ruleSuppressed` with `Warn` or `Ignore` until removal in PSRule v3.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionrulesuppressed)",
+          "description": "Determines how to handle suppressed rules. Regardless of the value, a suppressed rule is ignored. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed.",
+          "markdownDescription": "Determines how to handle suppressed rules.\n\nRegardless of the value, a suppressed rule is ignored. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionrulesuppressed)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Warn"
+        },
+        "aliasReference": {
+          "type": "string",
+          "title": "Alias references",
+          "description": "Determines how to handle when an alias to a resource is used. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed.",
+          "markdownDescription": "Determines how to handle when an alias to a resource is used. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionaliasreference)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Warn"
+        },
+        "ruleInconclusive": {
+          "type": "string",
+          "title": "Inconclusive rules",
+          "description": "Determines how to handle rules that generate inconclusive results. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed.",
+          "markdownDescription": "Determines how to handle rules that generate inconclusive results. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionruleinconclusive)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Warn"
+        },
+        "invariantCulture": {
+          "type": "string",
+          "title": "Invariant culture",
+          "description": "Determines how to report when an invariant culture is used. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed.",
+          "markdownDescription": "Determines how to report when an invariant culture is used. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninvariantculture)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Warn"
+        },
+        "unprocessedObject": {
+          "type": "string",
+          "title": "Unprocessed object",
+          "description": "Determines how to report objects that are not processed by any rule. By default, a warning is generated. When set to Error, an error is thrown. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed.",
+          "markdownDescription": "Determines how to report objects that are not processed by any rule. By default, a warning is generated.\n\n- When set to `Error`, an error is thrown.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionunprocessedobject)",
           "enum": [
             "Ignore",
             "Warn",
@@ -795,6 +861,10 @@
     },
     "options": {
       "properties": {
+        "baseline": {
+          "type": "object",
+          "$ref": "#/definitions/baseline-option"
+        },
         "binding": {
           "type": "object",
           "oneOf": [
@@ -875,14 +945,14 @@
         "baseRef": {
           "type": "string",
           "title": "Base Reference",
-          "description": "Sets the repository base ref used for comparisons of changed files. By default, the base ref is detected from environment vairables set by the build system.",
-          "markdownDescription": "Sets the repository base ref used for comparisons of changed files. By default, the base ref is detected from environment vairables set by the build system.  [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#repositorybaseref)"
+          "description": "Sets the repository base ref used for comparisons of changed files. By default, the base ref is detected from environment variables set by the build system.",
+          "markdownDescription": "Sets the repository base ref used for comparisons of changed files.\n\nBy default, the base ref is detected from environment variables set by the build system.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#repositorybaseref)"
         },
         "url": {
           "type": "string",
           "title": "Repository URL",
           "description": "Sets the repository URL reported in output. By default, the repository URL is detected from environment variables set by the build system.",
-          "markdownDescription": "Sets the repository URL reported in output. By default, the repository URL is detected from environment variables set by the build system. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#repositoryurl)"
+          "markdownDescription": "Sets the repository URL reported in output.\n\nBy default, the repository URL is detected from environment variables set by the build system.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#repositoryurl)"
         }
       },
       "additionalProperties": false
@@ -910,7 +980,7 @@
     },
     "rule-option": {
       "type": "object",
-      "title": "Baseline options",
+      "title": "Rule options",
       "description": "Options that include/ exclude and configure rules.",
       "properties": {
         "include": {

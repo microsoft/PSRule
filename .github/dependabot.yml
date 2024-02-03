@@ -1,0 +1,48 @@
+#
+# Dependabot configuration
+#
+
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  # Maintain dependencies for NuGet
+  - package-ecosystem: nuget
+    directory: '/'
+    schedule:
+      interval: daily
+    labels:
+      - dependencies
+    reviewers:
+      - microsoft/psrule
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: github-actions
+    directory: '/'
+    schedule:
+      interval: daily
+    labels:
+      - ci-quality
+    reviewers:
+      - microsoft/psrule
+
+  # Maintain dependencies for Python
+  - package-ecosystem: pip
+    directory: '/'
+    schedule:
+      interval: daily
+    labels:
+      - ci-quality
+    reviewers:
+      - microsoft/psrule
+
+  # Maintain dependencies for Dev Containers
+  - package-ecosystem: devcontainers
+    directory: '/'
+    schedule:
+      interval: weekly
+    labels:
+      - ci-quality
+    reviewers:
+      - microsoft/psrule

@@ -3,18 +3,16 @@
 
 using System.CommandLine;
 using System.CommandLine.Parsing;
-using System.Threading.Tasks;
 
-namespace PSRule.Tool
+namespace PSRule.Tool;
+
+static class Program
 {
-    static class Program
+    /// <summary>
+    /// Entry point for CLI tool.
+    /// </summary>
+    static async Task<int> Main(string[] args)
     {
-        /// <summary>
-        /// Entry point for CLI tool.
-        /// </summary>
-        static async Task<int> Main(string[] args)
-        {
-            return await ClientBuilder.New().InvokeAsync(args);
-        }
+        return await ClientBuilder.New().InvokeAsync(args);
     }
 }

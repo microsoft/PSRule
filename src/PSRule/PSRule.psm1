@@ -8,7 +8,7 @@
 Set-StrictMode -Version latest;
 
 [PSRule.Configuration.PSRuleOption]::UseExecutionContext($ExecutionContext);
-[PSRule.Configuration.PSRuleOption]::UseCurrentCulture();
+[PSRule.Environment]::UseCurrentCulture();
 
 #
 # Localization
@@ -125,7 +125,7 @@ function Invoke-PSRule {
 
         # If DeviceGuard is enabled, force a contrained execution environment
         if ($isDeviceGuard) {
-            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+            $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
         if ($PSBoundParameters.ContainsKey('Format')) {
             $Option.Input.Format = $Format;
@@ -157,7 +157,7 @@ function Invoke-PSRule {
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.Convention($Convention);
-        $builder.UseBaseline($Baseline);
+        $builder.Baseline($Baseline);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $builder.InputPath($InputPath);
@@ -283,7 +283,7 @@ function Test-PSRuleTarget {
 
         # If DeviceGuard is enabled, force a contrained execution environment
         if ($isDeviceGuard) {
-            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+            $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
         if ($PSBoundParameters.ContainsKey('Format')) {
             $Option.Input.Format = $Format;
@@ -389,7 +389,7 @@ function Get-PSRuleTarget {
 
         # If DeviceGuard is enabled, force a contrained execution environment
         if ($isDeviceGuard) {
-            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+            $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
         if ($PSBoundParameters.ContainsKey('Format')) {
             $Option.Input.Format = $Format;
@@ -556,7 +556,7 @@ function Assert-PSRule {
 
         # If DeviceGuard is enabled, force a contrained execution environment
         if ($isDeviceGuard) {
-            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+            $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
         if ($PSBoundParameters.ContainsKey('Format')) {
             $Option.Input.Format = $Format;
@@ -591,7 +591,7 @@ function Assert-PSRule {
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.Convention($Convention);
-        $builder.UseBaseline($Baseline);
+        $builder.Baseline($Baseline);
         $builder.ResultVariable($ResultVariable);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
@@ -708,7 +708,7 @@ function Get-PSRule {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Verbose -Message "[Get-PSRule] -- Could not find any .Rule.ps1 script files in the path";
+            Write-Verbose -Message "[Get-PSRule] -- Could not find any .Rule.ps1 script files in the path.";
             return; # continue causes issues with Pester
         }
 
@@ -718,7 +718,7 @@ function Get-PSRule {
 
         # If DeviceGuard is enabled, force a contrained execution environment
         if ($isDeviceGuard) {
-            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
+            $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
         if ($PSBoundParameters.ContainsKey('OutputFormat')) {
             $Option.Output.Format = $OutputFormat;
@@ -731,14 +731,12 @@ function Get-PSRule {
         $builder = [PSRule.Pipeline.PipelineBuilder]::Get($sourceFiles, $Option, $hostContext);
         $builder.Name($Name);
         $builder.Tag($Tag);
-        $builder.UseBaseline($Baseline);
+        $builder.Baseline($Baseline);
 
         if ($IncludeDependencies) {
             $builder.IncludeDependencies();
         }
 
-        # $builder.UseCommandRuntime($PSCmdlet);
-        # $builder.UseExecutionContext($ExecutionContext);
         try {
             $pipeline = $builder.Build();
             if ($Null -ne $pipeline) {
@@ -828,7 +826,7 @@ function Get-PSRuleBaseline {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Verbose -Message "[Get-PSRuleBaseline] -- Could not find any .Rule.ps1 script files in the path";
+            Write-Verbose -Message "[Get-PSRuleBaseline] -- Could not find any .Rule.ps1 script files in the path.";
             return; # continue causes issues with Pester
         }
 
@@ -935,7 +933,7 @@ function Export-PSRuleBaseline {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Verbose -Message "[Export-PSRuleBaseline] -- Could not find any .Rule.ps1 script files in the path";
+            Write-Verbose -Message "[Export-PSRuleBaseline] -- Could not find any .Rule.ps1 script files in the path.";
             return; # continue causes issues with Pester
         }
 
@@ -996,7 +994,7 @@ function Get-PSRuleHelp {
         [Parameter(Position = 0, Mandatory = $False)]
         [Alias('n')]
         [SupportsWildcards()]
-        [String]$Name,
+        [String[]]$Name,
 
         # A path to check documentation for.
         [Parameter(Mandatory = $False)]
@@ -1043,7 +1041,7 @@ function Get-PSRuleHelp {
 
         # Check that some matching script files were found
         if ($Null -eq $sourceFiles) {
-            Write-Verbose -Message "[Get-PSRuleHelp] -- Could not find any .Rule.ps1 script files in the path";
+            Write-Verbose -Message "[Get-PSRuleHelp] -- Could not find any .Rule.ps1 script files in the path.";
             return; # continue causes issues with Pester
         }
 
@@ -1053,18 +1051,15 @@ function Get-PSRuleHelp {
 
         # If DeviceGuard is enabled, force a contrained execution environment
         if ($isDeviceGuard) {
-            $Option.Execution.LanguageMode = [PSRule.Configuration.LanguageMode]::ConstrainedLanguage;
-        }
-        if ($PSBoundParameters.ContainsKey('Name')) {
-            $Option.Rule.Include = $Name;
+            $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
         if ($PSBoundParameters.ContainsKey('Culture')) {
             $Option.Output.Culture = $Culture;
         }
 
         $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
-        $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option, $hostContext);;
-
+        $builder = [PSRule.Pipeline.PipelineBuilder]::GetHelp($sourceFiles, $Option, $hostContext);
+        $builder.Name($Name);
         if ($Online) {
             $builder.Online();
         }
@@ -1129,6 +1124,10 @@ function New-PSRuleOption {
 
         # Options
 
+        # Sets the Baseline.Group option
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$BaselineGroup,
+
         # Sets the Binding.IgnoreCase option
         [Parameter(Mandatory = $False)]
         [System.Boolean]$BindingIgnoreCase = $True,
@@ -1164,54 +1163,49 @@ function New-PSRuleOption {
         [Alias('ConventionInclude')]
         [String[]]$Convention,
 
-        # Sets the Execution.AliasReferenceWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionAliasReferenceWarning')]
-        [System.Boolean]$AliasReferenceWarning = $True,
-
         # Sets the Execution.DuplicateResourceId option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionDuplicateResourceId')]
-        [PSRule.Configuration.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Configuration.ExecutionActionPreference]::Error,
-
-        # Sets the Execution.InconclusiveWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInconclusiveWarning')]
-        [System.Boolean]$InconclusiveWarning = $True,
-
-        # Sets the Execution.InvariantCultureWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInvariantCultureWarning')]
-        [System.Boolean]$InvariantCultureWarning = $True,
+        [PSRule.Options.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Options.ExecutionActionPreference]::Error,
 
         # Sets the Execution.InitialSessionState option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInitialSessionState')]
-        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
+        [PSRule.Options.SessionState]$InitialSessionState = [PSRule.Options.SessionState]::BuiltIn,
 
-        # Sets the Execution.NotProcessedWarning option
+        # Sets the Execution.RestrictScriptSource option
         [Parameter(Mandatory = $False)]
-        [Alias('ExecutionNotProcessedWarning')]
-        [System.Boolean]$NotProcessedWarning = $True,
-
-        # Sets the Execution.SuppressedRuleWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionSuppressedRuleWarning')]
-        [System.Obsolete('Use ExecutionRuleSuppressed instead. See https://aka.ms/ps-rule/deprecations for more detail.')]
-        [System.Boolean]$SuppressedRuleWarning = $True,
+        [Alias('ExecutionRestrictScriptSource')]
+        [PSRule.Options.RestrictScriptSource]$RestrictScriptSource = [PSRule.Options.RestrictScriptSource]::Unrestricted,
 
         # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressionGroupExpired')]
-        [PSRule.Configuration.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+        [PSRule.Options.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Options.ExecutionActionPreference]::Warn,
 
         # Sets the Execution.RuleExcluded option
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleExcluded = [PSRule.Configuration.ExecutionActionPreference]::Ignore,
+        [PSRule.Options.ExecutionActionPreference]$ExecutionRuleExcluded = [PSRule.Options.ExecutionActionPreference]::Ignore,
 
         # Sets the Execution.RuleSuppressed option
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+        [PSRule.Options.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.AliasReference option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionAliasReference = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.RuleInconclusive option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionRuleInconclusive = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.InvariantCulture option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionInvariantCulture = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.UnprocessedObject option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionUnprocessedObject = [PSRule.Options.ExecutionActionPreference]::Warn,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -1439,6 +1433,10 @@ function Set-PSRuleOption {
 
         # Options
 
+        # Sets the Baseline.Group option
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$BaselineGroup,
+
         # Sets the Binding.IgnoreCase option
         [Parameter(Mandatory = $False)]
         [System.Boolean]$BindingIgnoreCase = $True,
@@ -1474,54 +1472,49 @@ function Set-PSRuleOption {
         [Alias('ConventionInclude')]
         [String[]]$Convention,
 
-        # Sets the Execution.AliasReferenceWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionAliasReferenceWarning')]
-        [System.Boolean]$AliasReferenceWarning = $True,
-
         # Sets the Execution.DuplicateResourceId option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionDuplicateResourceId')]
-        [PSRule.Configuration.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Configuration.ExecutionActionPreference]::Error,
-
-        # Sets the Execution.InconclusiveWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInconclusiveWarning')]
-        [System.Boolean]$InconclusiveWarning = $True,
-
-        # Sets the Execution.InvariantCultureWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInvariantCultureWarning')]
-        [System.Boolean]$InvariantCultureWarning = $True,
+        [PSRule.Options.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Options.ExecutionActionPreference]::Error,
 
         # Sets the Execution.InitialSessionState option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInitialSessionState')]
-        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
+        [PSRule.Options.SessionState]$InitialSessionState = [PSRule.Options.SessionState]::BuiltIn,
 
-        # Sets the Execution.NotProcessedWarning option
+        # Sets the Execution.RestrictScriptSource option
         [Parameter(Mandatory = $False)]
-        [Alias('ExecutionNotProcessedWarning')]
-        [System.Boolean]$NotProcessedWarning = $True,
-
-        # Sets the Execution.SuppressedRuleWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionSuppressedRuleWarning')]
-        [System.Obsolete('Use ExecutionRuleSuppressed instead. See https://aka.ms/ps-rule/deprecations for more detail.')]
-        [System.Boolean]$SuppressedRuleWarning = $True,
+        [Alias('ExecutionRestrictScriptSource')]
+        [PSRule.Options.RestrictScriptSource]$RestrictScriptSource = [PSRule.Options.RestrictScriptSource]::Unrestricted,
 
         # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressionGroupExpired')]
-        [PSRule.Configuration.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+        [PSRule.Options.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Options.ExecutionActionPreference]::Warn,
 
         # Sets the Execution.RuleExcluded option
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleExcluded = [PSRule.Configuration.ExecutionActionPreference]::Ignore,
+        [PSRule.Options.ExecutionActionPreference]$ExecutionRuleExcluded = [PSRule.Options.ExecutionActionPreference]::Ignore,
 
         # Sets the Execution.RuleSuppressed option
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+        [PSRule.Options.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.AliasReference option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionAliasReference = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.RuleInconclusive option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionRuleInconclusive = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.InvariantCulture option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionInvariantCulture = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.UnprocessedObject option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionUnprocessedObject = [PSRule.Options.ExecutionActionPreference]::Warn,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -2196,6 +2189,10 @@ function SetOptions {
 
         # Options
 
+        # Sets the Baseline.Group option
+        [Parameter(Mandatory = $False)]
+        [Hashtable]$BaselineGroup,
+
         # Sets the Binding.IgnoreCase option
         [Parameter(Mandatory = $False)]
         [System.Boolean]$BindingIgnoreCase = $True,
@@ -2231,53 +2228,49 @@ function SetOptions {
         [Alias('ConventionInclude')]
         [String[]]$Convention,
 
-        # Sets the Execution.AliasReferenceWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionAliasReferenceWarning')]
-        [System.Boolean]$AliasReferenceWarning = $True,
-
         # Sets the Execution.DuplicateResourceId option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionDuplicateResourceId')]
-        [PSRule.Configuration.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Configuration.ExecutionActionPreference]::Error,
-
-        # Sets the Execution.InconclusiveWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInconclusiveWarning')]
-        [System.Boolean]$InconclusiveWarning = $True,
-
-        # Sets the Execution.InvariantCultureWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionInvariantCultureWarning')]
-        [System.Boolean]$InvariantCultureWarning = $True,
+        [PSRule.Options.ExecutionActionPreference]$DuplicateResourceId = [PSRule.Options.ExecutionActionPreference]::Error,
 
         # Sets the Execution.InitialSessionState option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionInitialSessionState')]
-        [PSRule.Configuration.SessionState]$InitialSessionState = [PSRule.Configuration.SessionState]::BuiltIn,
+        [PSRule.Options.SessionState]$InitialSessionState = [PSRule.Options.SessionState]::BuiltIn,
 
-        # Sets the Execution.NotProcessedWarning option
+        # Sets the Execution.RestrictScriptSource option
         [Parameter(Mandatory = $False)]
-        [Alias('ExecutionNotProcessedWarning')]
-        [System.Boolean]$NotProcessedWarning = $True,
-
-        # Sets the Execution.SuppressedRuleWarning option
-        [Parameter(Mandatory = $False)]
-        [Alias('ExecutionSuppressedRuleWarning')]
-        [System.Boolean]$SuppressedRuleWarning = $True,
+        [Alias('ExecutionRestrictScriptSource')]
+        [PSRule.Options.RestrictScriptSource]$RestrictScriptSource = [PSRule.Options.RestrictScriptSource]::Unrestricted,
 
         # Sets the Execution.SuppressionGroupExpired option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionSuppressionGroupExpired')]
-        [PSRule.Configuration.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+        [PSRule.Options.ExecutionActionPreference]$SuppressionGroupExpired = [PSRule.Options.ExecutionActionPreference]::Warn,
 
         # Sets the Execution.RuleExcluded option
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleExcluded = [PSRule.Configuration.ExecutionActionPreference]::Ignore,
+        [PSRule.Options.ExecutionActionPreference]$ExecutionRuleExcluded = [PSRule.Options.ExecutionActionPreference]::Ignore,
 
         # Sets the Execution.RuleSuppressed option
         [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Configuration.ExecutionActionPreference]::Warn,
+        [PSRule.Options.ExecutionActionPreference]$ExecutionRuleSuppressed = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.AliasReference option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionAliasReference = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.RuleInconclusive option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionRuleInconclusive = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.InvariantCulture option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionInvariantCulture = [PSRule.Options.ExecutionActionPreference]::Warn,
+
+        # Sets the Execution.UnprocessedObject option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.ExecutionActionPreference]$ExecutionUnprocessedObject = [PSRule.Options.ExecutionActionPreference]::Warn,
 
         # Sets the Include.Module option
         [Parameter(Mandatory = $False)]
@@ -2411,6 +2404,11 @@ function SetOptions {
     process {
         # Options
 
+        # Sets option Baseline.Group
+        if ($PSBoundParameters.ContainsKey('BaselineGroup')) {
+            $Option.Baseline.Group = $BaselineGroup;
+        }
+
         # Sets option Binding.IgnoreCase
         if ($PSBoundParameters.ContainsKey('BindingIgnoreCase')) {
             $Option.Binding.IgnoreCase = $BindingIgnoreCase;
@@ -2456,34 +2454,14 @@ function SetOptions {
             $Option.Execution.DuplicateResourceId = $DuplicateResourceId;
         }
 
-        # Sets option Execution.InconclusiveWarning
-        if ($PSBoundParameters.ContainsKey('InconclusiveWarning')) {
-            $Option.Execution.InconclusiveWarning = $InconclusiveWarning;
-        }
-
-        # Sets option Execution.InvariantCultureWarning
-        if ($PSBoundParameters.ContainsKey('InvariantCultureWarning')) {
-            $Option.Execution.InvariantCultureWarning = $InvariantCultureWarning;
-        }
-
         # Sets option Execution.InitialSessionState
         if ($PSBoundParameters.ContainsKey('InitialSessionState')) {
             $Option.Execution.InitialSessionState = $InitialSessionState;
         }
 
-        # Sets option Execution.NotProcessedWarning
-        if ($PSBoundParameters.ContainsKey('NotProcessedWarning')) {
-            $Option.Execution.NotProcessedWarning = $NotProcessedWarning;
-        }
-
-        # Sets option Execution.SuppressedRuleWarning
-        if ($PSBoundParameters.ContainsKey('SuppressedRuleWarning')) {
-            $Option.Execution.SuppressedRuleWarning = $SuppressedRuleWarning;
-        }
-
-        # Sets option Execution.AliasReferenceWarning
-        if ($PSBoundParameters.ContainsKey('AliasReferenceWarning')) {
-            $Option.Execution.AliasReferenceWarning = $AliasReferenceWarning;
+        # Sets option Execution.RestrictScriptSource
+        if ($PSBoundParameters.ContainsKey('RestrictScriptSource')) {
+            $Option.Execution.RestrictScriptSource = $RestrictScriptSource;
         }
 
         # Sets option Execution.SuppressionGroupExpired
@@ -2499,6 +2477,26 @@ function SetOptions {
         # Sets option Execution.RuleSuppressed
         if ($PSBoundParameters.ContainsKey('ExecutionRuleSuppressed')) {
             $Option.Execution.RuleSuppressed = $ExecutionRuleSuppressed;
+        }
+
+        # Sets option Execution.AliasReference
+        if ($PSBoundParameters.ContainsKey('ExecutionAliasReference')) {
+            $Option.Execution.AliasReference = $ExecutionAliasReference;
+        }
+
+        # Sets option Execution.RuleInconclusive
+        if ($PSBoundParameters.ContainsKey('ExecutionRuleInconclusive')) {
+            $Option.Execution.RuleInconclusive = $ExecutionRuleInconclusive;
+        }
+
+        # Sets option Execution.InvariantCulture
+        if ($PSBoundParameters.ContainsKey('ExecutionInvariantCulture')) {
+            $Option.Execution.InvariantCulture = $ExecutionInvariantCulture;
+        }
+
+        # Sets option Execution.UnprocessedObject
+        if ($PSBoundParameters.ContainsKey('ExecutionUnprocessedObject')) {
+            $Option.Execution.UnprocessedObject = $ExecutionUnprocessedObject;
         }
 
         # Sets option Include.Module

@@ -3,27 +3,26 @@
 
 using PSRule.Data;
 
-namespace PSRule.Runtime
+namespace PSRule.Runtime;
+
+/// <summary>
+/// Display information about the current repository at runtime.
+/// </summary>
+public interface IRepositoryRuntimeInfo
 {
     /// <summary>
-    /// Display information about the current repository at runtime.
+    /// A URL to the current repository.
     /// </summary>
-    public interface IRepositoryRuntimeInfo
-    {
-        /// <summary>
-        /// A URL to the current repository.
-        /// </summary>
-        string Url { get; }
+    string Url { get; }
 
-        /// <summary>
-        /// The base ref for the current repository branch.
-        /// </summary>
-        string BaseRef { get; }
+    /// <summary>
+    /// The base ref for the current repository branch.
+    /// </summary>
+    string BaseRef { get; }
 
-        /// <summary>
-        /// Get a list of changed files within the repository.
-        /// </summary>
-        /// <returns>A collection of files.</returns>
-        IInputFileInfoCollection GetChangedFiles();
-    }
+    /// <summary>
+    /// Get a list of changed files within the repository.
+    /// </summary>
+    /// <returns>A collection of files.</returns>
+    IInputFileInfoCollection GetChangedFiles();
 }

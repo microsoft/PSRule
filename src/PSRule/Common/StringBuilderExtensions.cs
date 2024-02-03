@@ -3,40 +3,39 @@
 
 using System.Text;
 
-namespace PSRule
+namespace PSRule;
+
+internal static class StringBuilderExtensions
 {
-    internal static class StringBuilderExtensions
+    private const char Backtick = '`';
+    private const char BracketOpen = '[';
+    private const char BracketClose = ']';
+    private const char ParenthesesOpen = '(';
+    private const char ParenthesesClose = ')';
+    private const char AngleOpen = '<';
+    private const char AngleClose = '>';
+    private const char Backslash = '\\';
+
+    public static void AppendMarkdownText(this StringBuilder builder, string value)
     {
-        private const char Backtick = '`';
-        private const char BracketOpen = '[';
-        private const char BracketClose = ']';
-        private const char ParenthesesOpen = '(';
-        private const char ParenthesesClose = ')';
-        private const char AngleOpen = '<';
-        private const char AngleClose = '>';
-        private const char Backslash = '\\';
-
-        public static void AppendMarkdownText(this StringBuilder builder, string value)
+        for (var i = 0; i < value.Length; i++)
         {
-            for (var i = 0; i < value.Length; i++)
-            {
-                if (IsEscapableCharacter(value[i]))
-                    builder.Append(Backslash);
+            if (IsEscapableCharacter(value[i]))
+                builder.Append(Backslash);
 
-                builder.Append(value[i]);
-            }
+            builder.Append(value[i]);
         }
+    }
 
-        private static bool IsEscapableCharacter(char c)
-        {
-            return c == Backslash ||
-                c == BracketOpen ||
-                c == ParenthesesOpen ||
-                c == AngleOpen ||
-                c == AngleClose ||
-                c == Backtick ||
-                c == BracketClose ||
-                c == ParenthesesClose;
-        }
+    private static bool IsEscapableCharacter(char c)
+    {
+        return c == Backslash ||
+            c == BracketOpen ||
+            c == ParenthesesOpen ||
+            c == AngleOpen ||
+            c == AngleClose ||
+            c == Backtick ||
+            c == BracketClose ||
+            c == ParenthesesClose;
     }
 }

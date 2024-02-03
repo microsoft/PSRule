@@ -26,6 +26,18 @@ The following execution options have been deprecated and will be removed from _v
 - `Execution.SuppressedRuleWarning` is replaced with `Execution.RuleSuppressed`.
   Set `Execution.RuleSuppressed` to `Warn` to log a warning from _v2.8.0_.
   If both options are set, `Execution.SuppressedRuleWarning` takes precedence until _v3_.
+- `Execution.AliasReferenceWarning` is replaced with `Execution.AliasReference`.
+  Set `Execution.AliasReference` to `Warn` to log a warning from _v2.9.0_.
+  If both options are set, `Execution.AliasReferenceWarning` takes precedence until _v3_.
+- `Execution.InconclusiveWarning` is replaced with `Execution.RuleInconclusive`.
+  Set `Execution.RuleInconclusive` to `Warn` to log a warning from _v2.9.0_.
+  If both options are set, `Execution.InconclusiveWarning` takes precedence until _v3_.
+- `Execution.InvariantCultureWarning` is replaced with `Execution.InvariantCulture`.
+  Set `Execution.InvariantCulture` to `Warn` to log a warning from _v2.9.0_.
+  If both options are set, `Execution.InvariantCultureWarning` takes precedence until _v3_.
+- `Execution.NotProcessedWarning` is replaced with `Execution.UnprocessedObject`.
+  Set `Execution.UnprocessedObject` to `Warn` to log a warning from _v2.9.0_.
+  If both options are set, `Execution.NotProcessedWarning` takes precedence until _v3_.
 
 !!! Tip
     You do not need to configure both options.

@@ -4,18 +4,17 @@
 using System.Collections;
 using PSRule.Runtime;
 
-namespace PSRule.Definitions
+namespace PSRule.Definitions;
+
+internal interface IConvention : ILanguageBlock
 {
-    internal interface IConvention : ILanguageBlock
-    {
-        string Name { get; }
+    string Name { get; }
 
-        void Initialize(RunspaceContext context, IEnumerable input);
+    void Initialize(RunspaceContext context, IEnumerable input);
 
-        void Begin(RunspaceContext context, IEnumerable input);
+    void Begin(RunspaceContext context, IEnumerable input);
 
-        void Process(RunspaceContext context, IEnumerable input);
+    void Process(RunspaceContext context, IEnumerable input);
 
-        void End(RunspaceContext context, IEnumerable input);
-    }
+    void End(RunspaceContext context, IEnumerable input);
 }

@@ -13,16 +13,18 @@ This topic describes what options are available, when to and how to use them.
 
 The following workspace options are available for use:
 
+- [Baseline.Group](#baselinegroup)
 - [Convention.Include](#conventioninclude)
-- [Execution.AliasReferenceWarning](#executionaliasreferencewarning)
+- [Execution.AliasReference](#executionaliasreference)
 - [Execution.DuplicateResourceId](#executionduplicateresourceid)
+- [Execution.HashAlgorithm](#executionhashalgorithm)
 - [Execution.LanguageMode](#executionlanguagemode)
-- [Execution.InconclusiveWarning](#executioninconclusivewarning)
-- [Execution.InvariantCultureWarning](#executioninvariantculturewarning)
+- [Execution.InvariantCulture](#executioninvariantculture)
 - [Execution.InitialSessionState](#executioninitialsessionstate)
-- [Execution.NotProcessedWarning](#executionnotprocessedwarning)
-- [Execution.SuppressedRuleWarning](#executionsuppressedrulewarning)
+- [Execution.RestrictScriptSource](#executionrestrictscriptsource)
+- [Execution.RuleInconclusive](#executionruleinconclusive)
 - [Execution.SuppressionGroupExpired](#executionsuppressiongroupexpired)
+- [Execution.UnprocessedObject](#executionunprocessedobject)
 - [Include.Module](#includemodule)
 - [Include.Path](#includepath)
 - [Input.Format](#inputformat)
@@ -83,7 +85,8 @@ Options can be used with the following PSRule cmdlets:
 
 Each of these cmdlets support:
 
-- Using the `-Option` parameter with an object created with the `New-PSRuleOption` cmdlet. See cmdlet help for syntax and examples.
+- Using the `-Option` parameter with an object created with the `New-PSRuleOption` cmdlet.
+  See cmdlet help for syntax and examples.
 - Using the `-Option` parameter with a hashtable object.
 - Using the `-Option` parameter with a YAML file path.
 
@@ -119,7 +122,8 @@ The `Set-PSRuleOption` cmdlet can be used to set options stored in YAML or the Y
 Set-PSRuleOption -OutputFormat Yaml;
 ```
 
-By default, PSRule will automatically look for a default YAML options file in the current working directory. Alternatively, you can specify a specific file path.
+By default, PSRule will automatically look for a default YAML options file in the current working directory.
+Alternatively, you can specify a specific file path.
 
 For example:
 
@@ -165,6 +169,54 @@ Boolean values are case-insensitive.
 - String array values can specify multiple items by using a semi-colon separator.
 For example `PSRULE_INPUT_TARGETTYPE` could be set to `virtualMachine;virtualNetwork`.
 
+### Baseline.Group
+
+You can use a baseline group to provide a friendly name to an existing baseline.
+When you run PSRule you can opt to use the baseline group name as an alternative name for the baseline.
+To indicate a baseline group, prefix the group name with `@` where you would use the name of a baseline.
+
+Baseline groups can be specified using:
+
+```powershell
+# PowerShell: Using the BaselineGroup parameter
+$option = New-PSRuleOption -BaselineGroup @{ latest = 'YourBaseline' };
+```
+
+```powershell
+# PowerShell: Using the Baseline.Group hashtable key
+$option = New-PSRuleOption -Option @{ 'Baseline.Group' = @{ latest = 'YourBaseline' } };
+```
+
+```powershell
+# PowerShell: Using the BaselineGroup parameter to set YAML
+Set-PSRuleOption -BaselineGroup @{ latest = 'YourBaseline' };
+```
+
+```yaml
+# YAML: Using the baseline/group property
+baseline:
+  group:
+    latest: YourBaseline
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_BASELINE_GROUP='latest=YourBaseline'
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_BASELINE_GROUP: 'latest=YourBaseline'
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_BASELINE_GROUP
+  value: 'latest=YourBaseline'
+```
+
 ### Binding.Field
 
 When an object is passed from the pipeline, PSRule automatically extracts fields from object properties.
@@ -179,7 +231,8 @@ PSRule uses the following logic to determine which property should be used for b
   - If **none** of the configured property names exist, the field will be skipped.
   - If more then one property name is configured, the order they are specified in the configuration determines precedence.
     - i.e. The first configured property name will take precedence over the second property name.
-  - By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the [Binding.IgnoreCase](#bindingignorecase) option.
+  - By default the property name will be matched ignoring case sensitivity.
+    To use a case sensitive match, configure the [Binding.IgnoreCase](#bindingignorecase) option.
 
 Custom field bindings can be specified using:
 
@@ -373,21 +426,25 @@ _TargetName_ is used in output results to identify one object from another.
 Many objects could be passed down the pipeline at the same time, so using a _TargetName_ that is meaningful is important.
 _TargetName_ is also used for advanced features such as rule suppression.
 
-The value that PSRule uses for _TargetName_ is configurable. PSRule uses the following logic to determine what _TargetName_ should be used:
+The value that PSRule uses for _TargetName_ is configurable.
+PSRule uses the following logic to determine what _TargetName_ should be used:
 
 - By default PSRule will:
   - Use `TargetName` or `Name` properties on the object. These property names are case insensitive.
   - If both `TargetName` and `Name` properties exist, `TargetName` will take precedence over `Name`.
-  - If neither `TargetName` or `Name` properties exist, a SHA1 hash of the object will be used as _TargetName_.
+  - If neither `TargetName` or `Name` properties exist, a hash of the object will be used as _TargetName_.
+  - The hash algorithm used can be set by the `Execution.HashAlgorithm` option.
 - If custom _TargetName_ binding properties are configured, the property names specified will override the defaults.
   - If **none** of the configured property names exist, PSRule will revert back to `TargetName` then `Name`.
   - If more then one property name is configured, the order they are specified in the configuration determines precedence.
     - i.e. The first configured property name will take precedence over the second property name.
-  - By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the [Binding.IgnoreCase](#bindingignorecase) option.
+  - By default the property name will be matched ignoring case sensitivity.
+    To use a case sensitive match, configure the [Binding.IgnoreCase](#bindingignorecase) option.
 - If a custom _TargetName_ binding function is specified, the function will be evaluated first before any other option.
   - If the function returns `$Null` then custom properties, `TargetName` and `Name` properties will be used.
   - The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.
-  - Custom binding functions are blocked in constrained language mode is used. See [language mode](#executionlanguagemode) for more information.
+  - Custom binding functions are blocked in constrained language mode is used.
+    See [language mode](#executionlanguagemode) for more information.
 
 Custom property names to use for binding can be specified using:
 
@@ -462,11 +519,13 @@ PSRule uses the following logic to determine what _TargetType_ should be used:
   - If **none** of the configured property names exist, PSRule will revert back to the type presented by PowerShell.
   - If more then one property name is configured, the order they are specified in the configuration determines precedence.
     - i.e. The first configured property name will take precedence over the second property name.
-  - By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the [`Binding.IgnoreCase`](#bindingignorecase) option.
+  - By default the property name will be matched ignoring case sensitivity.
+    To use a case sensitive match, configure the [`Binding.IgnoreCase`](#bindingignorecase) option.
 - If a custom _TargetType_ binding function is specified, the function will be evaluated first before any other option.
   - If the function returns `$Null` then custom properties, or the type presented by PowerShell will be used in order instead.
   - The custom binding function is executed outside the PSRule engine, so PSRule keywords and variables will not be available.
-  - Custom binding functions are blocked in constrained language mode is used. See [language mode](#executionlanguagemode) for more information.
+  - Custom binding functions are blocked in constrained language mode is used.
+    See [language mode](#executionlanguagemode) for more information.
 
 Custom property names to use for binding can be specified using:
 
@@ -673,63 +732,71 @@ variables:
   value: 'Convention1;Convention2'
 ```
 
-### Execution.AliasReferenceWarning
+### Execution.AliasReference
 
-Rules may define one or more aliases.
-These aliases are alternative names to identify the rule.
-An alias may be used to reference the rule anywhere a rule name is used.
-The primary purpose of an alias is to provide a non-breaking method to change the rule name.
-Alises can be removed at a later revision once the rule is no longer referenced by the alias.
+:octicons-milestone-24: v2.9.0
 
-A warning is logged by default to help identify when an alias is used.
-We recommend taking action to update your usage of the alis to use the rule name or ref instead.
+Determines how to handle when an alias to a resource is used.
+By default, a warning is generated, however this behavior can be modified by this option.
 
-Alternatively, the alias reference warning can be disabled by using:
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Warn`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+  This is the default.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
 
 ```powershell
-# PowerShell: Using the AliasReferenceWarning parameter
-$option = New-PSRuleOption -AliasReferenceWarning $False;
+# PowerShell: Using the ExecutionAliasReference parameter
+$option = New-PSRuleOption -ExecutionAliasReference 'Error';
 ```
 
 ```powershell
-# PowerShell: Using the Execution.AliasReferenceWarning hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.AliasReferenceWarning' = $False };
+# PowerShell: Using the Execution.AliasReference hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.AliasReference' = 'Error' };
 ```
 
 ```powershell
-# PowerShell: Using the AliasReferenceWarning parameter to set YAML
-Set-PSRuleOption -AliasReferenceWarning $False;
+# PowerShell: Using the ExecutionAliasReference parameter to set YAML
+Set-PSRuleOption -ExecutionAliasReference 'Error';
 ```
 
 ```yaml
-# YAML: Using the execution/aliasReferenceWarning property
+# YAML: Using the execution/aliasReference property
 execution:
-  aliasReferenceWarning: false
+  aliasReference: Error
 ```
 
 ```bash
 # Bash: Using environment variable
-export PSRULE_EXECUTION_ALIASREFERENCEWARNING=false
+export PSRULE_EXECUTION_ALIASREFERENCE=Error
 ```
 
 ```yaml
 # GitHub Actions: Using environment variable
 env:
-  PSRULE_EXECUTION_ALIASREFERENCEWARNING: false
+  PSRULE_EXECUTION_ALIASREFERENCE: Error
 ```
 
 ```yaml
 # Azure Pipelines: Using environment variable
 variables:
-- name: PSRULE_EXECUTION_ALIASREFERENCEWARNING
-  value: false
+- name: PSRULE_EXECUTION_ALIASREFERENCE
+  value: Error
 ```
 
 ### Execution.DuplicateResourceId
 
+:octicons-milestone-24: v2.4.0
+
 Determines how to handle duplicate resources identifiers during execution.
 A duplicate resource identifier may exist if two resources are defined with the same name, ref, or alias.
-By defaut, an error is thrown, however this behaviour can be modified by this option.
+By default, an error is thrown, however this behavior can be modified by this option.
 
 If this option is configured to `Warn` or `Ignore` only the first resource will be used,
 however PSRule will continue to execute.
@@ -743,6 +810,8 @@ The following preferences are available:
 - `Error` (3) - Abort and throw an error.
   This is the default.
 - `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the DuplicateResourceId parameter
@@ -783,6 +852,52 @@ variables:
   value: Warn
 ```
 
+### Execution.HashAlgorithm
+
+:octicons-milestone-24: v3.0.0
+
+Specifies the hashing algorithm used by the PSRule runtime.
+This hash algorithm is used when generating a resource identifier for an object that does not have a bound name.
+
+By default, the _SHA512_ algorithm is used.
+
+The following algorithms are available for use in PSRule:
+
+- `SHA512`
+- `SHA384`
+- `SHA256`
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Execution.HashAlgorithm hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.HashAlgorithm' = 'SHA256' };
+```
+
+```yaml
+# YAML: Using the execution/hashAlgorithm property
+execution:
+  hashAlgorithm: SHA256
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_HASHALGORITHM=SHA256
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_HASHALGORITHM: SHA256
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_HASHALGORITHM
+  value: SHA256
+```
+
 ### Execution.LanguageMode
 
 Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions.
@@ -792,8 +907,9 @@ When PSRule is executed in an environment configured for Device Guard, only cons
 
 The following language modes are available for use in PSRule:
 
-- FullLanguage
-- ConstrainedLanguage
+- `FullLanguage` - Executes with all language features.
+  This is the default.
+- `ConstrainedLanguage` - Executes in constrained language mode that restricts the types and methods that can be used.
 
 This option can be specified using:
 
@@ -826,109 +942,67 @@ variables:
   value: ConstrainedLanguage
 ```
 
-### Execution.InconclusiveWarning
+### Execution.InvariantCulture
 
-When defining rules, it is possible not return a valid `$True` or `$False` result within the definition script block.
+:octicons-milestone-24: v2.9.0
 
-Rule authors should not intentionally avoid returning a result, however a possible cause for not returning a result may be a rule logic error.
+Determines how to report when an invariant culture is used.
+By default, a warning is generated, however this behavior can be modified by this option.
 
-If a rule should not be evaluated, use pre-conditions to avoid processing the rule for objects where the rule is not applicable.
+The following preferences are available:
 
-In cases where the rule does not return a result it is marked as inconclusive.
+- `None` (0) - No preference.
+  Inherits the default of `Warn`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+  This is the default.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
 
-Inconclusive results will:
-
-- Generate a warning by default.
-- Fail the object. Outcome will be reported as `Fail` with an OutcomeReason of `Inconclusive`.
-
-The inconclusive warning can be disabled by using:
+This option can be specified using:
 
 ```powershell
-# PowerShell: Using the InconclusiveWarning parameter
-$option = New-PSRuleOption -InconclusiveWarning $False;
+# PowerShell: Using the ExecutionInvariantCulture parameter
+$option = New-PSRuleOption -ExecutionInvariantCulture 'Error';
 ```
 
 ```powershell
-# PowerShell: Using the Execution.InconclusiveWarning hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.InconclusiveWarning' = $False };
+# PowerShell: Using the Execution.InvariantCulture hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.InvariantCulture' = 'Error' };
 ```
 
 ```powershell
-# PowerShell: Using the InconclusiveWarning parameter to set YAML
-Set-PSRuleOption -InconclusiveWarning $False;
+# PowerShell: Using the ExecutionInvariantCulture parameter to set YAML
+Set-PSRuleOption -ExecutionInvariantCulture 'Error';
 ```
 
 ```yaml
-# YAML: Using the execution/inconclusiveWarning property
+# YAML: Using the execution/invariantCulture property
 execution:
-  inconclusiveWarning: false
+  invariantCulture: Error
 ```
 
 ```bash
 # Bash: Using environment variable
-export PSRULE_EXECUTION_INCONCLUSIVEWARNING=false
+export PSRULE_EXECUTION_INVARIANTCULTURE=Error
 ```
 
 ```yaml
 # GitHub Actions: Using environment variable
 env:
-  PSRULE_EXECUTION_INCONCLUSIVEWARNING: false
+  PSRULE_EXECUTION_INVARIANTCULTURE: Error
 ```
 
 ```yaml
 # Azure Pipelines: Using environment variable
 variables:
-- name: PSRULE_EXECUTION_INCONCLUSIVEWARNING
-  value: false
-```
-
-### Execution.InvariantCultureWarning
-
-When evaluating rules inside a CI host, if invariant culture is used, a warning is shown by default.
-You can suppress this warning if you set the culture with `-Culture` or the `Output.Culture` option.
-
-This warning can also be suppressed by using:
-
-```powershell
-# PowerShell: Using the InvariantCultureWarning parameter
-$option = New-PSRuleOption -InvariantCultureWarning $False;
-```
-
-```powershell
-# PowerShell: Using the Execution.InvariantCultureWarning hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.InvariantCultureWarning' = $False };
-```
-
-```powershell
-# PowerShell: Using the InvariantCultureWarning parameter to set YAML
-Set-PSRuleOption -InvariantCultureWarning $False;
-```
-
-```yaml
-# YAML: Using the execution/invariantCultureWarning property
-execution:
-  invariantCultureWarning: false
-```
-
-```bash
-# Bash: Using environment variable
-export PSRULE_EXECUTION_INVARIANTCULTUREWARNING=false
-```
-
-```yaml
-# GitHub Actions: Using environment variable
-env:
-  PSRULE_EXECUTION_INVARIANTCULTUREWARNING: false
-```
-
-```yaml
-# Azure Pipelines: Using environment variable
-variables:
-- name: PSRULE_EXECUTION_INVARIANTCULTUREWARNING
-  value: false
+- name: PSRULE_EXECUTION_INVARIANTCULTURE
+  value: Error
 ```
 
 ### Execution.InitialSessionState
+
+:octicons-milestone-24: v2.5.0
 
 Determines how the initial session state for executing PowerShell code is created.
 
@@ -937,6 +1011,8 @@ The following preferences are available:
 - `BuiltIn` (0) - Create the initial session state with all built-in cmdlets loaded.
   This is the default.
 - `Minimal` (1) - Create the initial session state with only a minimum set of cmdlets loaded.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the InitialSessionState parameter
@@ -977,116 +1053,73 @@ variables:
   value: Minimal
 ```
 
-### Execution.NotProcessedWarning
+### Execution.RestrictScriptSource
 
-When evaluating rules, it is possible to incorrectly select a path with rules that use pre-conditions that do not accept the pipeline object.
-In this case the object has not been processed by any rule.
+:octicons-milestone-24: v3.0.0
 
-Not processed objects will:
+Configures where to allow PowerShell language features (such as rules and conventions) to run from.
+In locked down environments, running PowerShell scripts from the workspace may not be allowed.
+Only run scripts from a trusted source.
 
-- Generate a warning by default.
-- Pass the object. Outcome will be reported as `None`.
+This option does not affect YAML or JSON based rules and resources.
 
-The not processed warning can be disabled by using:
+The following script source restrictions are available:
+
+- `Unrestricted` - PowerShell language features are allowed from workspace and modules.
+  This is the default.
+- `ModuleOnly` - PowerShell language features are allowed from loaded modules,
+  but script files within the workspace are ignored.
+- `DisablePowerShell` - No PowerShell language features are used during PSRule run.
+  When this mode is used, rules and conventions written in PowerShell will not execute.
+  Modules that use PowerShell rules and conventions may not work as expected.
+
+This option can be specified using:
 
 ```powershell
-# PowerShell: Using the NotProcessedWarning parameter
-$option = New-PSRuleOption -NotProcessedWarning $False;
+# PowerShell: Using the RestrictScriptSource parameter
+$option = New-PSRuleOption -RestrictScriptSource 'ModuleOnly';
 ```
 
 ```powershell
-# PowerShell: Using the Execution.NotProcessedWarning hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.NotProcessedWarning' = $False };
+# PowerShell: Using the Execution.RestrictScriptSource hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.RestrictScriptSource' = 'ModuleOnly' };
 ```
 
 ```powershell
-# PowerShell: Using the NotProcessedWarning parameter to set YAML
-Set-PSRuleOption -NotProcessedWarning $False;
+# PowerShell: Using the RestrictScriptSource parameter to set YAML
+Set-PSRuleOption -RestrictScriptSource 'ModuleOnly';
 ```
 
 ```yaml
-# YAML: Using the execution/notProcessedWarning property
+# YAML: Using the execution/restrictScriptSource property
 execution:
-  notProcessedWarning: false
+  restrictScriptSource: ModuleOnly
 ```
 
 ```bash
 # Bash: Using environment variable
-export PSRULE_EXECUTION_NOTPROCESSEDWARNING=false
+export PSRULE_EXECUTION_RESTRICTSCRIPTSOURCE=ModuleOnly
 ```
 
 ```yaml
 # GitHub Actions: Using environment variable
 env:
-  PSRULE_EXECUTION_NOTPROCESSEDWARNING: false
+  PSRULE_EXECUTION_RESTRICTSCRIPTSOURCE: ModuleOnly
 ```
 
 ```yaml
 # Azure Pipelines: Using environment variable
 variables:
-- name: PSRULE_EXECUTION_NOTPROCESSEDWARNING
-  value: false
+- name: PSRULE_EXECUTION_RESTRICTSCRIPTSOURCE
+  value: ModuleOnly
 ```
 
-### Execution.SuppressedRuleWarning
+### Execution.RuleInconclusive
 
-This option has been deprecated and will be removed from v3 in favor of `ruleSuppressed`.
-Use `ruleSuppressed` instead.
+:octicons-milestone-24: v2.9.0
 
-When evaluating rules, it is possible to output suppressed rules as warnings.
-
-Suppressed rules will:
-
-- Output a warning by default.
-- Show which rules were suppressed when `Output.As` is set to `Detail`.
-- Show how many rules were suppressed when `Output.As` is set to `Summary`.
-
-The suppressed rule can be disabled by using:
-
-```powershell
-# PowerShell: Using the SuppressedRuleWarning parameter
-$option = New-PSRuleOption -SuppressedRuleWarning $False;
-```
-
-```powershell
-# PowerShell: Using the Execution.SuppressedRuleWarning hashtable key
-$option = New-PSRuleOption -Option @{ 'Execution.SuppressedRuleWarning' = $False };
-```
-
-```powershell
-# PowerShell: Using the SuppressedRuleWarning parameter to set YAML
-Set-PSRuleOption -SuppressedRuleWarning $False;
-```
-
-```yaml
-# YAML: Using the execution/suppressedRuleWarning property
-execution:
-  suppressedRuleWarning: false
-```
-
-```bash
-# Bash: Using environment variable
-export PSRULE_EXECUTION_SUPPRESSEDRULEWARNING=false
-```
-
-```yaml
-# GitHub Actions: Using environment variable
-env:
-  PSRULE_EXECUTION_SUPPRESSEDRULEWARNING: false
-```
-
-```yaml
-# Azure Pipelines: Using environment variable
-variables:
-- name: PSRULE_EXECUTION_SUPPRESSEDRULEWARNING
-  value: false
-```
-
-### Execution.SuppressionGroupExpired
-
-Determines how to handle expired suppression groups.
-Regardless of the value, an expired suppression group will be ignored.
-By defaut, a warning is generated, however this behaviour can be modified by this option.
+Determines how to handle rules that generate inconclusive results.
+By default, a warning is generated, however this behavior can be modified by this option.
 
 The following preferences are available:
 
@@ -1097,6 +1130,67 @@ The following preferences are available:
   This is the default.
 - `Error` (3) - Abort and throw an error.
 - `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the ExecutionRuleInconclusive parameter
+$option = New-PSRuleOption -ExecutionRuleInconclusive 'Error';
+```
+
+```powershell
+# PowerShell: Using the Execution.RuleInconclusive hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.RuleInconclusive' = 'Error' };
+```
+
+```powershell
+# PowerShell: Using the ExecutionRuleInconclusive parameter to set YAML
+Set-PSRuleOption -ExecutionRuleInconclusive 'Error';
+```
+
+```yaml
+# YAML: Using the execution/ruleInconclusive property
+execution:
+  ruleInconclusive: Error
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_RULEINCONCLUSIVE=Error
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_RULEINCONCLUSIVE: Error
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_RULEINCONCLUSIVE
+  value: Error
+```
+
+### Execution.SuppressionGroupExpired
+
+:octicons-milestone-24: v2.6.0
+
+Determines how to handle expired suppression groups.
+Regardless of the value, an expired suppression group will be ignored.
+By default, a warning is generated, however this behavior can be modified by this option.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Warn`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+  This is the default.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the SuppressionGroupExpired parameter
@@ -1139,9 +1233,11 @@ variables:
 
 ### Execution.RuleExcluded
 
+:octicons-milestone-24: v2.8.0
+
 Determines how to handle excluded rules.
 Regardless of the value, excluded rules are ignored.
-By defaut, a rule is excluded silently, however this behaviour can be modified by this option.
+By default, a rule is excluded silently, however this behavior can be modified by this option.
 
 The following preferences are available:
 
@@ -1152,6 +1248,8 @@ The following preferences are available:
 - `Warn` (2) - Continue to execute but log a warning.
 - `Error` (3) - Abort and throw an error.
 - `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the ExecutionRuleExcluded parameter
@@ -1194,13 +1292,11 @@ variables:
 
 ### Execution.RuleSuppressed
 
+:octicons-milestone-24: v2.8.0
+
 Determines how to handle suppressed rules.
 Regardless of the value, a suppressed rule is ignored.
-By defaut, a warning is generated, however this behaviour can be modified by this option.
-
-This option replaces `suppressedRuleWarning`.
-You do not need to configure both options.
-If `suppressedRuleWarning` is configured, it will override `ruleSuppressed` with `Warn` or `Ignore` until removal in PSRule v3.
+By default, a warning is generated, however this behavior can be modified by this option.
 
 The following preferences are available:
 
@@ -1249,6 +1345,64 @@ env:
 variables:
 - name: PSRULE_EXECUTION_RULESUPPRESSED
   value: Error
+```
+
+### Execution.UnprocessedObject
+
+:octicons-milestone-24: v2.9.0
+
+Determines how to report objects that are not processed by any rule.
+By default, a warning is generated, however this behavior can be modified by this option.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Warn`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+  This is the default.
+- `Error` (3) - Abort and throw an error.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the ExecutionUnprocessedObject parameter
+$option = New-PSRuleOption -ExecutionUnprocessedObject 'Ignore';
+```
+
+```powershell
+# PowerShell: Using the Execution.UnprocessedObject hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.UnprocessedObject' = 'Ignore' };
+```
+
+```powershell
+# PowerShell: Using the ExecutionUnprocessedObject parameter to set YAML
+Set-PSRuleOption -ExecutionUnprocessedObject 'Ignore';
+```
+
+```yaml
+# YAML: Using the execution/unprocessedObject property
+execution:
+  unprocessedObject: Ignore
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_UNPROCESSEDOBJECT=Ignore
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_UNPROCESSEDOBJECT: Ignore
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_UNPROCESSEDOBJECT
+  value: Ignore
 ```
 
 ### Include.Module
@@ -1615,6 +1769,8 @@ variables:
 
 ### Input.IgnoreUnchangedPath
 
+:octicons-milestone-24: v2.5.0
+
 By default, PSRule will process all files within an input path.
 For large repositories, this can result in a large number of files being processed.
 Additionally, for a pull request you may only be interested in files that have changed.
@@ -1672,7 +1828,7 @@ If the property specified by `ObjectPath` is a collection/ array, then each item
 
 If the property specified by `ObjectPath` does not exist, PSRule skips the object.
 
-When using `Invoke-PSRule`, `Test-PSRuleTarget` and `Assert-PSRule` the `-ObjectPath` parameter will override any value set in configuration.
+When using `Invoke-PSRule`, `Test-PSRuleTarget`, and `Assert-PSRule` the `-ObjectPath` parameter will override any value set in configuration.
 
 This option can be specified using:
 
@@ -1798,7 +1954,7 @@ By default, all objects are processed.
 
 To change the field TargetType is bound to set the `Binding.TargetType` option.
 
-When using `Invoke-PSRule`, `Test-PSRuleTarget` and `Assert-PSRule` the `-TargetType` parameter will override any value set in configuration.
+When using `Invoke-PSRule`, `Test-PSRuleTarget`, and `Assert-PSRule` the `-TargetType` parameter will override any value set in configuration.
 
 This option can be specified using:
 
@@ -1886,7 +2042,8 @@ logging:
 Limits verbose messages to a list of named verbose scopes.
 
 When using the `-Verbose` switch or preference variable, by default PSRule cmdlets log all verbose output.
-When using verbose output for troubleshooting a specific rule, it may be helpful to limit verbose messages to a specific rule.
+When using verbose output for troubleshooting a specific rule,
+it may be helpful to limit verbose messages to a specific rule.
 
 To identify a rule to include in verbose output use the rule name.
 
@@ -1925,7 +2082,8 @@ logging:
 When an object fails a rule condition the results are written to output as a structured object marked with the outcome of _Fail_.
 If the rule executed successfully regardless of outcome no other informational messages are shown by default.
 
-In some circumstances such as a continuous integration (CI) pipeline, it may be preferable to see informational messages or abort the CI process if one or more _Fail_ outcomes are returned.
+In some circumstances such as a continuous integration (CI) pipeline,
+it may be preferable to see informational messages or abort the CI process if one or more _Fail_ outcomes are returned.
 
 By settings this option, error, warning or information messages will be generated for each rule _fail_ outcome in addition to structured output.
 By default, outcomes are not logged to an informational stream (i.e. None).
@@ -2623,6 +2781,8 @@ variables:
 
 ### Output.JobSummaryPath
 
+:octicons-milestone-24: v2.6.0
+
 Configures the file path a job summary will be written to when using `Assert-PSRule`.
 A job summary is a markdown file that summarizes the results of a job.
 When not specified, a job summary will not be generated.
@@ -3145,13 +3305,11 @@ convention:
 
 # Configure execution options
 execution:
-  aliasReferenceWarning: false
+  hashAlgorithm: SHA256
   duplicateResourceId: Warn
   languageMode: ConstrainedLanguage
-  inconclusiveWarning: false
-  notProcessedWarning: false
-  suppressedRuleWarning: false
   suppressionGroupExpired: Error
+  restrictScriptSource: ModuleOnly
 
 # Configure include options
 include:
@@ -3256,13 +3414,17 @@ convention:
 
 # Configure execution options
 execution:
-  aliasReferenceWarning: true
+  hashAlgorithm: SHA512
+  aliasReference: Warn
   duplicateResourceId: Error
+  invariantCulture: Warn
   languageMode: FullLanguage
-  inconclusiveWarning: true
-  notProcessedWarning: true
-  suppressedRuleWarning: true
+  initialSessionState: BuiltIn
+  restrictScriptSource: Unrestricted
+  ruleInconclusive: Warn
+  ruleSuppressed: Warn
   suppressionGroupExpired: Warn
+  unprocessedObject: Warn
 
 # Configure include options
 include:

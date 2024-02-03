@@ -430,15 +430,6 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update module &apos;{0}&apos; to set the default baseline using a module configuration resource instead. Configuring the default baseline via manifest will be removed in the next major version. See https://aka.ms/ps-rule/module-config..
-        /// </summary>
-        internal static string ModuleManifestBaseline {
-            get {
-                return ResourceManager.GetString("ModuleManifestBaseline", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No valid module can be found with that name..
         /// </summary>
         internal static string ModuleNotFound {
@@ -579,6 +570,24 @@ namespace PSRule.Resources {
         internal static string PSR0002 {
             get {
                 return ResourceManager.GetString("PSR0002", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSR0003: The specified baseline group &apos;{0}&apos; is not known..
+        /// </summary>
+        internal static string PSR0003 {
+            get {
+                return ResourceManager.GetString("PSR0003", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSR0004: The specified {0} resource &apos;{1}&apos; is not known..
+        /// </summary>
+        internal static string PSR0004 {
+            get {
+                return ResourceManager.GetString("PSR0004", resourceCulture);
             }
         }
         

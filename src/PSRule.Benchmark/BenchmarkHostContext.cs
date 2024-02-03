@@ -3,13 +3,12 @@
 
 using PSRule.Pipeline;
 
-namespace PSRule.Benchmark
+namespace PSRule.Benchmark;
+
+internal sealed class BenchmarkHostContext : HostContext
 {
-    internal sealed class BenchmarkHostContext : HostContext
+    public override bool ShouldProcess(string target, string action)
     {
-        public override bool ShouldProcess(string target, string action)
-        {
-            return true;
-        }
+        return true;
     }
 }

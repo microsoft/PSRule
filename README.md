@@ -26,7 +26,7 @@ PSRule works great and integrates with popular continuous integration (CI) syste
 - [Maintainers](#maintainers)
 - [License](#license)
 
-### Features of PSRule include:
+### Features of PSRule include
 
 - [DevOps][2] - Built to support DevOps culture and tools.
 - [Extensible][3] - Define tests using YAML, JSON, or PowerShell format.
@@ -281,6 +281,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [WithinPath](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#withinpath)
   - [Version](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/#version)
 - [Options](https://aka.ms/ps-rule/options)
+  - [Baseline.Group](https://aka.ms/ps-rule/options#baselinegroup)
   - [Binding.Field](https://aka.ms/ps-rule/options#bindingfield)
   - [Binding.IgnoreCase](https://aka.ms/ps-rule/options#bindingignorecase)
   - [Binding.NameSeparator](https://aka.ms/ps-rule/options#bindingnameseparator)
@@ -290,15 +291,16 @@ The following conceptual topics exist in the `PSRule` module:
   - [Binding.UseQualifiedName](https://aka.ms/ps-rule/options#bindingusequalifiedname)
   - [Configuration](https://aka.ms/ps-rule/options#configuration)
   - [Convention.Include](https://aka.ms/ps-rule/options#conventioninclude)
-  - [Execution.AliasReferenceWarning](https://aka.ms/ps-rule/options#executionaliasreferencewarning)
+  - [Execution.AliasReference](https://aka.ms/ps-rule/options#executionaliasreference)
   - [Execution.DuplicateResourceId](https://aka.ms/ps-rule/options#executionduplicateresourceid)
+  - [Execution.HashAlgorithm](https://aka.ms/ps-rule/options#executionhashalgorithm)
   - [Execution.LanguageMode](https://aka.ms/ps-rule/options#executionlanguagemode)
-  - [Execution.InconclusiveWarning](https://aka.ms/ps-rule/options#executioninconclusivewarning)
-  - [Execution.InvariantCultureWarning](https://aka.ms/ps-rule/options#executioninvariantculturewarning)
+  - [Execution.InvariantCulture](https://aka.ms/ps-rule/options#executioninvariantculture)
   - [Execution.InitialSessionState](https://aka.ms/ps-rule/options#executioninitialsessionstate)
-  - [Execution.NotProcessedWarning](https://aka.ms/ps-rule/options#executionnotprocessedwarning)
-  - [Execution.SuppressedRuleWarning](https://aka.ms/ps-rule/options#executionsuppressedrulewarning)
+  - [Execution.RestrictScriptSource](https://aka.ms/ps-rule/options#executionrestrictscriptsource)
+  - [Execution.RuleInconclusive](https://aka.ms/ps-rule/options#executionruleinconclusive)
   - [Execution.SuppressionGroupExpired](https://aka.ms/ps-rule/options#executionsuppressiongroupexpired)
+  - [Execution.UnprocessedObject](https://aka.ms/ps-rule/options#executionunprocessedobject)
   - [Include.Module](https://aka.ms/ps-rule/options#includemodule)
   - [Include.Path](https://aka.ms/ps-rule/options#includepath)
   - [Input.Format](https://aka.ms/ps-rule/options#inputformat)
@@ -380,10 +382,16 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 ## Maintainers
 
 - [Bernie White](https://github.com/BernieWhite)
-- [Sam Bell](https://github.com/ms-sambell)
 
 ## License
 
 This project is [licensed under the MIT License](LICENSE).
+
+## Trademarks
+
+This project may contain trademarks or logos for projects, products, or services.
+Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks).
+Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
+Any use of third-party trademarks or logos are subject to those third-party's policies.
 
 > Back to the [summary](#summary)

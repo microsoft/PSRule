@@ -4,74 +4,82 @@
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Data;
+using PSRule.Options;
 using PSRule.Pipeline;
-using Xunit;
 
-namespace PSRule
+namespace PSRule;
+
+public sealed class TargetNameBindingTests
 {
-    public sealed class TargetNameBindingTests
+    internal class TestModel1
     {
-        internal class TestModel1
-        {
-            public string NotName { get; set; }
-        }
+        public string NotName { get; set; }
+    }
 
-        internal class TestModel2
-        {
-            public string NotName { get; set; }
-        }
+    internal class TestModel2
+    {
+        public string NotName { get; set; }
+    }
 
-        internal class TestModel3 : ITargetInfo
-        {
-            public string Name { get; set; }
+    internal class TestModel3 : ITargetInfo
+    {
+        public string Name { get; set; }
 
-            string ITargetInfo.TargetName => "TestModel3";
+        string ITargetInfo.TargetName => "TestModel3";
 
-            string ITargetInfo.TargetType => "TestModel3";
+        string ITargetInfo.TargetType => "TestModel3";
 
-            TargetSourceInfo ITargetInfo.Source => null;
-        }
+        TargetSourceInfo ITargetInfo.Source => null;
+    }
 
-        [Fact]
-        public void UnboundObjectTargetName()
-        {
-            var testObject1 = new TestModel1 { NotName = "TestObject1" };
-            var testObject2 = new TestModel2 { NotName = "TestObject1" };
-            var pso1 = PSObject.AsPSObject(testObject1);
-            var pso2 = PSObject.AsPSObject(testObject2);
+    [Fact]
+    public void UnboundObjectTargetName()
+    {
+        var testObject1 = new TestModel1 { NotName = "TestObject1" };
+        var testObject2 = new TestModel2 { NotName = "TestObject1" };
+        var pso1 = PSObject.AsPSObject(testObject1);
+        var pso2 = PSObject.AsPSObject(testObject2);
 
-            PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, null, null, null, null, null);
-            var actual1 = PipelineHookActions.BindTargetName(null, false, false, pso1, out _);
-            var actual2 = PipelineHookActions.BindTargetName(null, false, false, pso2, out _);
+        // SHA512
+        PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, null, null, null, null, null);
 
-            Assert.Equal(expected: "f209c623345144be61087d91f30c17b01c6e86d2", actual: actual1);
-            Assert.Equal(expected: "f209c623345144be61087d91f30c17b01c6e86d2", actual: actual2);
-        }
+        Assert.Equal("f3d2f8ce966af96a8d320e8f5c088604324885a0d02f44b174", PipelineHookActions.BindTargetName(null, false, false, pso1, out _));
+        Assert.Equal("f3d2f8ce966af96a8d320e8f5c088604324885a0d02f44b174", PipelineHookActions.BindTargetName(null, false, false, pso2, out _));
 
-        [Fact]
-        public void PreferTargetInfo()
-        {
-            var testObject1 = new TestModel3 { Name = "OtherName" };
-            var pso1 = PSObject.AsPSObject(testObject1);
+        // SHA256
+        PipelineContext.CurrentThread = PipelineContext.New(GetOption(HashAlgorithm.SHA256), null, null, null, null, null, null, null);
 
-            PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, null, null, null, null, null);
+        Assert.Equal("67327c8cd8622d17cf1702a76cbbb685e9ef260ce39c9f6779", PipelineHookActions.BindTargetName(null, false, false, pso1, out _));
+        Assert.Equal("67327c8cd8622d17cf1702a76cbbb685e9ef260ce39c9f6779", PipelineHookActions.BindTargetName(null, false, false, pso2, out _));
+    }
 
-            var actual = PipelineHookActions.BindTargetName(new string[] { "Name" }, false, false, pso1, out string path);
-            Assert.Equal("OtherName", actual);
-            Assert.Equal("Name", path);
+    [Fact]
+    public void PreferTargetInfo()
+    {
+        var testObject1 = new TestModel3 { Name = "OtherName" };
+        var pso1 = PSObject.AsPSObject(testObject1);
 
-            actual = PipelineHookActions.BindTargetName(new string[] { "NotName" }, false, false, pso1, out path);
-            Assert.Equal("TestModel3", actual);
-            Assert.Null(path);
+        PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, null, null, null, null, null);
 
-            actual = PipelineHookActions.BindTargetName(new string[] { "Name" }, false, true, pso1, out path);
-            Assert.Equal("TestModel3", actual);
-            Assert.Null(path);
-        }
+        var actual = PipelineHookActions.BindTargetName(new string[] { "Name" }, false, false, pso1, out var path);
+        Assert.Equal("OtherName", actual);
+        Assert.Equal("Name", path);
 
-        private static PSRuleOption GetOption()
-        {
-            return new PSRuleOption();
-        }
+        actual = PipelineHookActions.BindTargetName(new string[] { "NotName" }, false, false, pso1, out path);
+        Assert.Equal("TestModel3", actual);
+        Assert.Null(path);
+
+        actual = PipelineHookActions.BindTargetName(new string[] { "Name" }, false, true, pso1, out path);
+        Assert.Equal("TestModel3", actual);
+        Assert.Null(path);
+    }
+
+    private static PSRuleOption GetOption(HashAlgorithm? hashAlgorithm = null)
+    {
+        var option = new PSRuleOption();
+        if (hashAlgorithm != null)
+            option.Execution.HashAlgorithm = hashAlgorithm;
+
+        return option;
     }
 }

@@ -4,10 +4,11 @@
     <AssemblyTitle>PSRule.BuildTask</AssemblyTitle>
     <EnableNuget>false</EnableNuget>
     <IsPackable>false</IsPackable>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.5.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
   </ItemGroup>
 
   <!--<ItemGroup>

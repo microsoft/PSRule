@@ -1904,5 +1904,25 @@
         "apiVersion": ""
       }
     }
+  },
+  {
+    // Synopsis: Test all of with quantifier.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "JsonAllOfWithQuantifier"
+    },
+    "spec": {
+      "if": {
+        "field": "properties.logs[*]",
+        "greaterOrEqual": 1,
+        "allOf": [
+          {
+            "field": "name",
+            "equals": "log1"
+          }
+        ]
+      }
+    }
   }
 ]

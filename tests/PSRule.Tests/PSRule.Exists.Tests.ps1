@@ -67,7 +67,7 @@ Describe 'PSRule -- Exists keyword' -Tag 'Exists' {
                     NotName = 'TestObject2'
                 }
             )
-            $option = New-PSRuleOption -NotProcessedWarning $False
+            $option = New-PSRuleOption -ExecutionUnprocessedObject Ignore;
             $result = $testObject | Invoke-PSRule @invokeParams -Name 'ExistsCondition' -Outcome All -Option $option;
 
             # Test positive cases

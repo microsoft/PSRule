@@ -88,3 +88,22 @@ Choose to use one or the other.
 If you have a specific use case your would like to enable, please start a [discussion][3].
 
   [3]: https://github.com/microsoft/PSRule/discussions
+
+## PSR0003 - The specified baseline group is not known
+
+!!! Error
+
+    PSR0003: The specified baseline group 'latest' is not known.
+
+This error is caused by attempting to reference a baseline group which has not been defined.
+To define a baseline group, see [Baseline.Group][4] option.
+
+  [4]: https://aka.ms/ps-rule/options#baselinegroup
+
+## PSR0004 - The specified resource is not known
+
+!!! Error
+
+    PSR0004: The specified Baseline resource 'TestModule4\Module4' is not known.
+
+This error is caused when you attempt to reference a resource such as a baseline, rule, or selector which has not been defined.
