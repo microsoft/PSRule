@@ -29,6 +29,11 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v3.0.0-B0141:
 
+- Engineering:
+  - **Breaking change:** Bump development tools to .NET 8.0 SDK by @BernieWhite.
+    [#1673](https://github.com/microsoft/PSRule/pull/1673)
+    - Running PSRule from PowerShell 7.x is supported on 7.4 and above.
+    - Running PSRule from Windows PowerShell 5.1 is still supported but deprecated and will be removed in PSRule v4.
 - Bug fixes:
   - Fixed CLI null reference when include module is undefined by @BernieWhite.
     [#1746](https://github.com/microsoft/PSRule/issues/1746)
