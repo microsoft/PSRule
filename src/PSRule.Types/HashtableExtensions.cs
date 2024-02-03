@@ -4,25 +4,24 @@
 using System.Collections;
 using System.Diagnostics;
 
-namespace PSRule
+namespace PSRule;
+
+/// <summary>
+/// Extension methods for <see cref="Hashtable"/>.
+/// </summary>
+public static class HashtableExtensions
 {
     /// <summary>
-    /// Extension methods for <see cref="Hashtable"/>.
+    /// Map the hashtable into a dictionary string a string key.
     /// </summary>
-    public static class HashtableExtensions
+    [DebuggerStepThrough]
+    public static IDictionary<string, object> IndexByString(this Hashtable hashtable, bool ignoreCase = true)
     {
-        /// <summary>
-        /// Map the hashtable into a dictionary string a string key.
-        /// </summary>
-        [DebuggerStepThrough]
-        public static IDictionary<string, object> IndexByString(this Hashtable hashtable, bool ignoreCase = true)
-        {
-            var comparer = ignoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
-            var index = new Dictionary<string, object>(comparer);
-            foreach (DictionaryEntry entry in hashtable)
-                index.Add(entry.Key.ToString(), entry.Value);
+        var comparer = ignoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+        var index = new Dictionary<string, object>(comparer);
+        foreach (DictionaryEntry entry in hashtable)
+            index.Add(entry.Key.ToString(), entry.Value);
 
-            return index;
-        }
+        return index;
     }
 }

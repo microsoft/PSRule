@@ -4,8 +4,6 @@
     PSRule v3 and later uses a lock file to define the modules and versions used to run analysis.
     This article describes the lock file and how to manage it.
 
-## Overview
-
 An optional lock file can be used to define the modules and versions used to run analysis.
 Using the lock file ensures that the same modules and versions are used across multiple machines, improving consistency.
 

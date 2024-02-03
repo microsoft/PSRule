@@ -3,12 +3,11 @@
 
 using PSRule.Runtime.ObjectPath;
 
-namespace PSRule.Runtime
-{
-    internal interface IBindingContext
-    {
-        bool GetPathExpression(string path, out PathExpression expression);
+namespace PSRule.Runtime;
 
-        void CachePathExpression(string path, PathExpression expression);
-    }
+internal interface IBindingContext
+{
+    bool GetPathExpression(string path, out PathExpression expression);
+
+    void CachePathExpression(string path, PathExpression expression);
 }

@@ -180,6 +180,7 @@ What's changed since release v2.7.0:
     - Deprecated `SuppressedRuleWarning` option, which will be removed in v3.
   - Added support for logging excluded rules by @BernieWhite.
     [#1432](https://github.com/microsoft/PSRule/issues/1432)
+    - Configure `Execution.RuleExcluded` to control output level of excluded rules as `Ignore`, `Warn`, `Error`, or `Debug`.
   - Added additional options to schema for PSRule for Azure by @BernieWhite.
     [#1446](https://github.com/microsoft/PSRule/issues/1446)
   - Improved error message for failing to read options file by @BernieWhite.

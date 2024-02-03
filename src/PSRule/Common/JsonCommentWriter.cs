@@ -3,25 +3,24 @@
 
 using Newtonsoft.Json;
 
-namespace PSRule
+namespace PSRule;
+
+internal sealed class JsonCommentWriter : JsonTextWriter
 {
-    internal sealed class JsonCommentWriter : JsonTextWriter
+    public JsonCommentWriter(TextWriter textWriter)
+        : base(textWriter) { }
+
+    public override void WriteComment(string text)
     {
-        public JsonCommentWriter(TextWriter textWriter)
-            : base(textWriter) { }
+        SetWriteState(JsonToken.Comment, text);
+        if (Indentation > 0 && Formatting == Formatting.Indented)
+            WriteIndent();
+        else
+            WriteRaw(System.Environment.NewLine);
 
-        public override void WriteComment(string text)
-        {
-            SetWriteState(JsonToken.Comment, text);
-            if (Indentation > 0 && Formatting == Formatting.Indented)
-                WriteIndent();
-            else
-                WriteRaw(System.Environment.NewLine);
-
-            WriteRaw("// ");
-            WriteRaw(text);
-            if (Indentation == 0 || Formatting == Formatting.None)
-                WriteRaw(System.Environment.NewLine);
-        }
+        WriteRaw("// ");
+        WriteRaw(text);
+        if (Indentation == 0 || Formatting == Formatting.None)
+            WriteRaw(System.Environment.NewLine);
     }
 }

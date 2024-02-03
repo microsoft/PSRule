@@ -3,28 +3,27 @@
 
 using PSRule.Host;
 
-namespace PSRule.Pipeline
+namespace PSRule.Pipeline;
+
+internal sealed class GetRulePipeline : RulePipeline, IPipeline
 {
-    internal sealed class GetRulePipeline : RulePipeline, IPipeline
+    private readonly bool _IncludeDependencies;
+
+    internal GetRulePipeline(
+        PipelineContext pipeline,
+        Source[] source,
+        PipelineInputStream reader,
+        IPipelineWriter writer,
+        bool includeDependencies
+    )
+        : base(pipeline, source, reader, writer)
     {
-        private readonly bool _IncludeDependencies;
+        _IncludeDependencies = includeDependencies;
+    }
 
-        internal GetRulePipeline(
-            PipelineContext pipeline,
-            Source[] source,
-            PipelineReader reader,
-            IPipelineWriter writer,
-            bool includeDependencies
-        )
-            : base(pipeline, source, reader, writer)
-        {
-            _IncludeDependencies = includeDependencies;
-        }
-
-        public override void End()
-        {
-            Writer.WriteObject(HostHelper.GetRule(Source, Context, _IncludeDependencies), true);
-            Writer.End();
-        }
+    public override void End()
+    {
+        Writer.WriteObject(HostHelper.GetRule(Source, Context, _IncludeDependencies), true);
+        Writer.End();
     }
 }

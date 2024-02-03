@@ -21,6 +21,7 @@ The following workspace options are available for use:
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InvariantCulture](#executioninvariantculture)
 - [Execution.InitialSessionState](#executioninitialsessionstate)
+- [Execution.RestrictScriptSource](#executionrestrictscriptsource)
 - [Execution.RuleInconclusive](#executionruleinconclusive)
 - [Execution.SuppressionGroupExpired](#executionsuppressiongroupexpired)
 - [Execution.UnprocessedObject](#executionunprocessedobject)
@@ -230,7 +231,8 @@ PSRule uses the following logic to determine which property should be used for b
   - If **none** of the configured property names exist, the field will be skipped.
   - If more then one property name is configured, the order they are specified in the configuration determines precedence.
     - i.e. The first configured property name will take precedence over the second property name.
-  - By default the property name will be matched ignoring case sensitivity. To use a case sensitive match, configure the [Binding.IgnoreCase](#bindingignorecase) option.
+  - By default the property name will be matched ignoring case sensitivity.
+    To use a case sensitive match, configure the [Binding.IgnoreCase](#bindingignorecase) option.
 
 Custom field bindings can be specified using:
 
@@ -732,8 +734,10 @@ variables:
 
 ### Execution.AliasReference
 
+:octicons-milestone-24: v2.9.0
+
 Determines how to handle when an alias to a resource is used.
-By defaut, a warning is generated, however this behaviour can be modified by this option.
+By default, a warning is generated, however this behavior can be modified by this option.
 
 The following preferences are available:
 
@@ -744,6 +748,8 @@ The following preferences are available:
   This is the default.
 - `Error` (3) - Abort and throw an error.
 - `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the ExecutionAliasReference parameter
@@ -786,9 +792,11 @@ variables:
 
 ### Execution.DuplicateResourceId
 
+:octicons-milestone-24: v2.4.0
+
 Determines how to handle duplicate resources identifiers during execution.
 A duplicate resource identifier may exist if two resources are defined with the same name, ref, or alias.
-By defaut, an error is thrown, however this behaviour can be modified by this option.
+By default, an error is thrown, however this behavior can be modified by this option.
 
 If this option is configured to `Warn` or `Ignore` only the first resource will be used,
 however PSRule will continue to execute.
@@ -802,6 +810,8 @@ The following preferences are available:
 - `Error` (3) - Abort and throw an error.
   This is the default.
 - `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the DuplicateResourceId parameter
@@ -844,6 +854,8 @@ variables:
 
 ### Execution.HashAlgorithm
 
+:octicons-milestone-24: v3.0.0
+
 Specifies the hashing algorithm used by the PSRule runtime.
 This hash algorithm is used when generating a resource identifier for an object that does not have a bound name.
 
@@ -851,9 +863,9 @@ By default, the _SHA512_ algorithm is used.
 
 The following algorithms are available for use in PSRule:
 
-- SHA512
-- SHA384
-- SHA256
+- `SHA512`
+- `SHA384`
+- `SHA256`
 
 This option can be specified using:
 
@@ -895,8 +907,9 @@ When PSRule is executed in an environment configured for Device Guard, only cons
 
 The following language modes are available for use in PSRule:
 
-- FullLanguage
-- ConstrainedLanguage
+- `FullLanguage` - Executes with all language features.
+  This is the default.
+- `ConstrainedLanguage` - Executes in constrained language mode that restricts the types and methods that can be used.
 
 This option can be specified using:
 
@@ -931,8 +944,10 @@ variables:
 
 ### Execution.InvariantCulture
 
+:octicons-milestone-24: v2.9.0
+
 Determines how to report when an invariant culture is used.
-By defaut, a warning is generated, however this behaviour can be modified by this option.
+By default, a warning is generated, however this behavior can be modified by this option.
 
 The following preferences are available:
 
@@ -943,6 +958,8 @@ The following preferences are available:
   This is the default.
 - `Error` (3) - Abort and throw an error.
 - `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the ExecutionInvariantCulture parameter
@@ -985,6 +1002,8 @@ variables:
 
 ### Execution.InitialSessionState
 
+:octicons-milestone-24: v2.5.0
+
 Determines how the initial session state for executing PowerShell code is created.
 
 The following preferences are available:
@@ -992,6 +1011,8 @@ The following preferences are available:
 - `BuiltIn` (0) - Create the initial session state with all built-in cmdlets loaded.
   This is the default.
 - `Minimal` (1) - Create the initial session state with only a minimum set of cmdlets loaded.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the InitialSessionState parameter
@@ -1032,10 +1053,73 @@ variables:
   value: Minimal
 ```
 
+### Execution.RestrictScriptSource
+
+:octicons-milestone-24: v3.0.0
+
+Configures where to allow PowerShell language features (such as rules and conventions) to run from.
+In locked down environments, running PowerShell scripts from the workspace may not be allowed.
+Only run scripts from a trusted source.
+
+This option does not affect YAML or JSON based rules and resources.
+
+The following script source restrictions are available:
+
+- `Unrestricted` - PowerShell language features are allowed from workspace and modules.
+  This is the default.
+- `ModuleOnly` - PowerShell language features are allowed from loaded modules,
+  but script files within the workspace are ignored.
+- `DisablePowerShell` - No PowerShell language features are used during PSRule run.
+  When this mode is used, rules and conventions written in PowerShell will not execute.
+  Modules that use PowerShell rules and conventions may not work as expected.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the RestrictScriptSource parameter
+$option = New-PSRuleOption -RestrictScriptSource 'ModuleOnly';
+```
+
+```powershell
+# PowerShell: Using the Execution.RestrictScriptSource hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.RestrictScriptSource' = 'ModuleOnly' };
+```
+
+```powershell
+# PowerShell: Using the RestrictScriptSource parameter to set YAML
+Set-PSRuleOption -RestrictScriptSource 'ModuleOnly';
+```
+
+```yaml
+# YAML: Using the execution/restrictScriptSource property
+execution:
+  restrictScriptSource: ModuleOnly
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_RESTRICTSCRIPTSOURCE=ModuleOnly
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_RESTRICTSCRIPTSOURCE: ModuleOnly
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_RESTRICTSCRIPTSOURCE
+  value: ModuleOnly
+```
+
 ### Execution.RuleInconclusive
 
+:octicons-milestone-24: v2.9.0
+
 Determines how to handle rules that generate inconclusive results.
-By defaut, a warning is generated, however this behaviour can be modified by this option.
+By default, a warning is generated, however this behavior can be modified by this option.
 
 The following preferences are available:
 
@@ -1046,6 +1130,8 @@ The following preferences are available:
   This is the default.
 - `Error` (3) - Abort and throw an error.
 - `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the ExecutionRuleInconclusive parameter
@@ -1088,9 +1174,11 @@ variables:
 
 ### Execution.SuppressionGroupExpired
 
+:octicons-milestone-24: v2.6.0
+
 Determines how to handle expired suppression groups.
 Regardless of the value, an expired suppression group will be ignored.
-By defaut, a warning is generated, however this behaviour can be modified by this option.
+By default, a warning is generated, however this behavior can be modified by this option.
 
 The following preferences are available:
 
@@ -1101,6 +1189,8 @@ The following preferences are available:
   This is the default.
 - `Error` (3) - Abort and throw an error.
 - `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the SuppressionGroupExpired parameter
@@ -1143,9 +1233,11 @@ variables:
 
 ### Execution.RuleExcluded
 
+:octicons-milestone-24: v2.8.0
+
 Determines how to handle excluded rules.
 Regardless of the value, excluded rules are ignored.
-By defaut, a rule is excluded silently, however this behaviour can be modified by this option.
+By default, a rule is excluded silently, however this behavior can be modified by this option.
 
 The following preferences are available:
 
@@ -1156,6 +1248,8 @@ The following preferences are available:
 - `Warn` (2) - Continue to execute but log a warning.
 - `Error` (3) - Abort and throw an error.
 - `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the ExecutionRuleExcluded parameter
@@ -1198,9 +1292,11 @@ variables:
 
 ### Execution.RuleSuppressed
 
+:octicons-milestone-24: v2.8.0
+
 Determines how to handle suppressed rules.
 Regardless of the value, a suppressed rule is ignored.
-By defaut, a warning is generated, however this behaviour can be modified by this option.
+By default, a warning is generated, however this behavior can be modified by this option.
 
 The following preferences are available:
 
@@ -1253,8 +1349,10 @@ variables:
 
 ### Execution.UnprocessedObject
 
+:octicons-milestone-24: v2.9.0
+
 Determines how to report objects that are not processed by any rule.
-By defaut, a warning is generated, however this behaviour can be modified by this option.
+By default, a warning is generated, however this behavior can be modified by this option.
 
 The following preferences are available:
 
@@ -1265,6 +1363,8 @@ The following preferences are available:
   This is the default.
 - `Error` (3) - Abort and throw an error.
 - `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
 
 ```powershell
 # PowerShell: Using the ExecutionUnprocessedObject parameter
@@ -1669,6 +1769,8 @@ variables:
 
 ### Input.IgnoreUnchangedPath
 
+:octicons-milestone-24: v2.5.0
+
 By default, PSRule will process all files within an input path.
 For large repositories, this can result in a large number of files being processed.
 Additionally, for a pull request you may only be interested in files that have changed.
@@ -1726,7 +1828,7 @@ If the property specified by `ObjectPath` is a collection/ array, then each item
 
 If the property specified by `ObjectPath` does not exist, PSRule skips the object.
 
-When using `Invoke-PSRule`, `Test-PSRuleTarget` and `Assert-PSRule` the `-ObjectPath` parameter will override any value set in configuration.
+When using `Invoke-PSRule`, `Test-PSRuleTarget`, and `Assert-PSRule` the `-ObjectPath` parameter will override any value set in configuration.
 
 This option can be specified using:
 
@@ -1852,7 +1954,7 @@ By default, all objects are processed.
 
 To change the field TargetType is bound to set the `Binding.TargetType` option.
 
-When using `Invoke-PSRule`, `Test-PSRuleTarget` and `Assert-PSRule` the `-TargetType` parameter will override any value set in configuration.
+When using `Invoke-PSRule`, `Test-PSRuleTarget`, and `Assert-PSRule` the `-TargetType` parameter will override any value set in configuration.
 
 This option can be specified using:
 
@@ -1940,7 +2042,8 @@ logging:
 Limits verbose messages to a list of named verbose scopes.
 
 When using the `-Verbose` switch or preference variable, by default PSRule cmdlets log all verbose output.
-When using verbose output for troubleshooting a specific rule, it may be helpful to limit verbose messages to a specific rule.
+When using verbose output for troubleshooting a specific rule,
+it may be helpful to limit verbose messages to a specific rule.
 
 To identify a rule to include in verbose output use the rule name.
 
@@ -1979,7 +2082,8 @@ logging:
 When an object fails a rule condition the results are written to output as a structured object marked with the outcome of _Fail_.
 If the rule executed successfully regardless of outcome no other informational messages are shown by default.
 
-In some circumstances such as a continuous integration (CI) pipeline, it may be preferable to see informational messages or abort the CI process if one or more _Fail_ outcomes are returned.
+In some circumstances such as a continuous integration (CI) pipeline,
+it may be preferable to see informational messages or abort the CI process if one or more _Fail_ outcomes are returned.
 
 By settings this option, error, warning or information messages will be generated for each rule _fail_ outcome in addition to structured output.
 By default, outcomes are not logged to an informational stream (i.e. None).
@@ -2677,6 +2781,8 @@ variables:
 
 ### Output.JobSummaryPath
 
+:octicons-milestone-24: v2.6.0
+
 Configures the file path a job summary will be written to when using `Assert-PSRule`.
 A job summary is a markdown file that summarizes the results of a job.
 When not specified, a job summary will not be generated.
@@ -3199,9 +3305,11 @@ convention:
 
 # Configure execution options
 execution:
+  hashAlgorithm: SHA256
   duplicateResourceId: Warn
   languageMode: ConstrainedLanguage
   suppressionGroupExpired: Error
+  restrictScriptSource: ModuleOnly
 
 # Configure include options
 include:
@@ -3306,10 +3414,13 @@ convention:
 
 # Configure execution options
 execution:
+  hashAlgorithm: SHA512
   aliasReference: Warn
   duplicateResourceId: Error
   invariantCulture: Warn
   languageMode: FullLanguage
+  initialSessionState: BuiltIn
+  restrictScriptSource: Unrestricted
   ruleInconclusive: Warn
   ruleSuppressed: Warn
   suppressionGroupExpired: Warn

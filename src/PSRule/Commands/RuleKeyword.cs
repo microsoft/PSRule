@@ -9,109 +9,108 @@ using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime;
 
-namespace PSRule.Commands
+namespace PSRule.Commands;
+
+/// <summary>
+/// A base class for Rule keywords.
+/// </summary>
+internal abstract class RuleKeyword : PSCmdlet
 {
-    /// <summary>
-    /// A base class for Rule keywords.
-    /// </summary>
-    internal abstract class RuleKeyword : PSCmdlet
+    protected static RuleRecord GetResult()
     {
-        protected static RuleRecord GetResult()
-        {
-            return RunspaceContext.CurrentThread.RuleRecord;
-        }
+        return RunspaceContext.CurrentThread.RuleRecord;
+    }
 
-        protected static PSObject GetTargetObject()
-        {
-            return RunspaceContext.CurrentThread.TargetObject.Value;
-        }
+    protected static PSObject GetTargetObject()
+    {
+        return RunspaceContext.CurrentThread.TargetObject.Value;
+    }
 
-        protected static bool GetField(object targetObject, string name, bool caseSensitive, out object value)
+    protected static bool GetField(object targetObject, string name, bool caseSensitive, out object value)
+    {
+        value = null;
+        if (targetObject == null)
         {
             value = null;
-            if (targetObject == null)
-            {
-                value = null;
-                return false;
-            }
-
-            var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
-            var baseObject = ExpressionHelpers.GetBaseObject(targetObject);
-            var baseType = baseObject.GetType();
-
-            // Handle dictionaries and hashtables
-            if (typeof(IDictionary).IsAssignableFrom(baseType))
-            {
-                var dictionary = (IDictionary)baseObject;
-                foreach (var key in dictionary.Keys)
-                {
-                    if (comparer.Equals(name, key))
-                    {
-                        value = dictionary[key];
-                        return true;
-                    }
-                }
-            }
-            // Handle PSObjects
-            else if (targetObject is PSObject pso)
-            {
-                foreach (var prop in pso.Properties)
-                {
-                    if (comparer.Equals(name, prop.Name))
-                    {
-                        value = prop.Value;
-                        return true;
-                    }
-                }
-            }
-            // Handle all other CLR types
-            else
-            {
-                foreach (var p in baseType.GetProperties())
-                {
-                    if (comparer.Equals(name, p.Name))
-                    {
-                        value = p.GetValue(targetObject);
-                        return true;
-                    }
-                }
-            }
             return false;
         }
 
-        protected static void WriteReason(string path, string text, params object[] args)
-        {
-            RunspaceContext.CurrentThread.WriteReason(new ResultReason(RunspaceContext.CurrentThread.TargetObject.Path, Operand.FromPath(path), text, args));
-        }
+        var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
+        var baseObject = ExpressionHelpers.GetBaseObject(targetObject);
+        var baseType = baseObject.GetType();
 
-        protected static bool TryReason(string path, string text, object[] args)
+        // Handle dictionaries and hashtables
+        if (typeof(IDictionary).IsAssignableFrom(baseType))
         {
-            if (string.IsNullOrEmpty(text))
-                return false;
-
-            WriteReason(path, text, args);
-            return true;
+            var dictionary = (IDictionary)baseObject;
+            foreach (var key in dictionary.Keys)
+            {
+                if (comparer.Equals(name, key))
+                {
+                    value = dictionary[key];
+                    return true;
+                }
+            }
         }
-
-        protected static bool IsRuleScope()
+        // Handle PSObjects
+        else if (targetObject is PSObject pso)
         {
-            return RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule) ||
-                RunspaceContext.CurrentThread.IsScope(RunspaceScope.Precondition);
+            foreach (var prop in pso.Properties)
+            {
+                if (comparer.Equals(name, prop.Name))
+                {
+                    value = prop.Value;
+                    return true;
+                }
+            }
         }
-
-        protected static bool IsConditionScope()
+        // Handle all other CLR types
+        else
         {
-            return RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule);
+            foreach (var p in baseType.GetProperties())
+            {
+                if (comparer.Equals(name, p.Name))
+                {
+                    value = p.GetValue(targetObject);
+                    return true;
+                }
+            }
         }
+        return false;
+    }
 
-        protected static RuleException RuleScopeException(string keyword)
-        {
-            return new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordRuleScope, keyword));
-        }
+    protected static void WriteReason(string path, string text, params object[] args)
+    {
+        RunspaceContext.CurrentThread.WriteReason(new ResultReason(RunspaceContext.CurrentThread.TargetObject.Path, Operand.FromPath(path), text, args));
+    }
 
-        protected static RuleException ConditionScopeException(string keyword)
-        {
-            return new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordConditionScope, keyword));
-        }
+    protected static bool TryReason(string path, string text, object[] args)
+    {
+        if (string.IsNullOrEmpty(text))
+            return false;
+
+        WriteReason(path, text, args);
+        return true;
+    }
+
+    protected static bool IsRuleScope()
+    {
+        return RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule) ||
+            RunspaceContext.CurrentThread.IsScope(RunspaceScope.Precondition);
+    }
+
+    protected static bool IsConditionScope()
+    {
+        return RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule);
+    }
+
+    protected static RuleException RuleScopeException(string keyword)
+    {
+        return new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordRuleScope, keyword));
+    }
+
+    protected static RuleException ConditionScopeException(string keyword)
+    {
+        return new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordConditionScope, keyword));
     }
 }

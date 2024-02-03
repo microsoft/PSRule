@@ -1,9 +1,8 @@
 ---
-title: Instructions for installing PSRule
 author: BernieWhite
 ---
 
-# Installation
+# Install PSRule tools
 
 PSRule supports running within continuous integration (CI) systems or locally.
 It is shipped as a PowerShell module which makes it easy to install and distribute updates.

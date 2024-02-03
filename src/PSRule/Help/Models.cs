@@ -3,110 +3,109 @@
 
 using PSRule.Definitions;
 
-namespace PSRule.Help
+namespace PSRule.Help;
+
+/// <summary>
+/// Define options that determine how markdown will be rendered.
+/// </summary>
+[Flags()]
+internal enum FormatOptions
+{
+    None = 0,
+
+    /// <summary>
+    /// Add a line break after headers.
+    /// </summary>
+    LineBreak = 1
+}
+
+/// <summary>
+/// Markdown text content.
+/// </summary>
+internal sealed class TextBlock
 {
     /// <summary>
-    /// Define options that determine how markdown will be rendered.
+    /// The text of the section body.
     /// </summary>
-    [Flags()]
-    internal enum FormatOptions
-    {
-        None = 0,
-
-        /// <summary>
-        /// Add a line break after headers.
-        /// </summary>
-        LineBreak = 1
-    }
+    public readonly string Text;
 
     /// <summary>
-    /// Markdown text content.
+    /// Additional options that determine how the section will be formated when rendering markdown.
     /// </summary>
-    internal sealed class TextBlock
+    public readonly FormatOptions FormatOption;
+
+    public TextBlock(string text, FormatOptions formatOption = FormatOptions.None)
     {
-        /// <summary>
-        /// The text of the section body.
-        /// </summary>
-        public readonly string Text;
-
-        /// <summary>
-        /// Additional options that determine how the section will be formated when rendering markdown.
-        /// </summary>
-        public readonly FormatOptions FormatOption;
-
-        public TextBlock(string text, FormatOptions formatOption = FormatOptions.None)
-        {
-            Text = text;
-            FormatOption = formatOption;
-        }
-
-        public override string ToString()
-        {
-            return Text;
-        }
+        Text = text;
+        FormatOption = formatOption;
     }
 
-    /// <summary>
-    /// YAML link.
-    /// </summary>
-    internal sealed class Link
+    public override string ToString()
     {
-        public string Name;
+        return Text;
+    }
+}
 
-        public string Uri;
+/// <summary>
+/// YAML link.
+/// </summary>
+internal sealed class Link
+{
+    public string Name;
+
+    public string Uri;
+}
+
+internal interface IHelpDocument
+{
+    string Name { get; }
+
+    InfoString Synopsis { get; set; }
+
+    InfoString Description { get; set; }
+
+    Link[] Links { get; set; }
+}
+
+internal sealed class RuleDocument : IHelpDocument
+{
+    public RuleDocument(string name)
+    {
+        Name = name;
     }
 
-    internal interface IHelpDocument
+    public string Name { get; }
+
+    public InfoString Synopsis { get; set; }
+
+    public InfoString Description { get; set; }
+
+    public TextBlock Notes { get; set; }
+
+    public InfoString Recommendation { get; set; }
+
+    public Link[] Links { get; set; }
+
+    public ResourceTags Annotations { get; set; }
+}
+
+internal sealed class ResourceHelpDocument : IHelpDocument
+{
+    public ResourceHelpDocument(string name)
     {
-        string Name { get; }
-
-        InfoString Synopsis { get; set; }
-
-        InfoString Description { get; set; }
-
-        Link[] Links { get; set; }
+        Name = name;
     }
 
-    internal sealed class RuleDocument : IHelpDocument
+    public string Name { get; }
+
+    public InfoString Synopsis { get; set; }
+
+    public InfoString Description { get; set; }
+
+    public Link[] Links { get; set; }
+
+    internal IResourceHelpInfo ToInfo()
     {
-        public RuleDocument(string name)
-        {
-            Name = name;
-        }
-
-        public string Name { get; }
-
-        public InfoString Synopsis { get; set; }
-
-        public InfoString Description { get; set; }
-
-        public TextBlock Notes { get; set; }
-
-        public InfoString Recommendation { get; set; }
-
-        public Link[] Links { get; set; }
-
-        public ResourceTags Annotations { get; set; }
-    }
-
-    internal sealed class ResourceHelpDocument : IHelpDocument
-    {
-        public ResourceHelpDocument(string name)
-        {
-            Name = name;
-        }
-
-        public string Name { get; }
-
-        public InfoString Synopsis { get; set; }
-
-        public InfoString Description { get; set; }
-
-        public Link[] Links { get; set; }
-
-        internal IResourceHelpInfo ToInfo()
-        {
-            return new ResourceHelpInfo(Name, Name, Synopsis, Description);
-        }
+        return new ResourceHelpInfo(Name, Name, Synopsis, Description);
     }
 }

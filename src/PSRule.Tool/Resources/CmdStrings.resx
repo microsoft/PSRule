@@ -117,11 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Analyze_Description" xml:space="preserve">
-    <value>Run rule analysis.</value>
-  </data>
   <data name="Cmd_Description" xml:space="preserve">
     <value>PSRule CLI</value>
+  </data>
+  <data name="Module_Init_Description" xml:space="preserve">
+    <value>Initialize a new or update an existing module lock file based on options.</value>
+  </data>
+  <data name="Module_List_Description" xml:space="preserve">
+    <value>List any module and the installed versions from the lock file.</value>
   </data>
   <data name="Module_Add_Description" xml:space="preserve">
     <value>Add one or more modules to the lock file.</value>
@@ -136,7 +139,7 @@
     <value>The target version of the module to add.</value>
   </data>
   <data name="Module_Description" xml:space="preserve">
-    <value>Manage modules tracked by the PSRule lock file. To install modules within the lock file, use the `restore` command instead.</value>
+    <value>Manage or restore modules tracked by the module lock file and configured options.</value>
   </data>
   <data name="Module_Module_Description" xml:space="preserve">
     <value>The name of one or more modules.</value>
@@ -147,25 +150,46 @@
   <data name="Module_Upgrade_Description" xml:space="preserve">
     <value>Upgrade to the latest versions of any modules within the lock file.</value>
   </data>
-  <data name="Options_Debug_Description" xml:space="preserve">
+  <data name="Global_Debug_Description" xml:space="preserve">
     <value>Return debug output.</value>
   </data>
-  <data name="Options_Module_Description" xml:space="preserve">
-    <value>The name of one or more modules to use during analysis.</value>
+  <data name="Run_Module_Description" xml:space="preserve">
+    <value>The name of one or more modules that contain rules or resources to use during a run.</value>
   </data>
-  <data name="Options_Option_Description" xml:space="preserve">
+  <data name="Global_Option_Description" xml:space="preserve">
     <value>Specifies the path to an options file.</value>
   </data>
-  <data name="Options_Path_Description" xml:space="preserve">
+  <data name="Global_Path_Description" xml:space="preserve">
     <value>The path to run commands within. By default, this is the current working directory.</value>
   </data>
-  <data name="Options_Verbose_Description" xml:space="preserve">
+  <data name="Global_Verbose_Description" xml:space="preserve">
     <value>Return verbose output.</value>
   </data>
-  <data name="Restore_Description" xml:space="preserve">
-    <value>Restore modules defined in configuration locally.</value>
+  <data name="Module_Restore_Description" xml:space="preserve">
+    <value>Restore from the module lock file and configured options.</value>
   </data>
-  <data name="Restore_Force_Description" xml:space="preserve">
-    <value>Restore modules even when an existing version that meets constaints is already installed locally.</value>
+  <data name="Module_Restore_Force_Description" xml:space="preserve">
+    <value>Restore modules even when an existing version that meets constraints is already installed locally.</value>
+  </data>
+  <data name="Run_Baseline_Description" xml:space="preserve">
+    <value>The name of a specific baseline to use.</value>
+  </data>
+  <data name="Run_Description" xml:space="preserve">
+    <value>Run rules against an input path and output the results.</value>
+  </data>
+  <data name="Run_Outcome_Description" xml:space="preserve">
+    <value>Specifies the rule results to show in output. By default, Pass/ Fail/ Error results are shown.</value>
+  </data>
+  <data name="Module_Init_Force_Description" xml:space="preserve">
+    <value>Force the creation of a new module lock file, even if one already exists.</value>
+  </data>
+  <data name="Run_InputPath_Description" xml:space="preserve">
+    <value>The file or directory path to search for input file to use during a run. By default, this is the current working path.</value>
+  </data>
+  <data name="Run_OutputFormat_Description" xml:space="preserve">
+    <value>Specifies the format to use when outputting results.</value>
+  </data>
+  <data name="Run_OutputPath_Description" xml:space="preserve">
+    <value>Specifies a path to write results to.</value>
   </data>
 </root>

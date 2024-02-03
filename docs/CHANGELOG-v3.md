@@ -27,11 +27,71 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v3.0.0-B0141 (pre-release)
+
+What's changed since pre-release v3.0.0-B0137:
+
+- General improvements:
+  - SARIF output has been improved to include effective configuration from a run by @BernieWhite.
+    [#1739](https://github.com/microsoft/PSRule/issues/1739)
+  - SARIF output has been improved to include file hashes for source files from a run by @BernieWhite.
+    [#1740](https://github.com/microsoft/PSRule/issues/1740)
+  - Added support to allow disabling PowerShell features that can be run from a repository by @BernieWhite.
+    [#1742](https://github.com/microsoft/PSRule/issues/1742)
+    - Added the `Execution.RestrictScriptSource` option to disable running scripts from a repository.
+- Engineering:
+  - Bump YamlDotNet to v15.1.0.
+    [#1737](https://github.com/microsoft/PSRule/pull/1737)
+
+## v3.0.0-B0137 (pre-release)
+
+What's changed since pre-release v3.0.0-B0122:
+
+- General improvements:
+  - **Breaking change:** Moved the `restore` command to a sub-command of `module` by @BernieWhite.
+    [#1730](https://github.com/microsoft/PSRule/issues/1730)
+    - The functionality of the `restore` command is now available as `module restore`.
+  - Added CLI commands to list and report status of locked modules by @BernieWhite.
+    [#1729](https://github.com/microsoft/PSRule/issues/1729)
+    - Added `module init` sub-command to initialize the lock file from configured options.
+    - Added `module list` sub-command to list locked and unlocked modules associated with the workspace.
+    - Added `version` property to the lock file schema to support versioning of the lock file.
+- Engineering:
+  - Bump BenchmarkDotNet to v0.13.12.
+    [#1725](https://github.com/microsoft/PSRule/pull/1725)
+  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.12.
+    [#1728](https://github.com/microsoft/PSRule/pull/1728)
+  - Bump xunit to v2.6.6.
+    [#1732](https://github.com/microsoft/PSRule/pull/1732)
+  - Bump xunit.runner.visualstudio to v2.5.6.
+    [#1717](https://github.com/microsoft/PSRule/pull/1717)
+  - Bump System.Drawing.Common to v8.0.1.
+    [#1727](https://github.com/microsoft/PSRule/pull/1727)
+
+## v3.0.0-B0122 (pre-release)
+
 What's changed since pre-release v3.0.0-B0093:
 
+- General improvements:
+  - **Breaking change:** Renamed `analyze` CLI command to `run` by @BernieWhite.
+    [#1713](https://github.com/microsoft/PSRule/issues/1713)
+  - Added `--outcome` argument for CLI to support filtering output by @bernieWhite.
+    [#1706](https://github.com/microsoft/PSRule/issues/1706)
 - Engineering:
-  - Bump xunit to v2.6.2.
-    [#1679](https://github.com/microsoft/PSRule/pull/1679)
+  - Bump xunit to v2.6.3.
+    [#1699](https://github.com/microsoft/PSRule/pull/1699)
+  - Bump xunit.runner.visualstudio to v2.5.5.
+    [#1700](https://github.com/microsoft/PSRule/pull/1700)
+  - Bump Microsoft.NET.Test.Sdk to v17.8.0.
+    [#1659](https://github.com/microsoft/PSRule/pull/1659)
+  - Bump Microsoft.CodeAnalysis.NetAnalyzers to v8.0.0.
+    [#1674](https://github.com/microsoft/PSRule/pull/1674)
+  - Bump Microsoft.CodeAnalysis.Common to v4.8.0.
+    [#1686](https://github.com/microsoft/PSRule/pull/1686)
+  - Bump BenchmarkDotNet to v0.13.11.
+    [#1694](https://github.com/microsoft/PSRule/pull/1694)
+  - Bump BenchmarkDotNet.Diagnostics.Windows to v0.13.11.
+    [#1697](https://github.com/microsoft/PSRule/pull/1697)
 
 ## v3.0.0-B0093 (pre-release)
 

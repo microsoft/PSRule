@@ -6,59 +6,58 @@ using System.Text;
 using PSRule.Configuration;
 using PSRule.Resources;
 
-namespace PSRule.Pipeline.Output
+namespace PSRule.Pipeline.Output;
+
+/// <summary>
+/// An output writer that writes output to disk.
+/// </summary>
+internal sealed class FileOutputWriter : PipelineWriter
 {
-    /// <summary>
-    /// An output writer that writes output to disk.
-    /// </summary>
-    internal sealed class FileOutputWriter : PipelineWriter
+    private const string Source = "PSRule";
+
+    private readonly Encoding _Encoding;
+    private readonly string _Path;
+    private readonly bool _WriteHost;
+
+    internal FileOutputWriter(PipelineWriter inner, PSRuleOption option, Encoding encoding, string path, ShouldProcess shouldProcess, bool writeHost)
+        : base(inner, option, shouldProcess)
     {
-        private const string Source = "PSRule";
+        _Encoding = encoding;
+        _Path = path;
+        _WriteHost = writeHost;
+    }
 
-        private readonly Encoding _Encoding;
-        private readonly string _Path;
-        private readonly bool _WriteHost;
+    public override void WriteObject(object sendToPipeline, bool enumerateCollection)
+    {
+        WriteToFile(sendToPipeline);
+    }
 
-        internal FileOutputWriter(PipelineWriter inner, PSRuleOption option, Encoding encoding, string path, ShouldProcess shouldProcess, bool writeHost)
-            : base(inner, option, shouldProcess)
+    private void WriteToFile(object o)
+    {
+        var rootedPath = Environment.GetRootedPath(_Path);
+        if (CreateFile(rootedPath))
         {
-            _Encoding = encoding;
-            _Path = path;
-            _WriteHost = writeHost;
+            File.WriteAllText(path: rootedPath, contents: o.ToString(), encoding: _Encoding);
+            InfoOutputPath(rootedPath);
         }
+    }
 
-        public override void WriteObject(object sendToPipeline, bool enumerateCollection)
+    private void InfoOutputPath(string rootedPath)
+    {
+        if (!Option.Output.Footer.GetValueOrDefault(OutputOption.Default.Footer.Value).HasFlag(FooterFormat.OutputFile))
+            return;
+
+        var message = string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InfoOutputPath, rootedPath);
+        if (_WriteHost)
         {
-            WriteToFile(sendToPipeline);
+            WriteHost(new HostInformationMessage
+            {
+                Message = message
+            });
         }
-
-        private void WriteToFile(object o)
+        else
         {
-            var rootedPath = Environment.GetRootedPath(_Path);
-            if (CreateFile(rootedPath))
-            {
-                File.WriteAllText(path: rootedPath, contents: o.ToString(), encoding: _Encoding);
-                InfoOutputPath(rootedPath);
-            }
-        }
-
-        private void InfoOutputPath(string rootedPath)
-        {
-            if (!Option.Output.Footer.GetValueOrDefault(OutputOption.Default.Footer.Value).HasFlag(FooterFormat.OutputFile))
-                return;
-
-            var message = string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InfoOutputPath, rootedPath);
-            if (_WriteHost)
-            {
-                WriteHost(new HostInformationMessage
-                {
-                    Message = message
-                });
-            }
-            else
-            {
-                WriteInformation(new InformationRecord(message, Source));
-            }
+            WriteInformation(new InformationRecord(message, Source));
         }
     }
 }

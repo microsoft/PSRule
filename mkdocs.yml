@@ -31,9 +31,12 @@ theme:
     - navigation.sections:
         level: 1
     - navigation.tabs
+    - navigation.footer
     - content.code.annotate
     - content.tabs.link
     - content.code.copy
+    - content.action.edit
+    - content.action.view
 
 nav:
   - Home: index.md
@@ -42,7 +45,7 @@ nav:
           - About: about.md
           - Features: features.md
           - FAQ: faq.md
-      - Installation: install-instructions.md
+      - Installation: install.md
       - Quickstarts:
           - Create a standalone rule: quickstart/standalone-rule.md
       - Authoring rules:
@@ -97,7 +100,10 @@ nav:
           - New-PSRuleOption: commands/PSRule/en-US/New-PSRuleOption.md
           - Set-PSRuleOption: commands/PSRule/en-US/Set-PSRuleOption.md
           - Test-PSRuleTarget: commands/PSRule/en-US/Test-PSRuleTarget.md
-      - CLI commands: concepts/cli.md
+      - CLI commands:
+          - Index: concepts/cli/index.md
+          - run: concepts/cli/run.md
+          - module: concepts/cli/module.md
       - Assertion methods: concepts/PSRule/en-US/about_PSRule_Assert.md
       - Baselines: concepts/PSRule/en-US/about_PSRule_Baseline.md
       - Badges: concepts/PSRule/en-US/about_PSRule_Badges.md
@@ -133,21 +139,27 @@ markdown_extensions:
   - mdx_truly_sane_lists
   - pymdownx.tasklist
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - toc:
       permalink: '#'
       separator: '-'
 
 plugins:
+  - git-revision-date-localized:
+      enable_creation_date: true
+      fallback_to_build_date: true
+  - git-committers:
+      repository: microsoft/PSRule
+      branch: main
   - mkdocs-simple-hooks:
       hooks:
         on_page_markdown: 'docs.hooks:replace_maml'
   - search
-  - git-revision-date
   - redirects:
       redirect_maps:
         'authoring/writing-rules.md': 'authoring/testing-infrastructure.md'
+        'install-instructions.md': 'install.md'
 
 extra:
   version:

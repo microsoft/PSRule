@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Error_501" xml:space="preserve">
-    <value>Failed to install module: {0} -- v{1}</value>
+    <value>Failed to restore module: {0} -- v{1}</value>
   </data>
   <data name="Error_502" xml:space="preserve">
     <value>Failed to find a valid version of the specified module '{0}'.</value>
@@ -126,8 +126,8 @@
   <data name="Error_503" xml:space="preserve">
     <value>The specified verison v{0} does not meet the required constraint.</value>
   </data>
-  <data name="InstallingModule" xml:space="preserve">
-    <value>Installing module: {0} -- v{1}</value>
+  <data name="RestoringModule" xml:space="preserve">
+    <value>Restoring module: {0} -- v{1}</value>
   </data>
   <data name="UsingModule" xml:space="preserve">
     <value>Using module: {0} -- v{1}</value>

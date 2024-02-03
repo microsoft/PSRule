@@ -57,6 +57,7 @@ execution:
   duplicateResourceId: Warn
   hashAlgorithm: SHA256
   languageMode: ConstrainedLanguage
+  restrictScriptSource: ModuleOnly
   invariantCulture: Ignore
   initialSessionState: Minimal
   suppressionGroupExpired: Debug
