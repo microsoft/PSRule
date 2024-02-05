@@ -45,7 +45,7 @@ nav:
           - About: about.md
           - Features: features.md
           - FAQ: faq.md
-      - Installation: install.md
+      - Install: install.md
       - Quickstarts:
           - Create a standalone rule: quickstart/standalone-rule.md
       - Authoring rules:
