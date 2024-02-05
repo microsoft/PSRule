@@ -7,10 +7,21 @@ author: BernieWhite
 PSRule supports running within continuous integration (CI) systems or locally.
 It is shipped as a PowerShell module which makes it easy to install and distribute updates.
 
+Task                                      | Options
+----                                      | ------
+Run tests within CI pipelines             | With [GitHub Actions][8] _or_ [Azure Pipelines][9] _or_ [PowerShell][10]
+Run tests locally during development      | With [Visual Studio Code][11] _and_ [PowerShell][10]
+Create custom tests for your organization | With [Visual Studio Code][11] _and_ [PowerShell][10]
+
 !!! Tip
     PSRule provides native integration to popular CI systems such as GitHub Actions and Azure Pipelines.
     If you are using a different CI system you can use the local install to run on MacOS,
     Linux, and Windows worker nodes.
+
+  [8]: #with-github-actions
+  [9]: #with-azure-pipelines
+  [10]: #with-powershell
+  [11]: #with-visual-studio-code
 
 ## With GitHub Actions
 
@@ -82,28 +93,56 @@ This will automatically install compatible versions of all dependencies.
 
   [2]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
 
-## Installing locally
+## With Visual Studio Code
+
+[:octicons-download-24: Extension][12]
+
+An extension for Visual Studio Code is available for an integrated experience using PSRule.
+The Visual Studio Code extension includes a built-in tasks and configuration schemas for working with PSRule.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/microsoft/PSRule-vscode/main/docs/images/tasks-provider.png" alt="Built-in tasks shown in task list" />
+</p>
+
+  [12]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode
+
+## With CLI
+
+PSRule can be installed from the .NET CLI using the following command line:
+
+```bash
+dotnet tool install -g Microsoft.PSRule.Tool
+```
+
+For a list of commands you can use with the PSRule CLI, see [PSRule CLI][cli].
+
+  [cli]: concepts/cli/index.md
+
+## With PowerShell
 
 PSRule can be installed locally from the PowerShell Gallery using PowerShell.
 You can also use this option to install on CI workers that are not natively supported.
 
-The following platforms are supported:
+### Prerequisites
 
-- Windows PowerShell 5.1 with .NET Framework 4.7.2 or greater.
-- PowerShell 7.4 or greater on MacOS, Linux, and Windows.
-
-### Installing PowerShell
-
-PowerShell 7.x can be installed on MacOS, Linux, and Windows but is not installed by default.
-For a list of platforms that PowerShell 7.4 is supported on and install instructions see [Get PowerShell][3].
+Operating System      | Tool                                                         | Installation Link
+----------------      | ----                                                         | -----------------
+Windows               | Windows PowerShell 5.1 with .NET Framework 4.7.2 or greater. | [link][3]
+Windows, MacOS, Linux | PowerShell version 7.4.x or greater.                         | [link][4]
 
 !!! Note
     If you are using Windows PowerShell you may need to bootstrap NuGet before you can install modules.
     The NuGet package provider is not installed in Windows PowerShell be default.
     For instructions see [Bootstrapping NuGet][6].
 
-  [3]: https://github.com/PowerShell/PowerShell#get-powershell
+  [3]: https://dotnet.microsoft.com/download/dotnet-framework/net48
+  [4]: https://github.com/PowerShell/PowerShell#get-powershell
   [6]: https://learn.microsoft.com/powershell/scripting/gallery/how-to/getting-support/bootstrapping-nuget
+
+### Installing PowerShell
+
+PowerShell 7.x can be installed on MacOS, Linux, and Windows but is not installed by default.
+For a list of platforms that PowerShell 7.4 is supported on and install instructions see [Get PowerShell][4].
 
 ### Getting the modules
 
@@ -171,7 +210,7 @@ To use a pre-release version of PSRule add the `-AllowPrerelease` switch when ca
     Install-Module -Name 'PSRule' -Repository PSGallery -Scope AllUsers -AllowPrerelease
     ```
 
-### Building from source
+## Building from source
 
 [:octicons-file-code-24: Source][5]
 
@@ -185,7 +224,7 @@ This build script will compile the module and documentation then output the resu
 
   [5]: https://github.com/microsoft/PSRule.git
 
-#### Development dependencies
+### Development dependencies
 
 The following PowerShell modules will be automatically install if the required versions are not present:
 
@@ -202,7 +241,7 @@ Additionally .NET SDK v8 is required.
 .NET will not be automatically downloaded and installed.
 To download and install the latest SDK see [Download .NET 8.0][dotnet].
 
-### Limited access networks
+## Limited access networks
 
 If you are on a network that does not permit Internet access to the PowerShell Gallery,
 download the required PowerShell modules on an alternative device that has access.
