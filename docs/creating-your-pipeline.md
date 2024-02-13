@@ -204,7 +204,7 @@ To only process files that have changed within a pull request, set the `Input.Ig
     ```
 
 !!! Tip
-    In some cases it may be nessessary to set `Repository.BaseRef` to the default branch of your repository.
+    In some cases it may be necessary to set `Repository.BaseRef` to the default branch of your repository.
     By default, PSRule will detect the default branch of the repository from the build system environment variables.
 
   [8]: concepts/PSRule/en-US/about_PSRule_Options.md#inputignoreunchangedpath

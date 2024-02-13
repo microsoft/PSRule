@@ -10,7 +10,7 @@ This allows you to test Infrastructure as Code (IaC) artifacts before pushing ch
 !!! Tip
     If you haven't already, follow the instructions on [installing locally][1] before continuing.
 
-  [1]: install-instructions.md#installing-locally
+  [1]: install.md#with-powershell
 
 ## With Visual Studio Code
 

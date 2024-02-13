@@ -1,9 +1,19 @@
+---
+title: ps-rule run command
+---
+
 # ps-rule run
 
 !!! Abstract
     Use the `run` command to run rules against an input path and output the results.
 
-## Optional parameters
+## Usage
+
+```bash title="PSRule CLI command-line"
+ps-rule run [options]
+```
+
+## Options
 
 ### `--input-path` | `-f`
 

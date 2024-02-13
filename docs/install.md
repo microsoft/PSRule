@@ -2,16 +2,16 @@
 author: BernieWhite
 ---
 
-# Install PSRule tools
+# Install PSRule
 
 PSRule supports running within continuous integration (CI) systems or locally.
 It is shipped as a PowerShell module which makes it easy to install and distribute updates.
 
 Task                                      | Options
 ----                                      | ------
-Run tests within CI pipelines             | With [GitHub Actions][8] _or_ [Azure Pipelines][9] _or_ [PowerShell][10]
-Run tests locally during development      | With [Visual Studio Code][11] _and_ [PowerShell][10]
-Create custom tests for your organization | With [Visual Studio Code][11] _and_ [PowerShell][10]
+Run tests within CI pipelines             | With [GitHub Actions][8] _or_ [Azure Pipelines][9] _or_ [CLI][13] _or_ [PowerShell][10]
+Run tests locally during development      | With [Visual Studio Code][11] _and_ [CLI][13] / [PowerShell][10]
+Create custom tests for your organization | With [Visual Studio Code][11] _and_ [CLI][13] / [PowerShell][10]
 
 !!! Tip
     PSRule provides native integration to popular CI systems such as GitHub Actions and Azure Pipelines.
@@ -22,6 +22,7 @@ Create custom tests for your organization | With [Visual Studio Code][11] _and_ 
   [9]: #with-azure-pipelines
   [10]: #with-powershell
   [11]: #with-visual-studio-code
+  [13]: #with-cli
 
 ## With GitHub Actions
 
@@ -108,20 +109,29 @@ The Visual Studio Code extension includes a built-in tasks and configuration sch
 
 ## With CLI
 
-PSRule can be installed from the .NET CLI using the following command line:
+PSRule can be installed from NuGet.org using the .NET CLI where the .NET 8.0 SDK is available.
+You can use this option to install on CI workers that are not natively supported.
+
+To install PSRule as a global tool use the following command line:
 
 ```bash
 dotnet tool install -g Microsoft.PSRule.Tool
 ```
 
-For a list of commands you can use with the PSRule CLI, see [PSRule CLI][cli].
+To install a specific version use the following command line:
+
+```bash
+dotnet tool install -g Microsoft.PSRule.Tool --version 3.0.0-B0151
+```
+
+For a list of commands supported by the CLI, see [PSRule CLI][cli].
 
   [cli]: concepts/cli/index.md
 
 ## With PowerShell
 
 PSRule can be installed locally from the PowerShell Gallery using PowerShell.
-You can also use this option to install on CI workers that are not natively supported.
+You can use this option to install on CI workers that are not natively supported.
 
 ### Prerequisites
 
