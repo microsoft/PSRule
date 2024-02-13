@@ -34,6 +34,8 @@ What's changed since pre-release v3.0.0-B0141:
     [#1673](https://github.com/microsoft/PSRule/pull/1673)
     - Running PSRule from PowerShell 7.x is supported on 7.4 and above.
     - Running PSRule from Windows PowerShell 5.1 is still supported but deprecated and will be removed in PSRule v4.
+  - Bump Microsoft.NET.Test.Sdk to v17.9.0.
+    [#1752](https://github.com/microsoft/PSRule/pull/1752)
 - Bug fixes:
   - Fixed CLI null reference when include module is undefined by @BernieWhite.
     [#1746](https://github.com/microsoft/PSRule/issues/1746)
