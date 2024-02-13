@@ -15,7 +15,7 @@ In addition to our team, we hope you will think about contributing too.
 Here is how you can get started:
 
 - :octicons-bug-16: Report issues.
-- :octicons-thumbsup-16: Upvote existing issues that are important to you.
+- :octicons-thumbsup-16: Up-vote existing issues that are important to you.
 - :octicons-book-16: Improve documentation.
 - :octicons-git-pull-request-16: Contribute code.
 

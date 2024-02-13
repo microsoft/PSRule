@@ -1,9 +1,19 @@
+---
+title: ps-rule module command
+---
+
 # ps-rule module
 
 !!! Abstract
     Use the `module` command to manage or restore modules tracked by the module lock file and configured options. (`ps-rule.lock.json`).
     The module lock file, provides consistent module versions across multiple machines and environments.
     For more information, see [Lock file](../lockfile.md).
+
+## Usage
+
+```bash title="PSRule CLI command-line"
+ps-rule module [subcommand] [options]
+```
 
 To use the `module` command, choose one of the available subcommands:
 

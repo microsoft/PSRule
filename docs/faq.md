@@ -174,7 +174,7 @@ input:
 
 ## How do I disable or suppress the not processed warning?
 
-You may recieve a warning message suggesting a file or object _has not been processed_.
+You may receive a warning message suggesting a file or object _has not been processed_.
 If there are no rules that apply to the file or object this warning will be displayed.
 
 !!! Note
@@ -232,12 +232,12 @@ Alternatively, you can provide your own reasons to complement standard PowerShel
 
 ## Collection of telemetry
 
-PSRule and PSRule for Azure currently do not collect any telemetry during installation or execution.
+PSRule currently does not collect any telemetry during installation or execution.
 
-PowerShell (used by PSRule for Azure) does collect basic telemetry by default.
+PowerShell (used by PSRule) does collect basic telemetry by default.
 Collection of telemetry in PowerShell and how to opt-out is explained in [about_Telemetry][11].
 
-  [11]: https://docs.microsoft.com/powershell/module/microsoft.powershell.core/about/about_telemetry
+  [11]: https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_telemetry
 
 *[IaC]: Infrastructure as Code
 *[CI]: Continuous Integration

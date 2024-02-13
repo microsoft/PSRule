@@ -17,8 +17,8 @@ PSRule allows you to quickly plug-in Infrastructure as Code (IaC) controls into 
 Run on MacOS, Linux, and Windows or anywhere PowerShell is supported.
 Native support for popular continuous integration (CI) systems includes:
 
-- **GitHub Actions** - Trigger tests for GitHub repositories using workflows.
-- **Azure Pipelines** - Use tasks to run tests in Azure DevOps YAML or Classic pipelines and releases.
+- **GitHub Actions** &mdash; Trigger tests for GitHub repositories using workflows.
+- **Azure Pipelines** &mdash; Use tasks to run tests in Azure DevOps YAML or Classic pipelines and releases.
 
 ## Extensible
 
@@ -27,7 +27,7 @@ Regardless of the format you choose, any combination of YAML, JSON, or PowerShel
 
 - **YAML** &mdash; Use a popular, easy to read, and learn IaC format.
   With YAML, you can quickly build out common rules with minimal effort and no scripting experience.
-- **JSON** &mdash; Is ubiquitous used by many tools.
+- **JSON** &mdash; Is ubiquitous, used by many tools.
   While this format is typically harder to read then YAML it is easy to automate.
   You may prefer to use this format if you are generating rules with automation.
 - **PowerShell** &mdash; Is a flexible scripting language.
@@ -54,8 +54,8 @@ The following built-in features improve portability:
 - [Suppression][4] &mdash; Allows you to handle and keep exceptions auditable in git history.
   - **Approval** &mdash; Use [code owners][6] and [branch policy][7] concepts to control changes.
 - [Documentation][5] &mdash; Provide guidance on how to resolve detected issues.
-  - **Quick** - Use a one liner to quickly add a hint or reference on rules you build.
-  - **Detailed** - Support for markdown allows you to provide detailed detailed guidance to resolve issues.
+  - **Quick** &mdash; Use a one liner to quickly add a hint or reference on rules you build.
+  - **Detailed** &mdash; Support for markdown allows you to provide detailed detailed guidance to resolve issues.
 
   [1]: authoring/packaging-rules.md
   [2]: concepts/PSRule/en-US/about_PSRule_Options.md

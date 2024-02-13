@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 namespace PSRule.BuildTask.Generators;
 
 /// <summary>
-/// Generator contants for PSRule engine version.
+/// Generator constants for PSRule engine version.
 /// </summary>
 [Generator]
 public sealed class EngineVersionGenerator : ISourceGenerator
