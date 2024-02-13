@@ -5,19 +5,19 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Management.Automation;
 using Newtonsoft.Json;
+using PSRule.CommandLine.Resources;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline.Dependencies;
-using PSRule.Tool.Models;
-using PSRule.Tool.Resources;
+using PSRule.CommandLine.Models;
 using SemanticVersion = PSRule.Data.SemanticVersion;
 
-namespace PSRule.Tool.Commands;
+namespace PSRule.CommandLine.Commands;
 
 /// <summary>
 /// Execute features of the <c>module</c> command through the CLI.
 /// </summary>
-internal sealed class ModuleCommand
+public sealed class ModuleCommand
 {
     /// <summary>
     /// Failed to install a module.
@@ -35,6 +35,9 @@ internal sealed class ModuleCommand
     private const string FIELD_PSDATA = "PSData";
     private const string PRERELEASE_SEPARATOR = "-";
 
+    /// <summary>
+    /// Call <c>module restore</c>.
+    /// </summary>
     public static int ModuleRestore(RestoreOptions operationOptions, ClientContext clientContext)
     {
         var exitCode = 0;

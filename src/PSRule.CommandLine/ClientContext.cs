@@ -4,10 +4,21 @@
 using System.CommandLine.Invocation;
 using PSRule.Configuration;
 
-namespace PSRule.Tool;
+namespace PSRule.CommandLine;
 
-internal sealed class ClientContext
+/// <summary>
+/// 
+/// </summary>
+public sealed class ClientContext
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="invocation"></param>
+    /// <param name="option"></param>
+    /// <param name="verbose"></param>
+    /// <param name="debug"></param>
+    /// <exception cref="ArgumentNullException"></exception>
     public ClientContext(InvocationContext invocation, string? option, bool verbose, bool debug)
     {
         Path = AppDomain.CurrentDomain.BaseDirectory;
@@ -18,16 +29,34 @@ internal sealed class ClientContext
         Option = GetOption(Host, option);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public string Path { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public InvocationContext Invocation { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public ClientHost Host { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public PSRuleOption Option { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public bool Verbose { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public bool Debug { get; }
 
     private static PSRuleOption GetOption(ClientHost host, string? path)

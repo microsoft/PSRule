@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.CommandLine.Models;
 using PSRule.Configuration;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Dependencies;
-using PSRule.Tool.Models;
 
-namespace PSRule.Tool.Commands;
+namespace PSRule.CommandLine.Commands;
 
 /// <summary>
 /// Execute features of the <c>run</c> command through the CLI.
 /// </summary>
-internal sealed class RunCommand
+public sealed class RunCommand
 {
     private const string PUBLISHER = "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US";
 
@@ -25,12 +25,15 @@ internal sealed class RunCommand
     /// </summary>
     private const int ERROR_BREAK_ON_FAILURE = 100;
 
+    /// <summary>
+    /// Call <c>run</c>.
+    /// </summary>
     public static int Run(RunOptions operationOptions, ClientContext clientContext)
     {
         var exitCode = 0;
         var file = LockFile.Read(null);
         var inputPath = operationOptions.InputPath == null || operationOptions.InputPath.Length == 0 ?
-            new string[] { Environment.GetWorkingPath() } : operationOptions.InputPath;
+            [Environment.GetWorkingPath()] : operationOptions.InputPath;
 
         if (operationOptions.Path != null)
             clientContext.Option.Include.Path = operationOptions.Path;
