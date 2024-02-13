@@ -6,9 +6,12 @@ using System.CommandLine.IO;
 using System.Management.Automation;
 using PSRule.Pipeline;
 
-namespace PSRule.Tool;
+namespace PSRule.CommandLine;
 
-internal sealed class ClientHost : HostContext
+/// <summary>
+/// 
+/// </summary>
+public sealed class ClientHost : HostContext
 {
     private readonly ClientContext _Context;
     private readonly bool _Verbose;
@@ -16,6 +19,12 @@ internal sealed class ClientHost : HostContext
     private readonly ConsoleColor _BackgroundColor;
     private readonly ConsoleColor _ForegroundColor;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="verbose"></param>
+    /// <param name="debug"></param>
     public ClientHost(ClientContext context, bool verbose, bool debug)
     {
         _Context = context;
@@ -27,6 +36,11 @@ internal sealed class ClientHost : HostContext
         Verbose($"Using working path: {Directory.GetCurrentDirectory()}");
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="variableName"></param>
+    /// <returns></returns>
     public override ActionPreference GetPreferenceVariable(string variableName)
     {
         if (variableName == "VerbosePreference")
@@ -38,22 +52,40 @@ internal sealed class ClientHost : HostContext
         return base.GetPreferenceVariable(variableName);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="errorRecord"></param>
     public override void Error(ErrorRecord errorRecord)
     {
         _Context.LogError(errorRecord.Exception.Message);
         base.Error(errorRecord);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="text"></param>
     public override void Warning(string text)
     {
         _Context.Invocation.Console.WriteLine(text);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="action"></param>
+    /// <returns></returns>
     public override bool ShouldProcess(string target, string action)
     {
         return true;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="informationRecord"></param>
     public override void Information(InformationRecord informationRecord)
     {
         if (informationRecord?.MessageData is HostInformationMessage info)
@@ -80,6 +112,10 @@ internal sealed class ClientHost : HostContext
         Console.ForegroundColor = _ForegroundColor;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="text"></param>
     public override void Verbose(string text)
     {
         if (!_Verbose)
@@ -88,6 +124,10 @@ internal sealed class ClientHost : HostContext
         _Context.LogVerbose(text);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="text"></param>
     public override void Debug(string text)
     {
         if (!_Debug)

@@ -8,6 +8,35 @@
         "resolved": "8.0.0",
         "contentHash": "DxiTgkCl3CGq1rYmBX2wjY7XGbxiBdL4J+/AJIAFLKy5z70NxhnVRnPghnicXZ8oF6JKVXlW3xwznRbI3ioEKg=="
       },
+      "Microsoft.PowerShell.SDK": {
+        "type": "Direct",
+        "requested": "[7.4.1, )",
+        "resolved": "7.4.1",
+        "contentHash": "1h0KixYhgGUuRQssGWdqvMCxyHYerw8VPK0XEu2OllUj704yGNTsLb2MjUPV5m35UR/R3JSJL6l9VDx1DdG0fw==",
+        "dependencies": {
+          "Microsoft.Extensions.ObjectPool": "5.0.17",
+          "Microsoft.Management.Infrastructure.CimCmdlets": "7.4.1",
+          "Microsoft.PowerShell.Commands.Diagnostics": "7.4.1",
+          "Microsoft.PowerShell.Commands.Management": "7.4.1",
+          "Microsoft.PowerShell.Commands.Utility": "7.4.1",
+          "Microsoft.PowerShell.ConsoleHost": "7.4.1",
+          "Microsoft.PowerShell.Security": "7.4.1",
+          "Microsoft.WSMan.Management": "7.4.1",
+          "Microsoft.Windows.Compatibility": "8.0.1",
+          "System.Data.SqlClient": "4.8.6",
+          "System.IO.Packaging": "8.0.0",
+          "System.Management.Automation": "7.4.1",
+          "System.Net.Http.WinHttpHandler": "8.0.0",
+          "System.Private.ServiceModel": "4.10.3",
+          "System.ServiceModel.Duplex": "4.10.3",
+          "System.ServiceModel.Http": "4.10.3",
+          "System.ServiceModel.NetTcp": "4.10.3",
+          "System.ServiceModel.Primitives": "4.10.3",
+          "System.ServiceModel.Security": "4.10.3",
+          "System.Text.Encodings.Web": "8.0.0",
+          "System.Web.Services.Description": "4.10.3"
+        }
+      },
       "Microsoft.SourceLink.GitHub": {
         "type": "Direct",
         "requested": "[8.0.0, )",
@@ -17,6 +46,12 @@
           "Microsoft.Build.Tasks.Git": "8.0.0",
           "Microsoft.SourceLink.Common": "8.0.0"
         }
+      },
+      "System.CommandLine": {
+        "type": "Direct",
+        "requested": "[2.0.0-beta4.22272.1, )",
+        "resolved": "2.0.0-beta4.22272.1",
+        "contentHash": "1uqED/q2H0kKoLJ4+hI2iPSBSEdTuhfCYADeJrAqERmiGQ2NNacYKRNEQ+gFbU4glgVyK8rxI+ZOe1onEtr/Pg=="
       },
       "JetBrains.Annotations": {
         "type": "Transitive",
@@ -210,34 +245,6 @@
         "type": "Transitive",
         "resolved": "7.4.0",
         "contentHash": "FlaJ3JBWhqFToYT0ycMb/Xxzoof7oTQbNyI4UikgubC7AMWt5ptBNKjIAMPvOcvEHr+ohaO9GvRWp3tiyS3sKw=="
-      },
-      "Microsoft.PowerShell.SDK": {
-        "type": "Transitive",
-        "resolved": "7.4.1",
-        "contentHash": "1h0KixYhgGUuRQssGWdqvMCxyHYerw8VPK0XEu2OllUj704yGNTsLb2MjUPV5m35UR/R3JSJL6l9VDx1DdG0fw==",
-        "dependencies": {
-          "Microsoft.Extensions.ObjectPool": "5.0.17",
-          "Microsoft.Management.Infrastructure.CimCmdlets": "7.4.1",
-          "Microsoft.PowerShell.Commands.Diagnostics": "7.4.1",
-          "Microsoft.PowerShell.Commands.Management": "7.4.1",
-          "Microsoft.PowerShell.Commands.Utility": "7.4.1",
-          "Microsoft.PowerShell.ConsoleHost": "7.4.1",
-          "Microsoft.PowerShell.Security": "7.4.1",
-          "Microsoft.WSMan.Management": "7.4.1",
-          "Microsoft.Windows.Compatibility": "8.0.1",
-          "System.Data.SqlClient": "4.8.6",
-          "System.IO.Packaging": "8.0.0",
-          "System.Management.Automation": "7.4.1",
-          "System.Net.Http.WinHttpHandler": "8.0.0",
-          "System.Private.ServiceModel": "4.10.3",
-          "System.ServiceModel.Duplex": "4.10.3",
-          "System.ServiceModel.Http": "4.10.3",
-          "System.ServiceModel.NetTcp": "4.10.3",
-          "System.ServiceModel.Primitives": "4.10.3",
-          "System.ServiceModel.Security": "4.10.3",
-          "System.Text.Encodings.Web": "8.0.0",
-          "System.Web.Services.Description": "4.10.3"
-        }
       },
       "Microsoft.PowerShell.Security": {
         "type": "Transitive",
@@ -543,11 +550,6 @@
         "type": "Transitive",
         "resolved": "7.0.0",
         "contentHash": "dQPcs0U1IKnBdRDBkrCTi1FoajSTBzLcVTpjO4MBCMC7f4pDOIPzgBoX8JjG7X6uZRJ8EBxsi8+DR1JuwjnzOQ=="
-      },
-      "System.CommandLine": {
-        "type": "Transitive",
-        "resolved": "2.0.0-beta4.22272.1",
-        "contentHash": "1uqED/q2H0kKoLJ4+hI2iPSBSEdTuhfCYADeJrAqERmiGQ2NNacYKRNEQ+gFbU4glgVyK8rxI+ZOe1onEtr/Pg=="
       },
       "System.ComponentModel.Annotations": {
         "type": "Transitive",
@@ -1328,14 +1330,6 @@
         "type": "Project",
         "dependencies": {
           "Newtonsoft.Json": "[13.0.3, )"
-        }
-      },
-      "Microsoft.PSRule.CommandLine": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.PSRule.SDK": "[0.0.1, )",
-          "Microsoft.PowerShell.SDK": "[7.4.1, )",
-          "System.CommandLine": "[2.0.0-beta4.22272.1, )"
         }
       },
       "Microsoft.PSRule.Core": {

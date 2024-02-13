@@ -4,9 +4,10 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Reflection;
+using PSRule.CommandLine;
+using PSRule.CommandLine.Commands;
+using PSRule.CommandLine.Models;
 using PSRule.Rules;
-using PSRule.Tool.Commands;
-using PSRule.Tool.Models;
 using PSRule.Tool.Resources;
 
 namespace PSRule.Tool;

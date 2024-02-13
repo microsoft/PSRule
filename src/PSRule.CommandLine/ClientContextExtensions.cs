@@ -4,7 +4,7 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 
-namespace PSRule.Tool;
+namespace PSRule.CommandLine;
 
 internal static class ClientContextExtensions
 {

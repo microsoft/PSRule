@@ -29,6 +29,9 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v3.0.0-B0141:
 
+- General improvements:
+  - Improved support for packaging with Visual Studio Code by @BernieWhite.
+    [#1755](https://github.com/microsoft/PSRule/issues/1755)
 - Engineering:
   - **Breaking change:** Bump development tools to .NET 8.0 SDK by @BernieWhite.
     [#1673](https://github.com/microsoft/PSRule/pull/1673)
