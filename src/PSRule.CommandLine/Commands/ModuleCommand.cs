@@ -335,7 +335,7 @@ public sealed class ModuleCommand
 
     #region Helper methods
 
-    private static IEnumerable<ModuleRecord> GetModules(PowerShell pwsh, LockFile file, PSRuleOption option)
+    private static IEnumerable<ModuleRecord> GetModules(PowerShell pwsh, LockFile file, PSRuleOption? option)
     {
         var results = new List<ModuleRecord>();
 
