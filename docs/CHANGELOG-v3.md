@@ -27,6 +27,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0151:
+
+- Bug fixes:
+  - Fixes null references for CLI module handling by @BernieWhite.
+    [#1746](https://github.com/microsoft/PSRule/issues/1746)
+
 ## v3.0.0-B0151 (pre-release)
 
 What's changed since pre-release v3.0.0-B0141:

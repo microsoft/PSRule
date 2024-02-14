@@ -48,18 +48,22 @@ public sealed class LockFile
     {
         path = Environment.GetRootedPath(path);
         path = Path.GetExtension(path) == ".json" ? path : Path.Combine(path, DEFAULT_FILE);
+        LockFile result = null;
         if (File.Exists(path))
         {
             var json = File.ReadAllText(path, Encoding.UTF8);
-            return JsonConvert.DeserializeObject<LockFile>(json, new JsonSerializerSettings
+            result = JsonConvert.DeserializeObject<LockFile>(json, new JsonSerializerSettings
             {
                 Converters = new List<JsonConverter>
                 {
                     new SemanticVersionConverter()
                 },
             });
+            return result;
         }
-        return new LockFile();
+        result ??= new LockFile();
+        result.Modules ??= new Dictionary<string, LockEntry>(StringComparer.OrdinalIgnoreCase);
+        return result;
     }
 
     /// <summary>
