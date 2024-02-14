@@ -77,7 +77,7 @@ public sealed class ModuleCommand
         }
 
         // Restore from included modules.
-        if (clientContext.Option.Include?.Module != null && clientContext.Option.Include.Module.Length > 0)
+        if (clientContext.Option?.Include?.Module != null && clientContext.Option.Include.Module.Length > 0)
         {
             foreach (var includeModule in clientContext.Option.Include.Module)
             {
@@ -140,7 +140,7 @@ public sealed class ModuleCommand
         using var pwsh = PowerShell.Create();
 
         // Add for any included modules.
-        if (clientContext.Option.Include?.Module != null && clientContext.Option.Include.Module.Length > 0)
+        if (clientContext.Option?.Include?.Module != null && clientContext.Option.Include.Module.Length > 0)
         {
             foreach (var includeModule in clientContext.Option.Include.Module)
             {
@@ -352,19 +352,22 @@ public sealed class ModuleCommand
         }
 
         // Process included modules from options.
-        foreach (var includeModule in option.Include.Module)
+        if (option?.Include?.Module != null && option.Include.Module.Length > 0)
         {
-            // Skip modules already in the lock.
-            if (file.Modules.ContainsKey(includeModule))
-                continue;
+            foreach (var includeModule in option.Include.Module)
+            {
+                // Skip modules already in the lock.
+                if (file.Modules.ContainsKey(includeModule))
+                    continue;
 
-            var installed = IsInstalled(pwsh, includeModule, null, out var installedVersion);
-            results.Add(new ModuleRecord(
-                Name: includeModule,
-                Version: installedVersion?.ToString() ?? "latest",
-                Installed: installed,
-                Locked: false
-            ));
+                var installed = IsInstalled(pwsh, includeModule, null, out var installedVersion);
+                results.Add(new ModuleRecord(
+                    Name: includeModule,
+                    Version: installedVersion?.ToString() ?? "latest",
+                    Installed: installed,
+                    Locked: false
+                ));
+            }
         }
 
         return results;
