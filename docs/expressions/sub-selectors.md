@@ -8,7 +8,7 @@
 !!! Experimental
     _Sub-selectors_ are a work in progress and subject to change.
     We hope to add broader support, and more detailed documentation in the future.
-    [Join or start a disucssion][1] to let us know how we can improve this feature going forward.
+    [Join or start a discussion][1] to let us know how we can improve this feature going forward.
 
   [1]: https://github.com/microsoft/PSRule/discussions
 

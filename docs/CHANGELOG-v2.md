@@ -1,5 +1,6 @@
 ---
 discussion: false
+link_users: true
 ---
 
 # Change log
@@ -33,7 +34,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
   [5]: creating-your-pipeline.md#processing-changed-files-only
   [6]: concepts/baselines.md
 
-## Unreleased
+!!! Attention
+    We are currently working towards the next release of PSRule.
+    For more information see [v3][7] release notes.
+    Please check out our [upgrade notes][1] to get prepared for upgrading to the latest version.
+
+  [7]: https://microsoft.github.io/PSRule/latest/CHANGELOG-v3/
 
 ## v2.9.0
 
@@ -174,6 +180,7 @@ What's changed since release v2.7.0:
     - Deprecated `SuppressedRuleWarning` option, which will be removed in v3.
   - Added support for logging excluded rules by @BernieWhite.
     [#1432](https://github.com/microsoft/PSRule/issues/1432)
+    - Configure `Execution.RuleExcluded` to control output level of excluded rules as `Ignore`, `Warn`, `Error`, or `Debug`.
   - Added additional options to schema for PSRule for Azure by @BernieWhite.
     [#1446](https://github.com/microsoft/PSRule/issues/1446)
   - Improved error message for failing to read options file by @BernieWhite.

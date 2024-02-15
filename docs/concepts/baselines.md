@@ -29,7 +29,7 @@ A baseline groups are set by configuring the [Baseline.Group][2] option.
 !!! Experimental
     _Baseline groups_ are a work in progress and subject to change.
     Currently, _baseline groups_ allow only a single baseline to be referenced.
-    [Join or start a disucssion][3] to let us know how we can improve this feature going forward.
+    [Join or start a discussion][3] to let us know how we can improve this feature going forward.
 
 !!! Tip
     You can use baseline groups to reference a baseline.
@@ -54,7 +54,7 @@ For example:
 
     ```yaml
     - name: Run PSRule
-      uses: microsoft/ps-rule@v2.8.1
+      uses: microsoft/ps-rule@v2.9.0
       with:
         modules: 'PSRule.Rules.Azure'
         baseline: '@latest'
