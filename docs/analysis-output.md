@@ -1,5 +1,5 @@
 ---
-reviewed: 2022-02-11
+reviewed: 2024-02-16
 author: BernieWhite
 ---
 
@@ -234,7 +234,7 @@ To configure GitHub Actions, perform the following steps:
         steps:
 
         - name: Checkout
-          uses: actions/checkout@v3
+          uses: actions/checkout@v4
 
         - name: Run PSRule analysis
           uses: microsoft/ps-rule@v2.9.0
@@ -243,7 +243,7 @@ To configure GitHub Actions, perform the following steps:
             outputPath: reports/ps-rule-results.sarif
 
         - name: Upload results to security tab
-          uses: github/codeql-action/upload-sarif@v2
+          uses: github/codeql-action/upload-sarif@v3
           with:
             sarif_file: reports/ps-rule-results.sarif
     ```
