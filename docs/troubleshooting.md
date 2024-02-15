@@ -74,7 +74,7 @@ When running PSRule you may encounter an error similar to the following:
 This error typically indicates a problem with the YAML syntax in the `ps-rule.yaml` file.
 Double check the file for incorrect indentation or missing punctuation such as `-` and `:` characters.
 
-If you still have an issue, try resaving the file as UTF-8 in an editor such as Visual Studio Code.
+If you still have an issue, try re-saving the file as UTF-8 in an editor such as Visual Studio Code.
 
 ## PSR0002 - Summary results are not supported with Job Summaries
 

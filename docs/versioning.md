@@ -24,11 +24,11 @@ Module versions and change log details for pre-releases will be removed as stabl
 
 ## Experimental features
 
-From time to time we may ship experimential features.
-These features are generally marked experimential in the change log as these features ship.
+From time to time we may ship experiential features.
+These features are generally marked experiential in the change log as these features ship.
 Experimental features may ship in stable releases, however to use them you may need to:
 
-- Enable or explictly reference them.
+- Enable or explicitly reference them.
 
 !!! Important
     Experimental features should be considered work in progress.

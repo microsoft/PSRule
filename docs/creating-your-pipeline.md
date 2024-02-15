@@ -28,7 +28,7 @@ Within the root directory of your IaC repository:
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
-          uses: microsoft/ps-rule@v2.8.1
+          uses: microsoft/ps-rule@v2.9.0
           with:
             modules: 'PSRule.Rules.Azure'
     ```
@@ -166,7 +166,7 @@ To only process files that have changed within a pull request, set the `Input.Ig
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
-          uses: microsoft/ps-rule@v2.8.1
+          uses: microsoft/ps-rule@v2.9.0
           with:
             modules: 'PSRule.Rules.Azure'
           env:
@@ -204,7 +204,7 @@ To only process files that have changed within a pull request, set the `Input.Ig
     ```
 
 !!! Tip
-    In some cases it may be nessessary to set `Repository.BaseRef` to the default branch of your repository.
+    In some cases it may be necessary to set `Repository.BaseRef` to the default branch of your repository.
     By default, PSRule will detect the default branch of the repository from the build system environment variables.
 
   [8]: concepts/PSRule/en-US/about_PSRule_Options.md#inputignoreunchangedpath

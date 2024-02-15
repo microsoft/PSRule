@@ -455,7 +455,7 @@ WARNING: Target object 'TermService' has not been processed because no matching 
 ```
 
 !!! Tip
-    You can disable the warning by setting [Execution.NotProcessedWarning][5] option.
+    You can disable the warning by setting [Execution.UnprocessedObject][5] option.
     Alternatively you can ignore all warnings by using the `-WarningAction SilentlyContinue` parameter.
 
-  [5]: ../concepts/PSRule/en-US/about_PSRule_Options.md#executionnotprocessedwarning
+  [5]: ../concepts/PSRule/en-US/about_PSRule_Options.md#executionunprocessedobject

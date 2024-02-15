@@ -1,14 +1,14 @@
 # Functions
 
 !!! Abstract
-    _Functions_ are an advanced lanaguage feature specific to YAML and JSON expressions.
+    _Functions_ are an advanced language feature specific to YAML and JSON expressions.
     That extend the language to allow for more complex use cases with expressions.
     Functions don't apply to script expressions because PowerShell already has rich support for complex manipulation.
 
 !!! Experimental
     _Functions_ are a work in progress and subject to change.
     We hope to add more functions, broader support, and more detailed documentation in the future.
-    [Join or start a disucssion][1] to let us know how we can improve this feature going forward.
+    [Join or start a discussion][1] to let us know how we can improve this feature going forward.
 
   [1]: https://github.com/microsoft/PSRule/discussions
 
