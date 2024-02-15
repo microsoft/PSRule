@@ -53,6 +53,12 @@ Install and use PSRule with GitHub Actions by referencing the `microsoft/ps-rule
 
 This will automatically install compatible versions of all dependencies.
 
+!!! Tip
+    The recommended approach is to pin to the latest specific version.
+    Pinning to a specific version reduces the risk of new versions breaking your pipeline.
+    You can easily update to the latest version by changing the version number.
+    At such time, you can test the new version in a feature branch before merging to main.
+
   [1]: https://github.com/marketplace/actions/psrule
 
 ### Working with Dependabot
