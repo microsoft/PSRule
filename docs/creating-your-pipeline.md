@@ -24,7 +24,7 @@ Within the root directory of your IaC repository:
         steps:
 
         - name: Checkout
-          uses: actions/checkout@v3
+          uses: actions/checkout@v4
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
@@ -162,7 +162,7 @@ To only process files that have changed within a pull request, set the `Input.Ig
         steps:
 
         - name: Checkout
-          uses: actions/checkout@v3
+          uses: actions/checkout@v4
 
         # Analyze Azure resources using PSRule for Azure
         - name: Analyze Azure template files
