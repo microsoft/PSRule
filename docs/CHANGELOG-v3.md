@@ -27,6 +27,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0153:
+
+- Engineering:
+  - Bump System.Drawing.Common to v8.0.2.
+    [#1761](https://github.com/microsoft/PSRule/pull/1761)
+
 ## v3.0.0-B0153 (pre-release)
 
 What's changed since pre-release v3.0.0-B0151:
