@@ -32,6 +32,8 @@ What's changed since pre-release v3.0.0-B0153:
 - Engineering:
   - Bump System.Drawing.Common to v8.0.2.
     [#1761](https://github.com/microsoft/PSRule/pull/1761)
+  - Bump Bump xunit to v2.7.0.
+    [#1765](https://github.com/microsoft/PSRule/pull/1765)
 
 ## v3.0.0-B0153 (pre-release)
 
