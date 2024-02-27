@@ -35,9 +35,9 @@
       },
       "YamlDotNet": {
         "type": "Direct",
-        "requested": "[15.1.0, )",
-        "resolved": "15.1.0",
-        "contentHash": "fXrqmKkzBtXeJiHEsZOPEWkonHweiwk/l0Hqhz4yMIZPh57kZy03Xbj2/e8HV1QIkTw7yeBe9bbphuE3YiI4vQ=="
+        "requested": "[15.1.2, )",
+        "resolved": "15.1.2",
+        "contentHash": "qeX0XhzOIcQEvnI5JxnPaIwcINwyY4Qy/LXhSfsdHkFrl9F41AT52UFfy2nIE7kgrhMg+cP7xuS+GtPJhmHmTA=="
       },
       "Microsoft.Build.Tasks.Git": {
         "type": "Transitive",

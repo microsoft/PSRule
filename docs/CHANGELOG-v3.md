@@ -36,6 +36,8 @@ What's changed since pre-release v3.0.0-B0153:
     [#1765](https://github.com/microsoft/PSRule/pull/1765)
   - Bump xunit.runner.visualstudio to v2.5.7.
     [#1764](https://github.com/microsoft/PSRule/pull/1764)
+  - Bump YamlDotNet to v15.1.2.
+    [#1771](https://github.com/microsoft/PSRule/pull/1771)
 
 ## v3.0.0-B0153 (pre-release)
 
