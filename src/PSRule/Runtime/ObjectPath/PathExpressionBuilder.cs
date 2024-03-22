@@ -17,7 +17,7 @@ namespace PSRule.Runtime.ObjectPath;
 internal sealed class PathExpressionBuilder
 {
     private const int DEFAULT_RECURSE_MAX_DEPTH = 100;
-    private static readonly object[] DEFAULT_EMPTY_ARRAY = new object[] { };
+    private static readonly object[] DEFAULT_EMPTY_ARRAY = [];
 
     private readonly int _RecurseMaxDepth;
 
@@ -357,7 +357,7 @@ internal sealed class PathExpressionBuilder
             value = eo;
         }
         else
-            value = new object[] { input };
+            value = [input];
 
         return true;
     }
@@ -365,7 +365,7 @@ internal sealed class PathExpressionBuilder
     private static PathExpressionFn Literal(object arg)
     {
         var isEnumerable = arg is object[];
-        var result = isEnumerable ? arg as object[] : new object[] { arg };
+        var result = isEnumerable ? arg as object[] : [arg];
         return (IPathExpressionContext context, object input, out IEnumerable<object> value, out bool enumerable) =>
         {
             value = result;
@@ -428,7 +428,7 @@ internal sealed class PathExpressionBuilder
         if (baseObject == null)
             yield break;
 
-        // Handle dictionaries and hashtables
+        // Handle dictionaries and hash tables
         if (baseObject is IDictionary dictionary)
         {
             foreach (var value in dictionary.Values)
@@ -447,7 +447,7 @@ internal sealed class PathExpressionBuilder
                 yield return property.Value;
         }
         // Handle DynamicObjects
-        else if (o is DynamicObject dynamicObject)
+        else if (o is DynamicObject)
         {
 
         }
@@ -473,10 +473,11 @@ internal sealed class PathExpressionBuilder
     {
         value = null;
         var baseObject = ExpressionHelpers.GetBaseObject(o);
-        if (baseObject == null || (baseObject is JValue jValue && jValue.Type == JTokenType.Null))
+        if (baseObject == null || (baseObject is JValue jValue && jValue.Type == JTokenType.Null) ||
+            baseObject is string || baseObject is int || baseObject is long || baseObject is float)
             return false;
 
-        // Handle dictionaries and hashtables
+        // Handle dictionaries and hash tables
         if (baseObject is IDictionary dictionary)
         {
             return TryDictionary(dictionary, fieldName, caseSensitive, out value);
@@ -496,6 +497,7 @@ internal sealed class PathExpressionBuilder
         {
             return TryPropertyValue(dynamicObject, fieldName, caseSensitive, out value);
         }
+
         // Handle all other CLR types
         var baseType = baseObject.GetType();
         return TryPropertyValue(o, fieldName, baseType, caseSensitive, out value) ||
@@ -507,7 +509,7 @@ internal sealed class PathExpressionBuilder
     {
         value = null;
         var baseObject = ExpressionHelpers.GetBaseObject(o);
-        if (baseObject == null)
+        if (baseObject == null || baseObject is string || baseObject is int || baseObject is long || baseObject is float)
             return false;
 
         // Handle array indexes
@@ -672,7 +674,7 @@ internal sealed class PathExpressionBuilder
                 {
                     var converter = GetConverter(parameters[0].ParameterType);
                     var p1 = converter(index);
-                    value = property.GetValue(targetObject, new object[] { p1 });
+                    value = property.GetValue(targetObject, [p1]);
                     return true;
                 }
                 catch
@@ -686,10 +688,10 @@ internal sealed class PathExpressionBuilder
 
     private static Converter<object, object> GetConverter(Type targetType)
     {
-        var convertAtribute = targetType.GetCustomAttribute<TypeConverterAttribute>();
-        if (convertAtribute != null)
+        var convertAttribute = targetType.GetCustomAttribute<TypeConverterAttribute>();
+        if (convertAttribute != null)
         {
-            var converterType = Type.GetType(convertAtribute.ConverterTypeName);
+            var converterType = Type.GetType(convertAttribute.ConverterTypeName);
             if (converterType.IsSubclassOf(typeof(TypeConverter)))
             {
                 var converter = (TypeConverter)Activator.CreateInstance(converterType);

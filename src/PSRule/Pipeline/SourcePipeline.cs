@@ -214,10 +214,18 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     public void ModuleByName(string name, string version = null)
     {
         var basePath = FindModule(name, version) ?? throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
-        var info = LoadManifest(basePath) ?? throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
+        var info = LoadManifest(basePath, name) ?? throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
 
         VerboseScanModule(info.Name);
-        var files = GetFiles(basePath, basePath, excludeDefaultRulePath: false, restrictScriptSource: _RestrictScriptSource, info.Name);
+        var files = GetFiles(
+            path: basePath,
+            helpPath: basePath,
+            excludeDefaultRulePath: false,
+            restrictScriptSource: _RestrictScriptSource,
+            moduleName: info.Name,
+            workspacePath: _WorkspacePath
+        );
+
         if (files == null || files.Length == 0)
             return;
 
@@ -296,7 +304,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
 
         var sorted = SortModulePath(unsorted);
         if (sorted.Length > 0)
-            path = sorted[0];
+            path = Environment.GetRootedBasePath(sorted[0]);
 
         return sorted.Length > 0;
     }
@@ -308,9 +316,8 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         return results;
     }
 
-    private Source.ModuleInfo LoadManifest(string basePath)
+    private Source.ModuleInfo LoadManifest(string basePath, string name)
     {
-        var name = Path.GetFileName(Path.GetDirectoryName(basePath));
         var path = Path.Combine(basePath, GetManifestName(name));
         if (!File.Exists(path))
             return null;

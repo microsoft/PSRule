@@ -39,7 +39,7 @@ public static class Environment
     private static CultureInfo _CurrentCulture = Thread.CurrentThread.CurrentCulture;
 
     /// <summary>
-    /// A delgate to allow callback get current working path.
+    /// A delegate to allow callback get current working path.
     /// </summary>
     public delegate string WorkingPathResolver();
 
@@ -329,7 +329,7 @@ public static class Environment
     /// Determine if the <seealso cref="char"/> is a path separator character.
     /// </summary>
     /// <param name="c">The character to check.</param>
-    /// <returns>Returns <c>true</c> if the charater is a path separator. Otherwise <c>false</c> is returned.</returns>
+    /// <returns>Returns <c>true</c> if the character is a path separator. Otherwise <c>false</c> is returned.</returns>
     [DebuggerStepThrough]
     private static bool IsPathSeparator(char c)
     {

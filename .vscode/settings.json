@@ -112,6 +112,7 @@
     "SARIF",
     "SAST",
     "SBOM",
+    "STRINGARRAY",
     "subselector",
     "unencrypted",
     "Worktree",
