@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Diagnostics;
@@ -366,7 +366,7 @@ internal sealed class PathFilter
         public void Match(string path, ref bool include)
         {
             // Only process if the result would change
-            if (_Include == include || !Match(path))
+            if (string.IsNullOrWhiteSpace(path) || _Include == include || !Match(path))
                 return;
 
             include = !include;

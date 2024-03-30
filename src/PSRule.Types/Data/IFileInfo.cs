@@ -17,4 +17,9 @@ public interface IFileInfo
     /// The extension for the file.
     /// </summary>
     string? Extension { get; }
+
+    /// <summary>
+    /// Get a stream for the file.
+    /// </summary>
+    IFileStream GetFileStream();
 }

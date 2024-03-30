@@ -74,6 +74,12 @@ public sealed class TargetSourceInfo : IEquatable<TargetSourceInfo>, IFileInfo
     string? IFileInfo.Extension => Path.GetExtension(File);
 
     /// <inheritdoc/>
+    IFileStream IFileInfo.GetFileStream()
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
     public bool Equals(TargetSourceInfo other)
     {
         return other != null &&

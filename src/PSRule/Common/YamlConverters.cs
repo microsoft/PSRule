@@ -154,10 +154,7 @@ internal sealed class PSObjectYamlTypeConverter : MappingTypeConverter, IYamlTyp
             while (parser.TryConsume(out scalar))
             {
                 var name = scalar.Value;
-                var property = ReadNoteProperty(parser, name);
-                if (property == null)
-                    throw new NotImplementedException();
-
+                var property = ReadNoteProperty(parser, name) ?? throw new NotImplementedException();
                 result.Properties.Add(property);
             }
             parser.Require<MappingEnd>();
@@ -661,7 +658,7 @@ internal sealed class LanguageExpressionDeserializer : INodeDeserializer
         return result;
     }
 
-    private LanguageExpression MapCondition(string type, LanguageExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
+    private LanguageCondition MapCondition(string type, LanguageExpression.PropertyBag properties, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
     {
         if (TryExpression(reader, type, null, nestedObjectDeserializer, out LanguageCondition result))
         {
@@ -744,7 +741,7 @@ internal sealed class LanguageExpressionDeserializer : INodeDeserializer
         return result;
     }
 
-    private object MapSequence(string name, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
+    private object[] MapSequence(string name, IParser reader, Func<IParser, Type, object> nestedObjectDeserializer)
     {
         var result = new List<object>();
         while (!reader.Accept<SequenceEnd>(out _))

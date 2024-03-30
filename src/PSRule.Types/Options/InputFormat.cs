@@ -4,7 +4,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace PSRule.Configuration;
+namespace PSRule.Options;
 
 /// <summary>
 /// The formats to convert input from.
