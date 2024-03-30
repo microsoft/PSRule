@@ -81,7 +81,7 @@ internal static class TypeConverter
         // Handle single string
         if (TryString(o, convert, value: out var s) && s != null)
         {
-            value = new string[] { s };
+            value = [s];
             return true;
         }
 

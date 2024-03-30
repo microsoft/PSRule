@@ -5,11 +5,11 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Management.Automation;
 using Newtonsoft.Json;
+using PSRule.CommandLine.Models;
 using PSRule.CommandLine.Resources;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline.Dependencies;
-using PSRule.CommandLine.Models;
 using SemanticVersion = PSRule.Data.SemanticVersion;
 
 namespace PSRule.CommandLine.Commands;

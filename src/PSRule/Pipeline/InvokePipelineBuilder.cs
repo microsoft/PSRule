@@ -3,6 +3,7 @@
 
 using PSRule.Configuration;
 using PSRule.Host;
+using PSRule.Options;
 
 namespace PSRule.Pipeline;
 
@@ -18,7 +19,7 @@ public interface IInvokePipelineBuilder : IPipelineBuilder
     void InputPath(string[] path);
 
     /// <summary>
-    /// Configures a variable that will recieve all results in addition to the host context.
+    /// Configures a variable that will receive all results in addition to the host context.
     /// </summary>
     /// <param name="variableName">The name of the variable to set.</param>
     void ResultVariable(string variableName);
@@ -70,7 +71,7 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
         if (System.Environment.OSVersion.Platform != PlatformID.Win32NT)
             return;
 
-        _TrustedPublishers ??= new List<string>();
+        _TrustedPublishers ??= [];
         _TrustedPublishers.Add(publisher);
     }
 

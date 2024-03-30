@@ -8,4 +8,23 @@ namespace PSRule.Data;
 /// </summary>
 public interface ITargetObject
 {
+    /// <summary>
+    /// Sources for the target object.
+    /// </summary>
+    IEnumerable<TargetSourceInfo> Source { get; }
+
+    /// <summary>
+    /// The target name of the object.
+    /// </summary>
+    string? Name { get; }
+
+    /// <summary>
+    /// The target type of the object.
+    /// </summary>
+    string? Type { get; }
+
+    /// <summary>
+    /// The path of the object.
+    /// </summary>
+    string? Path { get; }
 }

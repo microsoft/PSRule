@@ -48,7 +48,7 @@ function Invoke-PSRule {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'File', 'Detect')]
-        [PSRule.Configuration.InputFormat]$Format = [PSRule.Configuration.InputFormat]::Detect,
+        [PSRule.Options.InputFormat]$Format = [PSRule.Options.InputFormat]::Detect,
 
         [Parameter(Mandatory = $False)]
         [String]$OutputPath,
@@ -217,7 +217,7 @@ function Test-PSRuleTarget {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'File', 'Detect')]
-        [PSRule.Configuration.InputFormat]$Format,
+        [PSRule.Options.InputFormat]$Format,
 
         [Parameter(Mandatory = $False)]
         [String[]]$Convention,
@@ -359,7 +359,7 @@ function Get-PSRuleTarget {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'File', 'Detect')]
-        [PSRule.Configuration.InputFormat]$Format = [PSRule.Configuration.InputFormat]::Detect,
+        [PSRule.Options.InputFormat]$Format = [PSRule.Options.InputFormat]::Detect,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
@@ -466,7 +466,7 @@ function Assert-PSRule {
 
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'File', 'Detect')]
-        [PSRule.Configuration.InputFormat]$Format = [PSRule.Configuration.InputFormat]::Detect,
+        [PSRule.Options.InputFormat]$Format = [PSRule.Options.InputFormat]::Detect,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.BaselineOption]$Baseline,
@@ -1219,7 +1219,7 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'Detect')]
         [Alias('InputFormat')]
-        [PSRule.Configuration.InputFormat]$Format = 'Detect',
+        [PSRule.Options.InputFormat]$Format = 'Detect',
 
         # Sets the Input.IgnoreGitPath option
         [Parameter(Mandatory = $False)]
@@ -1528,7 +1528,7 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'Detect')]
         [Alias('InputFormat')]
-        [PSRule.Configuration.InputFormat]$Format = 'Detect',
+        [PSRule.Options.InputFormat]$Format = 'Detect',
 
         # Sets the Input.IgnoreGitPath option
         [Parameter(Mandatory = $False)]
@@ -2284,7 +2284,7 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData', 'Detect')]
         [Alias('InputFormat')]
-        [PSRule.Configuration.InputFormat]$Format = 'Detect',
+        [PSRule.Options.InputFormat]$Format = 'Detect',
 
         # Sets the Input.IgnoreGitPath option
         [Parameter(Mandatory = $False)]

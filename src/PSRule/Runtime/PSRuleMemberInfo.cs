@@ -123,7 +123,7 @@ internal sealed class PSRuleTargetInfo : PSMemberInfo
             Source[0].File = source.File;
     }
 
-    internal void SetSource(string file, int lineNumber, int linePosition)
+    internal void SetSource(string file, int? lineNumber, int? linePosition)
     {
         if (Source.Count > 0)
             return;

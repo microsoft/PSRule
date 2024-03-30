@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
-using System.Management.Automation;
 using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Runtime;
@@ -12,11 +11,6 @@ namespace PSRule.Runtime;
 /// </summary>
 internal static class ObjectHelper
 {
-    public static bool GetPath(PSObject targetObject, string path, bool caseSensitive, out object value)
-    {
-        return GetPath(null, targetObject, path, caseSensitive, out value);
-    }
-
     public static bool GetPath(IBindingContext bindingContext, object targetObject, string path, bool caseSensitive, out object value)
     {
         var expression = GetPathExpression(bindingContext, path);

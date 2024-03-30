@@ -38,6 +38,7 @@ internal sealed class SelectorTargetAnnotation : TargetObjectAnnotation
 /// <summary>
 /// An object processed by PSRule.
 /// </summary>
+[DebuggerDisplay("Type = {TargetType}, Name = {TargetName}")]
 public sealed class TargetObject : ITargetObject
 {
     private readonly Dictionary<Type, TargetObjectAnnotation> _Annotations;
@@ -58,7 +59,7 @@ public sealed class TargetObject : ITargetObject
         Scope = o.GetScope();
         Path = ReadPath(o);
         Value = Convert(o);
-        _Annotations = new Dictionary<Type, TargetObjectAnnotation>();
+        _Annotations = [];
     }
 
     internal TargetObject(PSObject o, string targetName = null, string targetType = null, string[] scope = null)
@@ -88,6 +89,18 @@ public sealed class TargetObject : ITargetObject
 
     internal string Path { [DebuggerStepThrough] get; }
 
+    IEnumerable<TargetSourceInfo> ITargetObject.Source => Source.GetSourceInfo() ?? [];
+
+#nullable enable
+
+    string? ITargetObject.Name => TargetName;
+
+    string? ITargetObject.Type => TargetType;
+
+    string? ITargetObject.Path => Path;
+
+#nullable restore
+
     internal Hashtable GetData()
     {
         return _Data == null || _Data.Count == 0 ? null : _Data;
@@ -95,7 +108,7 @@ public sealed class TargetObject : ITargetObject
 
     internal Hashtable RequireData()
     {
-        _Data ??= new Hashtable();
+        _Data ??= [];
         return _Data;
     }
 

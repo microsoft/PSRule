@@ -213,7 +213,7 @@ public sealed class PSRule : ScopedItem
             return Array.Empty<PSObject>();
 
         if (!(sourceObject.BaseObject is InputFileInfo || sourceObject.BaseObject is FileInfo || sourceObject.BaseObject is Uri))
-            return new PSObject[] { sourceObject };
+            return [sourceObject];
 
         var cacheKey = sourceObject.BaseObject.ToString();
         if (GetContext().Pipeline.ContentCache.TryGetValue(cacheKey, out var result))
@@ -235,12 +235,12 @@ public sealed class PSRule : ScopedItem
     {
         var content = GetContent(sourceObject);
         if (IsEmptyContent(content) || string.IsNullOrEmpty(field))
-            return Array.Empty<PSObject>();
+            return [];
 
         var result = new List<PSObject>();
         for (var i = 0; i < content.Length; i++)
         {
-            if (ObjectHelper.GetPath(content[i], field, false, out var value) && value != null)
+            if (ObjectHelper.GetPath(null, content[i], field, false, out object value) && value != null)
             {
                 if (value is IEnumerable evalue)
                 {
@@ -279,7 +279,7 @@ public sealed class PSRule : ScopedItem
             targetObject: sourceObject,
             path: path,
             caseSensitive: false,
-            out object[] value)) ? Array.Empty<object>() : value;
+            out object[] value)) ? [] : value;
     }
 
     /// <summary>

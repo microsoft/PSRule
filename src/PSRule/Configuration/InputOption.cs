@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.ComponentModel;
+using PSRule.Options;
 
 namespace PSRule.Configuration;
 

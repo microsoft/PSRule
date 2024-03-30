@@ -155,7 +155,7 @@ public sealed class PipelineTests
     {
         var option = PSRuleOption.FromDefault();
         option.Baseline.Group = new Data.StringArrayMap();
-        option.Baseline.Group["test"] = new string[] { ".\\TestBaseline1" };
+        option.Baseline.Group["test"] = [".\\TestBaseline1"];
         option.Execution.InvariantCulture = ExecutionActionPreference.Ignore;
         Assert.Single(option.Baseline.Group);
 
