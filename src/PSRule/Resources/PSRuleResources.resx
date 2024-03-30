@@ -368,7 +368,7 @@
     <value>Output written to the following file: '{0}'</value>
   </data>
   <data name="ModuleNotFound" xml:space="preserve">
-    <value>No valid module can be found with that name.</value>
+    <value>No valid module can be found with: Name={0}, Version={1}</value>
   </data>
   <data name="RuleMatchTrace" xml:space="preserve">
     <value>[PSRule][R][Trace] -- {0}</value>

@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Management.Automation;
 using System.Reflection;
+using System.Xml.Linq;
 using PSRule.Configuration;
 using PSRule.Options;
 using PSRule.Pipeline.Output;
@@ -66,7 +67,7 @@ public interface ISourcePipelineBuilder
 /// <summary>
 /// A helper to build a list of sources for a command-line tool pipeline.
 /// </summary>
-public interface ISourceCommandlineBuilder
+public interface ISourceCommandLineBuilder
 {
     /// <summary>
     /// Add loose files as a source.
@@ -99,7 +100,7 @@ public interface ISourceCommandlineBuilder
 /// <summary>
 /// A helper to build a list of rule sources for discovery.
 /// </summary>
-public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceCommandlineBuilder
+public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceCommandLineBuilder
 {
     private const string SOURCE_FILE_EXTENSION_YAML = ".yaml";
     private const string SOURCE_FILE_EXTENSION_YML = ".yml";
@@ -213,8 +214,8 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     /// <inheritdoc/>
     public void ModuleByName(string name, string version = null)
     {
-        var basePath = FindModule(name, version) ?? throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
-        var info = LoadManifest(basePath, name) ?? throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
+        var basePath = FindModule(name, version) ?? throw ModuleNotFound(name, version);
+        var info = LoadManifest(basePath, name) ?? throw ModuleNotFound(name, version);
 
         VerboseScanModule(info.Name);
         var files = GetFiles(
@@ -557,5 +558,10 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     private bool ShouldProcess(string target, string action)
     {
         return _HostContext == null || _HostContext.ShouldProcess(target, action);
+    }
+
+    private static PipelineBuilderException ModuleNotFound(string name, string version)
+    {
+        return new PipelineBuilderException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ModuleNotFound, name, version));
     }
 }

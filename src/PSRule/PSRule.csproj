@@ -77,7 +77,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\DocumentStrings.es-us.resx">
+    <EmbeddedResource Update="Resources\DocumentStrings.es-US.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\DocumentStrings.es.resx">

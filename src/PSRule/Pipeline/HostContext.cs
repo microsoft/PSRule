@@ -22,7 +22,9 @@ public interface IHostContext
     bool HadErrors { get; }
 
     /// <summary>
-    /// Get the value of a PowerShell preference variable.
+    /// Get the value of a PowerShell preference variables.
+    /// These variables are commonly used to control logging output.
+    /// Preference variables include: <c>ErrorActionPreference</c>, <c>WarningPreference</c>, <c>InformationPreference</c>, <c>VerbosePreference</c>, <c>DebugPreference</c>
     /// </summary>
     ActionPreference GetPreferenceVariable(string variableName);
 

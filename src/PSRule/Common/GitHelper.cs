@@ -151,7 +151,7 @@ internal static class GitHelper
         return true;
     }
 
-    private static string GetGitBinary()
+    internal static string GetGitBinary()
     {
         return RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
             RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "git" : "git.exe";
@@ -162,13 +162,13 @@ internal static class GitHelper
         return $"diff --diff-filter={filter} --ignore-submodules=all --name-only --no-renames {target}";
     }
 
-    private static bool TryReadHead(string path, out string value)
+    internal static bool TryReadHead(string path, out string value)
     {
         value = null;
         return TryGitFile(path, GIT_HEAD, out var filePath) && TryCommit(filePath, out value, out _);
     }
 
-    private static bool TryReadCommit(string path, out string value)
+    internal static bool TryReadCommit(string path, out string value)
     {
         value = null;
         if (!TryGitFile(path, GIT_HEAD, out var filePath))
@@ -182,8 +182,7 @@ internal static class GitHelper
 
     private static bool TryGitFile(string path, string file, out string filePath)
     {
-        path ??= Environment.GetRootedBasePath(GIT_DEFAULT_PATH);
-        filePath = Path.Combine(path, file);
+        filePath = Path.Combine(Environment.GetRootedBasePath(path ?? GIT_DEFAULT_PATH), file);
         return File.Exists(filePath);
     }
 
@@ -191,6 +190,9 @@ internal static class GitHelper
     {
         value = null;
         isRef = false;
+        if (!File.Exists(path))
+            return false;
+
         var lines = File.ReadAllLines(path);
         if (lines == null || lines.Length == 0)
             return false;

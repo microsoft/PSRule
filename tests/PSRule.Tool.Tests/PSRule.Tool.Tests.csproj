@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ProjectGuid>{DA46C891-08F1-4D01-9F98-1F8BB10CAFEC}</ProjectGuid>
+    <ProjectGuid>{c1d2bc26-305a-4985-8dc5-177449ff2cfd}</ProjectGuid>
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
     <RootNamespace>PSRule.Tool</RootNamespace>
