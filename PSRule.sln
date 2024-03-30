@@ -32,6 +32,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Tool.Tests", "tests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.CommandLine", "src\PSRule.CommandLine\PSRule.CommandLine.csproj", "{9A556814-8E9D-4C76-8F6D-1AF2DA23A9E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSRule.CommandLine.Tests", "tests\PSRule.CommandLine.Tests\PSRule.CommandLine.Tests.csproj", "{C25E2FC1-E306-4D99-925C-15E5DD51F6A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,10 @@ Global
 		{9A556814-8E9D-4C76-8F6D-1AF2DA23A9E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A556814-8E9D-4C76-8F6D-1AF2DA23A9E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A556814-8E9D-4C76-8F6D-1AF2DA23A9E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C25E2FC1-E306-4D99-925C-15E5DD51F6A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C25E2FC1-E306-4D99-925C-15E5DD51F6A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C25E2FC1-E306-4D99-925C-15E5DD51F6A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C25E2FC1-E306-4D99-925C-15E5DD51F6A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D3488CE2-779F-4474-B38A-F894A4B689F7} = {E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}
 		{DA46C891-08F1-4D01-9F98-1F8BB10CAFEC} = {E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}
+		{C25E2FC1-E306-4D99-925C-15E5DD51F6A2} = {E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {533491EB-BAE9-472E-B57F-A675ECD335B5}

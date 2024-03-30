@@ -198,7 +198,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     }
 
     /// <summary>
-    /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+    /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
     /// Values from <paramref name="o1"/> that are set are not overridden.
     /// </summary>
     /// <returns>A new <see cref="PSRuleOption"/> instance combining options from both instances.</returns>

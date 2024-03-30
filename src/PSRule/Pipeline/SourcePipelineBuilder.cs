@@ -12,94 +12,9 @@ using PSRule.Resources;
 namespace PSRule.Pipeline;
 
 /// <summary>
-/// A helper to build a list of sources for a PowerShell pipeline.
-/// </summary>
-public interface ISourcePipelineBuilder
-{
-    /// <summary>
-    /// Determines if PowerShell should automatically load the module.
-    /// </summary>
-    bool ShouldLoadModule { get; }
-
-    /// <summary>
-    /// Log a verbose message for scanning sources.
-    /// </summary>
-    void VerboseScanSource(string path);
-
-    /// <summary>
-    /// Log a verbose message for source modules.
-    /// </summary>
-    void VerboseFoundModules(int count);
-
-    /// <summary>
-    /// Log a verbose message for scanning for modules.
-    /// </summary>
-    void VerboseScanModule(string moduleName);
-
-    /// <summary>
-    /// Add loose files as a source.
-    /// </summary>
-    /// <param name="path">An array of file or directory paths containing one or more rule files.</param>
-    /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
-    void Directory(string[] path, bool excludeDefaultRulePath = false);
-
-    /// <summary>
-    /// Add loose files as a source.
-    /// </summary>
-    /// <param name="path">A file or directory path containing one or more rule files.</param>
-    /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
-    void Directory(string path, bool excludeDefaultRulePath = false);
-
-    /// <summary>
-    /// Add a module source.
-    /// </summary>
-    /// <param name="module">The module info.</param>
-    void Module(PSModuleInfo[] module);
-
-    /// <summary>
-    /// Build a list of sources for executing within PSRule.
-    /// </summary>
-    /// <returns>A list of sources.</returns>
-    Source[] Build();
-}
-
-/// <summary>
-/// A helper to build a list of sources for a command-line tool pipeline.
-/// </summary>
-public interface ISourceCommandlineBuilder
-{
-    /// <summary>
-    /// Add loose files as a source.
-    /// </summary>
-    /// <param name="path">An array of file or directory paths containing one or more rule files.</param>
-    /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
-    void Directory(string[] path, bool excludeDefaultRulePath = false);
-
-    /// <summary>
-    /// Add loose files as a source.
-    /// </summary>
-    /// <param name="path">A file or directory path containing one or more rule files.</param>
-    /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
-    void Directory(string path, bool excludeDefaultRulePath = false);
-
-    /// <summary>
-    /// Add a module source.
-    /// </summary>
-    /// <param name="name">The name of the module.</param>
-    /// <param name="version">A specific version of the module.</param>
-    void ModuleByName(string name, string version = null);
-
-    /// <summary>
-    /// Build a list of sources for executing within PSRule.
-    /// </summary>
-    /// <returns>A list of sources.</returns>
-    Source[] Build();
-}
-
-/// <summary>
 /// A helper to build a list of rule sources for discovery.
 /// </summary>
-public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceCommandlineBuilder
+public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceCommandLineBuilder
 {
     private const string SOURCE_FILE_EXTENSION_YAML = ".yaml";
     private const string SOURCE_FILE_EXTENSION_YML = ".yml";
@@ -213,8 +128,8 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     /// <inheritdoc/>
     public void ModuleByName(string name, string version = null)
     {
-        var basePath = FindModule(name, version) ?? throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
-        var info = LoadManifest(basePath, name) ?? throw new PipelineBuilderException(PSRuleResources.ModuleNotFound);
+        var basePath = FindModule(name, version) ?? throw ModuleNotFound(name, version);
+        var info = LoadManifest(basePath, name) ?? throw ModuleNotFound(name, version);
 
         VerboseScanModule(info.Name);
         var files = GetFiles(
@@ -356,7 +271,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         if (value == null) return false;
 
         if (value is string s)
-            requiredAssemblies = new string[] { s };
+            requiredAssemblies = [s];
 
         if (value is Array array)
             requiredAssemblies = array.OfType<string>().ToArray();
@@ -397,9 +312,10 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
             return false;
 
         foreach (var tag in module.Tags)
+        {
             if (StringComparer.OrdinalIgnoreCase.Equals(RULE_MODULE_TAG, tag))
                 return true;
-
+        }
         return false;
     }
 
@@ -463,7 +379,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
             return null;
 
         helpPath ??= Path.GetDirectoryName(path);
-        return new SourceFile[] { new(path, null, sourceType, helpPath) };
+        return [new(path, null, sourceType, helpPath)];
     }
 
     private static SourceFile[] IncludePath(string path, string helpPath, string moduleName, bool excludeDefaultRulePath, RestrictScriptSource restrictScriptSource, string workspacePath)
@@ -557,5 +473,10 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     private bool ShouldProcess(string target, string action)
     {
         return _HostContext == null || _HostContext.ShouldProcess(target, action);
+    }
+
+    private static PipelineBuilderException ModuleNotFound(string name, string version)
+    {
+        return new PipelineBuilderException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ModuleNotFound, name, version));
     }
 }

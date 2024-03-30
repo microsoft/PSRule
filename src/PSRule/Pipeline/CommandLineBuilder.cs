@@ -65,7 +65,7 @@ public static class CommandLineBuilder
             builder.ModuleByName(module[i], version);
         }
 
-        for (var i = 0; option.Include.Module != null && i < option.Include.Module.Length; i++)
+        for (var i = 0; option?.Include?.Module != null && i < option.Include.Module.Length; i++)
         {
             var version = file != null && file.Modules.TryGetValue(option.Include.Module[i], out var entry) ? entry.Version.ToString() : null;
             builder.ModuleByName(option.Include.Module[i], version);
