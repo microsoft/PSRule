@@ -4,98 +4,12 @@
 using System.Collections;
 using System.Management.Automation;
 using System.Reflection;
-using System.Xml.Linq;
 using PSRule.Configuration;
 using PSRule.Options;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;
 
 namespace PSRule.Pipeline;
-
-/// <summary>
-/// A helper to build a list of sources for a PowerShell pipeline.
-/// </summary>
-public interface ISourcePipelineBuilder
-{
-    /// <summary>
-    /// Determines if PowerShell should automatically load the module.
-    /// </summary>
-    bool ShouldLoadModule { get; }
-
-    /// <summary>
-    /// Log a verbose message for scanning sources.
-    /// </summary>
-    void VerboseScanSource(string path);
-
-    /// <summary>
-    /// Log a verbose message for source modules.
-    /// </summary>
-    void VerboseFoundModules(int count);
-
-    /// <summary>
-    /// Log a verbose message for scanning for modules.
-    /// </summary>
-    void VerboseScanModule(string moduleName);
-
-    /// <summary>
-    /// Add loose files as a source.
-    /// </summary>
-    /// <param name="path">An array of file or directory paths containing one or more rule files.</param>
-    /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
-    void Directory(string[] path, bool excludeDefaultRulePath = false);
-
-    /// <summary>
-    /// Add loose files as a source.
-    /// </summary>
-    /// <param name="path">A file or directory path containing one or more rule files.</param>
-    /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
-    void Directory(string path, bool excludeDefaultRulePath = false);
-
-    /// <summary>
-    /// Add a module source.
-    /// </summary>
-    /// <param name="module">The module info.</param>
-    void Module(PSModuleInfo[] module);
-
-    /// <summary>
-    /// Build a list of sources for executing within PSRule.
-    /// </summary>
-    /// <returns>A list of sources.</returns>
-    Source[] Build();
-}
-
-/// <summary>
-/// A helper to build a list of sources for a command-line tool pipeline.
-/// </summary>
-public interface ISourceCommandLineBuilder
-{
-    /// <summary>
-    /// Add loose files as a source.
-    /// </summary>
-    /// <param name="path">An array of file or directory paths containing one or more rule files.</param>
-    /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
-    void Directory(string[] path, bool excludeDefaultRulePath = false);
-
-    /// <summary>
-    /// Add loose files as a source.
-    /// </summary>
-    /// <param name="path">A file or directory path containing one or more rule files.</param>
-    /// <param name="excludeDefaultRulePath">Determine if the default rule path is excluded. When set to <c>true</c> the default rule path is excluded.</param>
-    void Directory(string path, bool excludeDefaultRulePath = false);
-
-    /// <summary>
-    /// Add a module source.
-    /// </summary>
-    /// <param name="name">The name of the module.</param>
-    /// <param name="version">A specific version of the module.</param>
-    void ModuleByName(string name, string version = null);
-
-    /// <summary>
-    /// Build a list of sources for executing within PSRule.
-    /// </summary>
-    /// <returns>A list of sources.</returns>
-    Source[] Build();
-}
 
 /// <summary>
 /// A helper to build a list of rule sources for discovery.
@@ -357,7 +271,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         if (value == null) return false;
 
         if (value is string s)
-            requiredAssemblies = new string[] { s };
+            requiredAssemblies = [s];
 
         if (value is Array array)
             requiredAssemblies = array.OfType<string>().ToArray();
@@ -398,9 +312,10 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
             return false;
 
         foreach (var tag in module.Tags)
+        {
             if (StringComparer.OrdinalIgnoreCase.Equals(RULE_MODULE_TAG, tag))
                 return true;
-
+        }
         return false;
     }
 
@@ -464,7 +379,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
             return null;
 
         helpPath ??= Path.GetDirectoryName(path);
-        return new SourceFile[] { new(path, null, sourceType, helpPath) };
+        return [new(path, null, sourceType, helpPath)];
     }
 
     private static SourceFile[] IncludePath(string path, string helpPath, string moduleName, bool excludeDefaultRulePath, RestrictScriptSource restrictScriptSource, string workspacePath)
