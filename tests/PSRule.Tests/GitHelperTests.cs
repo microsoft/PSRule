@@ -3,27 +3,33 @@
 
 namespace PSRule;
 
+/// <summary>
+/// Unit tests for <see cref="GitHelper"/>.
+/// </summary>
 public sealed class GitHelperTests
 {
     [Fact]
-    public void Can_read_head()
+    public void TryReadHead_WhenValidPath_ShouldReturnGitHead()
     {
-        var expectedHead = GetGitOutput().Trim();
+        var expectedHead = GetGitOutput();
 
         Assert.True(GitHelper.TryReadHead("../../../../../.git/", out var actualHead));
         Assert.Equal(expectedHead, NormalizeBranch(actualHead));
     }
 
+    #region Helper methods
+
     private static string NormalizeBranch(string actualHead)
     {
-        var parts = actualHead.Split('/');
-        return string.Join('/', parts, 2, parts.Length - 2);
+        return actualHead.Replace("refs/heads/", "");
     }
 
     private static string GetGitOutput()
     {
         var tool = ExternalTool.Get(null, GitHelper.GetGitBinary());
         tool.WaitForExit("rev-parse --abbrev-ref HEAD", out _);
-        return tool.GetOutput();
+        return tool.GetOutput().Trim();
     }
+
+    #endregion Helper methods
 }
