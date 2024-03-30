@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.IO;
+
 namespace PSRule;
 
 /// <summary>
@@ -26,9 +28,7 @@ public sealed class GitHelperTests
 
     private static string GetGitOutput()
     {
-        var tool = ExternalTool.Get(null, GitHelper.GetGitBinary());
-        tool.WaitForExit("rev-parse --abbrev-ref HEAD", out _);
-        return tool.GetOutput().Trim();
+        return File.ReadAllText("../../../../../.git/HEAD").Replace("ref: ", string.Empty).Replace("refs/heads/", string.Empty).Trim();
     }
 
     #endregion Helper methods

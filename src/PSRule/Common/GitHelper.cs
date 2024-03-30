@@ -151,7 +151,7 @@ internal static class GitHelper
         return true;
     }
 
-    internal static string GetGitBinary()
+    private static string GetGitBinary()
     {
         return RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
             RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "git" : "git.exe";
