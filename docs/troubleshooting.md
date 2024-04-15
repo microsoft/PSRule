@@ -63,6 +63,21 @@ if ($Null -eq (Get-InstalledModule -Name PowerShellGet -MinimumVersion 2.2.1 -Er
 }
 ```
 
+## Format-Default error when running Invoke-PSRule
+
+When running PSRule you may encounter an error similar to the following:
+
+!!! Error
+
+    Format-Default: Cannot process argument because the value of argument "name" is not valid. Change the value of the "name" argument and run the operation again.
+
+This error is caused by a known issue in PowerShell 7.4.0 and 7.4.1.
+To resolve this issue, upgrade to PowerShell 7.4.2 or later.
+
+For more details see [#1723][5].
+
+  [5]: https://github.com/microsoft/PSRule/issues/1723
+
 ## PSR0001 - Unable to read options file
 
 When running PSRule you may encounter an error similar to the following:
