@@ -15,7 +15,7 @@ public sealed class GitHelperTests
     {
         var expectedHead = GetGitOutput();
 
-        Assert.True(GitHelper.TryReadHead(out var actualHead, "../../../../../.git/"));
+        Assert.True(GitHelper.TryReadHead(out var actualHead, "../../../../../.git"));
         Assert.Equal(expectedHead, NormalizeBranch(actualHead));
     }
 
