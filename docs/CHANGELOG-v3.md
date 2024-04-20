@@ -45,6 +45,8 @@ What's changed since pre-release v3.0.0-B0153:
 - Bug fixes:
   - Fixed discovery of installed modules in CLI by @BernieWhite.
     [#1779](https://github.com/microsoft/PSRule/issues/1779)
+  - Fixed for git head in tests by @BernieWhite.
+    [#1801](https://github.com/microsoft/PSRule/issues/1801)
 
 ## v3.0.0-B0153 (pre-release)
 
