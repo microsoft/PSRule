@@ -31,7 +31,13 @@ public sealed class GitHelperTests
         var bin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "git" : "git.exe";
         var git = ExternalTool.Get(null, bin);
         git.WaitForExit("branch --show-current", out _);
-        return git.GetOutput().Trim();
+        var branch = git.GetOutput().Trim();
+        if (string.IsNullOrEmpty(branch))
+        {
+            git.WaitForExit("rev-parse HEAD", out _);
+            branch = git.GetOutput().Trim();
+        }
+        return branch;
     }
 
     #endregion Helper methods
