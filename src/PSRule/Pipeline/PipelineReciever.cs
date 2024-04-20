@@ -157,7 +157,7 @@ internal static class PipelineReceiverActions
     {
         // Only attempt to deserialize if the input is a string or a file
         if (!IsAcceptedType(targetObject))
-            return new TargetObject[] { targetObject };
+            return [targetObject];
 
         var data = ReadAsString(targetObject, out var sourceInfo);
         var ast = System.Management.Automation.Language.Parser.ParseInput(data, out _, out _);
@@ -173,16 +173,6 @@ internal static class PipelineReceiverActions
         }
         var value = result.ToArray();
         return VisitItems(value, sourceInfo, next);
-    }
-
-    public static IEnumerable<TargetObject> ConvertFromGitHead(TargetObject targetObject, VisitTargetObject next)
-    {
-        // Only attempt to convert if Git HEAD file
-        if (!IsGitHead(targetObject))
-            return new TargetObject[] { targetObject };
-
-        var value = PSObject.AsPSObject(GetRepositoryInfo(targetObject, out var sourceInfo));
-        return VisitItems(new PSObject[] { value }, sourceInfo, next);
     }
 
     public static IEnumerable<TargetObject> ReadObjectPath(TargetObject targetObject, VisitTargetObject source, string objectPath, bool caseSensitive)
@@ -206,7 +196,7 @@ internal static class PipelineReceiverActions
         }
         else
         {
-            return new TargetObject[] { new(PSObject.AsPSObject(nestedObject), targetObject.Source) };
+            return [new(PSObject.AsPSObject(nestedObject), targetObject.Source)];
         }
     }
 
@@ -230,22 +220,6 @@ internal static class PipelineReceiverActions
             targetObject.Value.BaseObject is InputFileInfo ||
             targetObject.Value.BaseObject is FileInfo ||
             targetObject.Value.BaseObject is Uri;
-    }
-
-    private static bool IsGitHead(TargetObject targetObject)
-    {
-        return targetObject.Value.BaseObject is InputFileInfo info && info.DisplayName == InputFileInfo_GitHead;
-    }
-
-    private static RepositoryInfo GetRepositoryInfo(TargetObject targetObject, out TargetSourceInfo sourceInfo)
-    {
-        sourceInfo = null;
-        if (targetObject.Value.BaseObject is not InputFileInfo inputFileInfo)
-            return null;
-
-        sourceInfo = new TargetSourceInfo(inputFileInfo);
-        GitHelper.TryHeadRef(out var headRef, inputFileInfo.DirectoryName);
-        return new RepositoryInfo(inputFileInfo.BasePath, headRef);
     }
 
     private static string ReadAsString(TargetObject targetObject, out TargetSourceInfo sourceInfo)

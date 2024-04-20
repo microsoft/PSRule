@@ -16,7 +16,8 @@ internal static class GitHelper
 {
     private const string GIT_HEAD = "HEAD";
     private const string GIT_REF_PREFIX = "ref: ";
-    private const string GIT_DEFAULT_PATH = ".git/";
+    private const string GIT_GITDIR_PREFIX = "gitdir: ";
+    private const string GIT_DEFAULT_PATH = ".git";
     private const string GIT_REF_HEAD = "refs/heads/";
 
     private const string GITHUB_BASE_URL = "https://github.com/";
@@ -44,7 +45,7 @@ internal static class GitHelper
     /// <summary>
     /// The get HEAD ref.
     /// </summary>
-    public static bool TryHeadRef(out string value, string path = null)
+    public static bool TryHeadRef(out string value)
     {
         // Try PSRule
         if (Environment.TryString(ENV_PSRULE_REPO_REF, out value) ||
@@ -61,22 +62,22 @@ internal static class GitHelper
             return true;
 
         // Try .git/
-        return TryReadHead(path, out value);
+        return TryReadHead(out value);
     }
 
     /// <summary>
     /// Get the HEAD branch name.
     /// </summary>
-    public static bool TryHeadBranch(out string value, string path = null)
+    public static bool TryHeadBranch(out string value)
     {
-        value = TryHeadRef(out value, path) && value.StartsWith(GIT_REF_HEAD) ? value.Substring(11) : value;
+        value = TryHeadRef(out value) && value.StartsWith(GIT_REF_HEAD) ? value.Substring(11) : value;
         return !string.IsNullOrEmpty(value);
     }
 
     /// <summary>
     /// Get the target ref.
     /// </summary>
-    public static bool TryBaseRef(out string value, string path = null)
+    public static bool TryBaseRef(out string value)
     {
         // Try PSRule
         if (Environment.TryString(ENV_PSRULE_REPO_BASEREF, out value))
@@ -91,10 +92,10 @@ internal static class GitHelper
             return true;
 
         // Try .git/
-        return TryReadHead(path, out value);
+        return TryReadHead(out value);
     }
 
-    public static bool TryRevision(out string value, string path = null)
+    public static bool TryRevision(out string value)
     {
         // Try PSRule
         if (Environment.TryString(ENV_PSRULE_REPO_REVISION, out value))
@@ -109,7 +110,7 @@ internal static class GitHelper
             return true;
 
         // Try .git/
-        return TryReadCommit(path, out value);
+        return TryReadCommit(out value);
     }
 
     public static bool TryRepository(out string value, string path = null)
@@ -151,6 +152,14 @@ internal static class GitHelper
         return true;
     }
 
+    #region Helper methods
+
+    internal static bool TryReadHead(out string value, string path = null)
+    {
+        value = null;
+        return TryGitFile(GIT_HEAD, out var filePath, path) && TryReadRef(filePath, out value, out _);
+    }
+
     private static string GetGitBinary()
     {
         return RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
@@ -162,34 +171,68 @@ internal static class GitHelper
         return $"diff --diff-filter={filter} --ignore-submodules=all --name-only --no-renames {target}";
     }
 
-    internal static bool TryReadHead(string path, out string value)
+    private static bool TryReadCommit(out string value)
     {
         value = null;
-        return TryGitFile(path, GIT_HEAD, out var filePath) && TryCommit(filePath, out value, out _);
-    }
-
-    internal static bool TryReadCommit(string path, out string value)
-    {
-        value = null;
-        if (!TryGitFile(path, GIT_HEAD, out var filePath))
+        if (!TryGitFile(GIT_HEAD, out var filePath))
             return false;
 
-        while (TryCommit(filePath, out value, out var isRef) && isRef)
-            TryGitFile(path, value, out filePath);
+        while (TryReadRef(filePath, out value, out var isRef) && isRef)
+            TryGitFile(value, out filePath);
 
         return value != null;
     }
 
-    private static bool TryGitFile(string path, string file, out string filePath)
+    private static bool TryGitFile(string file, out string filePath, string path = null)
     {
-        filePath = Path.Combine(Environment.GetRootedBasePath(path ?? GIT_DEFAULT_PATH), file);
+        var gitPath = GetGitDir(path);
+        filePath = Path.Combine(gitPath, file);
         return File.Exists(filePath);
     }
 
-    private static bool TryCommit(string path, out string value, out bool isRef)
+    private static string GetGitDir(string path)
+    {
+        var gitDir = Environment.GetRootedBasePath(path ?? GIT_DEFAULT_PATH);
+
+        // Try the case of a submodule.
+        if (File.Exists(path) && TryReadGitDir(path, out gitDir))
+            return gitDir;
+
+        // Try the simple case of .git/.
+        return gitDir;
+    }
+
+    private static bool TryReadGitDir(string path, out string value)
+    {
+        value = null;
+        if (!TryReadFirstLineFromGitFile(path, out var line))
+            return false;
+
+        if (!line.StartsWith(GIT_GITDIR_PREFIX, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        value = Environment.GetRootedBasePath(line.Substring(8));
+        return true;
+    }
+
+    private static bool TryReadRef(string path, out string value, out bool isRef)
     {
         value = null;
         isRef = false;
+        if (!TryReadFirstLineFromGitFile(path, out var line))
+            return false;
+
+        isRef = line.StartsWith(GIT_REF_PREFIX, StringComparison.OrdinalIgnoreCase);
+        value = isRef ? line.Substring(5) : line;
+        return true;
+    }
+
+    /// <summary>
+    /// Read the first line of a git file.
+    /// </summary>
+    private static bool TryReadFirstLineFromGitFile(string path, out string value)
+    {
+        value = null;
         if (!File.Exists(path))
             return false;
 
@@ -197,8 +240,7 @@ internal static class GitHelper
         if (lines == null || lines.Length == 0)
             return false;
 
-        isRef = lines[0].StartsWith(GIT_REF_PREFIX, StringComparison.OrdinalIgnoreCase);
-        value = isRef ? lines[0].Substring(5) : lines[0];
+        value = lines[0];
         return true;
     }
 
@@ -235,4 +277,6 @@ internal static class GitHelper
     {
         return "config --worktree --list";
     }
+
+    #endregion Helper methods
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
@@ -97,13 +97,6 @@ internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTarget
             AddVisitTargetObjectAction((sourceObject, next) =>
             {
                 return PipelineReceiverActions.ConvertFromPowerShellData(sourceObject, next);
-            });
-        }
-        else if (Option.Input.Format == InputFormat.File)
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ConvertFromGitHead(sourceObject, next);
             });
         }
         else if (Option.Input.Format == InputFormat.Detect && _InputPath != null)

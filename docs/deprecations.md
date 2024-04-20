@@ -43,6 +43,17 @@ The following execution options have been deprecated and will be removed from _v
     You do not need to configure both options.
     If you have the deprecated option configured, switch to the new option.
 
+### Git Head input object
+
+Previously when the `Input.Format` option was set to `File` the `.git/HEAD` file was emitted as an input object.
+The original purpose of this feature was to allow conventions to run once against the root of the repository.
+Subsequent changes to PSRule have made this feature redundant by adding support for the `-Initialize` block.
+
+From _v3_ the `.git/HEAD` file will no longer be emitted as an input object.
+
+Consider adding or updating a convention that uses the `-Initialize` block to emit run initialization logic.
+Yon can also use the `-Initialize` block to emit a custom object to the pipeline by using the `$PSRule.ImportWithType` method.
+
 ### Rule output object
 
 Several properties of the rule object have been renamed to improve consistency with other objects.

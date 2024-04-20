@@ -190,13 +190,6 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
                 return PipelineReceiverActions.ConvertFromPowerShellData(sourceObject, next);
             });
         }
-        else if (Option.Input.Format == InputFormat.File)
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ConvertFromGitHead(sourceObject, next);
-            });
-        }
         else if (Option.Input.Format == InputFormat.Detect && _InputPath != null)
         {
             AddVisitTargetObjectAction((sourceObject, next) =>

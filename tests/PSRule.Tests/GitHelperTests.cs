@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.IO;
+using System.Runtime.InteropServices;
 
 namespace PSRule;
 
@@ -15,7 +15,7 @@ public sealed class GitHelperTests
     {
         var expectedHead = GetGitOutput();
 
-        Assert.True(GitHelper.TryReadHead("../../../../../.git/", out var actualHead));
+        Assert.True(GitHelper.TryReadHead(out var actualHead, "../../../../../.git/"));
         Assert.Equal(expectedHead, NormalizeBranch(actualHead));
     }
 
@@ -28,7 +28,16 @@ public sealed class GitHelperTests
 
     private static string GetGitOutput()
     {
-        return File.ReadAllText("../../../../../.git/HEAD").Replace("ref: ", string.Empty).Replace("refs/heads/", string.Empty).Trim();
+        var bin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "git" : "git.exe";
+        var git = ExternalTool.Get(null, bin);
+        git.WaitForExit("branch --show-current", out _);
+        var branch = git.GetOutput().Trim();
+        if (string.IsNullOrEmpty(branch))
+        {
+            git.WaitForExit("rev-parse HEAD", out _);
+            branch = git.GetOutput().Trim();
+        }
+        return branch;
     }
 
     #endregion Helper methods
