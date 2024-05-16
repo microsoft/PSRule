@@ -30,9 +30,9 @@
       },
       "System.Drawing.Common": {
         "type": "Direct",
-        "requested": "[8.0.3, )",
-        "resolved": "8.0.3",
-        "contentHash": "oDE9duAtHhxYJM2bsOlZCLBKdorU9DTV1tw7Mlc+VIT7HgwO5ddfOHk/An8C+fAS9oKdmn2PaIA5t1b484uz8g==",
+        "requested": "[8.0.5, )",
+        "resolved": "8.0.5",
+        "contentHash": "n55wb6rL8YG254AG+SfQOSQencrcnpKAAcYyEcvBuO2pob7ltXuZ5skBBdvLJOLVPKd1Ya8+8ColIM5AtBo5ww==",
         "dependencies": {
           "Microsoft.Win32.SystemEvents": "8.0.0"
         }
