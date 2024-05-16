@@ -27,8 +27,6 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
-## v3.0.0-B0179 (pre-release)
-
 What's changed since pre-release v3.0.0-B0153:
 
 - Engineering:
@@ -36,8 +34,8 @@ What's changed since pre-release v3.0.0-B0153:
     [#1790](https://github.com/microsoft/PSRule/pull/1790)
   - Bump Bump xunit to v2.7.1.
     [#1793](https://github.com/microsoft/PSRule/pull/1793)
-  - Bump xunit.runner.visualstudio to v2.5.8.
-    [#1792](https://github.com/microsoft/PSRule/pull/1792)
+  - Bump xunit.runner.visualstudio to v2.8.0.
+    [#1808](https://github.com/microsoft/PSRule/pull/1808)
   - Bump YamlDotNet to v15.1.2.
     [#1771](https://github.com/microsoft/PSRule/pull/1771)
   - Bump Microsoft.CodeAnalysis.Common to v4.9.2.
