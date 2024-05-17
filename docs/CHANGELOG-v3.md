@@ -30,8 +30,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 What's changed since pre-release v3.0.0-B0153:
 
 - Engineering:
-  - Bump System.Drawing.Common to v8.0.4.
-    [#1790](https://github.com/microsoft/PSRule/pull/1790)
+  - Bump System.Drawing.Common to v8.0.5.
+    [#1817](https://github.com/microsoft/PSRule/pull/1817)
   - Bump Bump xunit to v2.8.0.
     [#1809](https://github.com/microsoft/PSRule/pull/1809)
   - Bump xunit.runner.visualstudio to v2.8.0.
