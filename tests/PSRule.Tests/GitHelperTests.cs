@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Runtime.InteropServices;
 
 namespace PSRule;
@@ -15,7 +16,7 @@ public sealed class GitHelperTests
     {
         var expectedHead = GetGitOutput();
 
-        Assert.True(GitHelper.TryReadHead(out var actualHead, "../../../../../.git"));
+        Assert.True(GitHelper.TryReadHead(out var actualHead, GetGitPath()));
         Assert.Equal(expectedHead, NormalizeBranch(actualHead));
     }
 
@@ -38,6 +39,11 @@ public sealed class GitHelperTests
             branch = git.GetOutput().Trim();
         }
         return branch;
+    }
+
+    private static string GetGitPath()
+    {
+        return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../../.git");
     }
 
     #endregion Helper methods
