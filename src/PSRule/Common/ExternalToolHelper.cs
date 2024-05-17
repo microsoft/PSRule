@@ -14,7 +14,6 @@ internal sealed class ExternalTool : IDisposable
     private readonly AutoResetEvent _ErrorWait;
     private readonly AutoResetEvent _OutputWait;
     private readonly int _Interval;
-    private readonly int _Timeout;
     private readonly string _BinaryPath;
     private bool _Disposed;
 
@@ -23,9 +22,7 @@ internal sealed class ExternalTool : IDisposable
         _Output = new StringBuilder();
         _Error = new StringBuilder();
         _Interval = 1000;
-        _Timeout = timeout;
         _BinaryPath = binaryPath;
-
         _ErrorWait = new AutoResetEvent(false);
         _OutputWait = new AutoResetEvent(false);
     }
@@ -37,7 +34,7 @@ internal sealed class ExternalTool : IDisposable
         if (!TryPathFromDefault(defaultPath, binary, out var binaryPath) && !TryPathFromEnvironment(binary, out binaryPath))
             return null;
 
-        return new ExternalTool(binaryPath, 0, null);
+        return new ExternalTool(binaryPath, 60, null);
     }
 
     private static bool TryPathFromDefault(string defaultPath, string binary, out string binaryPath)
@@ -47,30 +44,28 @@ internal sealed class ExternalTool : IDisposable
 
     public bool WaitForExit(string args, out int exitCode)
     {
-        var startInfo = new ProcessStartInfo(_BinaryPath, args)
+        _Process = new Process
         {
-            CreateNoWindow = true,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            WorkingDirectory = Environment.GetWorkingPath(),
+            StartInfo = new ProcessStartInfo(_BinaryPath, args)
+            {
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                WorkingDirectory = Environment.GetWorkingPath(),
+            }
         };
-        _Process = Process.Start(startInfo);
-        _Process.ErrorDataReceived += Bicep_ErrorDataReceived;
-        _Process.OutputDataReceived += Bicep_OutputDataReceived;
-
-        _Process.BeginErrorReadLine();
-        _Process.BeginOutputReadLine();
+        _Process.ErrorDataReceived += Tool_ErrorDataReceived;
+        _Process.OutputDataReceived += Tool_OutputDataReceived;
 
         _ErrorWait.Reset();
         _OutputWait.Reset();
 
-        if (!_Process.HasExited)
-        {
-            var timeoutCount = 0;
-            while (!_Process.WaitForExit(_Interval) && !_Process.HasExited && timeoutCount < _Timeout)
-                timeoutCount++;
-        }
+        _Process.Start();
+        _Process.BeginErrorReadLine();
+        _Process.BeginOutputReadLine();
+
+        _Process.WaitForExit();
 
         exitCode = _Process.HasExited ? _Process.ExitCode : -1;
         return _Process.HasExited && _ErrorWait.WaitOne(_Interval) && _OutputWait.WaitOne();
@@ -78,15 +73,21 @@ internal sealed class ExternalTool : IDisposable
 
     public string GetOutput()
     {
-        return _Output.ToString();
+        lock (_Output)
+        {
+            return _Output.ToString();
+        }
     }
 
     public string GetError()
     {
-        return _Error.ToString();
+        lock (_Error)
+        {
+            return _Error.ToString();
+        }
     }
 
-    private void Bicep_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    private void Tool_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
         if (e.Data == null)
         {
@@ -94,11 +95,14 @@ internal sealed class ExternalTool : IDisposable
         }
         else
         {
-            _Output.AppendLine(e.Data);
+            lock (_Output)
+            {
+                _Output.AppendLine(e.Data);
+            }
         }
     }
 
-    private void Bicep_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    private void Tool_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
         if (e.Data == null)
         {
@@ -107,8 +111,14 @@ internal sealed class ExternalTool : IDisposable
         else
         {
             var errors = GetErrorLine(e.Data);
-            for (var i = 0; i < errors.Length; i++)
-                _Error.AppendLine(errors[i]);
+            if (errors.Length == 0)
+                return;
+
+            lock (_Error)
+            {
+                for (var i = 0; i < errors.Length; i++)
+                    _Error.AppendLine(errors[i]);
+            }
         }
     }
 
@@ -161,8 +171,14 @@ internal sealed class ExternalTool : IDisposable
                 _OutputWait.Dispose();
                 _Process.Dispose();
             }
-            _Error.Clear();
-            _Output.Clear();
+            lock (_Error)
+            {
+                _Error.Clear();
+            }
+            lock (_Output)
+            {
+                _Output.Clear();
+            }
             _Disposed = true;
         }
     }
