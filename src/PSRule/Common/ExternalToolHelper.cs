@@ -17,7 +17,7 @@ internal sealed class ExternalTool : IDisposable
     private readonly string _BinaryPath;
     private bool _Disposed;
 
-    private ExternalTool(string binaryPath, int timeout, string version = null)
+    private ExternalTool(string binaryPath)
     {
         _Output = new StringBuilder();
         _Error = new StringBuilder();
@@ -34,7 +34,7 @@ internal sealed class ExternalTool : IDisposable
         if (!TryPathFromDefault(defaultPath, binary, out var binaryPath) && !TryPathFromEnvironment(binary, out binaryPath))
             return null;
 
-        return new ExternalTool(binaryPath, 60, null);
+        return new ExternalTool(binaryPath);
     }
 
     private static bool TryPathFromDefault(string defaultPath, string binary, out string binaryPath)
