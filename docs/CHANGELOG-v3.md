@@ -36,8 +36,8 @@ What's changed since pre-release v3.0.0-B0153:
     [#1809](https://github.com/microsoft/PSRule/pull/1809)
   - Bump xunit.runner.visualstudio to v2.8.0.
     [#1808](https://github.com/microsoft/PSRule/pull/1808)
-  - Bump YamlDotNet to v15.1.2.
-    [#1771](https://github.com/microsoft/PSRule/pull/1771)
+  - Bump YamlDotNet to v15.1.4.
+    [#1816](https://github.com/microsoft/PSRule/pull/1816)
   - Bump Microsoft.CodeAnalysis.Common to v4.9.2.
     [#1773](https://github.com/microsoft/PSRule/pull/1773)
 - Bug fixes:
