@@ -43,7 +43,7 @@ public sealed class GitHelperTests
 
     private static string GetGitPath()
     {
-        return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../../.git");
+        return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../../");
     }
 
     #endregion Helper methods
