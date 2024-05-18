@@ -190,28 +190,28 @@ internal static class GitHelper
         return File.Exists(filePath);
     }
 
-    private static string GetGitDir(string path)
+    private static string GetGitDir(string path = null)
     {
-        var gitDir = Environment.GetRootedBasePath(path ?? GIT_DEFAULT_PATH);
+        path = Environment.GetRootedPath(GIT_DEFAULT_PATH, basePath: Environment.GetRootedPath(path));
 
         // Try the case of a submodule.
-        if (File.Exists(path) && TryReadGitDir(path, out gitDir))
+        if (File.Exists(path) && TryReadGitDirEntry(path, out var gitDir))
             return gitDir;
 
         // Try the simple case of .git/.
-        return gitDir;
+        return path;
     }
 
-    private static bool TryReadGitDir(string path, out string value)
+    private static bool TryReadGitDirEntry(string filePath, out string value)
     {
         value = null;
-        if (!TryReadFirstLineFromGitFile(path, out var line))
+        if (!TryReadFirstLineFromGitFile(filePath, out var line))
             return false;
 
         if (!line.StartsWith(GIT_GITDIR_PREFIX, StringComparison.OrdinalIgnoreCase))
             return false;
 
-        value = Environment.GetRootedBasePath(line.Substring(8));
+        value = Environment.GetRootedBasePath(line.Substring(8), basePath: Path.GetDirectoryName(filePath));
         return true;
     }
 

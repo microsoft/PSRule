@@ -107,10 +107,10 @@ public static class Environment
     /// <returns>A absolute path.</returns>
     internal static string GetRootedPath(string? path, bool normalize = false, string? basePath = null)
     {
-        if (string.IsNullOrEmpty(path))
-            path = string.Empty;
-
         basePath ??= GetWorkingPath();
+        if (string.IsNullOrEmpty(path))
+            path = normalize ? string.Empty : basePath;
+
         var rootedPath = Path.IsPathRooted(path) ? Path.GetFullPath(path) : Path.GetFullPath(Path.Combine(basePath, path));
         return normalize ? rootedPath.Replace(BACKSLASH, SLASH) : rootedPath;
     }
@@ -120,20 +120,21 @@ public static class Environment
     /// </summary>
     /// <param name="path">A full or relative path.</param>
     /// <param name="normalize">When set to <c>true</c> the returned path uses forward slashes instead of backslashes.</param>
+    /// <param name="basePath">A base path to use if the <c>path</c> is relative.</param>
     /// <returns>A absolute base path.</returns>
     /// <remarks>
     /// A base path always includes a trailing <c>/</c>.
     /// </remarks>
-    internal static string GetRootedBasePath(string path, bool normalize = false)
+    internal static string GetRootedBasePath(string path, bool normalize = false, string? basePath = null)
     {
         if (string.IsNullOrEmpty(path))
             path = string.Empty;
 
-        var rootedPath = GetRootedPath(path);
-        var basePath = rootedPath.Length > 0 && IsPathSeparator(rootedPath[rootedPath.Length - 1])
+        var rootedPath = GetRootedPath(path, basePath: basePath);
+        var result = rootedPath.Length > 0 && IsPathSeparator(rootedPath[rootedPath.Length - 1])
             ? rootedPath
             : string.Concat(rootedPath, Path.DirectorySeparatorChar);
-        return normalize ? basePath.Replace(BACKSLASH, SLASH) : basePath;
+        return normalize ? result.Replace(BACKSLASH, SLASH) : result;
     }
 
     /// <summary>
