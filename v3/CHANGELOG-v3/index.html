@@ -2750,6 +2750,18 @@
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">#</a></h2>
 <p>What's changed since pre-release v3.0.0-B0198:</p>
 <ul>
+<li>New features:<ul>
+<li><strong>Breaking change</strong>: Simplify handling of inputs from files using emitters by <a href="https://github.com/BernieWhite">@BernieWhite</a>.
+  <a href="https://github.com/microsoft/PSRule/issues/1179">#1179</a><ul>
+<li>Files are automatically read from input paths and emitted as objects to the pipeline.</li>
+<li>Emitter interface can be used to implement custom file readers and expansion of custom file types.</li>
+<li>The <code>File</code> and <code>Detect</code> input formats are no longer required and have been removed.</li>
+<li>Processing files and objects with rules is no longer recommended, and disabled by default.</li>
+<li>The <code>Input.FileObjects</code> can be set to <code>true</code> to enable processing of files as objects with rules.</li>
+</ul>
+</li>
+</ul>
+</li>
 <li>Bug fixes:<ul>
 <li>Fixed reason reported for <code>startsWith</code> by <a href="https://github.com/BernieWhite">@BernieWhite</a>.
   <a href="https://github.com/microsoft/PSRule/issues/1818">#1818</a></li>

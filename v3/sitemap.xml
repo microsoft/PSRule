@@ -391,6 +391,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://microsoft.github.io/PSRule/v3/specs/emitter-spec/</loc>
+         <lastmod>2024-05-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://microsoft.github.io/PSRule/v3/specs/function-spec/</loc>
          <lastmod>2024-05-24</lastmod>
          <changefreq>daily</changefreq>
