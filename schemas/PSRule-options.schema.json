@@ -553,7 +553,7 @@
           "type": "boolean",
           "title": "File objects",
           "description": "Determines if file objects are processed by rules.",
-          "markdownDescription": "Determines if file objects are processed by rules. [See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#fileobjects)",
+          "markdownDescription": "Determines if file objects are processed by rules. [See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#inputfileobjects)",
           "default": false
         },
         "format": {

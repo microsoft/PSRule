@@ -642,7 +642,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $resultCsv[1].Synopsis | Should -Be 'Test rule 3';
             $resultCsv[2].RuleName | Should -Be 'WithCsv';
             $resultCsv[2].Synopsis | Should -Be 'This is "a" synopsis.';
-            ($resultCsv[2].Recommendation -replace "`r`n", "`n") | Should -Be "This is an extended recommendation.`n`n- That includes line breaks`n- And lists";
+            ($resultCsv[2].Recommendation -replace "`r`n", "`n") | Should -Be "This is an extended recommendation. - That includes line breaks - And lists";
 
             # Summary
             $result = $testObject | Invoke-PSRule @option -As Summary | Out-String;
@@ -659,7 +659,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $resultCsv[1].Fail | Should -Be '1';
             $resultCsv[2].RuleName | Should -Be 'WithCsv';
             $resultCsv[2].Synopsis | Should -Be 'This is "a" synopsis.';
-            ($resultCsv[2].Recommendation -replace "`r`n", "`n") | Should -Be "This is an extended recommendation.`n`n- That includes line breaks`n- And lists";
+            ($resultCsv[2].Recommendation -replace "`r`n", "`n") | Should -Be "This is an extended recommendation. - That includes line breaks - And lists";
         }
 
         It 'Sarif' {
