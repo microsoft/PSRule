@@ -39,6 +39,8 @@ jobs:
           prerelease: true
           outputFormat: Sarif
           outputPath: reports/ps-rule-results.sarif
+        env:
+          PSRULE_INPUT_FILEOBJECTS: true
 
       - name: Upload results to security tab
         uses: github/codeql-action/upload-sarif@v3
