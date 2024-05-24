@@ -18,7 +18,7 @@ namespace PSRule.Runtime;
 /// The available language scope types.
 /// </summary>
 [Flags]
-internal enum RunspaceScope
+public enum RunspaceScope
 {
     None = 0,
 

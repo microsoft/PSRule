@@ -27,6 +27,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0198:
+
+- Bug fixes:
+  - Fixed reason reported for `startsWith` by @BernieWhite.
+    [#1818](https://github.com/microsoft/PSRule/issues/1818)
+
 ## v3.0.0-B0198 (pre-release)
 
 What's changed since pre-release v3.0.0-B0153:

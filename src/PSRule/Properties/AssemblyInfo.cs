@@ -5,3 +5,4 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("PSRule.Tests")]
 [assembly: InternalsVisibleTo("PSRule.Benchmark")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

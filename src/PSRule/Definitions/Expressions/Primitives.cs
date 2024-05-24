@@ -6,7 +6,7 @@ using PSRule.Pipeline;
 
 namespace PSRule.Definitions.Expressions;
 
-internal interface ILanguageExpresssionDescriptor
+internal interface ILanguageExpressionDescriptor
 {
     string Name { get; }
 
@@ -15,7 +15,7 @@ internal interface ILanguageExpresssionDescriptor
     LanguageExpression CreateInstance(SourceFile source, LanguageExpression.PropertyBag properties);
 }
 
-internal sealed class LanguageExpresssionDescriptor : ILanguageExpresssionDescriptor
+internal sealed class LanguageExpresssionDescriptor : ILanguageExpressionDescriptor
 {
     public LanguageExpresssionDescriptor(string name, LanguageExpressionType type, LanguageExpressionFn fn)
     {
