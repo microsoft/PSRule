@@ -27,6 +27,7 @@ The following workspace options are available for use:
 - [Execution.UnprocessedObject](#executionunprocessedobject)
 - [Include.Module](#includemodule)
 - [Include.Path](#includepath)
+- [Input.FileObjects](#inputfileobjects)
 - [Input.Format](#inputformat)
 - [Input.IgnoreGitPath](#inputignoregitpath)
 - [Input.IgnoreObjectSource](#inputignoreobjectsource)
@@ -1514,6 +1515,55 @@ variables:
   value: .ps-rule/;custom-rules/
 ```
 
+### Input.FileObjects
+
+Determines if file objects are processed by rules.
+This option is for backwards compatibility with PSRule v2.x in cases where file objects are used as input.
+
+By default, file are not processed by rules.
+Set to `$True` to enable processing of file objects by rules.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the InputFileObjects parameter
+$option = New-PSRuleOption -InputFileObjects $True;
+```
+
+```powershell
+# PowerShell: Using the Input.FileObjects hashtable key
+$option = New-PSRuleOption -Option @{ 'Input.FileObjects' = $True };
+```
+
+```powershell
+# PowerShell: Using the InputFileObjects parameter to set YAML
+Set-PSRuleOption -InputFileObjects $True;
+```
+
+```yaml
+# YAML: Using the input/fileObjects property
+input:
+  fileObjects: true
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_INPUT_FILEOBJECTS=true
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_INPUT_FILEOBJECTS: true
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_INPUT_FILEOBJECTS
+  value: true
+```
+
 ### Input.Format
 
 Configures the input format for when a string is passed in as a target object.
@@ -1531,22 +1581,16 @@ The `-InputPath` parameter can be used with a file path or URL.
 
 The following formats are available:
 
-- None - Treat strings as plain text and do not deserialize files.
-- Yaml - Deserialize as one or more YAML objects.
-- Json - Deserialize as one or more JSON objects.
-- Markdown - Deserialize as a markdown object.
-- PowerShellData - Deserialize as a PowerShell data object.
-- File - Files are not deserialized.
-- Detect - Detect format based on file extension. This is the default.
-
-If the `Detect` format is used, the file extension will be used to automatically detect the format.
-When the file extension can not be determined `Detect` is the same as `None`.
+- `None` - Treat strings as plain text and do not deserialize files.
+  This is the default.
+- `Yaml` - Deserialize as one or more YAML objects.
+- `Json` - Deserialize as one or more JSON objects.
+- `Markdown` - Deserialize as a markdown object.
+- `PowerShellData` - Deserialize as a PowerShell data object.
 
 The `Markdown` format does not parse the whole markdown document.
 Specifically this format deserializes YAML front matter from the top of the document if any exists.
 
-The `File` format does not deserialize file contents.
-Each file is returned as an object.
 Files within `.git` sub-directories are ignored.
 Path specs specified in `.gitignore` directly in the current working path are ignored.
 A `RepositoryInfo` object is generated if the current working path if a `.git` sub-directory is present.

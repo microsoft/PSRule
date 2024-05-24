@@ -1218,10 +1218,49 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Input.FileObjects' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Input.FileObjects | Should -Be $False;
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Input.FileObjects' = $True };
+            $option.Input.FileObjects | Should -Be $True;
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests15.yml');
+            $option.Input.FileObjects | Should -Be $True;
+        }
+
+        It 'from Environment' {
+            try {
+                # With bool
+                $Env:PSRULE_INPUT_FILEOBJECTS = 'true';
+                $option = New-PSRuleOption;
+                $option.Input.FileObjects | Should -Be $True;
+
+                # With int
+                $Env:PSRULE_INPUT_FILEOBJECTS = '1';
+                $option = New-PSRuleOption;
+                $option.Input.FileObjects | Should -Be $True;
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_INPUT_FILEOBJECTS' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -InputFileObjects $True -Path $emptyOptionsFilePath;
+            $option.Input.FileObjects | Should -Be $True;
+        }
+    }
+
     Context 'Read Input.Format' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
-            $option.Input.Format | Should -Be 'Detect';
+            $option.Input.Format | Should -Be 'None';
         }
 
         It 'from Hashtable' {
@@ -2306,6 +2345,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -SuppressionGroupExpired 'Error' @optionParams;
             $option.Execution.SuppressionGroupExpired | Should -Be 'Error';
+        }
+    }
+
+    Context 'Read Input.FileObjects' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -InputFileObjects $True @optionParams;
+            $option.Input.FileObjects | Should -Be $True;
         }
     }
 

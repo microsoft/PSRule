@@ -33,6 +33,8 @@ input:
     - '.markdownlint.json'
     - '.github/dependabot.yml'
 
+    - '**/Resources/*.json'
+
     # Bug #1269: There is an issue preventing #1259 from being merged. Ignore this until bug is fixed.
     - 'docs/scenarios/containers/dockerfile'
 

@@ -38,13 +38,13 @@ public enum InputFormat
     /// </summary>
     PowerShellData = 4,
 
-    /// <summary>
-    /// Files are treated as objects and not deserialized.
-    /// </summary>
-    File = 5,
+    ///// <summary>
+    ///// Files are treated as objects and not deserialized.
+    ///// </summary>
+    //File = 5,
 
-    /// <summary>
-    /// Detect format based on file extension. This is the default.
-    /// </summary>
-    Detect = 255
+    ///// <summary>
+    ///// Detect format based on file extension. This is the default.
+    ///// </summary>
+    //Detect = 255
 }

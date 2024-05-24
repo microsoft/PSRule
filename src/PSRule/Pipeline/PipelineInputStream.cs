@@ -3,8 +3,13 @@
 
 using System.Collections.Concurrent;
 using System.Management.Automation;
+using PSRule.Data;
+using PSRule.Options;
+using PSRule.Pipeline.Emitters;
 
 namespace PSRule.Pipeline;
+
+#nullable enable
 
 /// <summary>
 /// A stream of input objects that will be evaluated.
@@ -14,14 +19,16 @@ internal sealed class PipelineInputStream
     private readonly VisitTargetObject _Input;
     private readonly InputPathBuilder _InputPath;
     private readonly PathFilter _InputFilter;
-    private readonly ConcurrentQueue<TargetObject> _Queue;
+    private readonly ConcurrentQueue<ITargetObject> _Queue;
+    private readonly EmitterCollection _EmitterCollection;
 
-    public PipelineInputStream(VisitTargetObject input, InputPathBuilder inputPath, PathFilter inputFilter)
+    public PipelineInputStream(VisitTargetObject input, InputPathBuilder inputPath, PathFilter inputFilter, InputFormat? inputFormat, string objectPath, bool? shouldEmitFile)
     {
         _Input = input;
         _InputPath = inputPath;
         _InputFilter = inputFilter;
-        _Queue = new ConcurrentQueue<TargetObject>();
+        _Queue = new ConcurrentQueue<ITargetObject>();
+        _EmitterCollection = new EmitterBuilder().Build(new EmitterContext(_Queue, inputFilter, inputFormat, objectPath, shouldEmitFile));
     }
 
     public int Count => _Queue.Count;
@@ -34,31 +41,21 @@ internal sealed class PipelineInputStream
     /// <param name="sourceObject">An object to process.</param>
     /// <param name="targetType">A pre-bound type.</param>
     /// <param name="skipExpansion">Determines if expansion is skipped.</param>
-    public void Enqueue(PSObject sourceObject, string targetType = null, bool skipExpansion = false)
+    public void Enqueue(object sourceObject, string? targetType = null, bool skipExpansion = false)
     {
         if (sourceObject == null)
             return;
 
-        var targetObject = new TargetObject(sourceObject, targetType: targetType);
-        if (_Input == null || skipExpansion)
+        var targetObject = new TargetObject(sourceObject is PSObject pso ? pso : new PSObject(sourceObject), targetType: targetType);
+        if (skipExpansion)
         {
             EnqueueInternal(targetObject);
             return;
         }
-
-        // Visit the object, which may change or expand the object
-        var input = _Input(targetObject);
-        if (input == null)
-            return;
-
-        foreach (var item in input)
-            EnqueueInternal(item);
+        _EmitterCollection.Visit(sourceObject);
     }
 
-    /// <summary>
-    /// Get the next object in the stream.
-    /// </summary>
-    public bool TryDequeue(out TargetObject sourceObject)
+    public bool TryDequeue(out ITargetObject sourceObject)
     {
         return _Queue.TryDequeue(out sourceObject);
     }
@@ -78,7 +75,7 @@ internal sealed class PipelineInputStream
             }
             else
             {
-                Enqueue(PSObject.AsPSObject(files[i]));
+                Enqueue(files[i]);
             }
         }
     }
@@ -109,3 +106,5 @@ internal sealed class PipelineInputStream
         _InputPath.Add(path);
     }
 }
+
+#nullable restore

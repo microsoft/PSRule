@@ -65,7 +65,7 @@ public sealed class ClientContext
         PSRuleOption.UseHostContext(host);
         var option = PSRuleOption.FromFileOrEmpty(path);
         option.Execution.InitialSessionState = Options.SessionState.Minimal;
-        option.Input.Format = InputFormat.File;
+        //option.Input.Format = InputFormat.File;
         option.Output.Style ??= OutputStyle.Client;
         return option;
     }

@@ -99,6 +99,8 @@ public sealed class TargetObject : ITargetObject
 
     string? ITargetObject.Path => Path;
 
+    object ITargetObject.Value => Value;
+
 #nullable restore
 
     internal Hashtable GetData()

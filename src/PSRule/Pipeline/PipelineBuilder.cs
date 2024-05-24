@@ -470,7 +470,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
 
     protected virtual PipelineInputStream PrepareReader()
     {
-        return new PipelineInputStream(null, null, GetInputObjectSourceFilter());
+        return new PipelineInputStream(null, null, GetInputObjectSourceFilter(), Option.Input.Format, Option.Input.ObjectPath, Option.Input.FileObjects);
     }
 
     protected virtual PipelineWriter PrepareWriter()
@@ -580,7 +580,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             var ignoreGitPath = Option.Input.IgnoreGitPath ?? InputOption.Default.IgnoreGitPath.Value;
             var ignoreRepositoryCommon = Option.Input.IgnoreRepositoryCommon ?? InputOption.Default.IgnoreRepositoryCommon.Value;
             var builder = PathFilterBuilder.Create(basePath, Option.Input.PathIgnore, ignoreGitPath, ignoreRepositoryCommon);
-            if (Option.Input.Format == InputFormat.File)
+            //if (Option.Input.Format == InputFormat.File)
                 builder.UseGitIgnore();
 
             _InputFilter = builder.Build();

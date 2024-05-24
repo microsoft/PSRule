@@ -19,7 +19,11 @@ internal sealed class GetTargetPipeline : RulePipeline
         {
             Reader.Enqueue(sourceObject);
             while (Reader.TryDequeue(out var next))
-                Writer.WriteObject(next.Value, false);
+            {
+                // TODO: Temporary workaround to cast interface
+                if (next is TargetObject to)
+                    Writer.WriteObject(to.Value, false);
+            }
         }
         catch (Exception)
         {

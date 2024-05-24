@@ -27,4 +27,9 @@ public interface ITargetObject
     /// The path of the object.
     /// </summary>
     string? Path { get; }
+
+    /// <summary>
+    /// The value of the object.
+    /// </summary>
+    object Value { get; }
 }
