@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Diagnostics;
-using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -10,403 +8,9 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions.Expressions;
 
-internal delegate bool LanguageExpressionFn(ExpressionContext context, ExpressionInfo info, object[] args, object o);
+internal delegate bool LanguageExpressionFn(IExpressionContext context, ExpressionInfo info, object[] args, object o);
 
-internal delegate bool? LanguageExpressionOuterFn(ExpressionContext context, object o);
-
-internal enum LanguageExpressionType
-{
-    Operator = 1,
-
-    Condition = 2,
-
-    Function = 3
-}
-
-internal sealed class ExpressionInfo
-{
-    private readonly string _Path;
-
-    public ExpressionInfo(string path)
-    {
-        _Path = path;
-    }
-}
-
-internal sealed class LanguageExpressionFactory
-{
-    private readonly Dictionary<string, ILanguageExpresssionDescriptor> _Descriptors;
-
-    public LanguageExpressionFactory()
-    {
-        _Descriptors = new Dictionary<string, ILanguageExpresssionDescriptor>(LanguageExpressions.Builtin.Length, StringComparer.OrdinalIgnoreCase);
-        foreach (var d in LanguageExpressions.Builtin)
-            With(d);
-    }
-
-    public bool TryDescriptor(string name, out ILanguageExpresssionDescriptor descriptor)
-    {
-        descriptor = null;
-        return !string.IsNullOrEmpty(name) &&
-            _Descriptors.TryGetValue(name, out descriptor);
-    }
-
-    public bool IsSubselector(string name)
-    {
-        return name == "where";
-    }
-
-    public bool IsOperator(string name)
-    {
-        return TryDescriptor(name, out var d) && d != null && d.Type == LanguageExpressionType.Operator;
-    }
-
-    public bool IsCondition(string name)
-    {
-        return TryDescriptor(name, out var d) && d != null && d.Type == LanguageExpressionType.Condition;
-    }
-
-    public bool IsFunction(string name)
-    {
-        return TryDescriptor(name, out var d) &&
-            d != null && d.Type == LanguageExpressionType.Function;
-    }
-
-    private void With(ILanguageExpresssionDescriptor descriptor)
-    {
-        _Descriptors.Add(descriptor.Name, descriptor);
-    }
-}
-
-internal sealed class LanguageExpressionBuilder
-{
-    private const char Dot = '.';
-    private const char OpenBracket = '[';
-    private const char CloseBracket = ']';
-
-    private const string DOTWHERE = ".where";
-    private const string LESS = "less";
-    private const string LESSOREQUAL = "lessOrEqual";
-    private const string GREATER = "greater";
-    private const string GREATEROREQUAL = "greaterOrEqual";
-    private const string COUNT = "count";
-
-    private readonly bool _Debugger;
-
-    private string[] _With;
-    private string[] _Type;
-    private LanguageExpression _When;
-    private string[] _Rule;
-
-    public LanguageExpressionBuilder(bool debugger = true)
-    {
-        _Debugger = debugger;
-    }
-
-    public LanguageExpressionBuilder WithSelector(string[] with)
-    {
-        if (with == null || with.Length == 0)
-            return this;
-
-        _With = with;
-        return this;
-    }
-
-    public LanguageExpressionBuilder WithType(string[] type)
-    {
-        if (type == null || type.Length == 0)
-            return this;
-
-        _Type = type;
-        return this;
-    }
-
-    public LanguageExpressionBuilder WithSubselector(LanguageIf subselector)
-    {
-        if (subselector == null || subselector.Expression == null)
-            return this;
-
-        _When = subselector.Expression;
-        return this;
-    }
-
-    public LanguageExpressionBuilder WithRule(string[] rule)
-    {
-        if (rule == null || rule.Length == 0)
-            return this;
-
-        _Rule = rule;
-        return this;
-    }
-
-    public LanguageExpressionOuterFn Build(LanguageIf condition)
-    {
-        return Precondition(Expression(string.Empty, condition.Expression), _With, _Type, Expression(string.Empty, _When), _Rule);
-    }
-
-    private static LanguageExpressionOuterFn Precondition(LanguageExpressionOuterFn expression, string[] with, string[] type, LanguageExpressionOuterFn when, string[] rule)
-    {
-        var fn = expression;
-        if (type != null)
-            fn = PreconditionType(type, fn);
-
-        if (with != null)
-            fn = PreconditionSelector(with, fn);
-
-        if (when != null)
-            fn = PreconditionSubselector(when, fn);
-
-        if (rule != null)
-            fn = PreconditionRule(rule, fn);
-
-        return fn;
-    }
-
-    private static LanguageExpressionOuterFn PreconditionRule(string[] rule, LanguageExpressionOuterFn fn)
-    {
-        return (context, o) =>
-        {
-            // Evaluate selector rule pre-condition
-            if (!AcceptsRule(rule))
-            {
-                context.Debug(PSRuleResources.DebugTargetRuleMismatch);
-                return null;
-            }
-            return fn(context, o);
-        };
-    }
-
-    private static LanguageExpressionOuterFn PreconditionSelector(string[] with, LanguageExpressionOuterFn fn)
-    {
-        return (context, o) =>
-        {
-            // Evaluate selector pre-condition
-            if (!AcceptsWith(with))
-            {
-                context.Debug(PSRuleResources.DebugTargetTypeMismatch);
-                return null;
-            }
-            return fn(context, o);
-        };
-    }
-
-    private static LanguageExpressionOuterFn PreconditionType(string[] type, LanguageExpressionOuterFn fn)
-    {
-        return (context, o) =>
-        {
-            // Evaluate type pre-condition
-            if (!AcceptsType(type))
-            {
-                context.Debug(PSRuleResources.DebugTargetTypeMismatch);
-                return null;
-            }
-            return fn(context, o);
-        };
-    }
-
-    private static LanguageExpressionOuterFn PreconditionSubselector(LanguageExpressionOuterFn subselector, LanguageExpressionOuterFn fn)
-    {
-        return (context, o) =>
-        {
-            try
-            {
-                context.PushScope(RunspaceScope.Precondition);
-
-                // Evaluate sub-selector pre-condition
-                if (!AcceptsSubselector(context, subselector, o))
-                {
-                    context.Debug(PSRuleResources.DebugTargetSubselectorMismatch);
-                    return null;
-                }
-            }
-            finally
-            {
-                context.PopScope(RunspaceScope.Precondition);
-            }
-            return fn(context, o);
-        };
-    }
-
-    private LanguageExpressionOuterFn Expression(string path, LanguageExpression expression)
-    {
-        if (expression == null)
-            return null;
-
-        path = Path(path, expression);
-        if (expression is LanguageOperator selectorOperator)
-            return Scope(Debugger(Operator(path, selectorOperator), path));
-        else if (expression is LanguageCondition selectorCondition)
-            return Scope(Debugger(Condition(path, selectorCondition), path));
-
-        throw new InvalidOperationException();
-    }
-
-    private static LanguageExpressionOuterFn Scope(LanguageExpressionOuterFn fn)
-    {
-        return (context, o) =>
-        {
-            RunspaceContext.CurrentThread?.EnterLanguageScope(context.Source);
-
-            return fn(context, o);
-        };
-    }
-
-    private static LanguageExpressionOuterFn Condition(string path, LanguageCondition expression)
-    {
-        var info = new ExpressionInfo(path);
-        return (context, o) => expression.Descriptor.Fn(context, info, new object[] { expression.Property }, o);
-    }
-
-    private static string Path(string path, LanguageExpression expression)
-    {
-        path = string.Concat(path, Dot, expression.Descriptor.Name);
-        return path;
-    }
-
-    private LanguageExpressionOuterFn Operator(string path, LanguageOperator expression)
-    {
-        var inner = new List<LanguageExpressionOuterFn>(expression.Children.Count);
-        for (var i = 0; i < expression.Children.Count; i++)
-        {
-            var childPath = string.Concat(path, OpenBracket, i, CloseBracket);
-            inner.Add(Expression(childPath, expression.Children[i]));
-        }
-        var innerA = inner.ToArray();
-        var info = new ExpressionInfo(path);
-
-        // Check for sub-selectors
-        if (expression.Property == null || expression.Property.Count == 0)
-        {
-            return (context, o) => expression.Descriptor.Fn(context, info, innerA, o);
-        }
-        else
-        {
-            var subselector = expression.Subselector != null ? Expression(string.Concat(path, DOTWHERE), expression.Subselector) : null;
-            return (context, o) =>
-            {
-                ObjectHelper.GetPath(context, o, Value<string>(context, expression.Property["field"]), caseSensitive: false, out object[] items);
-
-                var quantifier = GetQuantifier(expression);
-                var pass = 0;
-
-                // If any fail, all fail
-                for (var i = 0; items != null && i < items.Length; i++)
-                {
-                    if (subselector == null || subselector(context, items[i]).GetValueOrDefault(true))
-                    {
-                        if (!expression.Descriptor.Fn(context, info, innerA, items[i]))
-                        {
-                            if (quantifier == null)
-                                return false;
-                        }
-                        else
-                        {
-                            pass++;
-                        }
-                    }
-                }
-                return quantifier == null || quantifier(pass);
-            };
-        }
-    }
-
-    /// <summary>
-    /// Returns a quantifier function if set for the expression.
-    /// </summary>
-    private static Func<long, bool> GetQuantifier(LanguageOperator expression)
-    {
-        if (expression.Property.TryGetLong(GREATEROREQUAL, out var q))
-            return (number) => number >= q.Value;
-
-        if (expression.Property.TryGetLong(GREATER, out q))
-            return (number) => number > q.Value;
-
-        if (expression.Property.TryGetLong(LESSOREQUAL, out q))
-            return (number) => number <= q.Value;
-
-        if (expression.Property.TryGetLong(LESS, out q))
-            return (number) => number < q.Value;
-
-        if (expression.Property.TryGetLong(COUNT, out q))
-            return (number) => number == q.Value;
-
-        return null;
-    }
-
-    [DebuggerStepThrough]
-    private static string Value<T>(ExpressionContext context, object v)
-    {
-        return v as string;
-    }
-
-    private LanguageExpressionOuterFn Debugger(LanguageExpressionOuterFn expression, string path)
-    {
-        return !_Debugger ? expression : ((context, o) => DebuggerFn(context, path, expression, o));
-    }
-
-    private static bool? DebuggerFn(ExpressionContext context, string path, LanguageExpressionOuterFn expression, object o)
-    {
-        var result = expression(context, o);
-        var type = context.Kind == ResourceKind.Rule ? 'R' : 'S';
-        context.Debug(PSRuleResources.LanguageExpressionTraceP2, type, path, result);
-        return result;
-    }
-
-    private static bool AcceptsType(string[] type)
-    {
-        if (type == null)
-            return true;
-
-        var comparer = RunspaceContext.CurrentThread.LanguageScope.Binding.GetComparer();
-        var targetType = RunspaceContext.CurrentThread.RuleRecord.TargetType;
-        for (var i = 0; i < type.Length; i++)
-        {
-            if (comparer.Equals(targetType, type[i]))
-                return true;
-        }
-        return false;
-    }
-
-    private static bool AcceptsWith(string[] with)
-    {
-        if (with == null || with.Length == 0)
-            return true;
-
-        for (var i = 0; i < with.Length; i++)
-        {
-            if (RunspaceContext.CurrentThread.TrySelector(with[i]))
-                return true;
-        }
-        return false;
-    }
-
-    private static bool AcceptsSubselector(ExpressionContext context, LanguageExpressionOuterFn subselector, object o)
-    {
-        return subselector == null || subselector.Invoke(context, o).GetValueOrDefault(false);
-    }
-
-    private static bool AcceptsRule(string[] rule)
-    {
-        if (rule == null || rule.Length == 0)
-            return true;
-
-        var context = RunspaceContext.CurrentThread;
-
-        var stringComparer = context.LanguageScope.Binding.GetComparer();
-        var resourceIdComparer = ResourceIdEqualityComparer.Default;
-
-        var ruleRecord = context.RuleRecord;
-        var ruleName = ruleRecord.RuleName;
-        var ruleId = ruleRecord.RuleId;
-
-        for (var i = 0; i < rule.Length; i++)
-        {
-            if (stringComparer.Equals(ruleName, rule[i]) || resourceIdComparer.Equals(ruleId, rule[i]))
-                return true;
-        }
-        return false;
-    }
-}
+internal delegate bool? LanguageExpressionOuterFn(IExpressionContext context, object o);
 
 /// <summary>
 /// Expressions that can be used with selectors.
@@ -481,7 +85,7 @@ internal sealed class LanguageExpressions
     private const string DOT = ".";
 
     // Define built-ins
-    internal static readonly ILanguageExpresssionDescriptor[] Builtin = new ILanguageExpresssionDescriptor[]
+    internal static readonly ILanguageExpressionDescriptor[] Builtin = new ILanguageExpressionDescriptor[]
     {
         // Operators
         new LanguageExpresssionDescriptor(IF, LanguageExpressionType.Operator, If),
@@ -532,13 +136,13 @@ internal sealed class LanguageExpressions
 
     #region Operators
 
-    internal static bool If(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool If(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var inner = GetInner(args);
         return inner.Length > 0 && (inner[0](context, o) ?? true);
     }
 
-    internal static bool AnyOf(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool AnyOf(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var inner = GetInner(args);
         for (var i = 0; i < inner.Length; i++)
@@ -549,7 +153,7 @@ internal sealed class LanguageExpressions
         return false;
     }
 
-    internal static bool AllOf(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool AllOf(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var inner = GetInner(args);
         for (var i = 0; i < inner.Length; i++)
@@ -560,7 +164,7 @@ internal sealed class LanguageExpressions
         return true;
     }
 
-    internal static bool Not(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool Not(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var inner = GetInner(args);
         return inner.Length > 0 && (!inner[0](context, o) ?? false);
@@ -570,7 +174,7 @@ internal sealed class LanguageExpressions
 
     #region Conditions
 
-    internal static bool Exists(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool Exists(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyBool(properties, EXISTS, out var propertyValue) && TryField(properties, out var field))
@@ -587,7 +191,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, EXISTS);
     }
 
-    internal static bool Equals(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool Equals(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyAny(properties, EQUALS, out var propertyValue) ||
@@ -606,7 +210,7 @@ internal sealed class LanguageExpressions
         );
     }
 
-    internal static bool NotEquals(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool NotEquals(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyAny(properties, NOTEQUALS, out var propertyValue))
@@ -630,7 +234,7 @@ internal sealed class LanguageExpressions
         );
     }
 
-    internal static bool HasDefault(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool HasDefault(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyAny(properties, HASDEFAULT, out var propertyValue))
@@ -652,7 +256,7 @@ internal sealed class LanguageExpressions
         );
     }
 
-    internal static bool HasValue(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool HasValue(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyBool(properties, HASVALUE, out var propertyValue))
@@ -673,7 +277,7 @@ internal sealed class LanguageExpressions
         );
     }
 
-    internal static bool Match(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool Match(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyAny(properties, MATCH, out var propertyValue) ||
@@ -691,7 +295,7 @@ internal sealed class LanguageExpressions
             );
     }
 
-    internal static bool NotMatch(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool NotMatch(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyAny(properties, NOTMATCH, out var propertyValue))
@@ -714,7 +318,7 @@ internal sealed class LanguageExpressions
         );
     }
 
-    internal static bool In(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool In(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyArray(properties, IN, out var propertyValue) || !TryOperand(context, IN, o, properties, out var operand))
@@ -729,11 +333,11 @@ internal sealed class LanguageExpressions
             operand,
             ReasonStrings.Assert_NotInSet,
             operand.Value,
-            StringJoin(propertyValue)
+            StringJoinArray(propertyValue)
         );
     }
 
-    internal static bool NotIn(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool NotIn(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyArray(properties, NOTIN, out var propertyValue))
@@ -757,7 +361,7 @@ internal sealed class LanguageExpressions
         return Pass();
     }
 
-    internal static bool SetOf(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool SetOf(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyArray(properties, SETOF, out var expectedValue) &&
@@ -784,7 +388,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, SETOF);
     }
 
-    internal static bool Subset(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool Subset(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyArray(properties, SUBSET, out var expectedValue) && TryField(properties, out var field) &&
@@ -809,7 +413,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, SUBSET);
     }
 
-    internal static bool Count(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool Count(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyLong(context, properties, COUNT, out var expectedValue) ||
@@ -831,7 +435,7 @@ internal sealed class LanguageExpressions
         );
     }
 
-    internal static bool NotCount(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool NotCount(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyLong(context, properties, NOTCOUNT, out var expectedValue) ||
@@ -852,7 +456,7 @@ internal sealed class LanguageExpressions
         );
     }
 
-    internal static bool Less(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool Less(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyLong(context, properties, LESS, out var propertyValue) ||
@@ -889,7 +493,7 @@ internal sealed class LanguageExpressions
         );
     }
 
-    internal static bool LessOrEquals(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool LessOrEquals(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyLong(context, properties, LESSOREQUALS, out var propertyValue) ||
@@ -926,7 +530,7 @@ internal sealed class LanguageExpressions
         );
     }
 
-    internal static bool Greater(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool Greater(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyLong(context, properties, GREATER, out var propertyValue) ||
@@ -963,7 +567,7 @@ internal sealed class LanguageExpressions
         );
     }
 
-    internal static bool GreaterOrEquals(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool GreaterOrEquals(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (!TryPropertyLong(context, properties, GREATEROREQUALS, out var propertyValue) ||
@@ -1000,7 +604,7 @@ internal sealed class LanguageExpressions
         );
     }
 
-    internal static bool StartsWith(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool StartsWith(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyStringArray(properties, STARTSWITH, out var propertyValue) &&
@@ -1024,14 +628,14 @@ internal sealed class LanguageExpressions
                 context,
                 operand,
                 ReasonStrings.Assert_NotStartsWith,
-                value,
+                StringJoin(value),
                 StringJoin(propertyValue)
             );
         }
         return Invalid(context, STARTSWITH);
     }
 
-    internal static bool NotStartsWith(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool NotStartsWith(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyStringArray(properties, NOTSTARTSWITH, out var propertyValue) &&
@@ -1062,7 +666,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, NOTSTARTSWITH);
     }
 
-    internal static bool EndsWith(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool EndsWith(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyStringArray(properties, ENDSWITH, out var propertyValue) &&
@@ -1093,7 +697,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, ENDSWITH);
     }
 
-    internal static bool NotEndsWith(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool NotEndsWith(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyStringArray(properties, NOTENDSWITH, out var propertyValue) &&
@@ -1124,7 +728,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, NOTENDSWITH);
     }
 
-    internal static bool Contains(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool Contains(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyStringArray(properties, CONTAINS, out var propertyValue) &&
@@ -1155,7 +759,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, CONTAINS);
     }
 
-    internal static bool NotContains(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool NotContains(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyStringArray(properties, NOTCONTAINS, out var propertyValue) &&
@@ -1186,7 +790,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, NOTCONTAINS);
     }
 
-    internal static bool IsString(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool IsString(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyBool(properties, ISSTRING, out var propertyValue) &&
@@ -1204,7 +808,7 @@ internal sealed class LanguageExpressions
         return false;
     }
 
-    internal static bool IsArray(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool IsArray(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyBool(properties, ISARRAY, out var propertyValue) &&
@@ -1222,7 +826,7 @@ internal sealed class LanguageExpressions
         return false;
     }
 
-    internal static bool IsBoolean(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool IsBoolean(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyBool(properties, ISBOOLEAN, out var propertyValue) &&
@@ -1241,7 +845,7 @@ internal sealed class LanguageExpressions
         return false;
     }
 
-    internal static bool IsDateTime(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool IsDateTime(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyBool(properties, ISDATETIME, out var propertyValue) &&
@@ -1260,7 +864,7 @@ internal sealed class LanguageExpressions
         return false;
     }
 
-    internal static bool IsInteger(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool IsInteger(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyBool(properties, ISINTEGER, out var propertyValue) &&
@@ -1281,7 +885,7 @@ internal sealed class LanguageExpressions
         return false;
     }
 
-    internal static bool IsNumeric(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool IsNumeric(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyBool(properties, ISNUMERIC, out var propertyValue) &&
@@ -1304,7 +908,7 @@ internal sealed class LanguageExpressions
         return false;
     }
 
-    internal static bool WithinPath(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool WithinPath(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryOperand(context, WITHINPATH, o, properties, out var operand) &&
@@ -1333,7 +937,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, WITHINPATH);
     }
 
-    internal static bool NotWithinPath(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool NotWithinPath(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryOperand(context, NOTWITHINPATH, o, properties, out var operand) &&
@@ -1362,7 +966,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, NOTWITHINPATH);
     }
 
-    internal static bool Like(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool Like(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyStringArray(properties, LIKE, out var propertyValue) &&
@@ -1389,7 +993,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, LIKE);
     }
 
-    internal static bool NotLike(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool NotLike(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyStringArray(properties, NOTLIKE, out var propertyValue) &&
@@ -1417,7 +1021,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, NOTLIKE);
     }
 
-    internal static bool IsLower(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool IsLower(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyBool(properties, ISLOWER, out var propertyValue) &&
@@ -1444,7 +1048,7 @@ internal sealed class LanguageExpressions
         return false;
     }
 
-    internal static bool IsUpper(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool IsUpper(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyBool(properties, ISUPPER, out var propertyValue) &&
@@ -1471,7 +1075,7 @@ internal sealed class LanguageExpressions
         return false;
     }
 
-    internal static bool HasSchema(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool HasSchema(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyArray(properties, HASSCHEMA, out var expectedValue) &&
@@ -1507,7 +1111,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, HASSCHEMA);
     }
 
-    internal static bool Version(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool Version(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyString(properties, VERSION, out var expectedValue) &&
@@ -1532,7 +1136,7 @@ internal sealed class LanguageExpressions
         return Invalid(context, VERSION);
     }
 
-    internal static bool APIVersion(ExpressionContext context, ExpressionInfo info, object[] args, object o)
+    internal static bool APIVersion(IExpressionContext context, ExpressionInfo info, object[] args, object o)
     {
         var properties = GetProperties(args);
         if (TryPropertyString(properties, APIVERSION, out var expectedValue) &&
@@ -1589,7 +1193,7 @@ internal sealed class LanguageExpressions
         return Condition(context, operand, false, text, args);
     }
 
-    private static bool PassPathNotFound(ExpressionContext context, string name)
+    private static bool PassPathNotFound(IExpressionContext context, string name)
     {
         context.ExpressionTrace(name, PSRuleResources.ObjectPathNotFound);
         return true;
@@ -1616,7 +1220,7 @@ internal sealed class LanguageExpressions
     /// <summary>
     /// Reason: Is null or empty.
     /// </summary>
-    private static bool NullOrEmpty(ExpressionContext context, IOperand operand)
+    private static bool NullOrEmpty(IExpressionContext context, IOperand operand)
     {
         return Fail(context, operand, ReasonStrings.Assert_IsNullOrEmpty);
     }
@@ -1624,7 +1228,7 @@ internal sealed class LanguageExpressions
     /// <summary>
     /// Reason: The value '{0}' is not a string.
     /// </summary>
-    private static bool NotString(ExpressionContext context, IOperand operand)
+    private static bool NotString(IExpressionContext context, IOperand operand)
     {
         return Fail(context, operand, ReasonStrings.Assert_NotString, operand.Value);
     }
@@ -1653,7 +1257,7 @@ internal sealed class LanguageExpressions
         return true;
     }
 
-    private static bool TryPropertyLong(ExpressionContext context, LanguageExpression.PropertyBag properties, string propertyName, out long? propertyValue)
+    private static bool TryPropertyLong(IExpressionContext context, LanguageExpression.PropertyBag properties, string propertyName, out long? propertyValue)
     {
         propertyValue = null;
         if (!properties.TryGetValue(propertyName, out var value))
@@ -1795,13 +1399,13 @@ internal sealed class LanguageExpressions
     /// <summary>
     /// Returns true when the field properties is specified and the specified field does not exist.
     /// </summary>
-    private static bool TryFieldNotExists(ExpressionContext context, object o, LanguageExpression.PropertyBag properties)
+    private static bool TryFieldNotExists(IExpressionContext context, object o, LanguageExpression.PropertyBag properties)
     {
         return properties.TryGetString(FIELD, out var field) &&
             !ObjectHelper.GetPath(context, o, field, caseSensitive: false, out object _);
     }
 
-    private static bool TryOperand(ExpressionContext context, string name, object o, LanguageExpression.PropertyBag properties, out IOperand operand)
+    private static bool TryOperand(IExpressionContext context, string name, object o, LanguageExpression.PropertyBag properties, out IOperand operand)
     {
         return TryField(context, properties, o, out operand) ||
             TryType(context, properties, o, out operand) ||
@@ -1848,7 +1452,12 @@ internal sealed class LanguageExpressions
         return (LanguageExpressionOuterFn[])args;
     }
 
-    private static string StringJoin(Array propertyValue)
+    private static string StringJoinArray(Array propertyValue)
+    {
+        return StringJoin(propertyValue.OfType<object>());
+    }
+
+    private static string StringJoin<T>(IEnumerable<T> propertyValue)
     {
         return string.Concat("'", string.Join("', '", propertyValue), "'");
     }
@@ -1856,7 +1465,7 @@ internal sealed class LanguageExpressions
     private static string StringJoinNormalizedPath(string[] path)
     {
         var normalizedPath = path.Select(p => ExpressionHelpers.NormalizePath(Environment.GetWorkingPath(), p));
-        return StringJoin(normalizedPath.ToArray());
+        return StringJoin(normalizedPath);
     }
 
     #endregion Helper methods

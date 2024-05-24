@@ -8,17 +8,6 @@ using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Definitions.Expressions;
 
-internal interface IExpressionContext : IBindingContext
-{
-    string LanguageScope { get; }
-
-    void Reason(IOperand operand, string text, params object[] args);
-
-    object Current { get; }
-
-    RunspaceContext Context { get; }
-}
-
 internal sealed class ExpressionContext : IExpressionContext, IBindingContext
 {
     private readonly Dictionary<string, PathExpression> _NameTokenCache;
@@ -57,7 +46,7 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
         return _NameTokenCache.TryGetValue(path, out expression);
     }
 
-    internal void Debug(string message, params object[] args)
+    public void Debug(string message, params object[] args)
     {
         if (RunspaceContext.CurrentThread?.Writer == null)
             return;
@@ -65,13 +54,13 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
         RunspaceContext.CurrentThread.Writer.WriteDebug(message, args);
     }
 
-    internal void PushScope(RunspaceScope scope)
+    public void PushScope(RunspaceScope scope)
     {
         RunspaceContext.CurrentThread.PushScope(scope);
         RunspaceContext.CurrentThread.EnterLanguageScope(Source);
     }
 
-    internal void PopScope(RunspaceScope scope)
+    public void PopScope(RunspaceScope scope)
     {
         RunspaceContext.CurrentThread.PopScope(scope);
     }
