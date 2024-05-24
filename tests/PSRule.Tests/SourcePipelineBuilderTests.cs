@@ -33,7 +33,7 @@ public sealed class SourcePipelineBuilderTests
         var sources = builder.Build();
 
         Assert.Single(sources);
-        Assert.Equal(23, sources[0].File.Length);
+        Assert.Equal(25, sources[0].File.Length);
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public sealed class SourcePipelineBuilderTests
         var sources = builder.Build();
 
         Assert.Single(sources);
-        Assert.Equal(18, sources[0].File.Length);
+        Assert.Equal(20, sources[0].File.Length);
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public sealed class SourcePipelineBuilderTests
         var sources = builder.Build();
 
         Assert.Single(sources);
-        Assert.Equal(18, sources[0].File.Length);
+        Assert.Equal(20, sources[0].File.Length);
     }
 
     #region Helper methods

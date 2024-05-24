@@ -301,6 +301,55 @@
       },
       "additionalProperties": false
     },
+    "emitter-option": {
+      "type": "object",
+      "title": "Emitter options",
+      "properties": {
+        "yaml": {
+          "type": "object",
+          "title": "YAML",
+          "description": "Support for the YAML format.",
+          "properties": {
+            "include": {
+              "type": "array",
+              "title": "Include",
+              "description": "Additional file types to process as YAML.",
+              "default": []
+            }
+          },
+          "additionalProperties": false
+        },
+        "json": {
+          "type": "object",
+          "title": "JSON",
+          "description": "Support for the JSON format including support for comments.",
+          "properties": {
+            "include": {
+              "type": "array",
+              "title": "Include",
+              "description": "Additional file types to process as JSON.",
+              "default": []
+            }
+          },
+          "additionalProperties": false
+        },
+        "markdown": {
+          "type": "object",
+          "title": "Markdown",
+          "description": "Support for the Markdown format.",
+          "properties": {
+            "include": {
+              "type": "array",
+              "title": "Include",
+              "description": "Additional file types to process as Markdown.",
+              "default": []
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "execution-option": {
       "type": "object",
       "title": "Execution options",
@@ -500,6 +549,13 @@
       "description": "Options that affect how input types are processed.",
       "markdownDescription": "Options that affect how input types are processed.",
       "properties": {
+        "fileObjects": {
+          "type": "boolean",
+          "title": "File objects",
+          "description": "Determines if file objects are processed by rules.",
+          "markdownDescription": "Determines if file objects are processed by rules. [See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#fileobjects)",
+          "default": false
+        },
         "format": {
           "type": "string",
           "title": "Input format",
@@ -884,6 +940,10 @@
         "convention": {
           "type": "object",
           "$ref": "#/definitions/convention-option"
+        },
+        "emitter": {
+          "type": "object",
+          "$ref": "#/definitions/emitter-option"
         },
         "execution": {
           "type": "object",

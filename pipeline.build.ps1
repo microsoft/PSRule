@@ -322,7 +322,7 @@ task Rules {
         As = 'Summary'
     }
     Import-Module (Join-Path -Path $PWD -ChildPath out/modules/PSRule) -Force;
-    Assert-PSRule @assertParams -OutputPath reports/ps-rule-file.xml -InputPath $PWD -Format File -ErrorAction Stop;
+    Assert-PSRule @assertParams -OutputPath reports/ps-rule-file.xml -InputPath $PWD -ErrorAction Stop;
 }
 
 task Benchmark {

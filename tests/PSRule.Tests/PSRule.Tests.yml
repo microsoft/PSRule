@@ -8,6 +8,20 @@ baseline:
   group:
     latest: .\TestBaseline1
 
+emitter:
+  json:
+    include:
+      - .json
+      - .jsonc
+      - .sarif
+  yaml:
+    include:
+      - .yaml
+      - .yml
+  xml:
+    include:
+      - .csproj
+
 # Configure baseline
 rule:
   include:

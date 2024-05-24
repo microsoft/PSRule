@@ -10,6 +10,8 @@ using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Expressions;
 using PSRule.Host;
+using PSRule.Pipeline;
+using PSRule.Pipeline.Emitters;
 using PSRule.Runtime;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -869,26 +871,35 @@ internal sealed class PSObjectYamlDeserializer : INodeDeserializer
 {
     private readonly INodeDeserializer _Next;
     private readonly PSObjectYamlTypeConverter _Converter;
-    private readonly IFileInfo _FileInfo;
+    private readonly IFileInfo _SourceInfo;
 
     public PSObjectYamlDeserializer(INodeDeserializer next, IFileInfo sourceInfo)
     {
         _Next = next;
         _Converter = new PSObjectYamlTypeConverter();
-        _FileInfo = sourceInfo;
+        _SourceInfo = sourceInfo;
+    }
+
+    public PSObjectYamlDeserializer(INodeDeserializer next)
+    {
+        _Next = next;
+        _Converter = new PSObjectYamlTypeConverter();
     }
 
     bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
     {
         if (expectedType == typeof(PSObject[]) && reader.Current is MappingStart)
         {
+            var parser = reader as YamlEmitterParser;
+            var fileInfo = parser?.Info ?? _SourceInfo;
+
             var lineNumber = reader.Current.Start.Line;
             var linePosition = reader.Current.Start.Column;
             value = _Converter.ReadYaml(reader, typeof(PSObject));
             if (value is PSObject pso)
             {
                 pso.UseTargetInfo(out var info);
-                info.SetSource(_FileInfo?.Path, lineNumber, linePosition);
+                info.SetSource(fileInfo?.Path, lineNumber, linePosition);
                 value = new PSObject[] { pso };
                 return true;
             }
@@ -899,6 +910,74 @@ internal sealed class PSObjectYamlDeserializer : INodeDeserializer
             return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value);
         }
     }
+}
+
+internal sealed class TargetObjectYamlDeserializer : INodeDeserializer
+{
+    private readonly INodeDeserializer _Next;
+    private readonly PSObjectYamlTypeConverter _Converter;
+
+    public TargetObjectYamlDeserializer(INodeDeserializer next)
+    {
+        _Next = next;
+        _Converter = new PSObjectYamlTypeConverter();
+    }
+
+#nullable enable
+
+    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
+    {
+        value = null;
+        if (expectedType == typeof(TargetObject[]) && reader.Current is MappingStart)
+        {
+            if (TryGetTargetObject(reader, out var targetObject) && targetObject != null)
+            {
+                value = new TargetObject[] { targetObject };
+                return true;
+            }
+            return false;
+        }
+        else if (expectedType == typeof(TargetObject[]) && reader.TryConsume<SequenceStart>(out _))
+        {
+            var result = new List<TargetObject>();
+            while (reader.Current is MappingStart)
+            {
+                if (TryGetTargetObject(reader, out var targetObject) && targetObject != null)
+                {
+                    result.Add(targetObject);
+                }
+            }
+            value = result.ToArray();
+            return reader.TryConsume<SequenceEnd>(out _);
+        }
+        else
+        {
+            return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value);
+        }
+    }
+
+    private bool TryGetTargetObject(IParser reader, out TargetObject? value)
+    {
+        value = null;
+        var parser = reader as YamlEmitterParser;
+        var fileInfo = parser?.Info;
+        var lineNumber = reader.Current?.Start.Line;
+        var linePosition = reader.Current?.Start.Column;
+
+        if (_Converter.ReadYaml(reader, typeof(PSObject)) is PSObject o)
+        {
+            o.UseTargetInfo(out var info);
+            info.SetSource(fileInfo?.Path, lineNumber, linePosition);
+
+            var targetObject = new TargetObject(o);
+
+            value = targetObject;
+            return true;
+        }
+        return false;
+    }
+
+#nullable disable
 }
 
 internal sealed class InfoStringYamlTypeConverter : IYamlTypeConverter

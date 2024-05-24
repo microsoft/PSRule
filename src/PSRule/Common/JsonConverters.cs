@@ -11,6 +11,7 @@ using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Definitions.Expressions;
 using PSRule.Pipeline;
+using PSRule.Pipeline.Emitters;
 using PSRule.Resources;
 using PSRule.Runtime;
 
@@ -33,7 +34,7 @@ internal abstract class PSObjectBaseConverter : JsonConverter
         return hasComments;
     }
 
-    protected static void ReadObject(PSObject value, JsonReader reader, bool bindTargetInfo, TargetSourceInfo sourceInfo)
+    protected static void ReadObject(PSObject value, JsonReader reader, bool bindTargetInfo, IFileInfo sourceInfo)
     {
         SkipComments(reader);
         var path = reader.Path;
@@ -93,7 +94,7 @@ internal abstract class PSObjectBaseConverter : JsonConverter
         if (bindTargetInfo)
         {
             value.UseTargetInfo(out var info);
-            info.SetSource(sourceInfo?.File, lineNumber, linePosition);
+            info.SetSource(sourceInfo?.Path, lineNumber, linePosition);
             if (string.IsNullOrEmpty(info.Path))
                 info.Path = path;
         }
@@ -220,9 +221,9 @@ internal sealed class PSObjectJsonConverter : PSObjectBaseConverter
 /// </summary>
 internal sealed class PSObjectArrayJsonConverter : PSObjectBaseConverter
 {
-    private readonly TargetSourceInfo _SourceInfo;
+    private readonly IFileInfo _SourceInfo;
 
-    public PSObjectArrayJsonConverter(TargetSourceInfo sourceInfo)
+    public PSObjectArrayJsonConverter(IFileInfo sourceInfo)
     {
         _SourceInfo = sourceInfo;
     }
@@ -242,8 +243,14 @@ internal sealed class PSObjectArrayJsonConverter : PSObjectBaseConverter
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
         SkipComments(reader);
+        if (reader.TokenType == JsonToken.Comment && !reader.Read())
+            return Array.Empty<PSObject>();
+
         if (reader.TokenType != JsonToken.StartObject && reader.TokenType != JsonToken.StartArray)
             throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
+
+        var parser = reader as JsonEmitterParser;
+        var fileInfo = parser?.Info ?? _SourceInfo;
 
         var result = new List<PSObject>();
         var isArray = reader.TokenType == JsonToken.StartArray;
@@ -257,10 +264,10 @@ internal sealed class PSObjectArrayJsonConverter : PSObjectBaseConverter
                 continue;
 
             var value = new PSObject();
-            ReadObject(value, reader, bindTargetInfo: true, sourceInfo: _SourceInfo);
+            ReadObject(value, reader, bindTargetInfo: true, sourceInfo: fileInfo);
             result.Add(value);
 
-            // Consume the EndObject token
+            // Consume the EndObject token.
             reader.Read();
         }
         return result.ToArray();
@@ -750,7 +757,7 @@ internal sealed class LanguageExpressionJsonConverter : JsonConverter
             result = MapCondition(key, properties, reader);
         }
         else if ((reader.TokenType == JsonToken.StartObject || reader.TokenType == JsonToken.StartArray) &&
-             TryOperator(key))
+            TryOperator(key))
         {
             var op = MapOperator(key, properties, subselector, reader);
             MapProperty(properties, reader, out _, out subselector);

@@ -54,9 +54,14 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
             Reader.Enqueue(sourceObject);
             while (Reader.TryDequeue(out var next))
             {
-                var result = ProcessTargetObject(next);
-                _Completed.Add(result);
-                Writer.WriteObject(result, false);
+                // TODO: Temporary workaround to cast interface
+                if (next is TargetObject to)
+                {
+
+                    var result = ProcessTargetObject(to);
+                    _Completed.Add(result);
+                    Writer.WriteObject(result, false);
+                }
             }
         }
         catch (Exception)

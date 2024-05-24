@@ -11,7 +11,8 @@ namespace PSRule.Configuration;
 /// </summary>
 public sealed class InputOption : IEquatable<InputOption>
 {
-    private const InputFormat DEFAULT_FORMAT = InputFormat.Detect;
+    private const bool DEFAULT_FILEOBJECTS = false;
+    private const InputFormat DEFAULT_FORMAT = InputFormat.None;
     private const bool DEFAULT_IGNOREGITPATH = true;
     private const bool DEFAULT_IGNOREOBJECTSOURCE = false;
     private const bool DEFAULT_IGNOREREPOSITORYCOMMON = true;
@@ -22,6 +23,7 @@ public sealed class InputOption : IEquatable<InputOption>
 
     internal static readonly InputOption Default = new()
     {
+        FileObjects = DEFAULT_FILEOBJECTS,
         Format = DEFAULT_FORMAT,
         IgnoreGitPath = DEFAULT_IGNOREGITPATH,
         IgnoreObjectSource = DEFAULT_IGNOREOBJECTSOURCE,
@@ -37,6 +39,7 @@ public sealed class InputOption : IEquatable<InputOption>
     /// </summary>
     public InputOption()
     {
+        FileObjects = null;
         Format = null;
         IgnoreGitPath = null;
         IgnoreObjectSource = null;
@@ -56,6 +59,7 @@ public sealed class InputOption : IEquatable<InputOption>
         if (option == null)
             return;
 
+        FileObjects = option.FileObjects;
         Format = option.Format;
         IgnoreGitPath = option.IgnoreGitPath;
         IgnoreObjectSource = option.IgnoreObjectSource;
@@ -76,6 +80,7 @@ public sealed class InputOption : IEquatable<InputOption>
     public bool Equals(InputOption other)
     {
         return other != null &&
+            FileObjects == other.FileObjects &&
             Format == other.Format &&
             IgnoreGitPath == other.IgnoreGitPath &&
             IgnoreObjectSource == other.IgnoreObjectSource &&
@@ -92,6 +97,7 @@ public sealed class InputOption : IEquatable<InputOption>
         unchecked // Overflow is fine
         {
             var hash = 17;
+            hash = hash * 23 + (FileObjects.HasValue ? FileObjects.Value.GetHashCode() : 0);
             hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
             hash = hash * 23 + (IgnoreGitPath.HasValue ? IgnoreGitPath.Value.GetHashCode() : 0);
             hash = hash * 23 + (IgnoreObjectSource.HasValue ? IgnoreObjectSource.Value.GetHashCode() : 0);
@@ -105,13 +111,14 @@ public sealed class InputOption : IEquatable<InputOption>
     }
 
     /// <summary>
-    /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+    /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
     /// Values from <paramref name="o1"/> that are set are not overridden.
     /// </summary>
     internal static InputOption Combine(InputOption o1, InputOption o2)
     {
         var result = new InputOption(o1)
         {
+            FileObjects = o1?.FileObjects ?? o2?.FileObjects,
             Format = o1?.Format ?? o2?.Format,
             IgnoreGitPath = o1?.IgnoreGitPath ?? o2?.IgnoreGitPath,
             IgnoreObjectSource = o1?.IgnoreObjectSource ?? o2?.IgnoreObjectSource,
@@ -123,6 +130,12 @@ public sealed class InputOption : IEquatable<InputOption>
         };
         return result;
     }
+
+    /// <summary>
+    /// Determines if file objects are processed by rules.
+    /// </summary>
+    [DefaultValue(null)]
+    public bool? FileObjects { get; set; }
 
     /// <summary>
     /// The input string format.
@@ -174,6 +187,9 @@ public sealed class InputOption : IEquatable<InputOption>
 
     internal void Load()
     {
+        if (Environment.TryBool("PSRULE_INPUT_FILEOBJECTS", out var fileObjects))
+            FileObjects = fileObjects;
+
         if (Environment.TryEnum("PSRULE_INPUT_FORMAT", out InputFormat format))
             Format = format;
 
@@ -201,6 +217,9 @@ public sealed class InputOption : IEquatable<InputOption>
 
     internal void Load(Dictionary<string, object> index)
     {
+        if (index.TryPopBool("Input.FileObjects", out var fileObjects))
+            FileObjects = fileObjects;
+
         if (index.TryPopEnum("Input.Format", out InputFormat format))
             Format = format;
 

@@ -190,14 +190,14 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
                 return PipelineReceiverActions.ConvertFromPowerShellData(sourceObject, next);
             });
         }
-        else if (Option.Input.Format == InputFormat.Detect && _InputPath != null)
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.DetectInputFormat(sourceObject, next);
-            });
-        }
-        return new PipelineInputStream(VisitTargetObject, _InputPath, GetInputObjectSourceFilter());
+        //else if (Option.Input.Format == InputFormat.Detect && _InputPath != null)
+        //{
+        //    AddVisitTargetObjectAction((sourceObject, next) =>
+        //    {
+        //        return PipelineReceiverActions.DetectInputFormat(sourceObject, next);
+        //    });
+        //}
+        return new PipelineInputStream(VisitTargetObject, _InputPath, GetInputObjectSourceFilter(), Option.Input.Format, Option.Input.ObjectPath, Option.Input.FileObjects);
     }
 }
 
