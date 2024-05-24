@@ -25,7 +25,7 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
     protected override string Serialize(object[] o)
     {
         WriteHeader();
-        if (Option.Output.As == ResultFormat.Detail)
+        if (Option.Output.As.GetValueOrDefault(OutputOption.Default.As.Value) == ResultFormat.Detail)
             WriteDetail(o);
         else
             WriteSummary(o);
@@ -127,7 +127,11 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
             return;
 
         _Builder.Append(QUOTE);
-        _Builder.Append(value.Replace("\"", "\"\""));
+        _Builder.Append(value
+            .Replace("\"", "\"\"").Replace("\r\n", " ")
+            .Replace('\r', ' ').Replace('\n', ' ')
+            .Replace("  ", " ")
+        );
         _Builder.Append(QUOTE);
     }
 
@@ -136,8 +140,6 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
         if (!value.HasValue)
             return;
 
-        _Builder.Append(QUOTE);
-        _Builder.Append(value.Text.Replace("\"", "\"\""));
-        _Builder.Append(QUOTE);
+        WriteColumn(value.Text);
     }
 }
