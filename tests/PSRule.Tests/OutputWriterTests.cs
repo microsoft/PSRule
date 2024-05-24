@@ -118,7 +118,10 @@ public sealed class OutputWriterTests
     reason: []
   info:
     moduleName: TestModule
-    recommendation: Recommendation for rule 001
+    recommendation: >-
+      Recommendation for rule 001
+
+      over two lines.
   level: Error
   outcome: Pass
   outcomeReason: Processed
@@ -216,7 +219,7 @@ public sealed class OutputWriterTests
       ""displayName"": ""Rule 001"",
       ""moduleName"": ""TestModule"",
       ""name"": ""rule-001"",
-      ""recommendation"": ""Recommendation for rule 001"",
+      ""recommendation"": ""Recommendation for rule 001\r\nover two lines."",
       ""synopsis"": ""This is rule 001.""
     },
     ""level"": ""Error"",
@@ -341,6 +344,32 @@ public sealed class OutputWriterTests
     }
 
     [Fact]
+    public void Csv()
+    {
+        var option = GetOption();
+        option.Repository.Url = "https://github.com/microsoft/PSRule.UnitTest";
+        var output = new TestWriter(option);
+        var result = new InvokeResult();
+        result.Add(GetPass());
+        result.Add(GetFail());
+        result.Add(GetFail("rid-003", SeverityLevel.Warning));
+        result.Add(GetFail("rid-004", SeverityLevel.Information));
+        var writer = new CsvOutputWriter(output, option, null);
+        writer.Begin();
+        writer.WriteObject(result, false);
+        writer.End();
+
+        var actual = output.Output.OfType<string>().FirstOrDefault();
+
+        Assert.Equal(@"RuleName,TargetName,TargetType,Outcome,Synopsis,Recommendation
+""rule-001"",""TestObject1"",""TestType"",""Pass"",""Processed"",""This is rule 001."",""Recommendation for rule 001 over two lines.""
+""rule-002"",""TestObject1"",""TestType"",""Fail"",""Processed"",""This is rule 002."",""Recommendation for rule 002""
+""rule-002"",""TestObject1"",""TestType"",""Fail"",""Processed"",""This is rule 002."",""Recommendation for rule 002""
+""rule-002"",""TestObject1"",""TestType"",""Fail"",""Processed"",""This is rule 002."",""Recommendation for rule 002""
+", actual);
+    }
+
+    [Fact]
     public void JobSummary()
     {
         using var stream = new MemoryStream();
@@ -367,7 +396,8 @@ public sealed class OutputWriterTests
 
     private static RuleRecord GetPass()
     {
-        return new RuleRecord(
+        return new RuleRecord
+        (
             runId: "run-001",
             ruleId: ResourceId.Parse("TestModule\\rule-001"),
             @ref: null,
@@ -375,12 +405,13 @@ public sealed class OutputWriterTests
             targetName: "TestObject1",
             targetType: "TestType",
             tag: new ResourceTags(),
-            info: new RuleHelpInfo(
+            info: new RuleHelpInfo
+            (
                 "rule-001",
                 "Rule 001",
                 "TestModule",
                 synopsis: new InfoString("This is rule 001."),
-                recommendation: new InfoString("Recommendation for rule 001")
+                recommendation: new InfoString("Recommendation for rule 001\r\nover two lines.")
             ),
             field: new Hashtable(),
             level: SeverityLevel.Error,
