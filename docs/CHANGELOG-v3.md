@@ -37,6 +37,9 @@ What's changed since pre-release v3.0.0-B0198:
     - The `File` and `Detect` input formats are no longer required and have been removed.
     - Processing files and objects with rules is no longer recommended, and disabled by default.
     - The `Input.FileObjects` can be set to `true` to enable processing of files as objects with rules.
+- Engineering:
+  - Bump Microsoft.NET.Test.Sdk to v17.10.0.
+    [#1826](https://github.com/microsoft/PSRule/pull/1826)
 - Bug fixes:
   - Fixed reason reported for `startsWith` by @BernieWhite.
     [#1818](https://github.com/microsoft/PSRule/issues/1818)
