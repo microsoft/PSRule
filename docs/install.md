@@ -76,7 +76,7 @@ updates:
 
   # Maintain GitHub Actions
   - package-ecosystem: github-actions
-    directory: "/"
+    directory: '/'
     schedule:
       interval: daily
 ```
@@ -128,7 +128,7 @@ dotnet tool install -g Microsoft.PSRule.Tool
 To install a specific version use the following command line:
 
 ```bash
-dotnet tool install -g Microsoft.PSRule.Tool --version 3.0.0-B0151
+dotnet tool install -g Microsoft.PSRule.Tool --version 3.0.0-B0203
 ```
 
 For a list of commands supported by the CLI, see [PSRule CLI][cli].
