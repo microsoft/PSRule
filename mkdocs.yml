@@ -113,6 +113,7 @@ nav:
       - Keywords: keywords/PSRule/en-US/about_PSRule_Keywords.md
       - Options: concepts/PSRule/en-US/about_PSRule_Options.md
       - Rules: concepts/PSRule/en-US/about_PSRule_Rules.md
+      - Security guidance: concepts/security.md
       - Selectors: concepts/PSRule/en-US/about_PSRule_Selectors.md
       - Suppression Groups: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
       - Variables: concepts/PSRule/en-US/about_PSRule_Variables.md
