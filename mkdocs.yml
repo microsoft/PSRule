@@ -83,10 +83,6 @@ nav:
           - Deprecations: deprecations.md
           - Changes and versioning: versioning.md
       - Support: support.md
-    # - Setup:
-    #   - Configuring options: setup/configuring-options.md
-    #   - Configuring rule defaults: setup/configuring-rules.md
-    #   - Configuring expansion: setup/configuring-expansion.md
   - Reference:
       - PowerShell cmdlets:
           - Assert-PSRule: commands/PSRule/en-US/Assert-PSRule.md
@@ -108,6 +104,7 @@ nav:
       - Keywords: keywords/PSRule/en-US/about_PSRule_Keywords.md
       - Options: concepts/PSRule/en-US/about_PSRule_Options.md
       - Rules: concepts/PSRule/en-US/about_PSRule_Rules.md
+      - Security guidance: concepts/security.md
       - Selectors: concepts/PSRule/en-US/about_PSRule_Selectors.md
       - Suppression Groups: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
       - Variables: concepts/PSRule/en-US/about_PSRule_Variables.md
