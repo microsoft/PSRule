@@ -9,16 +9,16 @@
         <meta name="description" content="Validate infrastructure as code (IaC) and objects using PowerShell rules.">
       
       
-        <meta name="author" content="BernieWhite">
+        <meta name="author" content="Microsoft">
       
       
-        <link rel="canonical" href="https://microsoft.github.io/PSRule/v2/authoring/using-expressions/">
+        <link rel="canonical" href="https://microsoft.github.io/PSRule/v2/concepts/security/">
       
       
-        <link rel="prev" href="../testing-infrastructure/">
+        <link rel="prev" href="../PSRule/en-US/about_PSRule_Rules/">
       
       
-        <link rel="next" href="../storing-rules/">
+        <link rel="next" href="../PSRule/en-US/about_PSRule_Selectors/">
       
       
       <link rel="icon" href="../../assets/ms_icon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Using expressions - PSRule</title>
+        <title>Security guidance - PSRule</title>
       
     
     
@@ -78,9 +78,9 @@
   <!-- Open graph meta tags -->
   <meta property="og:site_name" content="PSRule" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="PSRule - Using expressions" />
+  <meta property="og:title" content="PSRule - Security guidance" />
   <meta property="og:description" content="Validate infrastructure as code (IaC) and objects using PowerShell rules." />
-  <meta property="og:url" content="https://microsoft.github.io/PSRule/v2/authoring/using-expressions/" />
+  <meta property="og:url" content="https://microsoft.github.io/PSRule/v2/concepts/security/" />
   <meta property="og:image" content="https://repository-images.githubusercontent.com/125832556/d6685d9f-ba70-44a1-b11f-6534831143d1" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1280" />
@@ -90,7 +90,7 @@
   <!-- Twitter meta tags -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@github" />
-  <meta name="twitter:title" content="PSRule - Using expressions" />
+  <meta name="twitter:title" content="PSRule - Security guidance" />
   <meta name="twitter:description" content="Validate infrastructure as code (IaC) and objects using PowerShell rules." />
   <meta name="twitter:image" content="https://repository-images.githubusercontent.com/125832556/d6685d9f-ba70-44a1-b11f-6534831143d1" />
 
@@ -112,7 +112,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#using-expressions" class="md-skip">
+        <a href="#security-guidance" class="md-skip">
           Skip to content
         </a>
       
@@ -149,7 +149,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Using expressions
+              Security guidance
             
           </span>
         </div>
@@ -245,20 +245,16 @@
         
   
   
-    
-  
   
     
     
       
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../../about/" class="md-tabs__link">
           
   
@@ -278,16 +274,20 @@
         
   
   
+    
+  
   
     
     
       
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../../commands/PSRule/en-US/Assert-PSRule/" class="md-tabs__link">
           
   
@@ -392,10 +392,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -428,20 +426,17 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -452,7 +447,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Getting started
@@ -672,10 +667,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -695,11 +688,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
         
           
           <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
@@ -713,7 +706,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_4">
             <span class="md-nav__icon md-icon"></span>
             Authoring rules
@@ -727,7 +720,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../testing-infrastructure/" class="md-nav__link">
+      <a href="../../authoring/testing-infrastructure/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -745,30 +738,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Using expressions
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../authoring/using-expressions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -777,50 +750,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#language-comparison" class="md-nav__link">
-    <span class="md-ellipsis">
-      Language comparison
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Language comparison">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#quick-reference" class="md-nav__link">
-    <span class="md-ellipsis">
-      Quick reference
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -833,7 +762,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../storing-rules/" class="md-nav__link">
+      <a href="../../authoring/storing-rules/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -854,7 +783,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../packaging-rules/" class="md-nav__link">
+      <a href="../../authoring/packaging-rules/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -875,7 +804,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../writing-rule-help/" class="md-nav__link">
+      <a href="../../authoring/writing-rule-help/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1209,7 +1138,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/baselines/" class="md-nav__link">
+      <a href="../baselines/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1251,7 +1180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/grouping-rules/" class="md-nav__link">
+      <a href="../grouping-rules/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1719,8 +1648,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -1755,17 +1686,20 @@
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1776,7 +1710,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Reference
@@ -2068,7 +2002,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/PSRule/en-US/about_PSRule_Assert/" class="md-nav__link">
+      <a href="../PSRule/en-US/about_PSRule_Assert/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2089,7 +2023,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/PSRule/en-US/about_PSRule_Baseline/" class="md-nav__link">
+      <a href="../PSRule/en-US/about_PSRule_Baseline/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2110,7 +2044,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/PSRule/en-US/about_PSRule_Badges/" class="md-nav__link">
+      <a href="../PSRule/en-US/about_PSRule_Badges/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2131,7 +2065,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/PSRule/en-US/about_PSRule_Conventions/" class="md-nav__link">
+      <a href="../PSRule/en-US/about_PSRule_Conventions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2152,7 +2086,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/PSRule/en-US/about_PSRule_Docs/" class="md-nav__link">
+      <a href="../PSRule/en-US/about_PSRule_Docs/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2173,7 +2107,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/PSRule/en-US/about_PSRule_Expressions/" class="md-nav__link">
+      <a href="../PSRule/en-US/about_PSRule_Expressions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2215,7 +2149,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/PSRule/en-US/about_PSRule_Options/" class="md-nav__link">
+      <a href="../PSRule/en-US/about_PSRule_Options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2236,7 +2170,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/PSRule/en-US/about_PSRule_Rules/" class="md-nav__link">
+      <a href="../PSRule/en-US/about_PSRule_Rules/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2254,10 +2188,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../concepts/security/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Security guidance
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -2266,6 +2220,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#powershell-usage-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      PowerShell usage guidance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#software-bill-of-materials-sbom" class="md-nav__link">
+    <span class="md-ellipsis">
+      Software Bill of Materials (SBOM)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reporting-security-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reporting security issues
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2278,7 +2279,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/PSRule/en-US/about_PSRule_Selectors/" class="md-nav__link">
+      <a href="../PSRule/en-US/about_PSRule_Selectors/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2299,7 +2300,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/PSRule/en-US/about_PSRule_SuppressionGroups/" class="md-nav__link">
+      <a href="../PSRule/en-US/about_PSRule_SuppressionGroups/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2320,7 +2321,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/PSRule/en-US/about_PSRule_Variables/" class="md-nav__link">
+      <a href="../PSRule/en-US/about_PSRule_Variables/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2438,26 +2439,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#language-comparison" class="md-nav__link">
+  <a href="#powershell-usage-guidance" class="md-nav__link">
     <span class="md-ellipsis">
-      Language comparison
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Language comparison">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#quick-reference" class="md-nav__link">
-    <span class="md-ellipsis">
-      Quick reference
+      PowerShell usage guidance
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#software-bill-of-materials-sbom" class="md-nav__link">
+    <span class="md-ellipsis">
+      Software Bill of Materials (SBOM)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reporting-security-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reporting security issues
+    </span>
+  </a>
   
 </li>
       
@@ -2477,7 +2481,7 @@
                   
 
   
-    <a href="https://github.com/microsoft/PSRule/blob/main/docs/authoring/using-expressions.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/microsoft/PSRule/blob/main/docs/concepts/security.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -2486,221 +2490,41 @@
     
       
     
-    <a href="https://github.com/microsoft/PSRule/raw/main/docs/authoring/using-expressions.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/microsoft/PSRule/raw/main/docs/concepts/security.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
     </a>
   
 
 
-<h1 id="using-expressions">Using expressions<a class="headerlink" href="#using-expressions" title="Permanent link">#</a></h1>
-<p>PSRule allows you to write rules using YAML, JSON, or PowerShell.
-This offers a lot of flexibility to use PSRule for a variety of use cases.
-Some examples of use cases for each format include:</p>
-<ul>
-<li><strong>YAML</strong> &mdash; Start authoring quickly with minimal knowledge of PowerShell.</li>
-<li><strong>JSON</strong> &mdash; Generate rules automatically using automation tools.</li>
-<li><strong>PowerShell</strong> &mdash; Integrate with other tools using PowerShell cmdlets.</li>
-</ul>
+<h1 id="security-guidance">Security guidance<a class="headerlink" href="#security-guidance" title="Permanent link">#</a></h1>
 <div class="admonition abstract">
 <p class="admonition-title">Abstract</p>
-<p>This topic covers the differences and limitations between authoring rules using YAML, JSON, and PowerShell.
-For an example of authoring rules see <a href="../../quickstart/standalone-rule/">Writing rules</a> or <a href="../testing-infrastructure/">Testing infrastructure</a> topics.</p>
+<p>The following is information provides consolidated guidance for customers on security when using PSRule.</p>
 </div>
-<h2 id="language-comparison">Language comparison<a class="headerlink" href="#language-comparison" title="Permanent link">#</a></h2>
-<p>Expressions and assertion methods can be used to build similar conditions.</p>
+<h2 id="powershell-usage-guidance">PowerShell usage guidance<a class="headerlink" href="#powershell-usage-guidance" title="Permanent link">#</a></h2>
+<p>PSRule supports and recommends using PowerShell security features to secure your environment.
+Additionally from PSRule v3.0.0, supports:</p>
 <ul>
-<li><strong>Expressions</strong> &mdash; Schema-based conditions written in YAML or JSON.
-  Expressions can be used in rules and selectors.</li>
-<li><strong>Assertion methods</strong> &mdash; PowerShell-based condition helpers that make rules faster to author.
-  Assertion methods can be used in combination with standard PowerShell code to build rules or conventions.</li>
+<li><strong>Disabling PowerShell rules</strong> &mdash; However this will impact rules modules that implement PowerShell rules.
+  For details on disabling PowerShell rules see <a href="../PSRule/en-US/about_PSRule_Options/#executionrestrictscriptsource">Execution.RestrictScriptSource</a>.</li>
 </ul>
-<h3 id="quick-reference">Quick reference<a class="headerlink" href="#quick-reference" title="Permanent link">#</a></h3>
-<p>In most cases expressions and assertion method names match.
-There are some cases where these names do not directly align.
-This lookup table provides a quick reference for expressions and their assertion method counterpart.</p>
-<table>
-<thead>
-<tr>
-<th>Expression</th>
-<th>Assertion method</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Contains</td>
-<td>Contains</td>
-</tr>
-<tr>
-<td>Count</td>
-<td>Count</td>
-</tr>
-<tr>
-<td>Equals <sup id="fnref3:1"><a class="footnote-ref" href="#fn:1">1</a></sup></td>
-<td><em>n/a</em></td>
-</tr>
-<tr>
-<td>EndsWith</td>
-<td>EndsWith</td>
-</tr>
-<tr>
-<td>Exists</td>
-<td>HasField</td>
-</tr>
-<tr>
-<td>Greater</td>
-<td>Greater</td>
-</tr>
-<tr>
-<td>GreaterOrEquals</td>
-<td>GreaterOrEqual</td>
-</tr>
-<tr>
-<td>HasDefault</td>
-<td>HasDefaultValue</td>
-</tr>
-<tr>
-<td>HasSchema</td>
-<td>HasJsonSchema</td>
-</tr>
-<tr>
-<td>HasValue <sup id="fnref2:1"><a class="footnote-ref" href="#fn:1">1</a></sup></td>
-<td><em>n/a</em></td>
-</tr>
-<tr>
-<td>In</td>
-<td>In</td>
-</tr>
-<tr>
-<td>IsLower</td>
-<td>IsLower</td>
-</tr>
-<tr>
-<td>IsString</td>
-<td>IsString</td>
-</tr>
-<tr>
-<td>IsUpper</td>
-<td>IsUpper</td>
-</tr>
-<tr>
-<td>Less</td>
-<td>Less</td>
-</tr>
-<tr>
-<td>LessOrEquals</td>
-<td>LessOrEqual</td>
-</tr>
-<tr>
-<td>Match</td>
-<td>Match</td>
-</tr>
-<tr>
-<td>NotEquals</td>
-<td><em>n/a</em></td>
-</tr>
-<tr>
-<td>NotIn</td>
-<td>NotIn</td>
-</tr>
-<tr>
-<td>NotMatch</td>
-<td>NotMatch</td>
-</tr>
-<tr>
-<td>SetOf</td>
-<td>SetOf</td>
-</tr>
-<tr>
-<td>StartsWith</td>
-<td>StartsWith</td>
-</tr>
-<tr>
-<td>Subset</td>
-<td>Subset</td>
-</tr>
-<tr>
-<td>Version</td>
-<td>Version</td>
-</tr>
-<tr>
-<td><em>n/a</em></td>
-<td>FileHeader</td>
-</tr>
-<tr>
-<td><em>n/a</em></td>
-<td>FilePath</td>
-</tr>
-<tr>
-<td><em>n/a</em></td>
-<td>HasFields</td>
-</tr>
-<tr>
-<td><em>n/a</em></td>
-<td>HasFieldValue <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></td>
-</tr>
-<tr>
-<td>IsArray</td>
-<td>IsArray</td>
-</tr>
-<tr>
-<td>IsBoolean</td>
-<td>IsBoolean</td>
-</tr>
-<tr>
-<td>IsDateTime</td>
-<td>IsDateTime</td>
-</tr>
-<tr>
-<td>IsInteger</td>
-<td>IsInteger</td>
-</tr>
-<tr>
-<td>IsNumeric</td>
-<td>IsNumeric</td>
-</tr>
-<tr>
-<td><em>n/a</em></td>
-<td>JsonSchema</td>
-</tr>
-<tr>
-<td>Exists</td>
-<td>NotHasField</td>
-</tr>
-<tr>
-<td><em>n/a</em></td>
-<td>NotNull</td>
-</tr>
-<tr>
-<td>NotWithinPath</td>
-<td>NotWithinPath</td>
-</tr>
-<tr>
-<td><em>n/a</em></td>
-<td>Null</td>
-</tr>
-<tr>
-<td><em>n/a</em></td>
-<td>NullOrEmpty</td>
-</tr>
-<tr>
-<td><em>n/a</em></td>
-<td>TypeOf</td>
-</tr>
-<tr>
-<td>WithinPath</td>
-<td>WithinPath</td>
-</tr>
-</tbody>
-</table>
-<div class="footnote">
-<hr />
-<ol>
-<li id="fn:1">
-<p>The <code>Equals</code>, <code>HasValue</code> expressions and <code>HasFieldValue</code> are similar.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:1" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
-</li>
-</ol>
-</div>
+<p>Continue reading <a href="https://learn.microsoft.com/powershell/scripting/security/security-features?view=powershell-7.4">PowerShell security features</a> to learn more about how to secure your PowerShell environment.</p>
+<h2 id="software-bill-of-materials-sbom">Software Bill of Materials (SBOM)<a class="headerlink" href="#software-bill-of-materials-sbom" title="Permanent link">#</a></h2>
+<p>Beginning with v2.1.0, PSRule contains a Software Bill of Materials (SBOM).
+The SBOM can be found at <code>_manifest/spdx_2.2/manifest.spdx.json</code> within the module root.</p>
+<p>Things to note:</p>
+<ul>
+<li>When installing the module using <code>Install-Module</code> or <code>Update-Module</code>,
+  PowerShell creates a metadata file <code>PSGetModuleInfo.xml</code> in the module root.
+  This file is used to keep track of when and where the module was installed from.
+  As a result, this file is not included in the SBOM.
+  The <code>PSGetModuleInfo.xml</code> file is not required for the module to function.</li>
+</ul>
+<p>For more information about this initiative,
+see the blog post <a href="https://devblogs.microsoft.com/engineering-at-microsoft/generating-software-bills-of-materials-sboms-with-spdx-at-microsoft/">Generating Software Bills of Materials (SBOMs) with SPDX at Microsoft</a>.</p>
+<h2 id="reporting-security-issues">Reporting security issues<a class="headerlink" href="#reporting-security-issues" title="Permanent link">#</a></h2>
+<p>If you have a security issue to report please see our <a href="https://github.com/microsoft/PSRule/security/policy">security policy</a>.</p>
 
 
 
@@ -2723,7 +2547,7 @@ This lookup table provides a quick reference for expressions and their assertion
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 26, 2022</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 30, 2024</span>
   </span>
 
     
@@ -2733,7 +2557,7 @@ This lookup table provides a quick reference for expressions and their assertion
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 6, 2022</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 30, 2024</span>
   </span>
 
     
@@ -2845,7 +2669,7 @@ This lookup table provides a quick reference for expressions and their assertion
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../testing-infrastructure/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Testing infrastructure">
+          <a href="../PSRule/en-US/about_PSRule_Rules/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Rules">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -2855,20 +2679,20 @@ This lookup table provides a quick reference for expressions and their assertion
                 Previous
               </span>
               <div class="md-ellipsis">
-                Testing infrastructure
+                Rules
               </div>
             </div>
           </a>
         
         
           
-          <a href="../storing-rules/" class="md-footer__link md-footer__link--next" aria-label="Next: Storing and naming rules">
+          <a href="../PSRule/en-US/about_PSRule_Selectors/" class="md-footer__link md-footer__link--next" aria-label="Next: Selectors">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Storing and naming rules
+                Selectors
               </div>
             </div>
             <div class="md-footer__button md-icon">
