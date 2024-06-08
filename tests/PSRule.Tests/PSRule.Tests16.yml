@@ -1,0 +1,5 @@
+# These are options for unit tests
+
+# Configure execution options.
+execution:
+  break: Never

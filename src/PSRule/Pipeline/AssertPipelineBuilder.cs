@@ -44,7 +44,7 @@ internal sealed class AssertPipelineBuilder : InvokePipelineBuilderBase
             _ResultVariableName = resultVariableName;
             _HostContext = hostContext;
             if (!string.IsNullOrEmpty(resultVariableName))
-                _Results = new List<RuleRecord>();
+                _Results = [];
 
             _Formatter = GetFormatter(style, source, inner, option);
         }
@@ -61,7 +61,7 @@ internal sealed class AssertPipelineBuilder : InvokePipelineBuilderBase
                 return new VisualStudioCodeFormatter(source, inner, option);
 
             return style == OutputStyle.Plain ?
-                (IAssertFormatter)new PlainFormatter(source, inner, option) :
+                new PlainFormatter(source, inner, option) :
                 new ClientFormatter(source, inner, option);
         }
 
@@ -100,10 +100,10 @@ internal sealed class AssertPipelineBuilder : InvokePipelineBuilderBase
             _Formatter.Begin();
         }
 
-        public override void End()
+        public override void End(IPipelineResult result)
         {
             _Formatter.End(_TotalCount, _FailCount, _ErrorCount);
-            base.End();
+            base.End(result);
             try
             {
                 if (_ErrorCount > 0)
@@ -115,7 +115,7 @@ internal sealed class AssertPipelineBuilder : InvokePipelineBuilderBase
                         ErrorCategory.InvalidOperation,
                         null));
                 }
-                else if (_FailCount > 0 && _Level == SeverityLevel.Error)
+                else if (result.ShouldBreakFromFailure)
                 {
                     HadFailures = true;
                     base.WriteError(new ErrorRecord(
@@ -133,13 +133,7 @@ internal sealed class AssertPipelineBuilder : InvokePipelineBuilderBase
                         ErrorCategory.InvalidOperation,
                         null));
                 }
-                if (_FailCount > 0 && _Level == SeverityLevel.Warning)
-                {
-                    HadFailures = true;
-                    base.WriteWarning(PSRuleResources.RuleFailPipelineException);
-                }
-
-                if (_FailCount > 0 && _Level == SeverityLevel.Information)
+                else if (_FailCount > 0)
                 {
                     HadFailures = true;
                     base.WriteHost(new HostInformationMessage() { Message = PSRuleResources.RuleFailPipelineException });
@@ -150,7 +144,7 @@ internal sealed class AssertPipelineBuilder : InvokePipelineBuilderBase
             }
             finally
             {
-                _InnerWriter?.End();
+                _InnerWriter?.End(result);
             }
         }
 

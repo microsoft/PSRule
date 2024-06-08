@@ -21,12 +21,13 @@ public sealed class AssertFormatterTests
     {
         var option = GetOption();
         option.Output.Banner = BannerFormat.None;
+        option.Output.Footer = FooterFormat.None;
         var writer = GetWriter();
 
         // Check output is empty
         var formatter = new PlainFormatter(null, writer, option);
         formatter.Begin();
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal("", writer.Output);
 
         // Check pass output
@@ -34,7 +35,7 @@ public sealed class AssertFormatterTests
         formatter = new PlainFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetPassResult());
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [1/1]
 
     [PASS] Test
@@ -45,7 +46,7 @@ public sealed class AssertFormatterTests
         formatter = new PlainFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult());
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -59,7 +60,7 @@ public sealed class AssertFormatterTests
         formatter = new PlainFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult(SeverityLevel.Warning));
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -73,7 +74,7 @@ public sealed class AssertFormatterTests
         formatter = new PlainFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult(SeverityLevel.Information));
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -88,12 +89,13 @@ public sealed class AssertFormatterTests
     {
         var option = GetOption();
         option.Output.Banner = BannerFormat.None;
+        option.Output.Footer = FooterFormat.None;
         var writer = GetWriter();
 
         // Check output is empty
         var formatter = new ClientFormatter(null, writer, option);
         formatter.Begin();
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal("", writer.Output);
 
         // Check pass output
@@ -101,7 +103,7 @@ public sealed class AssertFormatterTests
         formatter = new ClientFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetPassResult());
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [1/1]
 
     [PASS] Test
@@ -112,7 +114,7 @@ public sealed class AssertFormatterTests
         formatter = new ClientFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult());
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -126,7 +128,7 @@ public sealed class AssertFormatterTests
         formatter = new ClientFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult(SeverityLevel.Warning));
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -140,7 +142,7 @@ public sealed class AssertFormatterTests
         formatter = new ClientFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult(SeverityLevel.Information));
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -155,12 +157,13 @@ public sealed class AssertFormatterTests
     {
         var option = GetOption();
         option.Output.Banner = BannerFormat.None;
+        option.Output.Footer = FooterFormat.None;
         var writer = GetWriter();
 
         // Check output is empty
         var formatter = new AzurePipelinesFormatter(null, writer, option);
         formatter.Begin();
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal("", writer.Output);
 
         // Check pass output
@@ -168,7 +171,7 @@ public sealed class AssertFormatterTests
         formatter = new AzurePipelinesFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetPassResult());
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [1/1]
 
     [PASS] Test
@@ -179,7 +182,7 @@ public sealed class AssertFormatterTests
         formatter = new AzurePipelinesFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult());
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -197,7 +200,7 @@ public sealed class AssertFormatterTests
         formatter = new AzurePipelinesFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult(SeverityLevel.Warning));
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -215,7 +218,7 @@ public sealed class AssertFormatterTests
         formatter = new AzurePipelinesFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult(SeverityLevel.Information));
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -230,12 +233,13 @@ public sealed class AssertFormatterTests
     {
         var option = GetOption();
         option.Output.Banner = BannerFormat.None;
+        option.Output.Footer = FooterFormat.None;
         var writer = GetWriter();
 
         // Check output is empty
         var formatter = new GitHubActionsFormatter(null, writer, option);
         formatter.Begin();
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal("", writer.Output);
 
         // Check pass output
@@ -243,7 +247,7 @@ public sealed class AssertFormatterTests
         formatter = new GitHubActionsFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetPassResult());
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [1/1]
 
     [PASS] Test
@@ -254,7 +258,7 @@ public sealed class AssertFormatterTests
         formatter = new GitHubActionsFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult());
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -272,7 +276,7 @@ public sealed class AssertFormatterTests
         formatter = new GitHubActionsFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult(SeverityLevel.Warning));
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -290,7 +294,7 @@ public sealed class AssertFormatterTests
         formatter = new GitHubActionsFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult(SeverityLevel.Information));
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@" -> TestObject : TestType [0/2]
 
     [FAIL] Test1
@@ -309,12 +313,13 @@ public sealed class AssertFormatterTests
     {
         var option = GetOption();
         option.Output.Banner = BannerFormat.None;
+        option.Output.Footer = FooterFormat.None;
         var writer = GetWriter();
 
         // Check output is empty
         var formatter = new VisualStudioCodeFormatter(null, writer, option);
         formatter.Begin();
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal("", writer.Output);
 
         // Check pass output
@@ -322,7 +327,7 @@ public sealed class AssertFormatterTests
         formatter = new VisualStudioCodeFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetPassResult());
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@"> TestObject : TestType [1/1]
 
    PASS  Test
@@ -333,7 +338,7 @@ public sealed class AssertFormatterTests
         formatter = new VisualStudioCodeFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult());
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@"> TestObject : TestType [0/2]
 
    FAIL  Test1
@@ -347,7 +352,7 @@ public sealed class AssertFormatterTests
         formatter = new VisualStudioCodeFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult(SeverityLevel.Warning));
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@"> TestObject : TestType [0/2]
 
    FAIL  Test1
@@ -361,7 +366,7 @@ public sealed class AssertFormatterTests
         formatter = new VisualStudioCodeFormatter(null, writer, option);
         formatter.Begin();
         formatter.Result(GetFailResult(SeverityLevel.Information));
-        formatter.End();
+        formatter.End(0, 0, 0);
         Assert.Equal(@"> TestObject : TestType [0/2]
 
    FAIL  Test1

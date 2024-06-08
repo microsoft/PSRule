@@ -106,7 +106,6 @@ public sealed class PipelineTests
 
         var option = GetOption();
         option.Rule.Include = ["WithPathPrefix"];
-        //option.Input.Format = InputFormat.File;
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
         var writer = new TestWriter(option);
         var pipeline = builder.Build(writer);

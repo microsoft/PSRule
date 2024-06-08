@@ -123,7 +123,7 @@ internal abstract class PipelineLoggerBase : IPipelineWriter
 
     }
 
-    public virtual void End()
+    public virtual void End(IPipelineResult result)
     {
 
     }

@@ -1163,6 +1163,10 @@ function New-PSRuleOption {
         [Alias('ConventionInclude')]
         [String[]]$Convention,
 
+        # Sets the Execution.Break option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.BreakLevel]$ExecutionBreak = [PSRule.Options.BreakLevel]::OnError,
+
         # Sets the Execution.DuplicateResourceId option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionDuplicateResourceId')]
@@ -1475,6 +1479,10 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [Alias('ConventionInclude')]
         [String[]]$Convention,
+
+        # Sets the Execution.Break option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.BreakLevel]$ExecutionBreak = [PSRule.Options.BreakLevel]::OnError,
 
         # Sets the Execution.DuplicateResourceId option
         [Parameter(Mandatory = $False)]
@@ -2236,6 +2244,10 @@ function SetOptions {
         [Alias('ConventionInclude')]
         [String[]]$Convention,
 
+        # Sets the Execution.Break option
+        [Parameter(Mandatory = $False)]
+        [PSRule.Options.BreakLevel]$ExecutionBreak = [PSRule.Options.BreakLevel]::OnError,
+
         # Sets the Execution.DuplicateResourceId option
         [Parameter(Mandatory = $False)]
         [Alias('ExecutionDuplicateResourceId')]
@@ -2459,6 +2471,11 @@ function SetOptions {
         # Sets option Convention.Include
         if ($PSBoundParameters.ContainsKey('Convention')) {
             $Option.Convention.Include = $Convention;
+        }
+
+        # Sets option Execution.Break
+        if ($PSBoundParameters.ContainsKey('ExecutionBreak')) {
+            $Option.Execution.Break = $ExecutionBreak;
         }
 
         # Sets option Execution.DuplicateResourceId

@@ -11,115 +11,9 @@ namespace PSRule.Options;
 /// <remarks>
 /// See <see href="https://aka.ms/ps-rule/options"/>.
 /// </remarks>
-public interface IExecutionOption : IOption
-{
-    /// <summary>
-    /// Determines how to handle duplicate resources identifiers during execution.
-    /// Regardless of the value, only the first resource will be used.
-    /// By defaut, an error is thrown.
-    /// When set to Warn, a warning is generated.
-    /// When set to Debug, a message is written to the debug log.
-    /// When set to Ignore, no output will be displayed.
-    /// </summary>
-    ExecutionActionPreference DuplicateResourceId { get; }
-
-    /// <summary>
-    /// Configures the hashing algorithm used by the PSRule runtime.
-    /// The default is <see cref="HashAlgorithm.SHA512"/>.
-    /// </summary>
-    HashAlgorithm HashAlgorithm { get; }
-
-    /// <summary>
-    /// The language mode to execute PowerShell code with.
-    /// The default is <see cref="LanguageMode.FullLanguage"/>.
-    /// </summary>
-    LanguageMode LanguageMode { get; }
-
-    /// <summary>
-    /// Determines how the initial session state for executing PowerShell code is created.
-    /// The default is <see cref="SessionState.BuiltIn"/>.
-    /// </summary>
-    SessionState InitialSessionState { get; }
-
-    /// <summary>
-    /// Configures where to allow PowerShell language features (such as rules and conventions) to run from.
-    /// The default is <see cref="RestrictScriptSource.Unrestricted"/>.
-    /// </summary>
-    RestrictScriptSource RestrictScriptSource { get; }
-
-    /// <summary>
-    /// Determines how to handle expired suppression groups.
-    /// Regardless of the value, an expired suppression group will be ignored.
-    /// By default, a warning is generated.
-    /// When set to Error, an error is thrown.
-    /// When set to Debug, a message is written to the debug log.
-    /// When set to Ignore, no output will be displayed.
-    /// </summary>
-    ExecutionActionPreference SuppressionGroupExpired { get; }
-
-    /// <summary>
-    /// Determines how to handle rules that are excluded.
-    /// By default, excluded rules do not generated any output.
-    /// When set to Error, an error is thrown.
-    /// When set to Warn, a warning is generated.
-    /// When set to Debug, a message is written to the debug log.
-    /// </summary>
-    ExecutionActionPreference RuleExcluded { get; }
-
-    /// <summary>
-    /// Determines how to handle rules that are suppressed.
-    /// By default, a warning is generated.
-    /// When set to Error, an error is thrown.
-    /// When set to Debug, a message is written to the debug log.
-    /// When set to Ignore, no output will be displayed.
-    /// </summary>
-    ExecutionActionPreference RuleSuppressed { get; }
-
-    /// <summary>
-    /// Determines how to handle when an alias to a resource is used.
-    /// By default, a warning is generated.
-    /// When set to Error, an error is thrown.
-    /// When set to Debug, a message is written to the debug log.
-    /// When set to Ignore, no output will be displayed.
-    /// </summary>
-    ExecutionActionPreference AliasReference { get; }
-
-    /// <summary>
-    /// Determines how to handle rules that generate inconclusive results.
-    /// By default, a warning is generated.
-    /// When set to Error, an error is thrown.
-    /// When set to Debug, a message is written to the debug log.
-    /// When set to Ignore, no output will be displayed.
-    /// </summary>
-    ExecutionActionPreference RuleInconclusive { get; }
-
-    /// <summary>
-    /// Determines how to report when an invariant culture is used.
-    /// By default, a warning is generated.
-    /// When set to Error, an error is thrown.
-    /// When set to Debug, a message is written to the debug log.
-    /// When set to Ignore, no output will be displayed.
-    /// </summary>
-    ExecutionActionPreference InvariantCulture { get; }
-
-    /// <summary>
-    /// Determines how to report objects that are not processed by any rule.
-    /// By default, a warning is generated.
-    /// When set to Error, an error is thrown.
-    /// When set to Debug, a message is written to the debug log.
-    /// When set to Ignore, no output will be displayed.
-    /// </summary>
-    ExecutionActionPreference UnprocessedObject { get; }
-}
-
-/// <summary>
-/// Options that configure the execution sandbox.
-/// </summary>
-/// <remarks>
-/// See <see href="https://aka.ms/ps-rule/options"/>.
-/// </remarks>
 public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOption
 {
+    private const BreakLevel DEFAULT_BREAK = BreakLevel.OnError;
     private const LanguageMode DEFAULT_LANGUAGEMODE = Options.LanguageMode.FullLanguage;
     private const ExecutionActionPreference DEFAULT_DUPLICATERESOURCEID = ExecutionActionPreference.Error;
     private const SessionState DEFAULT_INITIALSESSIONSTATE = SessionState.BuiltIn;
@@ -135,6 +29,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
 
     internal static readonly ExecutionOption Default = new()
     {
+        Break = DEFAULT_BREAK,
         DuplicateResourceId = DEFAULT_DUPLICATERESOURCEID,
         HashAlgorithm = DEFAULT_HASHALGORITHM,
         LanguageMode = DEFAULT_LANGUAGEMODE,
@@ -154,6 +49,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     /// </summary>
     public ExecutionOption()
     {
+        Break = null;
         DuplicateResourceId = null;
         HashAlgorithm = null;
         LanguageMode = null;
@@ -177,6 +73,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
         if (option == null)
             return;
 
+        Break = option.Break;
         DuplicateResourceId = option.DuplicateResourceId;
         HashAlgorithm = option.HashAlgorithm;
         LanguageMode = option.LanguageMode;
@@ -201,6 +98,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     public bool Equals(ExecutionOption other)
     {
         return other != null &&
+            Break == other.Break &&
             DuplicateResourceId == other.DuplicateResourceId &&
             HashAlgorithm == other.HashAlgorithm &&
             LanguageMode == other.LanguageMode &&
@@ -221,6 +119,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
         unchecked // Overflow is fine
         {
             var hash = 17;
+            hash = hash * 23 + (Break.HasValue ? Break.Value.GetHashCode() : 0);
             hash = hash * 23 + (DuplicateResourceId.HasValue ? DuplicateResourceId.Value.GetHashCode() : 0);
             hash = hash * 23 + (HashAlgorithm.HasValue ? HashAlgorithm.Value.GetHashCode() : 0);
             hash = hash * 23 + (LanguageMode.HasValue ? LanguageMode.Value.GetHashCode() : 0);
@@ -245,6 +144,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     {
         var result = new ExecutionOption(o1)
         {
+            Break = o1?.Break ?? o2?.Break,
             DuplicateResourceId = o1?.DuplicateResourceId ?? o2?.DuplicateResourceId,
             HashAlgorithm = o1?.HashAlgorithm ?? o2?.HashAlgorithm,
             LanguageMode = o1?.LanguageMode ?? o2?.LanguageMode,
@@ -260,6 +160,13 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
         };
         return result;
     }
+
+    /// <summary>
+    /// Determines the minimum rule severity level that breaks the pipeline.
+    /// By default, the pipeline will break if a rule of error severity fails.
+    /// </summary>
+    [DefaultValue(null)]
+    public BreakLevel? Break { get; set; }
 
     /// <summary>
     /// Determines how to handle duplicate resources identifiers during execution.
@@ -371,6 +278,8 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
 
     #region IExecutionOption
 
+    BreakLevel IExecutionOption.Break => Break ?? DEFAULT_BREAK;
+
     ExecutionActionPreference IExecutionOption.DuplicateResourceId => DuplicateResourceId ?? DEFAULT_DUPLICATERESOURCEID;
 
     HashAlgorithm IExecutionOption.HashAlgorithm => HashAlgorithm ?? DEFAULT_HASHALGORITHM;
@@ -402,6 +311,9 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     /// </summary>
     internal void Load()
     {
+        if (Environment.TryEnum("PSRULE_EXECUTION_BREAK", out BreakLevel @break))
+            Break = @break;
+
         if (Environment.TryEnum("PSRULE_EXECUTION_HASHALGORITHM", out HashAlgorithm hashAlgorithm))
             HashAlgorithm = hashAlgorithm;
 
@@ -444,6 +356,9 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     /// </summary>
     internal void Load(Dictionary<string, object> index)
     {
+        if (index.TryPopEnum("Execution.Break", out BreakLevel @break))
+            Break = @break;
+
         if (index.TryPopEnum("Execution.HashAlgorithm", out HashAlgorithm hashAlgorithm))
             HashAlgorithm = hashAlgorithm;
 

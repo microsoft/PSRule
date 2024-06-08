@@ -635,6 +635,145 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Execution.AliasReference' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.AliasReference | Should -Be 'Warn';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.AliasReference' = 'error' };
+            $option.Execution.AliasReference | Should -Be 'Error';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.AliasReference' = 'Error' };
+            $option.Execution.AliasReference | Should -Be 'Error';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.AliasReference | Should -Be 'Ignore';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_ALIASREFERENCE = 'error';
+                $option = New-PSRuleOption;
+                $option.Execution.AliasReference | Should -Be 'Error';
+
+                # With enum
+                $Env:PSRULE_EXECUTION_ALIASREFERENCE = 'Error';
+                $option = New-PSRuleOption;
+                $option.Execution.AliasReference | Should -Be 'Error';
+
+                # With int
+                $Env:PSRULE_EXECUTION_ALIASREFERENCE = '3';
+                $option = New-PSRuleOption;
+                $option.Execution.AliasReference | Should -Be 'Error';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_ALIASREFERENCE' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -ExecutionAliasReference 'Error' -Path $emptyOptionsFilePath;
+            $option.Execution.AliasReference | Should -Be 'Error';
+        }
+    }
+
+    Context 'Read Execution.Break' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.Break | Should -Be 'OnError';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.Break' = 'never' };
+            $option.Execution.Break | Should -Be 'Never';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.Break' = 'Never' };
+            $option.Execution.Break | Should -Be 'Never';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests16.yml');
+            $option.Execution.Break | Should -Be 'Never';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_BREAK = 'never';
+                $option = New-PSRuleOption;
+                $option.Execution.Break | Should -Be 'Never';
+
+                $Env:PSRULE_EXECUTION_BREAK = 'never';
+                $option = New-PSRuleOption;
+                $option.Execution.Break | Should -Be 'Never';
+
+                # With int
+                $Env:PSRULE_EXECUTION_BREAK = '1';
+                $option = New-PSRuleOption;
+                $option.Execution.Break | Should -Be 'Never';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_BREAK' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -ExecutionBreak 'Never' -Path $emptyOptionsFilePath;
+            $option.Execution.Break | Should -Be 'Never';
+        }
+    }
+
+    Context 'Read Execution.DuplicateResourceId' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.DuplicateResourceId | Should -Be 'Error'
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.DuplicateResourceId' = 'warn' };
+            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.DuplicateResourceId' = 'Warn' };
+            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_DUPLICATERESOURCEID = 'warn';
+                $option = New-PSRuleOption;
+                $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+
+                $Env:PSRULE_EXECUTION_DUPLICATERESOURCEID = 'Warn';
+                $option = New-PSRuleOption;
+                $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+
+                # With int
+                $Env:PSRULE_EXECUTION_DUPLICATERESOURCEID = '2';
+                $option = New-PSRuleOption;
+                $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_DUPLICATERESOURCEID' -Force;
+            }
+        }
+
+        It 'from parameter' {
+            $option = New-PSRuleOption -DuplicateResourceId 'Warn' -Path $emptyOptionsFilePath;
+            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
+        }
+    }
+
     Context 'Read Execution.HashAlgorithm' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -827,53 +966,6 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
-    Context 'Read Execution.AliasReference' {
-        It 'from default' {
-            $option = New-PSRuleOption -Default;
-            $option.Execution.AliasReference | Should -Be 'Warn';
-        }
-
-        It 'from Hashtable' {
-            $option = New-PSRuleOption -Option @{ 'Execution.AliasReference' = 'error' };
-            $option.Execution.AliasReference | Should -Be 'Error';
-
-            $option = New-PSRuleOption -Option @{ 'Execution.AliasReference' = 'Error' };
-            $option.Execution.AliasReference | Should -Be 'Error';
-        }
-
-        It 'from YAML' {
-            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Execution.AliasReference | Should -Be 'Ignore';
-        }
-
-        It 'from Environment' {
-            try {
-                # With enum
-                $Env:PSRULE_EXECUTION_ALIASREFERENCE = 'error';
-                $option = New-PSRuleOption;
-                $option.Execution.AliasReference | Should -Be 'Error';
-
-                # With enum
-                $Env:PSRULE_EXECUTION_ALIASREFERENCE = 'Error';
-                $option = New-PSRuleOption;
-                $option.Execution.AliasReference | Should -Be 'Error';
-
-                # With int
-                $Env:PSRULE_EXECUTION_ALIASREFERENCE = '3';
-                $option = New-PSRuleOption;
-                $option.Execution.AliasReference | Should -Be 'Error';
-            }
-            finally {
-                Remove-Item 'Env:PSRULE_EXECUTION_ALIASREFERENCE' -Force;
-            }
-        }
-
-        It 'from parameter' {
-            $option = New-PSRuleOption -ExecutionAliasReference 'Error' -Path $emptyOptionsFilePath;
-            $option.Execution.AliasReference | Should -Be 'Error';
-        }
-    }
-
     Context 'Read Execution.RuleInconclusive' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -1012,53 +1104,6 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         It 'from parameter' {
             $option = New-PSRuleOption -ExecutionUnprocessedObject 'Error' -Path $emptyOptionsFilePath;
             $option.Execution.UnprocessedObject | Should -Be 'Error';
-        }
-    }
-
-    Context 'Read Execution.DuplicateResourceId' {
-        It 'from default' {
-            $option = New-PSRuleOption -Default;
-            $option.Execution.DuplicateResourceId | Should -Be 'Error'
-        }
-
-        It 'from Hashtable' {
-            $option = New-PSRuleOption -Option @{ 'Execution.DuplicateResourceId' = 'warn' };
-            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
-
-            $option = New-PSRuleOption -Option @{ 'Execution.DuplicateResourceId' = 'Warn' };
-            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
-        }
-
-        It 'from YAML' {
-            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
-        }
-
-        It 'from Environment' {
-            try {
-                # With enum
-                $Env:PSRULE_EXECUTION_DUPLICATERESOURCEID = 'warn';
-                $option = New-PSRuleOption;
-                $option.Execution.DuplicateResourceId | Should -Be 'Warn';
-
-                # With enum
-                $Env:PSRULE_EXECUTION_DUPLICATERESOURCEID = 'Warn';
-                $option = New-PSRuleOption;
-                $option.Execution.DuplicateResourceId | Should -Be 'Warn';
-
-                # With int
-                $Env:PSRULE_EXECUTION_DUPLICATERESOURCEID = '2';
-                $option = New-PSRuleOption;
-                $option.Execution.DuplicateResourceId | Should -Be 'Warn';
-            }
-            finally {
-                Remove-Item 'Env:PSRULE_EXECUTION_DUPLICATERESOURCEID' -Force;
-            }
-        }
-
-        It 'from parameter' {
-            $option = New-PSRuleOption -DuplicateResourceId 'Warn' -Path $emptyOptionsFilePath;
-            $option.Execution.DuplicateResourceId | Should -Be 'Warn';
         }
     }
 
@@ -2338,6 +2383,13 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -TargetType 'ResourceType', 'Kind' @optionParams;
             $option.Binding.TargetType | Should -BeIn 'ResourceType', 'Kind';
+        }
+    }
+
+    Context 'Read Execution.Break' {
+        It 'from parameter' {
+            $option = Set-PSRuleOption -ExecutionBreak 'Never' @optionParams;
+            $option.Execution.Break | Should -Be 'Never';
         }
     }
 
