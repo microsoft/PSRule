@@ -4,52 +4,51 @@
 using System.Text;
 using PSRule.Data;
 
-namespace PSRule.Pipeline.Emitters
+namespace PSRule.Pipeline.Emitters;
+
+internal sealed class InternalFileStream : IFileStream
 {
-    internal sealed class InternalFileStream : IFileStream
+    private readonly Stream _Stream;
+
+    private bool _Disposed;
+
+    internal InternalFileStream(IFileInfo info, Stream stream)
     {
-        private readonly Stream _Stream;
+        Info = info;
+        _Stream = stream;
+    }
 
-        private bool _Disposed;
+    /// <inheritdoc/>
+    public IFileInfo Info { get; }
 
-        internal InternalFileStream(IFileInfo info, Stream stream)
+    /// <inheritdoc/>
+    public TextReader AsTextReader()
+    {
+        return new StreamReader(
+            stream: _Stream,
+            encoding: Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: true,
+            bufferSize: 1024,
+            leaveOpen: true
+        );
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (!_Disposed)
         {
-            Info = info;
-            _Stream = stream;
-        }
-
-        /// <inheritdoc/>
-        public IFileInfo Info { get; }
-
-        /// <inheritdoc/>
-        public TextReader AsTextReader()
-        {
-            return new StreamReader(
-                stream: _Stream,
-                encoding: Encoding.UTF8,
-                detectEncodingFromByteOrderMarks: true,
-                bufferSize: 1024,
-                leaveOpen: true
-            );
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (!_Disposed)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    _Stream?.Dispose();
-                }
-                _Disposed = true;
+                _Stream?.Dispose();
             }
+            _Disposed = true;
         }
+    }
 
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

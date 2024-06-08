@@ -48,12 +48,6 @@ internal sealed class RuleFilter : IResourceFilter
 
     ResourceKind IResourceFilter.Kind => ResourceKind.Rule;
 
-    internal bool Match(string name, ResourceTags tag, ResourceLabels labels)
-    {
-        return !IsExcluded(new ResourceId[] { ResourceId.Parse(name) }) &&
-            IsIncluded(new ResourceId[] { ResourceId.Parse(name) }, tag, labels);
-    }
-
     /// <summary>
     /// Matches if the RuleId is contained or any tag is matched
     /// </summary>
