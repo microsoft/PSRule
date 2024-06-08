@@ -24,10 +24,9 @@ internal sealed class JsonEmitter : FileEmitter
 
     public JsonEmitter()
     {
-        
         _Settings = new JsonSerializerSettings
         {
-            
+
         };
         _Deserializer = JsonSerializer.CreateDefault(_Settings); // Think about caching this.
         _Deserializer.Converters.Add(new PSObjectArrayJsonConverter(null));
@@ -88,13 +87,13 @@ internal sealed class JsonEmitter : FileEmitter
             VisitItems(context, value, null);
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
         finally
         {
-            
+
         }
     }
 

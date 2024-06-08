@@ -99,7 +99,7 @@ internal sealed class YamlEmitter : FileEmitter
             }
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }

@@ -3,7 +3,6 @@
 
 using System.CommandLine.Invocation;
 using PSRule.Configuration;
-using PSRule.Options;
 
 namespace PSRule.CommandLine;
 

@@ -25,7 +25,8 @@ internal static class ResourceExtensions
 
     internal static bool IsLocalScope(this IResource resource)
     {
-        return string.IsNullOrEmpty(resource.Source.Module);
+        return resource != null &&
+            (string.IsNullOrEmpty(resource.Id.Scope) || resource.Id.Scope == ".");
     }
 
     internal static IEnumerable<ResourceId> GetIds(this IResource resource)

@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace PSRule.Emitters
+namespace PSRule.Emitters;
+
+internal class InternalFileStream
 {
-    internal class InternalFileStream
+    public InternalFileStream()
     {
-        public InternalFileStream()
-        {
-        }
     }
 }
