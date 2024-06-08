@@ -4,25 +4,6 @@
 namespace PSRule.Runtime;
 
 /// <summary>
-/// A set of log levels which indicate different types of diagnostic messages.
-/// </summary>
-[Flags]
-internal enum LogLevel
-{
-    None = 0,
-
-    Error = 1,
-
-    Warning = 2,
-
-    Info = 4,
-
-    Verbose = 8,
-
-    Debug = 16,
-}
-
-/// <summary>
 /// A generic interface for diagnostic logging within PSRule.
 /// </summary>
 internal interface ILogger
@@ -45,6 +26,6 @@ internal interface ILogger
     /// Write an error from an exception.
     /// </summary>
     /// <param name="exception">The exception to write.</param>
-    /// <param name="errorId">A string identififer for the error.</param>
+    /// <param name="errorId">A string identifier for the error.</param>
     void Error(Exception exception, string errorId = null);
 }

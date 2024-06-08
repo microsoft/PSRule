@@ -3,13 +3,6 @@
 
 namespace PSRule.Help;
 
-internal enum MarkdownReaderMode
-{
-    None,
-
-    List
-}
-
 /// <summary>
 /// Stateful markdown reader.
 /// </summary>
