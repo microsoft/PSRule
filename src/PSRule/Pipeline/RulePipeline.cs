@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
+using PSRule.Options;
 using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
@@ -19,7 +20,7 @@ internal abstract class RulePipeline : IPipeline
 
     protected RulePipeline(PipelineContext context, Source[] source, PipelineInputStream reader, IPipelineWriter writer)
     {
-        Result = new DefaultPipelineResult(writer);
+        Result = new DefaultPipelineResult(writer, context.Option.Execution.Break.GetValueOrDefault(ExecutionOption.Default.Break.Value));
         Pipeline = context;
         Context = new RunspaceContext(Pipeline, writer);
         Source = source;
@@ -55,7 +56,7 @@ internal abstract class RulePipeline : IPipeline
     /// <inheritdoc/>
     public virtual void End()
     {
-        Writer.End();
+        Writer.End(Result);
     }
 
     #endregion IPipeline

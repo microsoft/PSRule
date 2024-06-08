@@ -34,7 +34,7 @@ public sealed class OutputWriterTests
         var writer = new SarifOutputWriter(null, output, option, null);
         writer.Begin();
         writer.WriteObject(result, false);
-        writer.End();
+        writer.End(new DefaultPipelineResult(null, Options.BreakLevel.None));
 
         var actual = JsonConvert.DeserializeObject<JObject>(output.Output.OfType<string>().FirstOrDefault());
         Assert.NotNull(actual);
@@ -78,7 +78,7 @@ public sealed class OutputWriterTests
         var writer = new SarifOutputWriter(null, output, option, null);
         writer.Begin();
         writer.WriteObject(result, false);
-        writer.End();
+        writer.End(new DefaultPipelineResult(null, Options.BreakLevel.None));
 
         var actual = JsonConvert.DeserializeObject<JObject>(output.Output.OfType<string>().FirstOrDefault());
         Assert.NotNull(actual);
@@ -112,7 +112,7 @@ public sealed class OutputWriterTests
         var writer = new YamlOutputWriter(output, option, null);
         writer.Begin();
         writer.WriteObject(result, false);
-        writer.End();
+        writer.End(new DefaultPipelineResult(null, Options.BreakLevel.None));
 
         Assert.Equal(@"- detail:
     reason: []
@@ -210,7 +210,7 @@ public sealed class OutputWriterTests
         var writer = new JsonOutputWriter(output, option, null);
         writer.Begin();
         writer.WriteObject(result, false);
-        writer.End();
+        writer.End(new DefaultPipelineResult(null, Options.BreakLevel.None));
 
         Assert.Equal(@"[
   {
@@ -331,7 +331,7 @@ public sealed class OutputWriterTests
         var writer = new NUnit3OutputWriter(output, option, null);
         writer.Begin();
         writer.WriteObject(result, false);
-        writer.End();
+        writer.End(new DefaultPipelineResult(null, Options.BreakLevel.None));
 
         var s = output.Output.OfType<string>().FirstOrDefault();
         var doc = new XmlDocument();
@@ -357,7 +357,7 @@ public sealed class OutputWriterTests
         var writer = new CsvOutputWriter(output, option, null);
         writer.Begin();
         writer.WriteObject(result, false);
-        writer.End();
+        writer.End(new DefaultPipelineResult(null, Options.BreakLevel.None));
 
         var actual = output.Output.OfType<string>().FirstOrDefault();
 
@@ -384,7 +384,7 @@ public sealed class OutputWriterTests
         writer.Begin();
         writer.WriteObject(result, false);
         context.RunTime.Stop();
-        writer.End();
+        writer.End(new DefaultPipelineResult(null, Options.BreakLevel.None));
 
         stream.Seek(0, SeekOrigin.Begin);
         using var reader = new StreamReader(stream);

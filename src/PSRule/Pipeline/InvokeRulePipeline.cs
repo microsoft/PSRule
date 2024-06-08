@@ -35,13 +35,13 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
 
         _Outcome = outcome;
         _IsSummary = context.Option.Output.As.Value == ResultFormat.Summary;
-        _Summary = _IsSummary ? new Dictionary<string, RuleSummaryRecord>() : null;
+        _Summary = _IsSummary ? [] : null;
         var allRuleBlocks = _RuleGraph.GetAll();
         var resourceIndex = new ResourceIndex(allRuleBlocks);
         _SuppressionFilter = new SuppressionFilter(Context, context.Option.Suppression, resourceIndex);
         _SuppressionGroupFilter = new SuppressionFilter(Pipeline.SuppressionGroup, resourceIndex);
 
-        _Completed = new List<InvokeResult>();
+        _Completed = [];
     }
 
     public int RuleCount { get; private set; }
@@ -84,7 +84,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
         if (_IsSummary)
             Writer.WriteObject(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0).ToArray(), true);
 
-        Writer.End();
+        Writer.End(Result);
     }
 
     private InvokeResult ProcessTargetObject(TargetObject targetObject)
@@ -148,7 +148,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
                     }
                     else if (ruleRecord.Outcome == RuleOutcome.Fail)
                     {
-                        Result.HadFailures = true;
+                        Result.Fail(ruleRecord.Level);
                         ruleBlockTarget.Fail();
                         Context.Fail();
                     }

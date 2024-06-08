@@ -24,6 +24,6 @@ internal sealed class GetRulePipeline : RulePipeline, IPipeline
     public override void End()
     {
         Writer.WriteObject(HostHelper.GetRule(Source, Context, _IncludeDependencies), true);
-        Writer.End();
+        Writer.End(Result);
     }
 }

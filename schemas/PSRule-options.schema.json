@@ -356,6 +356,19 @@
       "description": "Options that affect execution.",
       "markdownDescription": "Options that affect execution. [See help](https://aka.ms/ps-rule/options)",
       "properties": {
+        "break": {
+          "type": "string",
+          "title": "Break",
+          "description": "Determines the minimum rule severity level that breaks the pipeline. By default, the pipeline will break if a rule of error severity fails.",
+          "markdownDescription": "Determines the minimum rule severity level that breaks the pipeline. By default, the pipeline will break if a rule of error severity fails.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#executionbreak)",
+          "enum": [
+            "Never",
+            "OnError",
+            "OnWarning",
+            "OnInformation"
+          ],
+          "default": "OnError"
+        },
         "duplicateResourceId": {
           "type": "string",
           "title": "Duplicate resource identifiers",

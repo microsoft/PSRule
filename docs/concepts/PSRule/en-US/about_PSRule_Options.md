@@ -16,6 +16,7 @@ The following workspace options are available for use:
 - [Baseline.Group](#baselinegroup)
 - [Convention.Include](#conventioninclude)
 - [Execution.AliasReference](#executionaliasreference)
+- [Execution.Break](#executionbreak)
 - [Execution.DuplicateResourceId](#executionduplicateresourceid)
 - [Execution.HashAlgorithm](#executionhashalgorithm)
 - [Execution.LanguageMode](#executionlanguagemode)
@@ -791,6 +792,68 @@ variables:
   value: Error
 ```
 
+### Execution.Break
+
+:octicons-milestone-24: v3.0.0
+
+Determines the minimum rule severity level that breaks the pipeline.
+By default, the pipeline will break if a rule of error severity level fails.
+
+For this to take effect the rule must execute successfully and return a failure.
+This does not affect the pipeline if other errors or exceptions occurs.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Error`.
+- `Never` = (1) - Never break the pipeline if a rule fails regardless of level.
+  The pipeline will still break if other errors occur.
+- `OnError` = (2) - Break the pipeline if a rule of error severity level fails.
+  This is the default.
+- `OnWarning` = (3) - Break the pipeline if a rule of warning or error severity level fails.
+- `OnInformation` = (4) - Break the pipeline if a rule of information, warning, or error severity level fails.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Break parameter
+$option = New-PSRuleOption -ExecutionBreak 'Never';
+```
+
+```powershell
+# PowerShell: Using the Execution.Break hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.Break' = 'Never' };
+```
+
+```powershell
+# PowerShell: Using the ExecutionBreak parameter to set YAML
+Set-PSRuleOption -ExecutionBreak 'Never';
+```
+
+```yaml
+# YAML: Using the execution/break property
+execution:
+  break: Never
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_BREAK=Never
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_BREAK: Never
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_BREAK
+  value: Never
+```
+
 ### Execution.DuplicateResourceId
 
 :octicons-milestone-24: v2.4.0
@@ -1516,6 +1579,8 @@ variables:
 ```
 
 ### Input.FileObjects
+
+:octicons-milestone-24: v3.0.0
 
 Determines if file objects are processed by rules.
 This option is for backwards compatibility with PSRule v2.x in cases where file objects are used as input.

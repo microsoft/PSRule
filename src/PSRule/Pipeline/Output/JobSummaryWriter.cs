@@ -47,10 +47,10 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
         base.Begin();
     }
 
-    public sealed override void End()
+    public sealed override void End(IPipelineResult result)
     {
         Flush();
-        base.End();
+        base.End(result);
     }
 
     #region Helper methods

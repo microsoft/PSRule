@@ -26,7 +26,7 @@ internal sealed class GetBaselinePipeline : RulePipeline
     public override void End()
     {
         Writer.WriteObject(HostHelper.GetBaseline(Source, Context).Where(Match), true);
-        Writer.End();
+        Writer.End(Result);
     }
 
     private bool Match(Baseline baseline)

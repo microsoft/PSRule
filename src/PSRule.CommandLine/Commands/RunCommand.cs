@@ -53,7 +53,7 @@ public sealed class RunCommand
             pipeline.Begin();
             pipeline.Process(null);
             pipeline.End();
-            if (pipeline.Result.HadFailures)
+            if (pipeline.Result.ShouldBreakFromFailure)
                 exitCode = ERROR_BREAK_ON_FAILURE;
         }
         return clientContext.Host.HadErrors || pipeline == null ? ERROR_GENERIC : exitCode;

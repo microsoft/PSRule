@@ -3,7 +3,6 @@
 
 using System.Collections;
 using System.Globalization;
-using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Definitions;
@@ -189,88 +188,6 @@ public interface IPipelineBuilder
     IPipeline Build(IPipelineWriter writer = null);
 }
 
-/// <summary>
-/// An instance of a PSRule pipeline.
-/// </summary>
-public interface IPipeline : IDisposable
-{
-    /// <summary>
-    /// Get the pipeline result.
-    /// </summary>
-    IPipelineResult Result { get; }
-
-    /// <summary>
-    /// Initialize the pipeline and results. Call this method once prior to calling Process.
-    /// </summary>
-    void Begin();
-
-    /// <summary>
-    /// Process an object through the pipeline. Each object will be processed by rules that apply based on pre-conditions.
-    /// </summary>
-    /// <param name="sourceObject">The object to process.</param>
-    void Process(PSObject sourceObject);
-
-    /// <summary>
-    /// Clean up and flush pipeline results. Call this method once after processing any objects through the pipeline.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Matches PowerShell pipeline.")]
-    void End();
-}
-
-/// <summary>
-/// A result from the pipeline.
-/// </summary>
-public interface IPipelineResult
-{
-    /// <summary>
-    /// Determines if any errors were reported.
-    /// </summary>
-    public bool HadErrors { get; }
-
-    /// <summary>
-    /// Determines if an failures were reported.
-    /// </summary>
-    public bool HadFailures { get; }
-}
-
-internal sealed class DefaultPipelineResult : IPipelineResult
-{
-    private readonly IPipelineWriter _Writer;
-    private bool _HadErrors;
-    private bool _HadFailures;
-
-    public DefaultPipelineResult(IPipelineWriter writer)
-    {
-        _Writer = writer;
-    }
-
-    /// <inheritdoc/>
-    public bool HadErrors
-    {
-        get
-        {
-            return _HadErrors || (_Writer != null && _Writer.HadErrors);
-        }
-        set
-        {
-            _HadErrors = value;
-        }
-    }
-
-    /// <inheritdoc/>
-    public bool HadFailures
-    {
-        get
-        {
-            return _HadFailures || (_Writer != null && _Writer.HadFailures);
-        }
-        set
-        {
-            _HadFailures = value;
-        }
-    }
-}
-
 internal abstract class PipelineBuilderBase : IPipelineBuilder
 {
     private const string ENGINE_MODULE_NAME = "PSRule";
@@ -413,7 +330,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         {
             var writer = PrepareWriter();
             writer.ErrorRequiredVersionMismatch(moduleName, moduleVersion, requiredVersion);
-            writer.End();
+            writer.End(new DefaultPipelineResult(null, BreakLevel.None) { HadErrors = true });
             return true;
         }
         return false;
@@ -505,7 +422,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
                 shouldProcess: HostContext.ShouldProcess,
                 writeHost: writeHost
             )
-            : (PipelineWriter)_Output;
+            : _Output;
     }
 
     protected static string[] GetCulture(string[] culture)
@@ -580,8 +497,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             var ignoreGitPath = Option.Input.IgnoreGitPath ?? InputOption.Default.IgnoreGitPath.Value;
             var ignoreRepositoryCommon = Option.Input.IgnoreRepositoryCommon ?? InputOption.Default.IgnoreRepositoryCommon.Value;
             var builder = PathFilterBuilder.Create(basePath, Option.Input.PathIgnore, ignoreGitPath, ignoreRepositoryCommon);
-            //if (Option.Input.Format == InputFormat.File)
-                builder.UseGitIgnore();
+            builder.UseGitIgnore();
 
             _InputFilter = builder.Build();
         }

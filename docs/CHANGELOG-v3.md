@@ -29,6 +29,13 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v3.0.0-B0203:
 
+- New features:
+  - Added option to configure the severity level that PSRule will break the pipeline at by @BernieWhite.
+    [#1508](https://github.com/microsoft/PSRule/issues/1508)
+    - Previously only rules with the severity level `Error` would break the pipeline.
+    - With this update rules with the severity level `Error` that fail will break the pipeline by default.
+    - The `Execution.Break` option can be set to `Never`, `OnError`, `OnWarning`, or `OnInformation`.
+    - If a rule fails with a severity level equal or higher than the configured level the pipeline will break.
 - Engineering:
   - Bump xunit to v2.8.1.
     [#1840](https://github.com/microsoft/PSRule/pull/1840)

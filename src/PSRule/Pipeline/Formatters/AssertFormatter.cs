@@ -176,7 +176,7 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
     public void End(int total, int fail, int error)
     {
         if (Option.Output.Footer.GetValueOrDefault(FooterFormat.Default) != FooterFormat.None)
-            LineBreak();
+            BreakIfUnbrokenInfo();
 
         FooterRuleCount(total, fail, error);
         FooterRunInfo();

@@ -9,107 +9,9 @@ using PSRule.Rules;
 namespace PSRule.Pipeline;
 
 /// <summary>
-/// An writer which recieves output from PSRule.
-/// </summary>
-public interface IPipelineWriter : IDisposable
-{
-    /// <summary>
-    /// Determines if any errors were reported.
-    /// </summary>
-    bool HadErrors { get; }
-
-    /// <summary>
-    /// Determines if an failures were reported.
-    /// </summary>
-    bool HadFailures { get; }
-
-    /// <summary>
-    /// Write a verbose message.
-    /// </summary>
-    void WriteVerbose(string message);
-
-    /// <summary>
-    /// Determines if a verbose message should be written to output.
-    /// </summary>
-    bool ShouldWriteVerbose();
-
-    /// <summary>
-    /// Write a warning message.
-    /// </summary>
-    void WriteWarning(string message);
-
-    /// <summary>
-    /// Determines if a warning message should be written to output.
-    /// </summary>
-    bool ShouldWriteWarning();
-
-    /// <summary>
-    /// Write an error message.
-    /// </summary>
-    void WriteError(ErrorRecord errorRecord);
-
-    /// <summary>
-    /// Determines if an error message should be written to output.
-    /// </summary>
-    bool ShouldWriteError();
-
-    /// <summary>
-    /// Write an informational message.
-    /// </summary>
-    void WriteInformation(InformationRecord informationRecord);
-
-    /// <summary>
-    /// Write a message to the host process.
-    /// </summary>
-    void WriteHost(HostInformationMessage info);
-
-    /// <summary>
-    /// Determines if an informational message should be written to output.
-    /// </summary>
-    bool ShouldWriteInformation();
-
-    /// <summary>
-    /// Write a debug message.
-    /// </summary>
-    void WriteDebug(string text, params object[] args);
-
-    /// <summary>
-    /// Determines if a debug message should be written to output.
-    /// </summary>
-    bool ShouldWriteDebug();
-
-    /// <summary>
-    /// Write an object to output.
-    /// </summary>
-    /// <param name="sendToPipeline">The object to write to the pipeline.</param>
-    /// <param name="enumerateCollection">Determines when the object is enumerable if it should be enumerated as more then one object.</param>
-    void WriteObject(object sendToPipeline, bool enumerateCollection);
-
-    /// <summary>
-    /// Enter a logging scope.
-    /// </summary>
-    void EnterScope(string scopeName);
-
-    /// <summary>
-    /// Exit a logging scope.
-    /// </summary>
-    void ExitScope();
-
-    /// <summary>
-    /// Start and initialize the writer.
-    /// </summary>
-    void Begin();
-
-    /// <summary>
-    /// Stop and finalized the writer.
-    /// </summary>
-    void End();
-}
-
-/// <summary>
 /// A base class for writers.
 /// </summary>
-internal abstract class PipelineWriter : IPipelineWriter
+internal abstract class PipelineWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess) : IPipelineWriter
 {
     protected const string ErrorPreference = "ErrorActionPreference";
     protected const string WarningPreference = "WarningPreference";
@@ -117,21 +19,14 @@ internal abstract class PipelineWriter : IPipelineWriter
     protected const string InformationPreference = "InformationPreference";
     protected const string DebugPreference = "DebugPreference";
 
-    private readonly IPipelineWriter _Writer;
-    private readonly ShouldProcess _ShouldProcess;
+    private readonly IPipelineWriter _Writer = inner;
+    private readonly ShouldProcess _ShouldProcess = shouldProcess;
 
-    protected readonly PSRuleOption Option;
+    protected readonly PSRuleOption Option = option;
 
     private bool _IsDisposed;
     private bool _HadErrors;
     private bool _HadFailures;
-
-    protected PipelineWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
-    {
-        _Writer = inner;
-        _ShouldProcess = shouldProcess;
-        Option = option;
-    }
 
     bool IPipelineWriter.HadErrors => HadErrors;
 
@@ -182,12 +77,12 @@ internal abstract class PipelineWriter : IPipelineWriter
     }
 
     /// <inheritdoc/>
-    public virtual void End()
+    public virtual void End(IPipelineResult result)
     {
         if (_Writer == null)
             return;
 
-        _Writer.End();
+        _Writer.End(result);
     }
 
     /// <inheritdoc/>
@@ -363,98 +258,8 @@ internal abstract class PipelineWriter : IPipelineWriter
     /// <summary>
     /// Get the value of a preference variable.
     /// </summary>
-    protected static ActionPreference GetPreferenceVariable(System.Management.Automation.SessionState sessionState, string variableName)
+    protected static ActionPreference GetPreferenceVariable(SessionState sessionState, string variableName)
     {
         return (ActionPreference)sessionState.PSVariable.GetValue(variableName);
-    }
-}
-
-internal abstract class ResultOutputWriter<T> : PipelineWriter
-{
-    private readonly List<T> _Result;
-
-    protected ResultOutputWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
-        : base(inner, option, shouldProcess)
-    {
-        _Result = new List<T>();
-    }
-
-    public override void WriteObject(object sendToPipeline, bool enumerateCollection)
-    {
-        if (sendToPipeline is InvokeResult && Option.Output.As == ResultFormat.Summary)
-        {
-            base.WriteObject(sendToPipeline, enumerateCollection);
-            return;
-        }
-
-        if (sendToPipeline is InvokeResult result)
-        {
-            Add(typeof(T) == typeof(RuleRecord) ? result.AsRecord() : result);
-        }
-        else
-        {
-            Add(sendToPipeline);
-        }
-        base.WriteObject(sendToPipeline, enumerateCollection);
-    }
-
-    protected void Add(object o)
-    {
-        if (o is T[] collection)
-            _Result.AddRange(collection);
-        else if (o is T item)
-            _Result.Add(item);
-    }
-
-    /// <summary>
-    /// Clear any buffers from the writer.
-    /// </summary>
-    protected virtual void Flush() { }
-
-    protected T[] GetResults()
-    {
-        return _Result.ToArray();
-    }
-}
-
-internal abstract class SerializationOutputWriter<T> : ResultOutputWriter<T>
-{
-    protected SerializationOutputWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
-        : base(inner, option, shouldProcess) { }
-
-    public sealed override void End()
-    {
-        var results = GetResults();
-        base.WriteObject(Serialize(results), false);
-        ProcessError(results);
-        Flush();
-        base.End();
-    }
-
-    public override void WriteObject(object sendToPipeline, bool enumerateCollection)
-    {
-        if (sendToPipeline is InvokeResult && Option.Output.As == ResultFormat.Summary)
-        {
-            base.WriteObject(sendToPipeline, enumerateCollection);
-            return;
-        }
-
-        if (sendToPipeline is InvokeResult result)
-        {
-            Add(result.AsRecord());
-            return;
-        }
-        Add(sendToPipeline);
-    }
-
-    protected abstract string Serialize(T[] o);
-
-    private void ProcessError(T[] results)
-    {
-        for (var i = 0; i < results.Length; i++)
-        {
-            if (results[i] is RuleRecord record)
-                WriteErrorInfo(record);
-        }
     }
 }
