@@ -43,6 +43,8 @@ What's changed since pre-release v3.0.0-B0203:
     [#1841](https://github.com/microsoft/PSRule/pull/1841)
   - Bump System.Drawing.Common to v8.0.6.
     [#1843](https://github.com/microsoft/PSRule/pull/1843)
+  - Bump YamlDotNet to v15.1.6.
+    [#1846](https://github.com/microsoft/PSRule/pull/1846)
 
 ## v3.0.0-B0203 (pre-release)
 
