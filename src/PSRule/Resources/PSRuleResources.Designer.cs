@@ -637,7 +637,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The {0} &apos;{1}&apos; is obsolete. Consider switching to an alternative {0}..
+        ///   Looks up a localized string similar to The {kind} &apos;{id}&apos; is obsolete..
         /// </summary>
         internal static string ResourceObsolete {
             get {

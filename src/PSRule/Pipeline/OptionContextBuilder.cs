@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections;
+using Microsoft.Extensions.Logging;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
