@@ -45,6 +45,8 @@ What's changed since pre-release v3.0.0-B0203:
     [#1843](https://github.com/microsoft/PSRule/pull/1843)
   - Bump YamlDotNet to v15.1.6.
     [#1846](https://github.com/microsoft/PSRule/pull/1846)
+  - Bump Microsoft.CodeAnalysis.Common to v4.10.0.
+    [#1854](https://github.com/microsoft/PSRule/pull/1854)
 
 ## v3.0.0-B0203 (pre-release)
 
