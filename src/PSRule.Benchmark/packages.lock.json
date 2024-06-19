@@ -2,22 +2,14 @@
   "version": 1,
   "dependencies": {
     "net8.0": {
-      "BenchmarkDotNet": {
+      "BenchmarkDotNet.Diagnostics.Windows": {
         "type": "Direct",
         "requested": "[0.13.12, )",
         "resolved": "0.13.12",
-        "contentHash": "aKnzpUZJJfLBHG7zcfQZhCexZQKcJgElC8qcFUTXPMYFlVauJBobuOmtRnmrapqC2j7EjjZCsPxa3yLvFLx5/Q==",
+        "contentHash": "HdARbwcGFymgrSFoLVtuJaacyNW9WLuGljX0hsTarSO+80nI2OmbDS09R+I9kIeJ8Gn/1zJFjKgefmAlADhlww==",
         "dependencies": {
-          "BenchmarkDotNet.Annotations": "0.13.12",
-          "CommandLineParser": "2.9.1",
-          "Gee.External.Capstone": "2.3.0",
-          "Iced": "1.17.0",
-          "Microsoft.CodeAnalysis.CSharp": "4.1.0",
-          "Microsoft.Diagnostics.Runtime": "2.2.332302",
-          "Microsoft.Diagnostics.Tracing.TraceEvent": "3.0.2",
-          "Microsoft.DotNet.PlatformAbstractions": "3.1.6",
-          "Perfolizer": "[0.2.1]",
-          "System.Management": "5.0.0"
+          "BenchmarkDotNet": "0.13.12",
+          "Microsoft.Diagnostics.Tracing.TraceEvent": "3.0.2"
         }
       },
       "Microsoft.Extensions.CommandLineUtils": {
@@ -89,6 +81,23 @@
           "System.Security.Cryptography.Pkcs": "8.0.0",
           "System.Security.Permissions": "8.0.0",
           "System.Text.Encoding.CodePages": "8.0.0"
+        }
+      },
+      "BenchmarkDotNet": {
+        "type": "Transitive",
+        "resolved": "0.13.12",
+        "contentHash": "aKnzpUZJJfLBHG7zcfQZhCexZQKcJgElC8qcFUTXPMYFlVauJBobuOmtRnmrapqC2j7EjjZCsPxa3yLvFLx5/Q==",
+        "dependencies": {
+          "BenchmarkDotNet.Annotations": "0.13.12",
+          "CommandLineParser": "2.9.1",
+          "Gee.External.Capstone": "2.3.0",
+          "Iced": "1.17.0",
+          "Microsoft.CodeAnalysis.CSharp": "4.1.0",
+          "Microsoft.Diagnostics.Runtime": "2.2.332302",
+          "Microsoft.Diagnostics.Tracing.TraceEvent": "3.0.2",
+          "Microsoft.DotNet.PlatformAbstractions": "3.1.6",
+          "Perfolizer": "[0.2.1]",
+          "System.Management": "5.0.0"
         }
       },
       "BenchmarkDotNet.Annotations": {
@@ -1791,8 +1800,8 @@
       },
       "YamlDotNet": {
         "type": "Transitive",
-        "resolved": "15.1.6",
-        "contentHash": "T/cQEK/KHK96Q8kytJ4iUGDXg1/fj2Qtk6rCQeIlHYU1zTeyGVHW0QNZgREQyxZpygGMDMmrXNWt0sj5TsQnjA=="
+        "resolved": "15.3.0",
+        "contentHash": "F93japYa9YrJ59AZGhgdaUGHN7ITJ55FBBg/D/8C0BDgahv/rQD6MOSwHxOJJpon1kYyslVbeBrQ2wcJhox01w=="
       },
       "Microsoft.PSRule.Badges": {
         "type": "Project",
@@ -1813,7 +1822,7 @@
         "type": "Project",
         "dependencies": {
           "Newtonsoft.Json": "[13.0.3, )",
-          "YamlDotNet": "[15.1.6, )"
+          "YamlDotNet": "[15.3.0, )"
         }
       }
     }
