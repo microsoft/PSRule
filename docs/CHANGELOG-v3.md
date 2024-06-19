@@ -45,6 +45,10 @@ What's changed since pre-release v3.0.0-B0203:
     [#1843](https://github.com/microsoft/PSRule/pull/1843)
   - Bump YamlDotNet to v15.1.6.
     [#1846](https://github.com/microsoft/PSRule/pull/1846)
+  - Bump Pester to v5.6.0.
+    [#1858](https://github.com/microsoft/PSRule/pull/1858)
+  - Bump PSScriptAnalyzer to v1.22.0.
+    [#1858](https://github.com/microsoft/PSRule/pull/1858)
 
 ## v3.0.0-B0203 (pre-release)
 
