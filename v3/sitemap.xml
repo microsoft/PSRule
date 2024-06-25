@@ -201,6 +201,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://microsoft.github.io/PSRule/v3/concepts/feature-flagging/</loc>
+         <lastmod>2024-06-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://microsoft.github.io/PSRule/v3/concepts/grouping-rules/</loc>
          <lastmod>2024-06-25</lastmod>
          <changefreq>daily</changefreq>
