@@ -3,8 +3,8 @@
 
 using System.Collections.Concurrent;
 using System.Management.Automation;
+using PSRule.Configuration;
 using PSRule.Data;
-using PSRule.Options;
 using PSRule.Pipeline.Emitters;
 
 namespace PSRule.Pipeline;
@@ -22,13 +22,13 @@ internal sealed class PipelineInputStream
     private readonly ConcurrentQueue<ITargetObject> _Queue;
     private readonly EmitterCollection _EmitterCollection;
 
-    public PipelineInputStream(VisitTargetObject input, InputPathBuilder inputPath, PathFilter inputFilter, InputFormat? inputFormat, string objectPath, bool? shouldEmitFile)
+    public PipelineInputStream(VisitTargetObject input, InputPathBuilder inputPath, PathFilter inputFilter, PSRuleOption option)
     {
         _Input = input;
         _InputPath = inputPath;
         _InputFilter = inputFilter;
         _Queue = new ConcurrentQueue<ITargetObject>();
-        _EmitterCollection = new EmitterBuilder().Build(new EmitterContext(_Queue, inputFilter, inputFormat, objectPath, shouldEmitFile));
+        _EmitterCollection = new EmitterBuilder().Build(new EmitterContext(_Queue, inputFilter, option));
     }
 
     public int Count => _Queue.Count;

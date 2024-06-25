@@ -29,7 +29,7 @@ public interface IEmitterContext
     void Emit(ITargetObject value);
 
     /// <summary>
-    /// 
+    /// Determine if a specified path should be queued for processing.
     /// </summary>
     bool ShouldQueue(string path);
 }

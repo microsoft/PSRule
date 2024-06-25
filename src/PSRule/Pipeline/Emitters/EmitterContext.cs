@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.Concurrent;
+using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Emitters;
 using PSRule.Options;
@@ -19,8 +20,8 @@ internal sealed class EmitterContext : BaseEmitterContext
     /// <summary>
     /// Create an instance containing context for an <see cref="IEmitter"/>.
     /// </summary>
-    internal EmitterContext(ConcurrentQueue<ITargetObject> queue, PathFilter inputFilter, InputFormat? inputFormat, string objectPath, bool? shouldEmitFile)
-        : base(inputFormat ?? InputFormat.None, objectPath, shouldEmitFile ?? false)
+    internal EmitterContext(ConcurrentQueue<ITargetObject> queue, PathFilter inputFilter, PSRuleOption option)
+        : base(option?.Input?.Format ?? InputFormat.None, option?.Input?.ObjectPath, option?.Input?.FileObjects ?? false)
     {
         _Queue = queue;
         _InputFilter = inputFilter;
