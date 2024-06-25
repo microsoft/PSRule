@@ -6,10 +6,12 @@ using System.Dynamic;
 
 namespace PSRule.Runtime;
 
+#nullable enable
+
 /// <summary>
-/// A set of rule configuration values that are exposed at runtime and automatically failback to defaults when not set in configuration.
+/// A set of rule configuration values that are exposed at runtime and automatically fallback to defaults when not set in configuration.
 /// </summary>
-public sealed class Configuration : DynamicObject
+public sealed class Configuration : DynamicObject, IConfiguration
 {
     private readonly RunspaceContext _Context;
 
@@ -19,7 +21,7 @@ public sealed class Configuration : DynamicObject
     }
 
     /// <inheritdoc/>
-    public override bool TryGetMember(GetMemberBinder binder, out object result)
+    public override bool TryGetMember(GetMemberBinder binder, out object? result)
     {
         result = null;
         if (binder == null || string.IsNullOrEmpty(binder.Name))
@@ -29,18 +31,47 @@ public sealed class Configuration : DynamicObject
         return TryGetValue(binder.Name, out result);
     }
 
-    /// <summary>
-    /// Get the specified configuration key as a string array.
-    /// </summary>
-    /// <param name="configurationKey">A key for the configuration value.</param>
-    /// <returns>Returns an array of strings. If the configuration key does not exist and empty array is returned.</returns>
+    /// <inheritdoc/>
+    public object? GetValueOrDefault(string configurationKey, object? defaultValue = default)
+    {
+        return TryGetValue(configurationKey, out var value) && value != null ? value : defaultValue;
+    }
+
+    /// <inheritdoc/>
+    public string? GetStringOrDefault(string configurationKey, string? defaultValue = default)
+    {
+        return TryGetValue(configurationKey, out var value) &&
+            value != null &&
+            TryString(value, out var result) &&
+            result != null ? result : defaultValue;
+    }
+
+    /// <inheritdoc/>
+    public bool? GetBoolOrDefault(string configurationKey, bool? defaultValue = default)
+    {
+        return TryGetValue(configurationKey, out var value) &&
+            value != null &&
+            TryBool(value, out var result) &&
+            result != null ? result : defaultValue;
+    }
+
+    /// <inheritdoc/>
+    public int? GetIntegerOrDefault(string configurationKey, int? defaultValue = default)
+    {
+        return TryGetValue(configurationKey, out var value) &&
+            value != null &&
+            TryInt(value, out var result) &&
+            result != null ? result : defaultValue;
+    }
+
+    /// <inheritdoc/>
     public string[] GetStringValues(string configurationKey)
     {
         if (!TryGetValue(configurationKey, out var value) || value == null)
-            return Array.Empty<string>();
+            return [];
 
         if (value is string valueT)
-            return new string[] { valueT };
+            return [valueT];
 
         if (value is string[] result)
             return result;
@@ -49,56 +80,34 @@ public sealed class Configuration : DynamicObject
         {
             var cList = new List<string>();
             foreach (var v in c)
+            {
                 cList.Add(v.ToString());
+            }
 
-            return cList.ToArray();
+            return [.. cList];
         }
-        return new string[] { value.ToString() };
+        return [value.ToString()];
     }
 
-    /// <summary>
-    /// Try to the configuration key or use the specified default value if the key does not exist.
-    /// </summary>
-    /// <param name="configurationKey">A key for the configuration value.</param>
-    /// <param name="defaultValue">The default value to use if the configuration key does not exist.</param>
-    /// <returns>Returns the configured value or the default.</returns>
-    public object GetValueOrDefault(string configurationKey, object defaultValue)
+    /// <inheritdoc/>
+    public bool IsEnabled(string configurationKey)
     {
-        return !TryGetValue(configurationKey, out var value) || value == null ? defaultValue : value;
+        return TryGetValue(configurationKey, out var value) &&
+            value != null &&
+            TryBool(value, out var result) &&
+            result == true;
     }
 
-    /// <summary>
-    /// Try to get the configuration key as a <seealso cref="bool"/>.
-    /// </summary>
-    /// <param name="configurationKey">A key for the configuration value.</param>
-    /// <param name="defaultValue">The default value to use if the configuration key does not exist.</param>
-    /// <returns>Returns the configured value or the default.</returns>
-    public bool GetBoolOrDefault(string configurationKey, bool defaultValue)
+    private bool TryGetValue(string name, out object? value)
     {
-        return !TryGetValue(configurationKey, out var value) || !TryBool(value, out var result) ? defaultValue : result;
-    }
-
-    /// <summary>
-    /// Try to get the configuration key as an <seealso cref="int"/>.
-    /// </summary>
-    /// <param name="configurationKey">A key for the configuration value.</param>
-    /// <param name="defaultValue">The default value to use if the configuration key does not exist.</param>
-    /// <returns>Returns the configured value or the default.</returns>
-    public int GetIntegerOrDefault(string configurationKey, int defaultValue)
-    {
-        return !TryGetValue(configurationKey, out var value) || !TryInt(value, out var result) ? defaultValue : result;
-    }
-
-    private bool TryGetValue(string name, out object value)
-    {
-        value = null;
+        value = default;
         return _Context != null && _Context.TryGetConfigurationValue(name, out value);
     }
 
-    private static bool TryBool(object o, out bool value)
+    private static bool TryBool(object o, out bool? value)
     {
         value = default;
-        if (o is bool result || (o is string svalue && bool.TryParse(svalue, out result)))
+        if (o is bool result || (o is string s && bool.TryParse(s, out result)))
         {
             value = result;
             return true;
@@ -106,10 +115,21 @@ public sealed class Configuration : DynamicObject
         return false;
     }
 
-    private static bool TryInt(object o, out int value)
+    private static bool TryInt(object o, out int? value)
     {
         value = default;
-        if (o is int result || (o is string svalue && int.TryParse(svalue, out result)))
+        if (o is int result || (o is string s && int.TryParse(s, out result)))
+        {
+            value = result;
+            return true;
+        }
+        return false;
+    }
+
+    private static bool TryString(object o, out string? value)
+    {
+        value = default;
+        if (o is string result)
         {
             value = result;
             return true;
@@ -117,3 +137,5 @@ public sealed class Configuration : DynamicObject
         return false;
     }
 }
+
+#nullable restore

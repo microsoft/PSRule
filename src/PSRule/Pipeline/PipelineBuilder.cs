@@ -387,7 +387,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
 
     protected virtual PipelineInputStream PrepareReader()
     {
-        return new PipelineInputStream(null, null, GetInputObjectSourceFilter(), Option.Input.Format, Option.Input.ObjectPath, Option.Input.FileObjects);
+        return new PipelineInputStream(null, null, GetInputObjectSourceFilter(), Option);
     }
 
     protected virtual PipelineWriter PrepareWriter()

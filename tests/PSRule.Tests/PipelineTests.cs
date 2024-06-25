@@ -180,7 +180,7 @@ public sealed class PipelineTests
         Environment.UseCurrentCulture(CultureInfo.InvariantCulture);
         var context = PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContextBuilder(), null);
         var writer = new TestWriter(GetOption());
-        var pipeline = new GetRulePipeline(context, GetSource(), new PipelineInputStream(null, null, null, null, null, null), writer, false);
+        var pipeline = new GetRulePipeline(context, GetSource(), new PipelineInputStream(null, null, null, null), writer, false);
         try
         {
             pipeline.Begin();
@@ -202,7 +202,7 @@ public sealed class PipelineTests
         option.Execution.InvariantCulture = ExecutionActionPreference.Ignore;
         var context = PipelineContext.New(option, null, null, null, null, null, new OptionContextBuilder(), null);
         var writer = new TestWriter(option);
-        var pipeline = new GetRulePipeline(context, GetSource(), new PipelineInputStream(null, null, null, null, null, null), writer, false);
+        var pipeline = new GetRulePipeline(context, GetSource(), new PipelineInputStream(null, null, null, null), writer, false);
         try
         {
             pipeline.Begin();
