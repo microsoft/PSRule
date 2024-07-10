@@ -4,7 +4,6 @@
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Language;
-using Microsoft.Extensions.Logging;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Options;
@@ -853,41 +852,41 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     #region ILogger
 
     /// <inheritdoc/>
-    bool ILogger.IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
+    bool ILogger.IsEnabled(LogLevel logLevel)
     {
         return Writer != null && (
-            (logLevel == Microsoft.Extensions.Logging.LogLevel.Warning && Writer.ShouldWriteWarning()) ||
-            ((logLevel == Microsoft.Extensions.Logging.LogLevel.Error || logLevel == Microsoft.Extensions.Logging.LogLevel.Critical) && Writer.ShouldWriteError()) ||
-            (logLevel == Microsoft.Extensions.Logging.LogLevel.Information && Writer.ShouldWriteInformation()) ||
-            (logLevel == Microsoft.Extensions.Logging.LogLevel.Debug && Writer.ShouldWriteVerbose()) ||
-            (logLevel == Microsoft.Extensions.Logging.LogLevel.Trace && Writer.ShouldWriteDebug())
+            (logLevel == LogLevel.Warning && Writer.ShouldWriteWarning()) ||
+            ((logLevel == LogLevel.Error || logLevel == LogLevel.Critical) && Writer.ShouldWriteError()) ||
+            (logLevel == LogLevel.Information && Writer.ShouldWriteInformation()) ||
+            (logLevel == LogLevel.Debug && Writer.ShouldWriteVerbose()) ||
+            (logLevel == LogLevel.Trace && Writer.ShouldWriteDebug())
         );
     }
 
 #nullable enable
 
     /// <inheritdoc/>
-    void ILogger.Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    void ILogger.Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         if (Writer == null) return;
 
-        if (logLevel == Microsoft.Extensions.Logging.LogLevel.Error || logLevel == Microsoft.Extensions.Logging.LogLevel.Critical)
+        if (logLevel == LogLevel.Error || logLevel == LogLevel.Critical)
         {
             Writer.WriteError(new ErrorRecord(exception, eventId.Id.ToString(), ErrorCategory.InvalidOperation, null));
         }
-        else if (logLevel == Microsoft.Extensions.Logging.LogLevel.Warning)
+        else if (logLevel == LogLevel.Warning)
         {
             Writer.WriteWarning(formatter(state, exception));
         }
-        else if (logLevel == Microsoft.Extensions.Logging.LogLevel.Information)
+        else if (logLevel == LogLevel.Information)
         {
             Writer.WriteInformation(new InformationRecord(formatter(state, exception), null));
         }
-        else if (logLevel == Microsoft.Extensions.Logging.LogLevel.Debug)
+        else if (logLevel == LogLevel.Debug)
         {
             Writer.WriteDebug(formatter(state, exception));
         }
-        else if (logLevel == Microsoft.Extensions.Logging.LogLevel.Trace)
+        else if (logLevel == LogLevel.Trace)
         {
             Writer.WriteVerbose(formatter(state, exception));
         }

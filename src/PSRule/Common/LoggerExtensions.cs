@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Microsoft.Extensions.Logging;
 using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
+using PSRule.Runtime;
 
 namespace PSRule;
 
