@@ -37,10 +37,10 @@ What's changed since pre-release v3.0.0-B0203:
     - The `Execution.Break` option can be set to `Never`, `OnError`, `OnWarning`, or `OnInformation`.
     - If a rule fails with a severity level equal or higher than the configured level the pipeline will break.
 - Engineering:
-  - Bump xunit to v2.8.1.
-    [#1840](https://github.com/microsoft/PSRule/pull/1840)
-  - Bump xunit.runner.visualstudio to v2.8.1.
-    [#1841](https://github.com/microsoft/PSRule/pull/1841)
+  - Bump xunit to v2.9.0.
+    [#1869](https://github.com/microsoft/PSRule/pull/1869)
+  - Bump xunit.runner.visualstudio to v2.8.2.
+    [#1869](https://github.com/microsoft/PSRule/pull/1869)
   - Bump System.Drawing.Common to v8.0.7.
     [#1867](https://github.com/microsoft/PSRule/pull/1867)
   - Bump YamlDotNet to v15.3.0.
