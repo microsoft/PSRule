@@ -14,6 +14,8 @@ using static PSRule.Pipeline.PipelineContext;
 
 namespace PSRule.Runtime;
 
+#nullable enable
+
 /// <summary>
 /// A context for a PSRule runspace.
 /// </summary>
@@ -25,15 +27,15 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     private const string WARN_KEY_SEPARATOR = "_";
 
     [ThreadStatic]
-    internal static RunspaceContext CurrentThread;
+    internal static RunspaceContext? CurrentThread;
 
     internal readonly PipelineContext Pipeline;
     internal readonly IPipelineWriter Writer;
 
     // Fields exposed to engine
-    internal RuleRecord RuleRecord;
-    internal RuleBlock RuleBlock;
-    internal ITargetBindingResult Binding;
+    internal RuleRecord? RuleRecord;
+    internal RuleBlock? RuleBlock;
+    internal ITargetBindingResult? Binding;
 
     private readonly ExecutionActionPreference _RuleInconclusive;
     private readonly ExecutionActionPreference _UnprocessedObject;
@@ -55,7 +57,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     private bool _RaisedUsingInvariantCulture;
 
     // Pipeline logging
-    private string _LogPrefix;
+    private string? _LogPrefix;
     private int _ObjectNumber;
     private int _RuleErrors;
 
@@ -77,32 +79,32 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         CurrentThread = this;
         Pipeline = pipeline;
 
-        _RuleInconclusive = Pipeline.Option.Execution.RuleInconclusive.GetValueOrDefault(ExecutionOption.Default.RuleInconclusive.Value);
-        _UnprocessedObject = Pipeline.Option.Execution.UnprocessedObject.GetValueOrDefault(ExecutionOption.Default.UnprocessedObject.Value);
-        _RuleSuppressed = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed.Value);
-        _InvariantCulture = Pipeline.Option.Execution.InvariantCulture.GetValueOrDefault(ExecutionOption.Default.InvariantCulture.Value);
+        _RuleInconclusive = Pipeline.Option.Execution.RuleInconclusive.GetValueOrDefault(ExecutionOption.Default.RuleInconclusive!.Value);
+        _UnprocessedObject = Pipeline.Option.Execution.UnprocessedObject.GetValueOrDefault(ExecutionOption.Default.UnprocessedObject!.Value);
+        _RuleSuppressed = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed!.Value);
+        _InvariantCulture = Pipeline.Option.Execution.InvariantCulture.GetValueOrDefault(ExecutionOption.Default.InvariantCulture!.Value);
 
-        _FailStream = Pipeline.Option.Logging.RuleFail ?? LoggingOption.Default.RuleFail.Value;
-        _PassStream = Pipeline.Option.Logging.RulePass ?? LoggingOption.Default.RulePass.Value;
-        _WarnOnce = new HashSet<string>();
+        _FailStream = Pipeline.Option.Logging.RuleFail ?? LoggingOption.Default.RuleFail!.Value;
+        _PassStream = Pipeline.Option.Logging.RulePass ?? LoggingOption.Default.RulePass!.Value;
+        _WarnOnce = [];
 
         _ObjectNumber = -1;
         _RuleTimer = new Stopwatch();
-        _Reason = new List<ResultReason>();
-        _Conventions = new List<IConvention>();
+        _Reason = [];
+        _Conventions = [];
         _LanguageScopes = new LanguageScopeSet(this);
         _Scope = new Stack<RunspaceScope>();
     }
 
     internal bool HadErrors => _RuleErrors > 0;
 
-    internal IEnumerable<InvokeResult> Output { get; private set; }
+    internal IEnumerable<InvokeResult>? Output { get; private set; }
 
-    internal TargetObject TargetObject { get; private set; }
+    internal TargetObject? TargetObject { get; private set; }
 
-    internal ITargetBinder TargetBinder { get; private set; }
+    internal ITargetBinder? TargetBinder { get; private set; }
 
-    internal SourceScope Source { get; private set; }
+    internal SourceScope? Source { get; private set; }
 
     internal ILanguageScope LanguageScope
     {
@@ -141,11 +143,11 @@ internal sealed class RunspaceContext : IDisposable, ILogger
 
     public void Pass()
     {
-        if (Writer == null || _PassStream == OutcomeLogStream.None)
+        if (Writer == null || _PassStream == OutcomeLogStream.None || RuleRecord == null)
             return;
 
         if (_PassStream == OutcomeLogStream.Warning && Writer.ShouldWriteWarning())
-            Writer.WriteWarning(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, Binding.TargetName);
+            Writer.WriteWarning(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, Binding?.TargetName);
 
         if (_PassStream == OutcomeLogStream.Error && Writer.ShouldWriteError())
             Writer.WriteError(new ErrorRecord(
@@ -153,7 +155,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
                     Thread.CurrentThread.CurrentCulture,
                     PSRuleResources.OutcomeRulePass,
                     RuleRecord.RuleName,
-                    Binding.TargetName)),
+                    Binding?.TargetName)),
                 SOURCE_OUTCOME_PASS,
                 ErrorCategory.InvalidData,
                 null));
@@ -164,17 +166,17 @@ internal sealed class RunspaceContext : IDisposable, ILogger
                     Thread.CurrentThread.CurrentCulture,
                     PSRuleResources.OutcomeRulePass,
                     RuleRecord.RuleName,
-                    Binding.TargetName),
+                    Binding?.TargetName),
                 source: SOURCE_OUTCOME_PASS));
     }
 
     public void Fail()
     {
-        if (Writer == null || _FailStream == OutcomeLogStream.None)
+        if (Writer == null || _FailStream == OutcomeLogStream.None || RuleRecord == null)
             return;
 
         if (_FailStream == OutcomeLogStream.Warning && Writer.ShouldWriteWarning())
-            Writer.WriteWarning(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, Binding.TargetName);
+            Writer.WriteWarning(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, Binding?.TargetName);
 
         if (_FailStream == OutcomeLogStream.Error && Writer.ShouldWriteError())
             Writer.WriteError(new ErrorRecord(
@@ -182,7 +184,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
                     Thread.CurrentThread.CurrentCulture,
                     PSRuleResources.OutcomeRuleFail,
                     RuleRecord.RuleName,
-                    Binding.TargetName)),
+                    Binding?.TargetName)),
                 SOURCE_OUTCOME_FAIL,
                 ErrorCategory.InvalidData,
                 null));
@@ -193,28 +195,28 @@ internal sealed class RunspaceContext : IDisposable, ILogger
                     Thread.CurrentThread.CurrentCulture,
                     PSRuleResources.OutcomeRuleFail,
                     RuleRecord.RuleName,
-                    Binding.TargetName),
+                    Binding?.TargetName),
                 source: SOURCE_OUTCOME_FAIL));
     }
 
     public void WarnRuleInconclusive(string ruleId)
     {
-        this.Throw(_RuleInconclusive, PSRuleResources.RuleInconclusive, ruleId, Binding.TargetName);
+        this.Throw(_RuleInconclusive, PSRuleResources.RuleInconclusive, ruleId, Binding?.TargetName);
     }
 
     public void WarnObjectNotProcessed()
     {
-        this.Throw(_UnprocessedObject, PSRuleResources.ObjectNotProcessed, Binding.TargetName);
+        this.Throw(_UnprocessedObject, PSRuleResources.ObjectNotProcessed, Binding?.TargetName);
     }
 
     public void RuleSuppressed(string ruleId)
     {
-        this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressed, ruleId, Binding.TargetName);
+        this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressed, ruleId, Binding?.TargetName);
     }
 
     public void WarnRuleCountSuppressed(int ruleCount)
     {
-        this.Throw(_RuleSuppressed, PSRuleResources.RuleCountSuppressed, ruleCount, Binding.TargetName);
+        this.Throw(_RuleSuppressed, PSRuleResources.RuleCountSuppressed, ruleCount, Binding?.TargetName);
     }
 
     public void RuleSuppressionGroup(string ruleId, ISuppressionInfo suppression)
@@ -223,9 +225,9 @@ internal sealed class RunspaceContext : IDisposable, ILogger
             return;
 
         if (suppression.Synopsis != null && suppression.Synopsis.HasValue)
-            this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroupExtended, ruleId, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
+            this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroupExtended, ruleId, suppression.Id, Binding?.TargetName, suppression.Synopsis.Text);
         else
-            this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroup, ruleId, suppression.Id, Binding.TargetName);
+            this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroup, ruleId, suppression.Id, Binding?.TargetName);
     }
 
     public void RuleSuppressionGroupCount(ISuppressionInfo suppression, int count)
@@ -234,12 +236,12 @@ internal sealed class RunspaceContext : IDisposable, ILogger
             return;
 
         if (suppression.Synopsis != null && suppression.Synopsis.HasValue)
-            this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroupExtendedCount, count, suppression.Id, Binding.TargetName, suppression.Synopsis.Text);
+            this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroupExtendedCount, count, suppression.Id, Binding?.TargetName, suppression.Synopsis.Text);
         else
-            this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroupCount, count, suppression.Id, Binding.TargetName);
+            this.Throw(_RuleSuppressed, PSRuleResources.RuleSuppressionGroupCount, count, suppression.Id, Binding?.TargetName);
     }
 
-    public void ErrorInvaildRuleResult()
+    public void ErrorInvalidRuleResult()
     {
         if (Writer == null || !Writer.ShouldWriteError())
             return;
@@ -248,7 +250,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
             exception: new RuleException(message: string.Format(
                 Thread.CurrentThread.CurrentCulture,
                 PSRuleResources.InvalidRuleResult,
-                RuleBlock.Id
+                RuleBlock?.Id
             )),
             errorId: ERRORID_INVALIDRULERESULT,
             errorCategory: ErrorCategory.InvalidResult,
@@ -278,7 +280,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         if (Writer == null || !Writer.ShouldWriteVerbose())
             return;
 
-        Writer.WriteVerbose(string.Concat(GetLogPrefix(), " :: ", Binding.TargetName));
+        Writer.WriteVerbose(string.Concat(GetLogPrefix(), " :: ", Binding?.TargetName));
     }
 
     public void VerboseConditionMessage(string condition, string message, params object[] args)
@@ -360,51 +362,64 @@ internal sealed class RunspaceContext : IDisposable, ILogger
 
     private static void Debug_DataAdded(object sender, DataAddedEventArgs e)
     {
-        if (CurrentThread.Writer == null)
+        if (CurrentThread?.Writer == null)
             return;
 
-        var collection = sender as PSDataCollection<DebugRecord>;
+        if (sender is not PSDataCollection<DebugRecord> collection)
+            return;
+
         var record = collection[e.Index];
         CurrentThread.Writer.WriteDebug(debugRecord: record);
     }
 
     private static void Information_DataAdded(object sender, DataAddedEventArgs e)
     {
-        if (CurrentThread.Writer == null)
+        if (CurrentThread?.Writer == null)
             return;
 
-        var collection = sender as PSDataCollection<InformationRecord>;
+        if (sender is not PSDataCollection<InformationRecord> collection)
+            return;
+
         var record = collection[e.Index];
         CurrentThread.Writer.WriteInformation(informationRecord: record);
     }
 
     private static void Verbose_DataAdded(object sender, DataAddedEventArgs e)
     {
-        if (CurrentThread.Writer == null)
+        if (CurrentThread?.Writer == null)
             return;
 
-        var collection = sender as PSDataCollection<VerboseRecord>;
+        if (sender is not PSDataCollection<VerboseRecord> collection)
+            return;
+
         var record = collection[e.Index];
         CurrentThread.Writer.WriteVerbose(record.Message);
     }
 
     private static void Warning_DataAdded(object sender, DataAddedEventArgs e)
     {
-        if (CurrentThread.Writer == null)
+        if (CurrentThread?.Writer == null)
             return;
 
-        var collection = sender as PSDataCollection<WarningRecord>;
+        if (sender is not PSDataCollection<WarningRecord> collection)
+            return;
+
         var record = collection[e.Index];
         CurrentThread.Writer.WriteWarning(message: record.Message);
     }
 
     private static void Error_DataAdded(object sender, DataAddedEventArgs e)
     {
+        if (CurrentThread == null)
+            return;
+
         CurrentThread._RuleErrors++;
         if (CurrentThread.Writer == null)
             return;
 
-        var collection = sender as PSDataCollection<ErrorRecord>;
+        if (sender is not PSDataCollection<ErrorRecord> collection)
+            return;
+
         var record = collection[e.Index];
         CurrentThread.Error(record);
     }
@@ -489,12 +504,12 @@ internal sealed class RunspaceContext : IDisposable, ILogger
             );
     }
 
-    private static string GetPositionMessage(ErrorRecord errorRecord)
+    private static string? GetPositionMessage(ErrorRecord? errorRecord)
     {
         return errorRecord?.InvocationInfo?.PositionMessage;
     }
 
-    private static IScriptExtent GetErrorScriptExtent(ErrorRecord errorRecord)
+    private static ScriptExtent? GetErrorScriptExtent(ErrorRecord? errorRecord)
     {
         if (errorRecord == null)
             return null;
@@ -560,7 +575,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     {
         _ObjectNumber++;
         TargetObject = targetObject;
-        TargetBinder.Bind(TargetObject);
+        TargetBinder?.Bind(TargetObject);
         if (Pipeline.ContentCache.Count > 0)
             Pipeline.ContentCache.Clear();
 
@@ -576,7 +591,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
 
     public bool TrySelector(string name)
     {
-        return TrySelector(ResourceHelper.GetRuleId(Source.File.Module, name, ResourceIdKind.Unknown));
+        return TrySelector(ResourceHelper.GetRuleId(Source?.File?.Module, name, ResourceIdKind.Unknown));
     }
 
     public bool TrySelector(ResourceId id)
@@ -598,7 +613,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     /// </summary>
     public RuleRecord EnterRuleBlock(RuleBlock ruleBlock)
     {
-        Binding = TargetBinder.Result(ruleBlock.Info.ModuleName);
+        Binding = TargetBinder?.Result(ruleBlock.Info.ModuleName);
 
         _RuleErrors = 0;
         RuleBlock = ruleBlock;
@@ -607,11 +622,11 @@ internal sealed class RunspaceContext : IDisposable, ILogger
             ruleId: ruleBlock.Id,
             @ref: ruleBlock.Ref.GetValueOrDefault().Name,
             targetObject: TargetObject,
-            targetName: Binding.TargetName,
-            targetType: Binding.TargetType,
+            targetName: Binding?.TargetName,
+            targetType: Binding?.TargetType,
             tag: ruleBlock.Tag,
             info: ruleBlock.Info,
-            field: Binding.Field,
+            field: Binding?.Field,
             level: ruleBlock.Level,
             extent: ruleBlock.Extent
         );
@@ -630,11 +645,16 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     {
         // Stop rule execution time
         _RuleTimer.Stop();
-        RuleRecord.Time = _RuleTimer.ElapsedMilliseconds;
 
-        if (!RuleRecord.IsSuccess())
-            for (var i = 0; i < _Reason.Count; i++)
-                RuleRecord._Detail.Add(_Reason[i]);
+        if (RuleRecord != null)
+        {
+            RuleRecord.Time = _RuleTimer.ElapsedMilliseconds;
+            if (!RuleRecord.IsSuccess())
+            {
+                for (var i = 0; i < _Reason.Count; i++)
+                    RuleRecord._Detail.Add(_Reason[i]);
+            }
+        }
 
         Writer?.ExitScope();
 
@@ -659,7 +679,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         LanguageScope.AddService(name, service);
     }
 
-    internal object GetService(string id)
+    internal object? GetService(string id)
     {
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
         return !_LanguageScopes.TryScope(scopeName, out var scope) ? null : scope.GetService(name);
@@ -769,7 +789,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
             Pipeline.BindField,
             Pipeline.Option.Input.TargetType);
 
-        HashSet<string> _TypeFilter = null;
+        HashSet<string>? _TypeFilter = null;
         if (Pipeline.Option.Input.TargetType != null && Pipeline.Option.Input.TargetType.Length > 0)
             _TypeFilter = new HashSet<string>(Pipeline.Option.Input.TargetType, StringComparer.OrdinalIgnoreCase);
 
@@ -787,10 +807,10 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         RunConventionEnd();
     }
 
-    public string GetLocalizedPath(string file, out string culture)
+    public string? GetLocalizedPath(string file, out string? culture)
     {
         culture = null;
-        if (string.IsNullOrEmpty(Source.File.HelpPath))
+        if (string.IsNullOrEmpty(Source?.File.HelpPath))
             return null;
 
         var cultures = LanguageScope.Culture;
@@ -803,7 +823,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
 
         for (var i = 0; cultures != null && i < cultures.Length; i++)
         {
-            var path = Path.Combine(Source.File.HelpPath, cultures[i], file);
+            var path = Path.Combine(Source?.File.HelpPath, cultures[i], file);
             if (File.Exists(path))
             {
                 culture = cultures[i];
@@ -825,7 +845,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
 
     #region Configuration
 
-    internal bool TryGetConfigurationValue(string name, out object value)
+    internal bool TryGetConfigurationValue(string name, out object? value)
     {
         value = null;
         if (string.IsNullOrEmpty(name))
@@ -863,8 +883,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         );
     }
 
-#nullable enable
-
     /// <inheritdoc/>
     void ILogger.Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
@@ -891,14 +909,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger
             Writer.WriteVerbose(formatter(state, exception));
         }
     }
-
-    ///// <inheritdoc/>
-    //IDisposable? ILogger.BeginScope<TState>(TState state) //where TState : notnull
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-#nullable restore
 
     #endregion ILogger
 
@@ -930,3 +940,5 @@ internal sealed class RunspaceContext : IDisposable, ILogger
 
     #endregion IDisposable
 }
+
+#nullable restore
