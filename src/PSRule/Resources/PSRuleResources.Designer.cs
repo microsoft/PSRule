@@ -592,6 +592,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PSR0005: The {kind} &apos;{id}&apos; is obsolete..
+        /// </summary>
+        internal static string PSR0005 {
+            get {
+                return ResourceManager.GetString("PSR0005", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deserialize the file &apos;{0}&apos;: {1}.
         /// </summary>
         internal static string ReadFileFailed {
@@ -633,15 +642,6 @@ namespace PSRule.Resources {
         internal static string RequiredVersionMismatch {
             get {
                 return ResourceManager.GetString("RequiredVersionMismatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The {kind} &apos;{id}&apos; is obsolete..
-        /// </summary>
-        internal static string ResourceObsolete {
-            get {
-                return ResourceManager.GetString("ResourceObsolete", resourceCulture);
             }
         }
         

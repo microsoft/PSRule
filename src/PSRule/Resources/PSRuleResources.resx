@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ResourceObsolete" xml:space="preserve">
-    <value>The {kind} '{id}' is obsolete.</value>
+  <data name="PSR0005" xml:space="preserve">
+    <value>PSR0005: The {kind} '{id}' is obsolete.</value>
     <comment>Occurs when a resource is used that has been flagged as obsolete.</comment>
   </data>
   <data name="ArgumentFormatInvalid" xml:space="preserve">

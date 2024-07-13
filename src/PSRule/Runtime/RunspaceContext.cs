@@ -892,11 +892,11 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         }
     }
 
-    /// <inheritdoc/>
-    IDisposable? ILogger.BeginScope<TState>(TState state) //where TState : notnull
-    {
-        throw new NotImplementedException();
-    }
+    ///// <inheritdoc/>
+    //IDisposable? ILogger.BeginScope<TState>(TState state) //where TState : notnull
+    //{
+    //    throw new NotImplementedException();
+    //}
 
 #nullable restore
 

@@ -14,7 +14,11 @@ namespace PSRule;
 internal static class LoggerExtensions
 {
     private static readonly EventId PSR0004 = new(4, "PSR0004");
+    private static readonly EventId PSR0005 = new(5, "PSR0005");
 
+    /// <summary>
+    /// PSR0005: The {kind} '{id}' is obsolete.
+    /// </summary>
     internal static void WarnResourceObsolete(this ILogger logger, ResourceKind kind, string id)
     {
         if (logger == null || !logger.IsEnabled(LogLevel.Warning))
@@ -22,12 +26,16 @@ internal static class LoggerExtensions
 
         logger.LogWarning
         (
-            PSRuleResources.ResourceObsolete,
+            PSR0005,
+            PSRuleResources.PSR0005,
             Enum.GetName(typeof(ResourceKind), kind),
             id
         );
     }
 
+    /// <summary>
+    /// PSR0004: The specified {0} resource '{1}' is not known.
+    /// </summary>
     internal static void ErrorResourceUnresolved(this ILogger logger, ResourceKind kind, string id)
     {
         if (logger == null || !logger.IsEnabled(LogLevel.Error))
