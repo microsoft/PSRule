@@ -11,12 +11,12 @@ namespace PSRule.Definitions;
 [DebuggerDisplay("{Text}")]
 public sealed class InfoString
 {
-    private string _Text;
-    private string _Markdown;
+    private string? _Text;
+    private string? _Markdown;
 
     internal InfoString() { }
 
-    internal InfoString(string text, string markdown = null)
+    internal InfoString(string text, string? markdown = null)
     {
         Text = text;
         Markdown = markdown ?? text;
@@ -33,7 +33,7 @@ public sealed class InfoString
     /// <summary>
     /// A plain text representation.
     /// </summary>
-    public string Text
+    public string? Text
     {
         get { return _Text; }
         set
@@ -46,7 +46,7 @@ public sealed class InfoString
     /// <summary>
     /// A markdown formatted representation if set. Otherwise this is the same as <see cref="Text"/>.
     /// </summary>
-    public string Markdown
+    public string? Markdown
     {
         get { return _Markdown; }
         set
@@ -59,7 +59,7 @@ public sealed class InfoString
     /// <summary>
     /// Create an info string when not null or empty.
     /// </summary>
-    internal static InfoString Create(string text, string markdown = null)
+    internal static InfoString? Create(string text, string? markdown = null)
     {
         return string.IsNullOrEmpty(text) && string.IsNullOrEmpty(markdown) ? null : new InfoString(text, markdown);
     }

@@ -31,22 +31,22 @@ public sealed class LockFile
     /// </summary>
     /// <param name="path">An alternative path to the lock file.</param>
     /// <returns>Returns an instance of the lock file or a default instance if the file does not exist.</returns>
-    public static LockFile Read(string path)
+    public static LockFile Read(string? path)
     {
         path = Environment.GetRootedPath(path);
         path = Path.GetExtension(path) == ".json" ? path : Path.Combine(path, DEFAULT_FILE);
-        LockFile result = null;
+        LockFile? result = null;
         if (File.Exists(path))
         {
             var json = File.ReadAllText(path, Encoding.UTF8);
             result = JsonConvert.DeserializeObject<LockFile>(json, new JsonSerializerSettings
             {
-                Converters = new List<JsonConverter>
-                {
+                Converters =
+                [
                     new SemanticVersionConverter()
-                },
+                ],
             });
-            return result;
+            return result ?? new LockFile();
         }
         result ??= new LockFile();
         result.Modules ??= new Dictionary<string, LockEntry>(StringComparer.OrdinalIgnoreCase);
@@ -57,7 +57,7 @@ public sealed class LockFile
     /// Write the lock file to disk.
     /// </summary>
     /// <param name="path">An alternative path to the lock file.</param>
-    public void Write(string path)
+    public void Write(string? path)
     {
         Version = 1;
 
@@ -65,10 +65,10 @@ public sealed class LockFile
         path = Path.GetExtension(path) == "json" ? path : Path.Combine(path, DEFAULT_FILE);
         var json = JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
         {
-            Converters = new List<JsonConverter>
-            {
+            Converters =
+            [
                 new SemanticVersionConverter()
-            }
+            ]
         });
         File.WriteAllText(path, json, Encoding.UTF8);
     }
