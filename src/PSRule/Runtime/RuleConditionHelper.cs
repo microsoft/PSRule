@@ -24,7 +24,7 @@ internal static class RuleConditionHelper
             var baseObject = ExpressionHelpers.GetBaseObject(v);
             if (!(TryAssertResult(baseObject, out var result) || TryBoolean(baseObject, out result)))
             {
-                RunspaceContext.CurrentThread.ErrorInvaildRuleResult();
+                RunspaceContext.CurrentThread.ErrorInvalidRuleResult();
                 hasErrors = true;
             }
             else if (result)
