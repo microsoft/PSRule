@@ -852,34 +852,53 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     #region ILogger
 
     /// <inheritdoc/>
-    public bool ShouldLog(LogLevel level)
+    bool ILogger.IsEnabled(LogLevel logLevel)
     {
         return Writer != null && (
-            (level == LogLevel.Warning && Writer.ShouldWriteWarning()) ||
-            (level == LogLevel.Error && Writer.ShouldWriteError()) ||
-            (level == LogLevel.Info && Writer.ShouldWriteInformation()) ||
-            (level == LogLevel.Verbose && Writer.ShouldWriteVerbose()) ||
-            (level == LogLevel.Debug && Writer.ShouldWriteDebug())
+            (logLevel == LogLevel.Warning && Writer.ShouldWriteWarning()) ||
+            ((logLevel == LogLevel.Error || logLevel == LogLevel.Critical) && Writer.ShouldWriteError()) ||
+            (logLevel == LogLevel.Information && Writer.ShouldWriteInformation()) ||
+            (logLevel == LogLevel.Debug && Writer.ShouldWriteVerbose()) ||
+            (logLevel == LogLevel.Trace && Writer.ShouldWriteDebug())
         );
     }
 
-    /// <inheritdoc/>
-    public void Warning(string message, params object[] args)
-    {
-        if (Writer == null || string.IsNullOrEmpty(message))
-            return;
-
-        Writer.WriteWarning(message, args);
-    }
+#nullable enable
 
     /// <inheritdoc/>
-    public void Error(Exception exception, string errorId = null)
+    void ILogger.Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        if (Writer == null || exception == null)
-            return;
+        if (Writer == null) return;
 
-        Writer.WriteError(new ErrorRecord(exception, errorId, ErrorCategory.InvalidOperation, null));
+        if (logLevel == LogLevel.Error || logLevel == LogLevel.Critical)
+        {
+            Writer.WriteError(new ErrorRecord(exception, eventId.Id.ToString(), ErrorCategory.InvalidOperation, null));
+        }
+        else if (logLevel == LogLevel.Warning)
+        {
+            Writer.WriteWarning(formatter(state, exception));
+        }
+        else if (logLevel == LogLevel.Information)
+        {
+            Writer.WriteInformation(new InformationRecord(formatter(state, exception), null));
+        }
+        else if (logLevel == LogLevel.Debug)
+        {
+            Writer.WriteDebug(formatter(state, exception));
+        }
+        else if (logLevel == LogLevel.Trace)
+        {
+            Writer.WriteVerbose(formatter(state, exception));
+        }
     }
+
+    ///// <inheritdoc/>
+    //IDisposable? ILogger.BeginScope<TState>(TState state) //where TState : notnull
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+#nullable restore
 
     #endregion ILogger
 
