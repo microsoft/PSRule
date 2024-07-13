@@ -17,7 +17,7 @@ internal static class LoggerExtensions
     private static readonly EventId PSR0005 = new(5, "PSR0005");
 
     /// <summary>
-    /// PSR0005: The {kind} '{id}' is obsolete.
+    /// PSR0005: The {0} '{1}' is obsolete.
     /// </summary>
     internal static void WarnResourceObsolete(this ILogger logger, ResourceKind kind, string id)
     {

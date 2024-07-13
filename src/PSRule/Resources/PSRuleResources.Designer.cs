@@ -592,7 +592,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PSR0005: The {kind} &apos;{id}&apos; is obsolete..
+        ///   Looks up a localized string similar to PSR0005: The {0} &apos;{1}&apos; is obsolete..
         /// </summary>
         internal static string PSR0005 {
             get {
