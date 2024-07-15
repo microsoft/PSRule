@@ -131,12 +131,31 @@ task TestDotNet {
 task BuildCLI BuildModule, {
     exec {
         # Build library
-        dotnet publish src/PSRule.Tool -c $Configuration --self-contained /p:DebugType=None /p:DebugSymbols=false -r win-x64 -o ./out/cli/win-x64/ -p:version=$Build
-        # dotnet publish src/PSRule.Tool -c $Configuration --no-self-contained -r win-x64 -o ./out/cli/win-x64/ -p:version=$Build
-        # dotnet publish --self-contained true -p:PublishTrimmed=true -p:PublishSingleFile=true -r win-x64 .\src\PSRule.Tool\PSRule.Tool.csproj -o .\out\cli
+        dotnet publish src/PSRule.Tool -c $Configuration --self-contained true -o ./out/cli/build/ -p:version=$Build
+    }
+}
+
+task ReleaseCLI BuildModule, {
+
+    # Build win-x64
+    exec {
+        dotnet publish src/PSRule.Tool -c $Configuration --self-contained true --runtime win-x64 -o ./out/cli/win-x64/ -p:version=$Build
     }
 
-    # Copy-Item -Path out/modules/PSRule/ -Destination out/cli/win-x64/modules/ -Recurse -Force;
+    # Build linux-x64
+    exec {
+        dotnet publish src/PSRule.Tool -c $Configuration --self-contained true --runtime linux-x64 -o ./out/cli/linux-x64/ -p:version=$Build
+    }
+
+    # Build linux-musl-x64
+    exec {
+        dotnet publish src/PSRule.Tool -c $Configuration --self-contained true --runtime linux-musl-x64 -o ./out/cli/linux-musl-x64/ -p:version=$Build
+    }
+
+    # Build osx-x64
+    exec {
+        dotnet publish src/PSRule.Tool -c $Configuration --self-contained true --runtime osx-x64 -o ./out/cli/osx-x64/ -p:version=$Build
+    }
 }
 
 task CopyModule {

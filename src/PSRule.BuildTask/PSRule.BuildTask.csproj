@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\PSRule.Common.props" />
   <PropertyGroup>
     <AssemblyTitle>PSRule.BuildTask</AssemblyTitle>
     <EnableNuget>false</EnableNuget>
