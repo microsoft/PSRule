@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.1" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.3" />
     <PackageReference Include="System.Management.Automation" Version="7.4.3" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
   </ItemGroup>
