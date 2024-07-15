@@ -24,7 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Types", "src\PSRule.Types\PSRule.Types.csproj", "{5FE4DB0B-63D1-4DDB-9762-9C0D29168BC9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.BuildTask", "src\PSRule.BuildTask\PSRule.BuildTask.csproj", "{872D2648-2F00-475E-84B5-F08BE07385B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.MSBuild", "src\PSRule.MSBuild\PSRule.MSBuild.csproj", "{872D2648-2F00-475E-84B5-F08BE07385B7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}"
 EndProject
