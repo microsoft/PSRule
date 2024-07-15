@@ -47,8 +47,8 @@ What's changed since pre-release v3.0.0-B0203:
     [#1856](https://github.com/microsoft/PSRule/pull/1856)
   - Bump Microsoft.CodeAnalysis.Common to v4.10.0.
     [#1854](https://github.com/microsoft/PSRule/pull/1854)
-  - Bump Pester to v5.6.0.
-    [#1858](https://github.com/microsoft/PSRule/pull/1858)
+  - Bump Pester to v5.6.1.
+    [#1872](https://github.com/microsoft/PSRule/pull/1872)
   - Bump PSScriptAnalyzer to v1.22.0.
     [#1858](https://github.com/microsoft/PSRule/pull/1858)
 
