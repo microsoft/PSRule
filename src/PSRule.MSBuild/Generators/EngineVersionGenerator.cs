@@ -3,7 +3,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace PSRule.BuildTask.Generators;
+namespace PSRule.MSBuild.Generators;
 
 /// <summary>
 /// Generator constants for PSRule engine version.

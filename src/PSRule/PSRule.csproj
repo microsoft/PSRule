@@ -23,9 +23,9 @@
   <!-- Add code generators -->
   <ItemGroup>
     <CompilerVisibleProperty Include="PSRule_Version" />
-    <ProjectReference Include="..\PSRule.BuildTask\PSRule.BuildTask.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\PSRule.MSBuild\PSRule.MSBuild.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
-  
+
   <PropertyGroup>
     <PSRule_Version>$(version)</PSRule_Version>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>

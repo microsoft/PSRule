@@ -9,19 +9,12 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DefineConstants>TRACE;BENCHMARK</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(OS)' != 'Windows_NT'">
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
-    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.12" />
-  </ItemGroup>
-
   <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.1" />
     <PackageReference Include="System.Management.Automation" Version="7.4.1" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />

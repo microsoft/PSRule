@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyTitle>PSRule.BuildTask</AssemblyTitle>
+    <AssemblyTitle>PSRule.MSBuild</AssemblyTitle>
     <EnableNuget>false</EnableNuget>
     <IsPackable>false</IsPackable>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
