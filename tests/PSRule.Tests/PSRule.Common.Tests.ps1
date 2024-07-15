@@ -1565,9 +1565,9 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
 Describe 'Get-PSRuleTarget' -Tag 'Get-PSRuleTarget','Common' {
     Context 'With defaults' {
         It 'Yaml' {
-            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $rootPath -ChildPath 'ps-project.yaml'));
+            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $rootPath -ChildPath 'GitVersion.yml'));
             $result.Length | Should -Be 1;
-            $result[0].info.name | Should -Be 'PSRule';
+            $result[0].increment | Should -Be 'Inherit';
 
             $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml'));
             $result.Length | Should -Be 1;

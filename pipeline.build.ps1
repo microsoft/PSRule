@@ -332,7 +332,7 @@ task TestModule Dependencies, {
     }
 }
 
-# Synopsis: Run validation
+# Synopsis: Run self-test validation.
 task Rules {
     $assertParams = @{
         Path = './.ps-rule/'
