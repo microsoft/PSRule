@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\PSRule.Common.props" />
   <PropertyGroup>
     <AssemblyName>Microsoft.PSRule.Tool</AssemblyName>
     <PackageId>Microsoft.PSRule.Tool</PackageId>
@@ -16,12 +15,10 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>ps-rule</ToolCommandName>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RuntimeIdentifiers>win-x64;linux-x64;linux-musl-x64;osx-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.1" />
-    <PackageReference Include="System.Management.Automation" Version="7.4.1" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" /> -->
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
