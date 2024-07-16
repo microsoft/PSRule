@@ -27,7 +27,7 @@ jobs:
       contents: read
 
     env:
-      DEPENDABOT: ${{ github.actor == 'dependabot' || github.triggering_actor == 'dependabot' }}
+      DEPENDABOT: ${{ github.actor == 'dependabot[bot]' || github.triggering_actor == 'dependabot[bot]' }}
 
     steps:
       - name: Checkout
