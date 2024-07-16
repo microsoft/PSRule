@@ -1792,8 +1792,8 @@
       },
       "YamlDotNet": {
         "type": "Transitive",
-        "resolved": "15.3.0",
-        "contentHash": "F93japYa9YrJ59AZGhgdaUGHN7ITJ55FBBg/D/8C0BDgahv/rQD6MOSwHxOJJpon1kYyslVbeBrQ2wcJhox01w=="
+        "resolved": "16.0.0",
+        "contentHash": "kZ4jR5ltFhnjaUqK9x81zXRIUTH4PTXTTEmJDNQdkDLQhcv+2Nl19r0dCSvPW1mstOYBfXTnjdieRbUO6gHMDw=="
       },
       "Microsoft.PSRule.Badges": {
         "type": "Project",
@@ -1814,7 +1814,7 @@
         "type": "Project",
         "dependencies": {
           "Newtonsoft.Json": "[13.0.3, )",
-          "YamlDotNet": "[15.3.0, )"
+          "YamlDotNet": "[16.0.0, )"
         }
       }
     }

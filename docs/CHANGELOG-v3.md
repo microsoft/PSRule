@@ -43,8 +43,8 @@ What's changed since pre-release v3.0.0-B0203:
     [#1869](https://github.com/microsoft/PSRule/pull/1869)
   - Bump System.Drawing.Common to v8.0.7.
     [#1867](https://github.com/microsoft/PSRule/pull/1867)
-  - Bump YamlDotNet to v15.3.0.
-    [#1856](https://github.com/microsoft/PSRule/pull/1856)
+  - Bump YamlDotNet to v16.0.0.
+    [#1874](https://github.com/microsoft/PSRule/pull/1874)
   - Bump Microsoft.CodeAnalysis.Common to v4.10.0.
     [#1854](https://github.com/microsoft/PSRule/pull/1854)
   - Bump Pester to v5.6.1.
