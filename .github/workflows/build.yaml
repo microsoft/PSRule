@@ -26,9 +26,6 @@ jobs:
     permissions:
       contents: read
 
-    env:
-      DEPENDABOT: ${{ github.actor == 'dependabot[bot]' || github.triggering_actor == 'dependabot[bot]' }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
