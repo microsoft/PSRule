@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using System.Security;
+using System.Text;
 using PSRule.Data;
 
 namespace PSRule;
@@ -284,6 +285,28 @@ public static class Environment
         var separator = System.Environment.OSVersion.Platform == PlatformID.Win32NT ? WINDOWS_PATH_ENV_SEPARATOR : LINUX_PATH_ENV_SEPARATOR;
         value = variable.Split(separator, options: StringSplitOptions.RemoveEmptyEntries);
         return value != null;
+    }
+
+    /// <summary>
+    /// Combines one or more environment variables into a single string.
+    /// </summary>
+    public static string CombineEnvironmentVariable(params string[] args)
+    {
+        var sb = new StringBuilder();
+        var separator = System.Environment.OSVersion.Platform == PlatformID.Win32NT ? WINDOWS_PATH_ENV_SEPARATOR : LINUX_PATH_ENV_SEPARATOR;
+
+        for (var i = 0; args != null && i < args.Length; i++)
+        {
+            if (string.IsNullOrEmpty(args[i]))
+                continue;
+
+            if (sb.Length > 0)
+            {
+                sb.Append(separator);
+            }
+            sb.Append(args[i]);
+        }
+        return sb.Length == 0 ? string.Empty : sb.ToString();
     }
 
     /// <summary>

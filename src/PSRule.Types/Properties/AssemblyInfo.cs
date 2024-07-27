@@ -4,4 +4,5 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Microsoft.PSRule.Core")]
+[assembly: InternalsVisibleTo("Microsoft.PSRule.Tool")]
 [assembly: InternalsVisibleTo("PSRule.Tests")]

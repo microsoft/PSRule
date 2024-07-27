@@ -5,12 +5,19 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Management.Automation;
 using Newtonsoft.Json;
+using NuGet.Configuration;
+using NuGet.Protocol;
+using NuGet.Protocol.Core.Types;
+using NuGet.Versioning;
 using PSRule.CommandLine.Models;
 using PSRule.CommandLine.Resources;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline.Dependencies;
 using SemanticVersion = PSRule.Data.SemanticVersion;
+using NuGet.Packaging;
+using NuGet.Common;
+using PSRule.Pipeline;
 
 namespace PSRule.CommandLine.Commands;
 
@@ -29,16 +36,16 @@ public sealed class ModuleCommand
     private const int ERROR_MODULE_ADD_VIOLATES_CONSTRAINT = 503;
 
     private const string PARAM_NAME = "Name";
-    private const string PARAM_VERSION = "Version";
-
     private const string FIELD_PRERELEASE = "Prerelease";
     private const string FIELD_PSDATA = "PSData";
     private const string PRERELEASE_SEPARATOR = "-";
+    private const string POWERSHELL_GALLERY_SOURCE = "https://www.powershellgallery.com/api/v2/";
+    private const string MODULES_PATH = "Modules";
 
     /// <summary>
     /// Call <c>module restore</c>.
     /// </summary>
-    public static int ModuleRestore(RestoreOptions operationOptions, ClientContext clientContext)
+    public static async Task<int> ModuleRestoreAsync(RestoreOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
     {
         var exitCode = 0;
         var requires = clientContext.Option.Requires.ToDictionary();
@@ -61,9 +68,9 @@ public sealed class ModuleCommand
                 continue;
             }
 
-            var idealVersion = FindVersion(pwsh, module, null, targetVersion, null);
+            var idealVersion = await FindVersionAsync(module, null, targetVersion, null, cancellationToken);
             if (idealVersion != null)
-                InstallVersion(clientContext, pwsh, module, idealVersion.ToString());
+                await InstallVersionAsync(clientContext, module, idealVersion.ToString(), cancellationToken);
 
             if (pwsh.HadErrors || (idealVersion == null && installedVersion == null))
             {
@@ -99,10 +106,10 @@ public sealed class ModuleCommand
                 }
 
                 // Find the ideal version.
-                var idealVersion = FindVersion(pwsh, includeModule, moduleConstraint, null, null);
+                var idealVersion = await FindVersionAsync(includeModule, moduleConstraint, null, null, cancellationToken);
                 if (idealVersion != null)
                 {
-                    InstallVersion(clientContext, pwsh, includeModule, idealVersion.ToString());
+                    await InstallVersionAsync(clientContext, includeModule, idealVersion.ToString(), cancellationToken);
                 }
                 else if (idealVersion == null)
                 {
@@ -131,7 +138,7 @@ public sealed class ModuleCommand
     /// <summary>
     /// Initialize a new lock file based on existing options.
     /// </summary>
-    public static int ModuleInit(ModuleOptions operationOptions, ClientContext clientContext)
+    public static async Task<int> ModuleInitAsync(ModuleOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
     {
         var exitCode = 0;
         var requires = clientContext.Option.Requires.ToDictionary();
@@ -152,7 +159,7 @@ public sealed class ModuleCommand
                 var moduleConstraint = requires.TryGetValue(includeModule, out var c) ? c : null;
 
                 // Find the ideal version.
-                var idealVersion = FindVersion(pwsh, includeModule, moduleConstraint, null, null);
+                var idealVersion = await FindVersionAsync(includeModule, moduleConstraint, null, null, cancellationToken);
                 if (idealVersion == null)
                 {
                     clientContext.LogError(Messages.Error_502, includeModule);
@@ -183,7 +190,9 @@ public sealed class ModuleCommand
     /// <summary>
     /// List any module and the installed versions from the lock file.
     /// </summary>
-    public static int ModuleList(ModuleOptions operationOptions, ClientContext clientContext)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    public static async Task<int> ModuleListAsync(ModuleOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         var exitCode = 0;
         var requires = clientContext.Option.Requires.ToDictionary();
@@ -201,7 +210,7 @@ public sealed class ModuleCommand
     /// <summary>
     /// Add a module to the lock file.
     /// </summary>
-    public static int ModuleAdd(ModuleOptions operationOptions, ClientContext clientContext)
+    public static async Task<int> ModuleAddAsync(ModuleOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
     {
         var exitCode = 0;
         if (operationOptions.Module == null || operationOptions.Module.Length == 0) return exitCode;
@@ -228,7 +237,7 @@ public sealed class ModuleCommand
                 }
 
                 // Find the ideal version.
-                var idealVersion = FindVersion(pwsh, module, moduleConstraint, targetVersion, null);
+                var idealVersion = await FindVersionAsync(module, moduleConstraint, targetVersion, null, cancellationToken);
                 if (idealVersion == null && targetVersion != null && operationOptions.SkipVerification)
                     idealVersion = targetVersion;
 
@@ -263,7 +272,9 @@ public sealed class ModuleCommand
     /// <summary>
     /// Remove a module from the lock file.
     /// </summary>
-    public static int ModuleRemove(ModuleOptions operationOptions, ClientContext clientContext)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    public static async Task<int> ModuleRemoveAsync(ModuleOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         var exitCode = 0;
         if (operationOptions.Module == null || operationOptions.Module.Length == 0) return exitCode;
@@ -295,7 +306,7 @@ public sealed class ModuleCommand
     /// <summary>
     /// Upgrade a module within the lock file.
     /// </summary>
-    public static int ModuleUpgrade(ModuleOptions operationOptions, ClientContext clientContext)
+    public static async Task<int> ModuleUpgradeAsync(ModuleOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
     {
         var exitCode = 0;
         var requires = clientContext.Option.Requires.ToDictionary();
@@ -308,7 +319,7 @@ public sealed class ModuleCommand
             var moduleConstraint = requires.TryGetValue(kv.Key, out var c) ? c : null;
 
             // Find the ideal version.
-            var idealVersion = FindVersion(pwsh, kv.Key, moduleConstraint, null, null);
+            var idealVersion = await FindVersionAsync(kv.Key, moduleConstraint, null, null, cancellationToken);
             if (idealVersion == null)
             {
                 clientContext.LogError(Messages.Error_502, kv.Key);
@@ -428,19 +439,17 @@ public sealed class ModuleCommand
         return false;
     }
 
-    private static SemanticVersion.Version? FindVersion(PowerShell pwsh, string module, ModuleConstraint? constraint, SemanticVersion.Version? targetVersion, SemanticVersion.Version? installedVersion)
+    private static async Task<SemanticVersion.Version?> FindVersionAsync(string module, ModuleConstraint? constraint, SemanticVersion.Version? targetVersion, SemanticVersion.Version? installedVersion, CancellationToken cancellationToken)
     {
-        pwsh.Commands.Clear();
-        pwsh.Streams.ClearStreams();
-        pwsh.AddCommand("Find-Module")
-            .AddParameter(PARAM_NAME, module)
-            .AddParameter("AllVersions");
+        var cache = new SourceCacheContext();
+        var logger = new NullLogger();
+        var resource = await GetSourceRepositoryAsync();
+        var versions = await resource.GetAllVersionsAsync(module, cache, logger, cancellationToken);
 
-        var versions = pwsh.Invoke();
         SemanticVersion.Version? result = null;
         foreach (var version in versions)
         {
-            if (version.Properties[PARAM_VERSION].Value is string versionString &&
+            if (version.ToFullString() is string versionString &&
                 SemanticVersion.TryParseVersion(versionString, out var v) &&
                 v != null &&
                 (constraint == null || constraint.Constraint.Equals(v)) &&
@@ -452,20 +461,63 @@ public sealed class ModuleCommand
         return result;
     }
 
-    private static void InstallVersion([DisallowNull] ClientContext context, [DisallowNull] PowerShell pwsh, [DisallowNull] string name, [DisallowNull] string version)
+    private static async Task InstallVersionAsync([DisallowNull] ClientContext context, [DisallowNull] string name, [DisallowNull] string version, CancellationToken cancellationToken)
     {
         context.LogVerbose(Messages.RestoringModule, name, version);
 
-        pwsh.Commands.Clear();
-        pwsh.Streams.ClearStreams();
-        pwsh.AddCommand("Install-Module")
-                .AddParameter(PARAM_NAME, name)
-                .AddParameter("RequiredVersion", version)
-                .AddParameter("Scope", "CurrentUser")
-                .AddParameter("AllowPrerelease")
-                .AddParameter("Force");
+        var cache = new SourceCacheContext();
+        var logger = new NullLogger();
+        var resource = await GetSourceRepositoryAsync();
 
-        pwsh.Invoke();
+        var packageVersion = new NuGetVersion(version);
+        using var packageStream = new MemoryStream();
+
+        await resource.CopyNupkgToStreamAsync(
+            name,
+            packageVersion,
+            packageStream,
+            cache,
+            logger,
+            cancellationToken);
+
+        using var packageReader = new PackageArchiveReader(packageStream);
+        var nuspecReader = await packageReader.GetNuspecReaderAsync(cancellationToken);
+
+        var modulePath = GetModulePath(context, name, version);
+
+        // Remove existing module.
+        if (Directory.Exists(modulePath))
+            Directory.Delete(modulePath, true);
+
+        var files = packageReader.GetFiles();
+        packageReader.CopyFiles(modulePath, files, (name, targetPath, s) =>
+        {
+            if (ShouldIgnorePackageFile(name))
+                return null;
+
+            s.CopyToFile(targetPath);
+
+            return targetPath;
+
+        }, logger, cancellationToken);
+    }
+
+    private static async Task<FindPackageByIdResource> GetSourceRepositoryAsync()
+    {
+        var source = new PackageSource(POWERSHELL_GALLERY_SOURCE);
+        var repository = Repository.Factory.GetCoreV2(source);
+        return await repository.GetResourceAsync<FindPackageByIdResource>();
+    }
+
+    private static string GetModulePath(ClientContext context, string name, string version)
+    {
+        return Path.Combine(context.CachePath, MODULES_PATH, name, version);
+    }
+
+    private static bool ShouldIgnorePackageFile(string name)
+    {
+        return string.Equals(name, "[Content_Types].xml", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(name, "_rels/.rels", StringComparison.OrdinalIgnoreCase);
     }
 
     #endregion Helper methods

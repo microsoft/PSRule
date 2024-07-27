@@ -48,6 +48,15 @@
           "Microsoft.SourceLink.Common": "8.0.0"
         }
       },
+      "NuGet.Protocol": {
+        "type": "Direct",
+        "requested": "[6.10.1, )",
+        "resolved": "6.10.1",
+        "contentHash": "ZWZKeFBtxBOI4MyM9DbL47APRrLzIvg6vP5YcHHuryHb4W9A0bnAPjpmR5BF6qB5KpGBioqJ0GftxWrZ+W7pUA==",
+        "dependencies": {
+          "NuGet.Packaging": "6.10.1"
+        }
+      },
       "System.CommandLine": {
         "type": "Direct",
         "requested": "[2.0.0-beta4.22272.1, )",
@@ -345,6 +354,44 @@
         "type": "Transitive",
         "resolved": "13.0.3",
         "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
+      },
+      "NuGet.Common": {
+        "type": "Transitive",
+        "resolved": "6.10.1",
+        "contentHash": "djIP7OOdQYamFFtLFxbGTotFhlCkRs42Nc2lYS7E1uGLq91zwLdfOUCsWLfFBMT5EA8iqQnyRYrMD/sihgTkiQ==",
+        "dependencies": {
+          "NuGet.Frameworks": "6.10.1"
+        }
+      },
+      "NuGet.Configuration": {
+        "type": "Transitive",
+        "resolved": "6.10.1",
+        "contentHash": "SlPy3mxtMZRb281WUDA5Q+8SPR5objjFfXXOGjk5vs60/f7KeIdORJOj2UgxJal9YFFU58sJv3tVkaF51bGoyA==",
+        "dependencies": {
+          "NuGet.Common": "6.10.1",
+          "System.Security.Cryptography.ProtectedData": "4.4.0"
+        }
+      },
+      "NuGet.Frameworks": {
+        "type": "Transitive",
+        "resolved": "6.10.1",
+        "contentHash": "DtppveEBKkGwLoY5fk2DLNxtVbx0iw8r7s/RjYdm2AkK7RwnfJGe+j7DriYSEuxHrvSOU7n3ELKmlnn9jbZYfQ=="
+      },
+      "NuGet.Packaging": {
+        "type": "Transitive",
+        "resolved": "6.10.1",
+        "contentHash": "0YiFuHfPty9XOZXEZTj8KPjhBZhr7q91vmANttay+3IsO3ri40sMyGDoTRhFYH/A8dJzwmnD7ZNDJLFTiChwNA==",
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3",
+          "NuGet.Configuration": "6.10.1",
+          "NuGet.Versioning": "6.10.1",
+          "System.Security.Cryptography.Pkcs": "6.0.4"
+        }
+      },
+      "NuGet.Versioning": {
+        "type": "Transitive",
+        "resolved": "6.10.1",
+        "contentHash": "tovHZ3OlMVmsTdhv2z5nwnnhoA1ryhfJMyVQ9/+iv6d3h78fp230XaGy3K/iVcLwB50DdfNfIsitW97KSOWDFg=="
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",

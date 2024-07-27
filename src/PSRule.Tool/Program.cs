@@ -14,9 +14,12 @@ static class Program
     /// </summary>
     static async Task<int> Main(string[] args)
     {
-        var ps = ModuleIntrinsics.GetPSModulePath(ModuleIntrinsics.PSModulePathScope.User);
-        System.Environment.SetEnvironmentVariable("PSModulePath", ps, EnvironmentVariableTarget.Process);
+        var modulePath = Environment.CombineEnvironmentVariable(
+            ModuleIntrinsics.GetPSModulePath(ModuleIntrinsics.PSModulePathScope.User),
+            Path.Combine(Environment.GetRootedBasePath(AppContext.BaseDirectory), "Modules")
+        );
 
+        System.Environment.SetEnvironmentVariable("PSModulePath", modulePath, EnvironmentVariableTarget.Process);
         return await ClientBuilder.New().InvokeAsync(args);
     }
 }
