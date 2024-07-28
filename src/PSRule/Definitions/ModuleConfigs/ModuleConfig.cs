@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
-using PSRule.Configuration;
 using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
@@ -23,20 +22,4 @@ internal sealed class ModuleConfigV1 : InternalResource<ModuleConfigV1Spec>
     [JsonIgnore]
     [YamlIgnore]
     public string Synopsis => Info.Synopsis.Text;
-}
-
-/// <summary>
-/// A specification for a module configuration.
-/// </summary>
-internal sealed class ModuleConfigV1Spec : Spec
-{
-    public BindingOption Binding { get; set; }
-
-    public ConfigurationOption Configuration { get; set; }
-
-    public ConventionOption Convention { get; set; }
-
-    public OutputOption Output { get; set; }
-
-    public RuleOption Rule { get; set; }
 }

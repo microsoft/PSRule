@@ -69,7 +69,7 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
         if (string.IsNullOrEmpty(text) || !RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule))
             return;
 
-        _Reason ??= new List<ResultReason>();
+        _Reason ??= [];
         _Reason.Add(new ResultReason(Context.TargetObject?.Path, operand, text, args));
     }
 
@@ -78,7 +78,7 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
         if (string.IsNullOrEmpty(text) || !RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule))
             return;
 
-        _Reason ??= new List<ResultReason>();
+        _Reason ??= [];
         _Reason.Add(new ResultReason(Context.TargetObject?.Path, null, text, args));
     }
 
