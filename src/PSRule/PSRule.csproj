@@ -19,6 +19,8 @@
     </PackageReference>
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" PrivateAssets="All" />
     <PackageReference Include="Sarif.Sdk" Version="2.4.16" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
   </ItemGroup>
 
   <!-- Add code generators -->
