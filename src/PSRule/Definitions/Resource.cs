@@ -52,7 +52,7 @@ public abstract class Resource<TSpec> where TSpec : Spec, new()
     /// The file path where the resource is defined.
     /// </summary>
     [YamlIgnore()]
-    public SourceFile Source { get; }
+    public ISourceFile Source { get; }
 
     /// <summary>
     /// Information about the resource.

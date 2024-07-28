@@ -11,8 +11,6 @@ namespace PSRule.Runtime;
 [DebuggerDisplay("{Name}")]
 internal sealed class LanguageScope : ILanguageScope
 {
-    internal const string STANDALONE_SCOPENAME = ".";
-
     private readonly RunspaceContext _Context;
     private IDictionary<string, object> _Configuration;
     private readonly Dictionary<string, object> _Service;
@@ -23,7 +21,7 @@ internal sealed class LanguageScope : ILanguageScope
     public LanguageScope(RunspaceContext context, string name)
     {
         _Context = context;
-        Name = Normalize(name);
+        Name = ResourceHelper.NormalizeScope(name);
         //_Configuration = new Dictionary<string, object>();
         _Filter = new Dictionary<ResourceKind, IResourceFilter>();
         _Service = new Dictionary<string, object>();
@@ -142,11 +140,6 @@ internal sealed class LanguageScope : ILanguageScope
         }
         scope = null;
         return false;
-    }
-
-    internal static string Normalize(string scope)
-    {
-        return string.IsNullOrEmpty(scope) ? STANDALONE_SCOPENAME : scope;
     }
 
     private void Dispose(bool disposing)

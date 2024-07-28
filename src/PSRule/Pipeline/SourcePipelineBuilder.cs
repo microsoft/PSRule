@@ -5,6 +5,7 @@ using System.Collections;
 using System.Management.Automation;
 using System.Reflection;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Options;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;

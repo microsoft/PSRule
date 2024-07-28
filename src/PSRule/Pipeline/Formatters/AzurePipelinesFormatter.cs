@@ -50,13 +50,13 @@ internal sealed class AzurePipelinesFormatter : AssertFormatterBase, IAssertForm
     {
         base.FailDetail(record);
         var message = GetFailMessage(record);
-        if (record.Level == Definitions.Rules.SeverityLevel.Error)
+        if (record.Level == Definitions.SeverityLevel.Error)
             Error(message);
 
-        if (record.Level == Definitions.Rules.SeverityLevel.Warning)
+        if (record.Level == Definitions.SeverityLevel.Warning)
             Warning(message);
 
-        if (record.Level != Definitions.Rules.SeverityLevel.Information)
+        if (record.Level != Definitions.SeverityLevel.Information)
             LineBreak();
     }
 }

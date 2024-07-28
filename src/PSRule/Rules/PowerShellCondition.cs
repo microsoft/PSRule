@@ -16,7 +16,7 @@ internal sealed class PowerShellCondition : ICondition
 
     private bool _Disposed;
 
-    internal PowerShellCondition(ResourceId id, SourceFile source, PowerShell condition, ActionPreference errorAction)
+    internal PowerShellCondition(ResourceId id, ISourceFile source, PowerShell condition, ActionPreference errorAction)
     {
         _Condition = condition;
         Id = id;
@@ -26,7 +26,7 @@ internal sealed class PowerShellCondition : ICondition
 
     public ResourceId Id { get; }
 
-    public SourceFile Source { get; }
+    public ISourceFile Source { get; }
 
     public ActionPreference ErrorAction { get; }
 
@@ -47,7 +47,7 @@ internal sealed class PowerShellCondition : ICondition
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
-        System.GC.SuppressFinalize(this);
+        GC.SuppressFinalize(this);
     }
 
     public IConditionResult If()

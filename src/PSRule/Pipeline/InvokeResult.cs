@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Definitions.Rules;
+using PSRule.Definitions;
 using PSRule.Rules;
 
 namespace PSRule.Pipeline;

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Collections;
@@ -17,9 +17,9 @@ internal abstract class LanguageBlock : PSCmdlet
 {
     private const string ErrorActionParameter = "ErrorAction";
 
-    protected static CommentMetadata GetCommentMetadata(string path, int lineNumber, int offset)
+    protected static CommentMetadata GetCommentMetadata(ISourceFile file, int lineNumber, int offset)
     {
-        return HostHelper.GetCommentMeta(path, lineNumber - 2, offset);
+        return HostHelper.GetCommentMeta(file, lineNumber - 2, offset);
     }
 
     protected static ResourceTags GetTag(Hashtable hashtable)

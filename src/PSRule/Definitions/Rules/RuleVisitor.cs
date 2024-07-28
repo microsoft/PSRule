@@ -19,7 +19,7 @@ internal sealed class RuleVisitor : ICondition
     private readonly LanguageExpressionOuterFn _Condition;
     private readonly RunspaceContext _Context;
 
-    public RuleVisitor(RunspaceContext context, ResourceId id, SourceFile source, IRuleSpec spec)
+    public RuleVisitor(RunspaceContext context, ResourceId id, ISourceFile source, IRuleSpec spec)
     {
         _Context = context;
         ErrorAction = ActionPreference.Stop;
@@ -36,7 +36,7 @@ internal sealed class RuleVisitor : ICondition
 
     public Guid InstanceId { get; }
 
-    public SourceFile Source { get; }
+    public ISourceFile Source { get; }
 
     public ResourceId Id { get; }
 

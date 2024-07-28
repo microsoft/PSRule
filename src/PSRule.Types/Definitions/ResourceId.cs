@@ -2,40 +2,8 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
-using PSRule.Runtime;
 
 namespace PSRule.Definitions;
-
-/// <summary>
-/// Additional information about the type of identifier if available.
-/// </summary>
-internal enum ResourceIdKind
-{
-    /// <summary>
-    /// Not specified.
-    /// </summary>
-    None = 0,
-
-    /// <summary>
-    /// Unknown.
-    /// </summary>
-    Unknown = 1,
-
-    /// <summary>
-    /// The identifier is a primary resource identifier.
-    /// </summary>
-    Id = 2,
-
-    /// <summary>
-    /// The identifier is a opaque reference resource identifier.
-    /// </summary>
-    Ref = 3,
-
-    /// <summary>
-    /// The identifier is an alias resource identifier.
-    /// </summary>
-    Alias = 4,
-}
 
 /// <summary>
 /// A unique identifier for a resource.
@@ -57,7 +25,7 @@ public struct ResourceId : IEquatable<ResourceId>, IEquatable<string>
     }
 
     internal ResourceId(string scope, string name, ResourceIdKind kind)
-        : this(GetIdString(scope, name), LanguageScope.Normalize(scope), name, kind) { }
+        : this(GetIdString(scope, name), ResourceHelper.NormalizeScope(scope), name, kind) { }
 
     /// <summary>
     /// A string representation of the resource identifier.
@@ -136,7 +104,7 @@ public struct ResourceId : IEquatable<ResourceId>, IEquatable<string>
         return !left.Equals(right);
     }
 
-    private static bool EqualOrNull(string x, string y)
+    private static bool EqualOrNull(string? x, string? y)
     {
         return x == null || y == null || StringComparer.OrdinalIgnoreCase.Equals(x, y);
     }
@@ -149,7 +117,7 @@ public struct ResourceId : IEquatable<ResourceId>, IEquatable<string>
     private static string GetIdString(string scope, string name)
     {
         return string.Concat(
-            LanguageScope.Normalize(scope),
+            ResourceHelper.NormalizeScope(scope),
             SCOPE_SEPARATOR,
             name
         );
@@ -157,20 +125,21 @@ public struct ResourceId : IEquatable<ResourceId>, IEquatable<string>
 
     internal static ResourceId Parse(string id, ResourceIdKind kind = ResourceIdKind.Unknown)
     {
-        return TryParse(id, kind, out var value) ? value.Value : default;
+        return TryParse(id, kind, out var value) && value != null ? value.Value : default;
     }
 
     private static bool TryParse(string id, ResourceIdKind kind, out ResourceId? value)
     {
         value = null;
-        if (string.IsNullOrEmpty(id) || !TryParse(id, out var scope, out var name))
+        if (string.IsNullOrEmpty(id) || !TryParse(id, out var scope, out var name) || name == null)
             return false;
 
+        scope ??= ResourceHelper.STANDALONE_SCOPENAME;
         value = new ResourceId(id, scope, name, kind);
         return true;
     }
 
-    private static bool TryParse(string id, out string scope, out string name)
+    private static bool TryParse(string id, out string? scope, out string? name)
     {
         scope = null;
         name = null;
@@ -251,7 +220,7 @@ internal sealed class ResourceIdEqualityComparer : IEqualityComparer<ResourceId>
 
     #endregion IEqualityComparer<string>
 
-    private static bool EqualOrNull(string x, string y)
+    private static bool EqualOrNull(string? x, string? y)
     {
         return x == null || y == null || StringComparer.OrdinalIgnoreCase.Equals(x, y);
     }

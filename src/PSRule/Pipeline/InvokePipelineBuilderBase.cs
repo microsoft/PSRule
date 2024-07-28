@@ -1,7 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Host;
 using PSRule.Options;
 

@@ -6,27 +6,6 @@ using System.Management.Automation;
 namespace PSRule.Definitions;
 
 /// <summary>
-/// A result from an language condition.
-/// </summary>
-public interface IConditionResult
-{
-    /// <summary>
-    /// Determine if the condition had errors.
-    /// </summary>
-    bool HadErrors { get; }
-
-    /// <summary>
-    /// The number of sub-conditions that were evaluated.
-    /// </summary>
-    int Count { get; }
-
-    /// <summary>
-    /// The number of sub-conditions that passed.
-    /// </summary>
-    int Pass { get; }
-}
-
-/// <summary>
 /// A language condition.
 /// </summary>
 public interface ICondition : ILanguageBlock, IDisposable

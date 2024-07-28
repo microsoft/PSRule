@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Definitions.Rules;
-using PSRule.Runtime;
-
 namespace PSRule.Definitions;
 
 internal static class ResourceHelper
@@ -12,24 +9,26 @@ internal static class ResourceHelper
 
     private const char SCOPE_SEPARATOR = '\\';
 
+    internal const string STANDALONE_SCOPENAME = ".";
+
     internal static string GetIdString(string scope, string name)
     {
         return name.IndexOf(SCOPE_SEPARATOR) >= 0
             ? name
             : string.Concat(
-            LanguageScope.Normalize(scope),
+            NormalizeScope(scope),
             SCOPE_SEPARATOR,
             name
         );
     }
 
-    internal static void ParseIdString(string defaultScope, string id, out string scope, out string name)
+    internal static void ParseIdString(string defaultScope, string id, out string? scope, out string? name)
     {
         ParseIdString(id, out scope, out name);
-        scope ??= LanguageScope.Normalize(defaultScope);
+        scope ??= NormalizeScope(defaultScope);
     }
 
-    internal static void ParseIdString(string id, out string scope, out string name)
+    internal static void ParseIdString(string id, out string? scope, out string? name)
     {
         scope = null;
         name = null;
@@ -48,7 +47,7 @@ internal static class ResourceHelper
     /// <param name="name">An array of names. Qualified names (RuleIds) supplied are left intact.</param>
     /// <param name="kind">The <seealso cref="ResourceIdKind"/> of the <seealso cref="ResourceId"/>.</param>
     /// <returns>An array of RuleIds.</returns>
-    internal static ResourceId[] GetRuleId(string defaultScope, string[] name, ResourceIdKind kind)
+    internal static ResourceId[]? GetRuleId(string defaultScope, string[] name, ResourceIdKind kind)
     {
         if (name == null || name.Length == 0)
             return null;
@@ -60,8 +59,9 @@ internal static class ResourceHelper
         return (result.Length == 0) ? null : result;
     }
 
-    internal static ResourceId GetRuleId(string defaultScope, string name, ResourceIdKind kind)
+    internal static ResourceId GetRuleId(string? defaultScope, string name, ResourceIdKind kind)
     {
+        defaultScope ??= STANDALONE_SCOPENAME;
         return name.IndexOf(SCOPE_SEPARATOR) > 0 ? ResourceId.Parse(name, kind) : new ResourceId(defaultScope, name, kind);
     }
 
@@ -70,7 +70,7 @@ internal static class ResourceHelper
         return string.IsNullOrEmpty(name) ? null : new ResourceId(scope, name, kind);
     }
 
-    internal static bool IsObsolete(ResourceMetadata metadata)
+    internal static bool IsObsolete(IResourceMetadata metadata)
     {
         return metadata != null &&
             metadata.Annotations != null &&
@@ -80,6 +80,11 @@ internal static class ResourceHelper
 
     internal static SeverityLevel GetLevel(SeverityLevel? level)
     {
-        return !level.HasValue || level.Value == SeverityLevel.None ? RuleV1.DEFAULT_LEVEL : level.Value;
+        return !level.HasValue || level.Value == SeverityLevel.None ? SeverityLevel.Error : level.Value;
+    }
+
+    internal static string NormalizeScope(string? scope)
+    {
+        return scope == null || string.IsNullOrEmpty(scope) ? STANDALONE_SCOPENAME : scope;
     }
 }

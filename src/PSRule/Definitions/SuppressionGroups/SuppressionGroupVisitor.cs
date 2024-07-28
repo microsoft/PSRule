@@ -14,7 +14,7 @@ internal sealed class SuppressionGroupVisitor
     private readonly SuppressionInfo _Info;
     private readonly RunspaceContext _Context;
 
-    public SuppressionGroupVisitor(RunspaceContext context, ResourceId id, SourceFile source, ISuppressionGroupV1Spec spec, IResourceHelpInfo info)
+    public SuppressionGroupVisitor(RunspaceContext context, ResourceId id, ISourceFile source, ISuppressionGroupV1Spec spec, IResourceHelpInfo info)
     {
         _Context = context;
         Id = id;
@@ -70,7 +70,7 @@ internal sealed class SuppressionGroupVisitor
 
     public ResourceId Id { get; }
 
-    public SourceFile Source { get; }
+    public ISourceFile Source { get; }
 
     public Guid InstanceId { get; }
 

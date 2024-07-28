@@ -45,7 +45,7 @@ public sealed class StringArrayMapConverter : IYamlTypeConverter
                 }
                 else if (parser.TryConsume<Scalar>(out scalar))
                 {
-                    result[key] = new string[] { scalar.Value };
+                    result[key] = [scalar.Value];
                 }
 #pragma warning restore IDE0001
             }

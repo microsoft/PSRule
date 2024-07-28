@@ -5,10 +5,12 @@ using System.Collections;
 
 namespace PSRule.Definitions;
 
+#nullable enable
+
 /// <summary>
 /// Additional resource taxonomy references.
 /// </summary>
-public sealed class ResourceLabels : Dictionary<string, string[]>
+public sealed class ResourceLabels : Dictionary<string, string[]>, IResourceLabels
 {
     /// <summary>
     /// Create an empty set of resource labels.
@@ -18,7 +20,7 @@ public sealed class ResourceLabels : Dictionary<string, string[]>
     /// <summary>
     /// Convert from a hashtable to resource labels.
     /// </summary>
-    internal static ResourceLabels FromHashtable(Hashtable hashtable)
+    internal static ResourceLabels? FromHashtable(Hashtable hashtable)
     {
         if (hashtable == null || hashtable.Count == 0)
             return null;
@@ -33,7 +35,8 @@ public sealed class ResourceLabels : Dictionary<string, string[]>
         return annotations;
     }
 
-    internal bool Contains(string key, string[] value)
+    /// <inheritdoc/>
+    public bool Contains(string key, string[] value)
     {
         if (!TryGetValue(key, out var actual))
             return false;
@@ -49,3 +52,5 @@ public sealed class ResourceLabels : Dictionary<string, string[]>
         return false;
     }
 }
+
+#nullable enable

@@ -15,7 +15,7 @@ namespace PSRule.Rules;
 [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
 public sealed class RuleSummaryRecord
 {
-    internal RuleSummaryRecord(string ruleId, string ruleName, ResourceTags tag, RuleHelpInfo info)
+    internal RuleSummaryRecord(string ruleId, string ruleName, IResourceTags tag, RuleHelpInfo info)
     {
         RuleId = ruleId;
         RuleName = ruleName;
