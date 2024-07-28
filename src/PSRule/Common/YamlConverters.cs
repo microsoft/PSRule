@@ -32,7 +32,7 @@ internal sealed class SuppressionRuleYamlTypeConverter : IYamlTypeConverter
         return type == typeof(SuppressionRule);
     }
 
-    public object ReadYaml(IParser parser, Type type)
+    public object ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {
         var result = new SuppressionRule();
         if (parser.TryConsume<SequenceStart>(out _))
@@ -64,7 +64,7 @@ internal sealed class SuppressionRuleYamlTypeConverter : IYamlTypeConverter
         return result;
     }
 
-    public void WriteYaml(IEmitter emitter, object value, Type type)
+    public void WriteYaml(IEmitter emitter, object value, Type type, ObjectSerializer serializer)
     {
         throw new NotImplementedException();
     }
@@ -80,7 +80,7 @@ internal sealed class FieldMapYamlTypeConverter : IYamlTypeConverter
         return type == typeof(FieldMap);
     }
 
-    public object ReadYaml(IParser parser, Type type)
+    public object ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {
         var result = new FieldMap();
         if (parser.TryConsume<MappingStart>(out _))
@@ -107,7 +107,7 @@ internal sealed class FieldMapYamlTypeConverter : IYamlTypeConverter
         return result;
     }
 
-    public void WriteYaml(IEmitter emitter, object value, Type type)
+    public void WriteYaml(IEmitter emitter, object value, Type type, ObjectSerializer serializer)
     {
         if (type == typeof(FieldMap) && value == null)
         {
@@ -142,7 +142,7 @@ internal sealed class PSObjectYamlTypeConverter : MappingTypeConverter, IYamlTyp
         return type == typeof(PSObject);
     }
 
-    public object ReadYaml(IParser parser, Type type)
+    public object ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {
         // Handle empty objects
         if (parser.TryConsume(out Scalar scalar))
@@ -165,7 +165,7 @@ internal sealed class PSObjectYamlTypeConverter : MappingTypeConverter, IYamlTyp
         return result;
     }
 
-    public void WriteYaml(IEmitter emitter, object value, Type type)
+    public void WriteYaml(IEmitter emitter, object value, Type type, ObjectSerializer serializer)
     {
         Map(emitter, value);
     }
@@ -441,6 +441,12 @@ internal sealed class FieldYamlTypeInspector : TypeInspectorSkeleton
         public bool CanWrite => false;
 
         public ScalarStyle ScalarStyle { get; set; }
+
+        public bool AllowNulls => throw new NotImplementedException();
+
+        public bool Required => throw new NotImplementedException();
+
+        public Type ConverterType => throw new NotImplementedException();
 
         public T GetCustomAttribute<T>() where T : Attribute
         {
