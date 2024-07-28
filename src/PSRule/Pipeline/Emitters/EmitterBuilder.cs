@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Microsoft.Extensions.DependencyInjection;
 using PSRule.Emitters;
 
 namespace PSRule.Pipeline.Emitters;
@@ -10,30 +11,20 @@ namespace PSRule.Pipeline.Emitters;
 /// </summary>
 internal sealed class EmitterBuilder
 {
-    private readonly List<IEmitter> _Emitters;
+    private readonly List<Type> _EmitterTypes;
+    private readonly ServiceCollection _Services;
 
     public EmitterBuilder()
     {
-        _Emitters = new List<IEmitter>(3);
-        AddInternal();
+        _EmitterTypes = new List<Type>(4);
+        _Services = new ServiceCollection();
+        AddInternalEmitters();
     }
 
-    private void AddInternal()
+    public void AddEmitter<T>() where T : IEmitter, new()
     {
-        Add<YamlEmitter>();
-        Add<JsonEmitter>();
-        Add<MarkdownEmitter>();
-        Add<PowerShellDataEmitter>();
-    }
-
-    public void Add(IEmitter emitter)
-    {
-        _Emitters.Add(emitter);
-    }
-
-    public void Add<T>() where T : IEmitter, new()
-    {
-        Add((IEmitter)Activator.CreateInstance(typeof(T)));
+        _EmitterTypes.Add(typeof(T));
+        _Services.AddTransient(typeof(T));
     }
 
     /// <summary>
@@ -43,6 +34,25 @@ internal sealed class EmitterBuilder
     /// <returns>An instance of <see cref="EmitterCollection"/>.</returns>
     public EmitterCollection Build(IEmitterContext context)
     {
-        return new EmitterCollection(_Emitters.ToArray(), context);
+        var serviceProvider = _Services.BuildServiceProvider();
+        var emitters = new List<IEmitter>(_EmitterTypes.Count);
+
+        foreach (var type in _EmitterTypes)
+        {
+            if (serviceProvider.GetRequiredService(type) is IEmitter emitter)
+            {
+                emitters.Add(emitter);
+            }
+        }
+
+        return new EmitterCollection(serviceProvider, [.. emitters], context);
+    }
+
+    private void AddInternalEmitters()
+    {
+        AddEmitter<YamlEmitter>();
+        AddEmitter<JsonEmitter>();
+        AddEmitter<MarkdownEmitter>();
+        AddEmitter<PowerShellDataEmitter>();
     }
 }
