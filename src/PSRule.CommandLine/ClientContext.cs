@@ -27,6 +27,7 @@ public sealed class ClientContext
         Debug = debug;
         Host = new ClientHost(this, verbose, debug);
         Option = GetOption(Host, option);
+        CachePath = Path;
     }
 
     /// <summary>
@@ -50,14 +51,19 @@ public sealed class ClientContext
     public PSRuleOption Option { get; }
 
     /// <summary>
-    /// 
+    /// Determines if verbose level diagnostic information should be displayed.
     /// </summary>
     public bool Verbose { get; }
 
     /// <summary>
-    /// 
+    /// Determines if debug level diagnostic information should be displayed.
     /// </summary>
     public bool Debug { get; }
+
+    /// <summary>
+    /// Configures the path to use for caching rules modules.
+    /// </summary>
+    public string CachePath { get; }
 
     private static PSRuleOption GetOption(ClientHost host, string? path)
     {

@@ -72,6 +72,9 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         Log(PSRuleResources.ScanModule, moduleName);
     }
 
+    /// <summary>
+    /// Log a message in the verbose stream.
+    /// </summary>
     private void Log(string message, params object[] args)
     {
         if (!_Writer.ShouldWriteVerbose())
@@ -80,6 +83,9 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
     }
 
+    /// <summary>
+    /// Log a message in the debug stream.
+    /// </summary>
     private void Debug(string message, params object[] args)
     {
         if (!_Writer.ShouldWriteDebug())
@@ -128,6 +134,8 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     /// <inheritdoc/>
     public void ModuleByName(string name, string version = null)
     {
+        Log($"Looking for module by name: {name}@{version}");
+
         var basePath = FindModule(name, version) ?? throw ModuleNotFound(name, version);
         var info = LoadManifest(basePath, name) ?? throw ModuleNotFound(name, version);
 
@@ -153,21 +161,31 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
 
     private string FindModule(string name, string version)
     {
-        return TryPackagedModule(name, out var path) ||
+        return TryPackagedModule(name, version, out var path) ||
             TryInstalledModule(name, version, out path) ? path : null;
     }
 
     /// <summary>
     /// Try to find a packaged module found relative to the tool.
     /// </summary>
-    private bool TryPackagedModule(string name, out string path)
+    private bool TryPackagedModule(string name, string version, out string path)
     {
         path = null;
         if (_LocalPath == null)
             return false;
 
-        Log($"Looking for modules in: {_LocalPath}");
+        Log($"Searching for module in: {_LocalPath}");
+        if (!string.IsNullOrEmpty(version))
+        {
+            path = Environment.GetRootedBasePath(Path.Combine(_LocalPath, "Modules", name, version));
+            if (System.IO.Directory.Exists(path))
+                return true;
+        }
+
         path = Environment.GetRootedBasePath(Path.Combine(_LocalPath, "Modules", name));
+        if (System.IO.Directory.Exists(path))
+            return true;
+
         return System.IO.Directory.Exists(path);
     }
 
@@ -181,10 +199,10 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
             return false;
 
         var unsorted = new List<string>();
-        Log("Looking for modules installed to PowerShell.");
+        Log("Searching for module in PowerShell search paths.");
         for (var i = 0; i < searchPaths.Length; i++)
         {
-            Debug($"Looking for modules search paths: {searchPaths[i]}");
+            Debug($"Search for module search path: {searchPaths[i]}");
             var searchPath = Environment.GetRootedBasePath(Path.Combine(searchPaths[i], name));
 
             // Try a specific version.
