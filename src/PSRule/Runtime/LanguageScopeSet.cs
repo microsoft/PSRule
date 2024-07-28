@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Definitions;
+
 namespace PSRule.Runtime;
 
 /// <summary>
@@ -98,6 +100,6 @@ internal sealed class LanguageScopeSet : IDisposable
 
     private static string GetScopeName(string name)
     {
-        return LanguageScope.Normalize(name);
+        return ResourceHelper.NormalizeScope(name);
     }
 }

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Data;
+using PSRule.Definitions;
 using PSRule.Emitters;
 using PSRule.Runtime;
 using YamlDotNet.Core;
@@ -114,6 +115,9 @@ internal sealed class YamlEmitter : FileEmitter
         return new DeserializerBuilder()
             .IgnoreUnmatchedProperties()
             .WithTypeConverter(_TypeConverter)
+            .WithTypeMapping<IResourceAnnotations, ResourceAnnotations>()
+            .WithTypeMapping<IResourceTags, ResourceTags>()
+            .WithTypeMapping<IResourceLabels, ResourceLabels>()
             .WithNodeDeserializer(
                 inner => new TargetObjectYamlDeserializer(inner),
                 s => s.InsteadOf<YamlConvertibleNodeDeserializer>())

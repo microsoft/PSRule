@@ -71,7 +71,7 @@ internal sealed class RuleFilter : IResourceFilter
         return false;
     }
 
-    private bool IsIncluded(IEnumerable<ResourceId> ids, ResourceTags tag, ResourceLabels labels)
+    private bool IsIncluded(IEnumerable<ResourceId> ids, IResourceTags tag, IResourceLabels labels)
     {
         foreach (var id in ids)
         {
@@ -81,7 +81,7 @@ internal sealed class RuleFilter : IResourceFilter
         return false;
     }
 
-    private bool TagEquals(ResourceTags tag)
+    private bool TagEquals(IResourceTags tag)
     {
         if (Tag == null)
             return true;
@@ -97,7 +97,7 @@ internal sealed class RuleFilter : IResourceFilter
         return true;
     }
 
-    private bool LabelEquals(ResourceLabels labels)
+    private bool LabelEquals(IResourceLabels labels)
     {
         if (Labels == null)
             return true;

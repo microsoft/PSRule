@@ -8,23 +8,25 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions.Conventions;
 
+#nullable enable
+
 internal sealed class ScriptBlockConvention : BaseConvention, IDisposable, IResource
 {
-    private readonly LanguageScriptBlock _Initialize;
-    private readonly LanguageScriptBlock _Begin;
-    private readonly LanguageScriptBlock _Process;
-    private readonly LanguageScriptBlock _End;
+    private readonly LanguageScriptBlock? _Initialize;
+    private readonly LanguageScriptBlock? _Begin;
+    private readonly LanguageScriptBlock? _Process;
+    private readonly LanguageScriptBlock? _End;
 
     private bool _Disposed;
 
     internal ScriptBlockConvention(
-        SourceFile source,
+        ISourceFile source,
         ResourceMetadata metadata,
         ResourceHelpInfo info,
-        LanguageScriptBlock begin,
-        LanguageScriptBlock initialize,
-        LanguageScriptBlock process,
-        LanguageScriptBlock end,
+        LanguageScriptBlock? begin,
+        LanguageScriptBlock? initialize,
+        LanguageScriptBlock? process,
+        LanguageScriptBlock? end,
         ActionPreference errorPreference,
         ResourceFlags flags,
         ISourceExtent extent)
@@ -53,13 +55,13 @@ internal sealed class ScriptBlockConvention : BaseConvention, IDisposable, IReso
     ResourceId? IResource.Ref => null;
 
     // Not supported with conventions.
-    ResourceId[] IResource.Alias => null;
+    ResourceId[]? IResource.Alias => null;
 
     // Not supported with conventions.
-    ResourceTags IResource.Tags => null;
+    IResourceTags? IResource.Tags => null;
 
     // Not supported with conventions.
-    ResourceLabels IResource.Labels => null;
+    IResourceLabels? IResource.Labels => null;
 
     public override void Initialize(RunspaceContext context, IEnumerable input)
     {
@@ -81,7 +83,7 @@ internal sealed class ScriptBlockConvention : BaseConvention, IDisposable, IReso
         InvokeConventionBlock(context, Source, _End, input);
     }
 
-    private static void InvokeConventionBlock(RunspaceContext context, SourceFile source, LanguageScriptBlock block, IEnumerable input)
+    private static void InvokeConventionBlock(RunspaceContext context, ISourceFile source, LanguageScriptBlock? block, IEnumerable input)
     {
         if (block == null)
             return;
@@ -124,3 +126,5 @@ internal sealed class ScriptBlockConvention : BaseConvention, IDisposable, IReso
 
     #endregion IDisposable
 }
+
+#nullable restore

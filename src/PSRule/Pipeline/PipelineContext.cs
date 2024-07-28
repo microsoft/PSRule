@@ -98,9 +98,9 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
 
     internal sealed class SourceScope
     {
-        public readonly SourceFile File;
+        public readonly ISourceFile File;
 
-        public SourceScope(SourceFile source)
+        public SourceScope(ISourceFile source)
         {
             File = source;
         }

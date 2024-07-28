@@ -16,38 +16,6 @@ internal delegate bool PathExpressionFn(IPathExpressionContext context, object i
 internal delegate bool PathExpressionFilterFn(IPathExpressionContext context, object input);
 
 /// <summary>
-/// A context ojbect used using evaluating a path expression.
-/// </summary>
-internal interface IPathExpressionContext
-{
-    object Input { get; }
-
-    bool CaseSensitive { get; }
-}
-
-/// <summary>
-/// The default context object used using evaluating a path expression.
-/// </summary>
-internal sealed class PathExpressionContext : IPathExpressionContext
-{
-    public PathExpressionContext(object input, bool caseSensitive)
-    {
-        Input = input;
-        CaseSensitive = caseSensitive;
-    }
-
-    /// <summary>
-    /// The original root object passed into the expression.
-    /// </summary>
-    public object Input { get; }
-
-    /// <summary>
-    /// Determines if member name matching is case-sensitive.
-    /// </summary>
-    public bool CaseSensitive { get; }
-}
-
-/// <summary>
 /// A path expression using JSONPath inspired syntax.
 /// </summary>
 [DebuggerDisplay("{Path}")]

@@ -48,19 +48,19 @@ internal sealed class ConventionFilter : IResourceFilter
 [DebuggerDisplay("{Id}")]
 internal abstract class BaseConvention : IConvention
 {
-    protected BaseConvention(SourceFile source, string name)
+    protected BaseConvention(ISourceFile source, string name)
     {
         Source = source;
         Name = name;
         Id = new ResourceId(Source.Module, name, ResourceIdKind.Id);
     }
 
-    public SourceFile Source { get; }
+    public ISourceFile Source { get; }
 
     public ResourceId Id { get; }
 
     /// <summary>
-    /// The name of the convetion.
+    /// The name of the convention.
     /// </summary>
     public string Name { get; }
 

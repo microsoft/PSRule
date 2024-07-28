@@ -107,13 +107,13 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
             throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordSourceScope, LanguageKeywords.Rule));
 
         var context = RunspaceContext.CurrentThread;
+        var source = context.Source.File;
         var errorPreference = GetErrorActionPreference();
-        var metadata = GetCommentMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
+        var metadata = GetCommentMetadata(source, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
         var level = ResourceHelper.GetLevel(Level);
         var tag = GetTag(Tag);
-        var source = context.Source.File;
         var extent = new SourceExtent(
-            file: source.Path,
+            file: source,
             line: MyInvocation.ScriptLineNumber,
             position: MyInvocation.OffsetInLine
         );
@@ -151,7 +151,7 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
         WriteObject(block);
     }
 
-    private PowerShellCondition GetCondition(RunspaceContext context, ResourceId id, SourceFile source, ActionPreference errorAction)
+    private PowerShellCondition GetCondition(RunspaceContext context, ResourceId id, ISourceFile source, ActionPreference errorAction)
     {
         var result = context.GetPowerShell();
         result.AddCommand(new CmdletInfo(CmdletName, typeof(InvokeRuleBlockCommand)));
@@ -176,7 +176,7 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
         }
     }
 
-    private ResourceId[] GetScopedSelectors(SourceFile source)
+    private ResourceId[] GetScopedSelectors(ISourceFile source)
     {
         return ResourceHelper.GetRuleId(source.Module, With, ResourceIdKind.Unknown);
     }

@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
-using PSRule.Pipeline;
 using PSRule.Runtime;
 using PSRule.Runtime.ObjectPath;
 
@@ -14,7 +13,7 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
 
     private List<ResultReason> _Reason;
 
-    internal ExpressionContext(RunspaceContext context, SourceFile source, ResourceKind kind, object current)
+    internal ExpressionContext(RunspaceContext context, ISourceFile source, ResourceKind kind, object current)
     {
         Context = context;
         Source = source;
@@ -24,7 +23,7 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
         Current = current;
     }
 
-    public SourceFile Source { get; }
+    public ISourceFile Source { get; }
 
     public string LanguageScope { get; }
 

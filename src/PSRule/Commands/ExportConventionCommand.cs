@@ -8,6 +8,8 @@ using PSRule.Runtime;
 
 namespace PSRule.Commands;
 
+#nullable enable
+
 [Cmdlet(VerbsData.Export, RuleLanguageNouns.Convention)]
 internal sealed class ExportConventionCommand : LanguageBlock
 {
@@ -26,34 +28,34 @@ internal sealed class ExportConventionCommand : LanguageBlock
     /// </summary>
     [Parameter(Mandatory = false)]
     [ValidateNotNullOrEmpty()]
-    public ScriptBlock Initialize { get; set; }
+    public ScriptBlock? Initialize { get; set; }
 
     /// <summary>
     /// A script block to call once per object before being processed by any rule.
     /// </summary>
     [Parameter(Mandatory = false)]
     [ValidateNotNullOrEmpty()]
-    public ScriptBlock Begin { get; set; }
+    public ScriptBlock? Begin { get; set; }
 
     /// <summary>
     /// A script block to call once per object after rules are processed.
     /// </summary>
     [Parameter(Mandatory = false, Position = 1)]
     [ValidateNotNullOrEmpty()]
-    public ScriptBlock Process { get; set; }
+    public ScriptBlock? Process { get; set; }
 
     /// <summary>
     /// A script block to call once after all rules and all objects are processed.
     /// </summary>
     [Parameter(Mandatory = false)]
     [ValidateNotNullOrEmpty()]
-    public ScriptBlock End { get; set; }
+    public ScriptBlock? End { get; set; }
 
     /// <summary>
     /// An optional pre-condition before the convention is evaluated.
     /// </summary>
     [Parameter(Mandatory = false)]
-    public ScriptBlock If { get; set; }
+    public ScriptBlock? If { get; set; }
 
     protected override void ProcessRecord()
     {
@@ -61,15 +63,17 @@ internal sealed class ExportConventionCommand : LanguageBlock
         //    throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordScriptScope, LanguageKeywords.Rule));
 
         var context = RunspaceContext.CurrentThread;
+        if (context == null) return;
+
+        var source = context!.Source!.File;
         var errorPreference = GetErrorActionPreference();
-        var commentMetadata = GetCommentMetadata(MyInvocation.ScriptName, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
-        var source = context.Source.File;
+        var commentMetadata = GetCommentMetadata(source, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
         var metadata = new ResourceMetadata
         {
             Name = Name
         };
         var extent = new SourceExtent(
-            file: source.Path,
+            file: source,
             line: MyInvocation.ScriptLineNumber,
             position: MyInvocation.OffsetInLine
         );
@@ -95,7 +99,7 @@ internal sealed class ExportConventionCommand : LanguageBlock
         WriteObject(block);
     }
 
-    private LanguageScriptBlock ConventionBlock(RunspaceContext context, ScriptBlock block, RunspaceScope scope)
+    private LanguageScriptBlock? ConventionBlock(RunspaceContext context, ScriptBlock block, RunspaceScope scope)
     {
         if (block == null)
             return null;
@@ -109,3 +113,5 @@ internal sealed class ExportConventionCommand : LanguageBlock
         return new LanguageScriptBlock(ps);
     }
 }
+
+#nullable restore

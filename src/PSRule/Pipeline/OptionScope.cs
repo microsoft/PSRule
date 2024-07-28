@@ -46,7 +46,7 @@ internal class OptionScope
     private OptionScope(ScopeType type, string languageScope)
     {
         Type = type;
-        LanguageScope = Runtime.LanguageScope.Normalize(languageScope);
+        LanguageScope = ResourceHelper.NormalizeScope(languageScope);
     }
 
     public Options.BaselineOption Baseline { get; set; }

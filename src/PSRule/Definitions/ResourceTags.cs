@@ -7,12 +7,14 @@ using System.Text;
 
 namespace PSRule.Definitions;
 
+#nullable enable
+
 /// <summary>
 /// Additional resource tags.
 /// </summary>
-public sealed class ResourceTags : Dictionary<string, string>
+public sealed class ResourceTags : Dictionary<string, string>, IResourceTags
 {
-    private Hashtable _Hashtable;
+    private Hashtable? _Hashtable;
 
     /// <summary>
     /// Create an empty set of resource tags.
@@ -24,7 +26,7 @@ public sealed class ResourceTags : Dictionary<string, string>
     /// Convert from a hashtable to resource tags.
     /// </summary>
     [DebuggerStepThrough]
-    internal static ResourceTags FromHashtable(Hashtable hashtable)
+    internal static ResourceTags? FromHashtable(Hashtable hashtable)
     {
         if (hashtable == null || hashtable.Count == 0)
             return null;
@@ -40,7 +42,7 @@ public sealed class ResourceTags : Dictionary<string, string>
     /// Convert from a dictionary of string pairs to resource tags.
     /// </summary>
     [DebuggerStepThrough]
-    internal static ResourceTags FromDictionary(Dictionary<string, string> dictionary)
+    internal static ResourceTags? FromDictionary(Dictionary<string, string> dictionary)
     {
         if (dictionary == null)
             return null;
@@ -62,17 +64,15 @@ public sealed class ResourceTags : Dictionary<string, string>
         return _Hashtable;
     }
 
-    /// <summary>
-    /// Check if a specific resource tag exists.
-    /// </summary>
-    internal bool Contains(object key, object value)
+    /// <inheritdoc/>
+    public bool Contains(object key, object value)
     {
         if (key == null || value == null || key is not string k || !ContainsKey(k))
             return false;
 
         if (TryArray(value, out var values))
         {
-            for (var i = 0; i < values.Length; i++)
+            for (var i = 0; values != null && i < values.Length; i++)
             {
                 if (Comparer.Equals(values[i], this[k]))
                     return true;
@@ -83,7 +83,7 @@ public sealed class ResourceTags : Dictionary<string, string>
         return v == "*" || Comparer.Equals(v, this[k]);
     }
 
-    private static bool TryArray(object o, out string[] values)
+    private static bool TryArray(object o, out string[]? values)
     {
         values = null;
         if (o is string[] sArray)
@@ -127,3 +127,5 @@ public sealed class ResourceTags : Dictionary<string, string>
         return sb.ToString();
     }
 }
+
+#nullable restore

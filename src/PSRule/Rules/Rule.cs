@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
-using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Rules;
@@ -46,7 +45,7 @@ public sealed class Rule : IDependencyTarget, ITargetInfo, IResource, IRuleV1
     /// </summary>
     [JsonProperty(PropertyName = "tag")]
     [DefaultValue(null)]
-    public ResourceTags Tag { get; set; }
+    public IResourceTags Tag { get; set; }
 
     /// <inheritdoc/>
     [JsonProperty(PropertyName = "info")]
@@ -56,7 +55,7 @@ public sealed class Rule : IDependencyTarget, ITargetInfo, IResource, IRuleV1
     /// <inheritdoc/>
     [JsonProperty(PropertyName = "source")]
     [DefaultValue(null)]
-    public SourceFile Source { get; set; }
+    public ISourceFile Source { get; set; }
 
     /// <summary>
     /// Other rules that must completed successfully before calling this rule.
@@ -74,7 +73,7 @@ public sealed class Rule : IDependencyTarget, ITargetInfo, IResource, IRuleV1
 
     /// <inheritdoc/>
     [JsonIgnore, YamlIgnore]
-    public ResourceLabels Labels { get; set; }
+    public IResourceLabels Labels { get; set; }
 
     string ITargetInfo.TargetName => Name;
 
@@ -92,7 +91,7 @@ public sealed class Rule : IDependencyTarget, ITargetInfo, IResource, IRuleV1
 
     IResourceHelpInfo IResource.Info => Info;
 
-    ResourceTags IResource.Tags => Tag;
+    IResourceTags IResource.Tags => Tag;
 
     InfoString IRuleV1.Recommendation => ((IRuleHelpInfoV2)Info)?.Recommendation;
 

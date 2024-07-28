@@ -9,18 +9,13 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions.Selectors;
 
-internal interface ISelector : ILanguageBlock
-{
-
-}
-
 [DebuggerDisplay("Id: {Id}")]
 internal sealed class SelectorVisitor : ISelector
 {
     private readonly LanguageExpressionOuterFn _Fn;
     private readonly RunspaceContext _Context;
 
-    public SelectorVisitor(RunspaceContext context, ResourceId id, SourceFile source, LanguageIf expression)
+    public SelectorVisitor(RunspaceContext context, ResourceId id, ISourceFile source, LanguageIf expression)
     {
         _Context = context;
         Id = id;
@@ -34,7 +29,7 @@ internal sealed class SelectorVisitor : ISelector
 
     public ResourceId Id { get; }
 
-    public SourceFile Source { get; }
+    public ISourceFile Source { get; }
 
     public bool Match(object o)
     {

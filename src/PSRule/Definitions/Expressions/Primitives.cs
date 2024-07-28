@@ -12,7 +12,7 @@ internal interface ILanguageExpressionDescriptor
 
     LanguageExpressionType Type { get; }
 
-    LanguageExpression CreateInstance(SourceFile source, LanguageExpression.PropertyBag properties);
+    LanguageExpression CreateInstance(ISourceFile source, LanguageExpression.PropertyBag properties);
 }
 
 internal sealed class LanguageExpresssionDescriptor : ILanguageExpressionDescriptor
@@ -30,7 +30,7 @@ internal sealed class LanguageExpresssionDescriptor : ILanguageExpressionDescrip
 
     public LanguageExpressionFn Fn { get; }
 
-    public LanguageExpression CreateInstance(SourceFile source, LanguageExpression.PropertyBag properties)
+    public LanguageExpression CreateInstance(ISourceFile source, LanguageExpression.PropertyBag properties)
     {
         if (Type == LanguageExpressionType.Operator)
             return new LanguageOperator(this, properties);

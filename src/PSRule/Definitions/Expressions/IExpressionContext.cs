@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions.Expressions;
@@ -10,7 +9,7 @@ internal interface IExpressionContext : IBindingContext
 {
     ResourceKind Kind { get; }
 
-    SourceFile Source { get; }
+    ISourceFile Source { get; }
 
     string LanguageScope { get; }
 
