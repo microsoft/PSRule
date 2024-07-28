@@ -3,7 +3,6 @@
 
 using System.Diagnostics;
 using PSRule.Definitions.Expressions;
-using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
 

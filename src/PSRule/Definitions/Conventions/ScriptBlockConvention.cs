@@ -3,7 +3,6 @@
 
 using System.Collections;
 using System.Management.Automation;
-using PSRule.Pipeline;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions.Conventions;

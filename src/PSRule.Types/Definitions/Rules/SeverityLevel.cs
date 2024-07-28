@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace PSRule.Definitions;
+namespace PSRule.Definitions.Rules;
 
 /// <summary>
 /// If the rule fails, how serious is the result.

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Definitions.Rules;
 using PSRule.Rules;
 
 namespace PSRule.Pipeline.Formatters;
@@ -52,13 +53,13 @@ internal sealed class GitHubActionsFormatter : AssertFormatterBase, IAssertForma
     {
         base.FailDetail(record);
         var message = GetFailMessage(record);
-        if (record.Level == Definitions.SeverityLevel.Error)
+        if (record.Level == SeverityLevel.Error)
             Error(message);
 
-        if (record.Level == Definitions.SeverityLevel.Warning)
+        if (record.Level == SeverityLevel.Warning)
             Warning(message);
 
-        if (record.Level == Definitions.SeverityLevel.Information)
+        if (record.Level == SeverityLevel.Information)
             Information(message);
 
         LineBreak();
