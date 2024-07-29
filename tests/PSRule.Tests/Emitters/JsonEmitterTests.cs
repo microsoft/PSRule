@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline.Emitters;
+using PSRule.Runtime;
 
 namespace PSRule.Emitters;
 
@@ -17,7 +18,7 @@ public sealed class JsonEmitterTests : BaseTests
     public void Accepts_WhenValidType_ShouldReturnTrue()
     {
         var context = new TestEmitterContext();
-        var emitter = new JsonEmitter();
+        var emitter = new JsonEmitter(NullLogger<JsonEmitter>.Instance);
 
         Assert.True(emitter.Accepts(context, typeof(InternalFileInfo)));
         Assert.True(emitter.Accepts(context, typeof(string)));
@@ -29,7 +30,7 @@ public sealed class JsonEmitterTests : BaseTests
     public void Visit_WhenValidFile_ShouldEmitItems()
     {
         var context = new TestEmitterContext();
-        var emitter = new JsonEmitter();
+        var emitter = new JsonEmitter(NullLogger<JsonEmitter>.Instance);
 
         Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFile.json")));
         Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFileSingle.jsonc")));
@@ -45,7 +46,7 @@ public sealed class JsonEmitterTests : BaseTests
     public void Visit_WhenEmptyFile_ShouldNotEmitItems()
     {
         var context = new TestEmitterContext();
-        var emitter = new JsonEmitter();
+        var emitter = new JsonEmitter(NullLogger<JsonEmitter>.Instance);
 
         Assert.True(emitter.Visit(context, GetFileInfo("FromFileEmpty.Rule.jsonc")));
         Assert.Empty(context.Items);
@@ -55,7 +56,7 @@ public sealed class JsonEmitterTests : BaseTests
     public void Visit_WhenString_ShouldEmitItems()
     {
         var context = new TestEmitterContext(format: Options.InputFormat.Json);
-        var emitter = new JsonEmitter();
+        var emitter = new JsonEmitter(NullLogger<JsonEmitter>.Instance);
 
         // With format.
         Assert.True(emitter.Visit(context, ReadFileAsString("ObjectFromFile.json")));

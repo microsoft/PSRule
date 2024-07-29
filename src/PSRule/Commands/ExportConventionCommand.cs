@@ -99,7 +99,7 @@ internal sealed class ExportConventionCommand : LanguageBlock
         WriteObject(block);
     }
 
-    private LanguageScriptBlock? ConventionBlock(RunspaceContext context, ScriptBlock block, RunspaceScope scope)
+    private LanguageScriptBlock? ConventionBlock(RunspaceContext context, ScriptBlock? block, RunspaceScope scope)
     {
         if (block == null)
             return null;
