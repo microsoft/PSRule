@@ -601,6 +601,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PSR0006: Failed to deserialize the file &apos;{0}&apos;: {1}.
+        /// </summary>
+        internal static string PSR0006 {
+            get {
+                return ResourceManager.GetString("PSR0006", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deserialize the file &apos;{0}&apos;: {1}.
         /// </summary>
         internal static string ReadFileFailed {

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline.Emitters;
+using PSRule.Runtime;
 
 namespace PSRule.Emitters;
 
@@ -17,7 +18,7 @@ public sealed class YamlEmitterTests : BaseTests
     public void Accepts_WhenValidType_ShouldReturnTrue()
     {
         var context = new TestEmitterContext();
-        var emitter = new YamlEmitter();
+        var emitter = new YamlEmitter(NullLogger<YamlEmitter>.Instance);
 
         Assert.True(emitter.Accepts(context, typeof(InternalFileInfo)));
         Assert.True(emitter.Accepts(context, typeof(string)));
@@ -29,7 +30,7 @@ public sealed class YamlEmitterTests : BaseTests
     public void Visit_WhenValidFile_ShouldEmitItems()
     {
         var context = new TestEmitterContext();
-        var emitter = new YamlEmitter();
+        var emitter = new YamlEmitter(NullLogger<YamlEmitter>.Instance);
 
         Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFile.yaml")));
         Assert.True(emitter.Visit(context, GetFileInfo("PSRule.Tests.yml")));
@@ -47,7 +48,7 @@ public sealed class YamlEmitterTests : BaseTests
     public void Visit_WhenValidFileContainsArray_ShouldEmitItems()
     {
         var context = new TestEmitterContext();
-        var emitter = new YamlEmitter();
+        var emitter = new YamlEmitter(NullLogger<YamlEmitter>.Instance);
 
         Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFile3.yaml")));
 
@@ -58,7 +59,7 @@ public sealed class YamlEmitterTests : BaseTests
     public void Visit_WhenEmptyFile_ShouldNotEmitItems()
     {
         var context = new TestEmitterContext();
-        var emitter = new YamlEmitter();
+        var emitter = new YamlEmitter(NullLogger<YamlEmitter>.Instance);
 
         Assert.True(emitter.Visit(context, GetFileInfo("FromFileEmpty.Rule.yaml")));
         Assert.Empty(context.Items);
@@ -68,7 +69,7 @@ public sealed class YamlEmitterTests : BaseTests
     public void Visit_WhenString_ShouldEmitItems()
     {
         var context = new TestEmitterContext(format: Options.InputFormat.Yaml);
-        var emitter = new YamlEmitter();
+        var emitter = new YamlEmitter(NullLogger<YamlEmitter>.Instance);
 
         // With format.
         Assert.True(emitter.Visit(context, ReadFileAsString("ObjectFromFile.yaml")));

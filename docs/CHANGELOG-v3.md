@@ -36,6 +36,9 @@ What's changed since pre-release v3.0.0-B0203:
     - With this update rules with the severity level `Error` that fail will break the pipeline by default.
     - The `Execution.Break` option can be set to `Never`, `OnError`, `OnWarning`, or `OnInformation`.
     - If a rule fails with a severity level equal or higher than the configured level the pipeline will break.
+- General improvements:
+  - Added support for native logging within emitters by @BernieWhite.
+    [#1837](https://github.com/microsoft/PSRule/issues/1837)
 - Engineering:
   - Bump xunit to v2.9.0.
     [#1869](https://github.com/microsoft/PSRule/pull/1869)

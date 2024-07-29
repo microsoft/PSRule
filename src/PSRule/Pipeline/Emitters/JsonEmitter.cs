@@ -18,12 +18,14 @@ internal sealed class JsonEmitter : FileEmitter
     private const string EXTENSION_JSONC = ".jsonc";
     private const string EXTENSION_SARIF = ".sarif";
 
-    private readonly JsonSerializer _Deserializer;
+    private readonly ILogger<JsonEmitter> _Logger;
     private readonly JsonSerializerSettings _Settings;
+    private readonly JsonSerializer _Deserializer;
     private readonly HashSet<string> _Extensions;
 
-    public JsonEmitter()
+    public JsonEmitter(ILogger<JsonEmitter> logger)
     {
+        _Logger = logger;
         _Settings = new JsonSerializerSettings
         {
 
@@ -63,7 +65,7 @@ internal sealed class JsonEmitter : FileEmitter
         {
             if (stream.Info != null && !string.IsNullOrEmpty(stream.Info.Path))
             {
-                RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(stream.Info.Path, ex);
+                _Logger.ErrorReadFileFailed(stream.Info.Path, ex);
             }
             throw;
         }

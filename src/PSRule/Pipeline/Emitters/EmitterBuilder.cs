@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using PSRule.Emitters;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline.Emitters;
 
@@ -18,10 +19,15 @@ internal sealed class EmitterBuilder
     {
         _EmitterTypes = new List<Type>(4);
         _Services = new ServiceCollection();
+        AddInternalServices();
         AddInternalEmitters();
     }
 
-    public void AddEmitter<T>() where T : IEmitter, new()
+    /// <summary>
+    /// Add an <see cref="IEmitter"/> implementation class.
+    /// </summary>
+    /// <typeparam name="T">An emitter type that implements <see cref="IEmitter"/>.</typeparam>
+    public void AddEmitter<T>() where T : class, IEmitter
     {
         _EmitterTypes.Add(typeof(T));
         _Services.AddTransient(typeof(T));
@@ -48,6 +54,18 @@ internal sealed class EmitterBuilder
         return new EmitterCollection(serviceProvider, [.. emitters], context);
     }
 
+    /// <summary>
+    /// Add the default services automatically added to the DI container.
+    /// </summary>
+    private void AddInternalServices()
+    {
+        _Services.AddSingleton<ILoggerFactory, LoggerFactory>();
+        _Services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+    }
+
+    /// <summary>
+    /// Add the built-in emitters to the list of emitters for processing items.
+    /// </summary>
     private void AddInternalEmitters()
     {
         AddEmitter<YamlEmitter>();

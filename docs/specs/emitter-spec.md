@@ -25,5 +25,16 @@ Goals with emitters:
 
 The goal of emitters is to provide a high performance and extensible way to emit custom objects to the input stream.
 
-Emitters define a C# `IEmitter` interface for emitting objects to the input stream.
+Emitters define an `IEmitter` interface for emitting objects to the input stream.
 The implementation of an emitter must be thread safe, as emitters can be run in parallel.
+
+## Logging
+
+An emitter may expose diagnostic logs by using the `PSRule.Runtime.ILogger<T>` interface.
+
+## Dependency injection
+
+PSRule uses dependency injection to create each emitter instance.
+The following interfaces can optionally be specified in a emitter constructor to have references injected to the instance.
+
+- `PSRule.Runtime.ILogger<T>`
