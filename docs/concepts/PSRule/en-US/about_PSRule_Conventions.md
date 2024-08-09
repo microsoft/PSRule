@@ -70,7 +70,7 @@ Convention block limitations:
 - `End` can not use automatic variables except `$PSRule`.
   Most methods and properties of `$PSRule` are not available in `End`.
 
-By default, the `Process` block used.
+By default, the `Process` block is used.
 For example:
 
 ```powershell
