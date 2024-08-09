@@ -64,7 +64,7 @@ Before an object can be tested with PSRule, one or more rules must be defined.
 Each rule is defined in a file named with the suffix `.Rule.yaml`, `.Rule.jsonc`, or `.Rule.ps1`.
 Multiple rules can be defined in a single file.
 
-A rule that fail on files with `.jpg` or `.png` extensions is shown in YAML, JSON, and PowerShell formats.
+A rule that fails on files with `.jpg` or `.png` extensions is shown in YAML, JSON, and PowerShell formats.
 You only need to choose one format, however you can choose to create all three to try out each format.
 
 === "YAML"
