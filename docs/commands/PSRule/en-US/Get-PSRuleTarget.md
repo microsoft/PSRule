@@ -45,7 +45,7 @@ Get target objects from `resources.json`.
 
 ### -InputPath
 
-Instead of processing objects from the pipeline, import objects file the specified file paths.
+Instead of processing objects from the pipeline, import objects from the specified file paths.
 
 ```yaml
 Type: String[]
