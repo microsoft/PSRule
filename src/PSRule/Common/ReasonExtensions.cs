@@ -10,7 +10,7 @@ internal static class ReasonExtensions
     internal static string[] GetStrings(this IList<ResultReason> reason)
     {
         if (reason == null || reason.Count == 0)
-            return Array.Empty<string>();
+            return [];
 
         var result = new string[reason.Count];
         for (var i = 0; i < reason.Count; i++)

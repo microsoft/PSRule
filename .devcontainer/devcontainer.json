@@ -10,7 +10,7 @@
         "terminal.integrated.defaultProfile.linux": "pwsh",
         "terminal.integrated.profiles.linux": {
           "pwsh": {
-            "path": "/opt/microsoft/powershell/7/pwsh"
+            "path": "/usr/local/bin/pwsh"
           }
         }
       },
@@ -36,6 +36,7 @@
       "version": "latest"
     }
   },
-  "onCreateCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-build.ps1",
+  "onCreateCommand": "sudo chown -R vscode:vscode /opt/microsoft/powershell/7/pwsh && sudo chmod u+x /opt/microsoft/powershell/7/pwsh",
+  "updateContentCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-build.ps1",
   "postStartCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-start.ps1"
 }

@@ -388,7 +388,7 @@ internal sealed class ResourceObjectJsonConverter : JsonConverter
 
     private IResource MapResource(JsonReader reader, JsonSerializer serializer)
     {
-        reader.GetSourceExtent(RunspaceContext.CurrentThread.Source.File.Path, out var extent);
+        reader.GetSourceExtent(RunspaceContext.CurrentThread.Source.File, out var extent);
         reader.SkipComments(out _);
         if (reader.TokenType != JsonToken.StartObject || !reader.Read())
             throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);

@@ -18,9 +18,9 @@ internal sealed class TestResourceName : IResource
         Labels = resourceLabels ?? new ResourceLabels();
     }
 
-    public ResourceKind Kind => throw new System.NotImplementedException();
+    public ResourceKind Kind => throw new NotImplementedException();
 
-    public string ApiVersion => throw new System.NotImplementedException();
+    public string ApiVersion => throw new NotImplementedException();
 
     public string Name { get; }
 
@@ -28,21 +28,21 @@ internal sealed class TestResourceName : IResource
 
     public ResourceId[] Alias => Array.Empty<ResourceId>();
 
-    public ResourceTags Tags { get; }
+    public IResourceTags Tags { get; }
 
-    public ResourceLabels Labels { get; }
+    public IResourceLabels Labels { get; }
 
     public ResourceFlags Flags => ResourceFlags.None;
 
-    public ISourceExtent Extent => throw new System.NotImplementedException();
+    public ISourceExtent Extent => throw new NotImplementedException();
 
-    public IResourceHelpInfo Info => throw new System.NotImplementedException();
+    public IResourceHelpInfo Info => throw new NotImplementedException();
 
     public ResourceId Id { get; }
 
-    public string SourcePath => throw new System.NotImplementedException();
+    public string SourcePath => throw new NotImplementedException();
 
     public string Module { get; }
 
-    public SourceFile Source => throw new System.NotImplementedException();
+    public ISourceFile Source => throw new NotImplementedException();
 }

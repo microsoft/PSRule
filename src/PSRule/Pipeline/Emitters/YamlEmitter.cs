@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Data;
+using PSRule.Definitions;
 using PSRule.Emitters;
 using PSRule.Runtime;
 using YamlDotNet.Core;
@@ -19,11 +20,13 @@ internal sealed class YamlEmitter : FileEmitter
     private const string EXTENSION_YAML = ".yaml";
     private const string EXTENSION_YML = ".yml";
 
+    private readonly ILogger<YamlEmitter> _Logger;
     private readonly PSObjectYamlTypeConverter _TypeConverter;
     private readonly IDeserializer _Deserializer;
 
-    public YamlEmitter()
+    public YamlEmitter(ILogger<YamlEmitter> logger)
     {
+        _Logger = logger;
         _TypeConverter = new PSObjectYamlTypeConverter();
         _Deserializer = GetDeserializer();
     }
@@ -62,7 +65,7 @@ internal sealed class YamlEmitter : FileEmitter
         {
             if (stream.Info != null && !string.IsNullOrEmpty(stream.Info.Path))
             {
-                RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(stream.Info.Path, ex);
+                _Logger.ErrorReadFileFailed(stream.Info.Path, ex);
             }
             throw;
         }
@@ -114,6 +117,9 @@ internal sealed class YamlEmitter : FileEmitter
         return new DeserializerBuilder()
             .IgnoreUnmatchedProperties()
             .WithTypeConverter(_TypeConverter)
+            .WithTypeMapping<IResourceAnnotations, ResourceAnnotations>()
+            .WithTypeMapping<IResourceTags, ResourceTags>()
+            .WithTypeMapping<IResourceLabels, ResourceLabels>()
             .WithNodeDeserializer(
                 inner => new TargetObjectYamlDeserializer(inner),
                 s => s.InsteadOf<YamlConvertibleNodeDeserializer>())

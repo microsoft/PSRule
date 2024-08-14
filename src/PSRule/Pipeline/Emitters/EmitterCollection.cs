@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
+using Microsoft.Extensions.DependencyInjection;
 using PSRule.Data;
 using PSRule.Emitters;
 
@@ -14,6 +15,7 @@ namespace PSRule.Pipeline.Emitters;
 /// </summary>
 internal sealed class EmitterCollection : IDisposable
 {
+    private readonly ServiceProvider _ServiceProvider;
     private readonly IEmitter[] _Emitters;
     private readonly IEmitterContext _Context;
     private readonly EmitterChain _Chain;
@@ -26,8 +28,9 @@ internal sealed class EmitterCollection : IDisposable
 
     private bool _Disposed;
 
-    public EmitterCollection(IEmitter[] emitters, IEmitterContext context)
+    public EmitterCollection(ServiceProvider serviceProvider, IEmitter[] emitters, IEmitterContext context)
     {
+        _ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         _Emitters = emitters ?? throw new ArgumentNullException(nameof(emitters));
         _Context = context ?? throw new ArgumentNullException(nameof(context));
         _Chain = BuildChain(emitters);
@@ -119,6 +122,8 @@ internal sealed class EmitterCollection : IDisposable
             {
                 for (var i = 0; _Chain != null && i < _Emitters.Length; i++)
                     _Emitters[i].Dispose();
+
+                _ServiceProvider.Dispose();
             }
             _Disposed = true;
         }

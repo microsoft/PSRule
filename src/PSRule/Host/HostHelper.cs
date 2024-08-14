@@ -102,7 +102,7 @@ internal static class HostHelper
     /// <summary>
     /// Called from PowerShell to get additional metdata from a language block, such as comment help.
     /// </summary>
-    internal static CommentMetadata GetCommentMeta(string path, int lineNumber, int offset)
+    internal static CommentMetadata GetCommentMeta(ISourceFile file, int lineNumber, int offset)
     {
         var context = RunspaceContext.CurrentThread;
         if (lineNumber < 0 || RunspaceContext.CurrentThread.IsScope(RunspaceScope.None) || context.Source.SourceContentCache == null)
@@ -251,6 +251,9 @@ internal static class HostHelper
         var d = new DeserializerBuilder()
             .IgnoreUnmatchedProperties()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .WithTypeMapping<IResourceAnnotations, ResourceAnnotations>()
+            .WithTypeMapping<IResourceTags, ResourceTags>()
+            .WithTypeMapping<IResourceLabels, ResourceLabels>()
             .WithTypeConverter(new FieldMapYamlTypeConverter())
             .WithTypeConverter(new StringArrayMapConverter())
             .WithTypeConverter(new StringArrayConverter())

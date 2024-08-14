@@ -544,7 +544,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         return _LogPrefix ?? string.Empty;
     }
 
-    internal void EnterLanguageScope(SourceFile file)
+    internal void EnterLanguageScope(ISourceFile file)
     {
         // TODO: Look at scope caching, and a scope stack.
 
@@ -561,7 +561,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         Source = new SourceScope(file);
     }
 
-    internal void ExitLanguageScope(SourceFile file)
+    internal void ExitLanguageScope(ISourceFile file)
     {
         // Look at scope poping and validation.
 
@@ -754,6 +754,9 @@ internal sealed class RunspaceContext : IDisposable, ILogger
 
         foreach (var resource in resources)
         {
+            if (resource == null)
+                continue;
+
             EnterLanguageScope(resource.Source);
             try
             {

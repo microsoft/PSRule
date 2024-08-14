@@ -24,24 +24,24 @@ public interface IResource : ILanguageBlock
     string Name { get; }
 
     /// <summary>
-    /// An optional reference identifer for the resource.
+    /// An optional reference identifier for the resource.
     /// </summary>
     ResourceId? Ref { get; }
 
     /// <summary>
     /// Any additional aliases for the resource.
     /// </summary>
-    ResourceId[] Alias { get; }
+    ResourceId[]? Alias { get; }
 
     /// <summary>
     /// Any resource tags.
     /// </summary>
-    ResourceTags Tags { get; }
+    IResourceTags? Tags { get; }
 
     /// <summary>
     /// Any taxonomy references.
     /// </summary>
-    ResourceLabels Labels { get; }
+    IResourceLabels? Labels { get; }
 
     /// <summary>
     /// Flags for the resource.

@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 
 namespace PSRule.Pipeline.Dependencies;
 
+#nullable enable
+
 /// <summary>
 /// Define the structure for the PSRule lock file.
 /// By default, this file is <c>ps-rule.lock.json</c>.
@@ -73,3 +75,5 @@ public sealed class LockFile
         File.WriteAllText(path, json, Encoding.UTF8);
     }
 }
+
+#nullable restore

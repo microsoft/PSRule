@@ -415,4 +415,7 @@
   <data name="PSR0004" xml:space="preserve">
     <value>PSR0004: The specified {0} resource '{1}' is not known.</value>
   </data>
+  <data name="PSR0006" xml:space="preserve">
+    <value>PSR0006: Failed to deserialize the file '{0}': {1}</value>
+  </data>
 </root>

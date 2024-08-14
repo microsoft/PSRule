@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Management.Automation;
 using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -15,6 +16,7 @@ internal static class LoggerExtensions
 {
     private static readonly EventId PSR0004 = new(4, "PSR0004");
     private static readonly EventId PSR0005 = new(5, "PSR0005");
+    private static readonly EventId PSR0006 = new(6, "PSR0006");
 
     /// <summary>
     /// PSR0005: The {0} '{1}' is obsolete.
@@ -53,6 +55,29 @@ internal static class LoggerExtensions
             PSRuleResources.PSR0004,
             Enum.GetName(typeof(ResourceKind), kind),
             id
+        );
+    }
+
+    /// <summary>
+    /// PSR0006: Failed to deserialize the file '{0}': {1}
+    /// </summary>
+    internal static void ErrorReadFileFailed(this ILogger logger, string path, Exception innerException)
+    {
+        if (logger == null || !logger.IsEnabled(LogLevel.Error))
+            return;
+
+        logger.LogError
+        (
+            PSR0006,
+            new PipelineSerializationException(string.Format(
+                Thread.CurrentThread.CurrentCulture,
+                PSRuleResources.PSR0006,
+                path,
+                innerException.Message), path, innerException
+            ),
+            PSRuleResources.PSR0006,
+            path,
+            innerException.Message
         );
     }
 }

@@ -1,9 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using System.Management.Automation;
 
 namespace PSRule.Pipeline;
+
+#nullable enable
 
 /// <summary>
 /// An instance of a PSRule pipeline.
@@ -24,7 +26,7 @@ public interface IPipeline : IDisposable
     /// Process an object through the pipeline. Each object will be processed by rules that apply based on pre-conditions.
     /// </summary>
     /// <param name="sourceObject">The object to process.</param>
-    void Process(PSObject sourceObject);
+    void Process(PSObject? sourceObject);
 
     /// <summary>
     /// Clean up and flush pipeline results. Call this method once after processing any objects through the pipeline.
@@ -32,3 +34,5 @@ public interface IPipeline : IDisposable
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Matches PowerShell pipeline.")]
     void End();
 }
+
+#nullable restore

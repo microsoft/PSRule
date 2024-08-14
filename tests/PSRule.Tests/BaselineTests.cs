@@ -8,6 +8,7 @@ using System.Management.Automation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Host;
 using PSRule.Pipeline;

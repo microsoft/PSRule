@@ -36,6 +36,9 @@ What's changed since pre-release v3.0.0-B0203:
     - With this update rules with the severity level `Error` that fail will break the pipeline by default.
     - The `Execution.Break` option can be set to `Never`, `OnError`, `OnWarning`, or `OnInformation`.
     - If a rule fails with a severity level equal or higher than the configured level the pipeline will break.
+- General improvements:
+  - Added support for native logging within emitters by @BernieWhite.
+    [#1837](https://github.com/microsoft/PSRule/issues/1837)
 - Engineering:
   - Bump xunit to v2.9.0.
     [#1869](https://github.com/microsoft/PSRule/pull/1869)
@@ -51,6 +54,9 @@ What's changed since pre-release v3.0.0-B0203:
     [#1872](https://github.com/microsoft/PSRule/pull/1872)
   - Bump PSScriptAnalyzer to v1.22.0.
     [#1858](https://github.com/microsoft/PSRule/pull/1858)
+- Bug fixes:
+  - Fixed CLI exception the term Find-Module is not recognized by @BernieWhite.
+    [#1860](https://github.com/microsoft/PSRule/issues/1860)
 
 ## v3.0.0-B0203 (pre-release)
 

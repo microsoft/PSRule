@@ -12,6 +12,8 @@ using YamlDotNet.Serialization;
 
 namespace PSRule.Rules;
 
+#nullable enable
+
 internal delegate bool RulePrecondition();
 
 internal delegate RuleConditionResult RuleCondition();
@@ -22,7 +24,7 @@ internal delegate RuleConditionResult RuleCondition();
 [DebuggerDisplay("{Id} @{Source.Path}")]
 internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable, IResource, IRuleV1
 {
-    internal RuleBlock(SourceFile source, ResourceId id, ResourceId? @ref, SeverityLevel level, RuleHelpInfo info, ICondition condition, ResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, ISourceExtent extent, ResourceFlags flags, ResourceLabels labels)
+    internal RuleBlock(ISourceFile source, ResourceId id, ResourceId? @ref, SeverityLevel level, RuleHelpInfo info, ICondition condition, IResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, ISourceExtent extent, ResourceFlags flags, IResourceLabels labels)
     {
         Source = source;
         Name = id.Name;
@@ -52,7 +54,7 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     public ResourceId? Ref { get; }
 
     /// <inheritdoc/>
-    public ResourceId[] Alias { get; }
+    public ResourceId[]? Alias { get; }
 
     /// <summary>
     /// If the rule fails, how serious is the result.
@@ -79,10 +81,10 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     /// <summary>
     /// Tags assigned to block. Tags are additional metadata used to select rules to execute and identify results.
     /// </summary>
-    public readonly ResourceTags Tag;
+    public readonly IResourceTags Tag;
 
     /// <inheritdoc/>
-    public ResourceLabels Labels { get; }
+    public IResourceLabels? Labels { get; }
 
     /// <summary>
     /// Configuration defaults for the rule definition.
@@ -95,7 +97,7 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     public readonly RuleHelpInfo Info;
 
     /// <inheritdoc/>
-    public SourceFile Source { get; }
+    public ISourceFile Source { get; }
 
     /// <inheritdoc/>
     public ISourceExtent Extent { get; }
@@ -115,15 +117,15 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
 
     string IResource.Name => Name;
 
-    ResourceTags IResource.Tags => Tag;
+    IResourceTags? IResource.Tags => Tag;
 
     IResourceHelpInfo IResource.Info => Info;
 
-    ResourceTags IRuleV1.Tag => Tag;
+    IResourceTags IRuleV1.Tag => Tag;
 
     string IRuleV1.Synopsis => Info.Synopsis;
 
-    InfoString IRuleV1.Recommendation => ((IRuleHelpInfoV2)Info)?.Recommendation;
+    InfoString IRuleV1.Recommendation => ((IRuleHelpInfoV2)Info)!.Recommendation;
 
     #region IDisposable
 
@@ -134,3 +136,5 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
 
     #endregion IDisposable
 }
+
+#nullable restore

@@ -17,8 +17,8 @@ public sealed class ConventionTests
     {
         var testObject1 = new TestObject { Name = "TestObject1" };
         var option = GetOption();
-        option.Rule.Include = new string[] { "ConventionTest" };
-        option.Convention.Include = new string[] { "Convention1" };
+        option.Rule.Include = ["ConventionTest"];
+        option.Convention.Include = ["Convention1"];
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
         var pipeline = builder.Build();
 
@@ -33,10 +33,10 @@ public sealed class ConventionTests
     {
         var testObject1 = new TestObject { Name = "TestObject1" };
         var option = GetOption();
-        option.Rule.Include = new string[] { "ConventionTest" };
+        option.Rule.Include = ["ConventionTest"];
 
         // Order 1
-        option.Convention.Include = new string[] { "Convention1", "Convention2" };
+        option.Convention.Include = ["Convention1", "Convention2"];
         var writer = new TestWriter(option);
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
         var pipeline = builder.Build(writer);
@@ -48,7 +48,7 @@ public sealed class ConventionTests
         Assert.Equal(110, actual2);
 
         // Order 2
-        option.Convention.Include = new string[] { "Convention2", "Convention1" };
+        option.Convention.Include = ["Convention2", "Convention1"];
         writer = new TestWriter(option);
         builder = PipelineBuilder.Invoke(GetSource(), option, null);
         pipeline = builder.Build(writer);
@@ -68,8 +68,8 @@ public sealed class ConventionTests
     {
         var testObject1 = new TestObject { Name = "TestObject1" };
         var option = GetOption();
-        option.Rule.Include = new string[] { "WithLocalizedDataPrecondition" };
-        option.Convention.Include = new string[] { "Convention.WithLocalizedData" };
+        option.Rule.Include = ["WithLocalizedDataPrecondition"];
+        option.Convention.Include = ["Convention.WithLocalizedData"];
         var writer = new TestWriter(option);
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
         var pipeline = builder.Build(writer);

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 namespace PSRule.Definitions;
@@ -11,7 +11,7 @@ public interface ISourceExtent
     /// <summary>
     /// The source file path.
     /// </summary>
-    string File { get; }
+    ISourceFile File { get; }
 
     /// <summary>
     /// The first line of the expression.

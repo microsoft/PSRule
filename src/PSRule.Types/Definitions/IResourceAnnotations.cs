@@ -4,9 +4,8 @@
 namespace PSRule.Definitions;
 
 /// <summary>
-/// Additional resource annotations.
+/// 
 /// </summary>
-public sealed class ResourceAnnotations : Dictionary<string, object>
-{
-
+public interface IResourceAnnotations : IDictionary<string, object>
+{ 
 }

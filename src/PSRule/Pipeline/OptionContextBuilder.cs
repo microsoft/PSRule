@@ -52,7 +52,7 @@ internal sealed class OptionContextBuilder
     /// </summary>
     internal OptionContext Build(string languageScope)
     {
-        languageScope = LanguageScope.Normalize(languageScope);
+        languageScope = ResourceHelper.NormalizeScope(languageScope);
         var context = new OptionContext();
 
         _Scopes.Sort(_Comparer);
@@ -119,7 +119,7 @@ internal sealed class OptionContextBuilder
 
     private static bool ShouldCombine(string languageScope, OptionScope optionScope)
     {
-        return optionScope.LanguageScope == LanguageScope.STANDALONE_SCOPENAME || optionScope.LanguageScope == languageScope || optionScope.Type == ScopeType.Explicit;
+        return optionScope.LanguageScope == ResourceHelper.STANDALONE_SCOPENAME || optionScope.LanguageScope == languageScope || optionScope.Type == ScopeType.Explicit;
     }
 
     /// <summary>

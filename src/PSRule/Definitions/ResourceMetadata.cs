@@ -8,7 +8,7 @@ namespace PSRule.Definitions;
 /// <summary>
 /// Additional resource metadata.
 /// </summary>
-public sealed class ResourceMetadata
+public sealed class ResourceMetadata : IResourceMetadata
 {
     /// <summary>
     /// Create an empty set of metadata.
@@ -49,19 +49,19 @@ public sealed class ResourceMetadata
     /// Any resource annotations.
     /// </summary>
     [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
-    public ResourceAnnotations Annotations { get; set; }
+    public IResourceAnnotations Annotations { get; set; }
 
     /// <summary>
     /// Any resource tags.
     /// </summary>
     [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
-    public ResourceTags Tags { get; set; }
+    public IResourceTags Tags { get; set; }
 
     /// <summary>
     /// Any taxonomy references.
     /// </summary>
     [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitEmptyCollections)]
-    public ResourceLabels Labels { get; set; }
+    public IResourceLabels Labels { get; set; }
 
     /// <summary>
     /// A URL to documentation for the resource.

@@ -23,10 +23,10 @@ internal static class JsonReaderExtensions
         return true;
     }
 
-    public static bool GetSourceExtent(this JsonReader reader, string file, out ISourceExtent extent)
+    public static bool GetSourceExtent(this JsonReader reader, ISourceFile file, out ISourceExtent extent)
     {
         extent = null;
-        if (string.IsNullOrEmpty(file) || !TryLineInfo(reader, out var lineNumber, out var linePosition))
+        if (file == null || !TryLineInfo(reader, out var lineNumber, out var linePosition))
             return false;
 
         extent = new SourceExtent(file, lineNumber, linePosition);

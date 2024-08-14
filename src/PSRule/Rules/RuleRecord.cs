@@ -25,7 +25,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
 
     internal readonly ResultDetail _Detail;
 
-    internal RuleRecord(string runId, ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, ResourceTags tag, RuleHelpInfo info, Hashtable field, SeverityLevel level, ISourceExtent extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+    internal RuleRecord(string runId, ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, IResourceTags tag, RuleHelpInfo info, Hashtable field, SeverityLevel level, ISourceExtent extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
     {
         _TargetObject = targetObject;
         RunId = runId;
