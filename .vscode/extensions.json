@@ -5,6 +5,7 @@
     "github.vscode-pull-request-github",
     "davidanson.vscode-markdownlint",
     "streetsidesoftware.code-spell-checker",
-    "bewhite.psrule-vscode-preview"
+    "bewhite.psrule-vscode-preview",
+    "ms-sarifvscode.sarif-viewer"
   ]
 }

@@ -21,7 +21,8 @@
         "davidanson.vscode-markdownlint",
         "streetsidesoftware.code-spell-checker",
         "bewhite.psrule-vscode-preview",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "ms-sarifvscode.sarif-viewer"
       ]
     }
   },
