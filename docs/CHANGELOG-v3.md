@@ -44,8 +44,8 @@ What's changed since pre-release v3.0.0-B0203:
     [#1869](https://github.com/microsoft/PSRule/pull/1869)
   - Bump xunit.runner.visualstudio to v2.8.2.
     [#1869](https://github.com/microsoft/PSRule/pull/1869)
-  - Bump System.Drawing.Common to v8.0.7.
-    [#1867](https://github.com/microsoft/PSRule/pull/1867)
+  - Bump System.Drawing.Common to v8.0.8.
+    [#1887](https://github.com/microsoft/PSRule/pull/1887)
   - Bump YamlDotNet to v16.0.0.
     [#1874](https://github.com/microsoft/PSRule/pull/1874)
   - Bump Microsoft.CodeAnalysis.Common to v4.10.0.
@@ -54,6 +54,8 @@ What's changed since pre-release v3.0.0-B0203:
     [#1872](https://github.com/microsoft/PSRule/pull/1872)
   - Bump PSScriptAnalyzer to v1.22.0.
     [#1858](https://github.com/microsoft/PSRule/pull/1858)
+  - Bump BenchmarkDotNet from 0.13.12 to 0.14.0.
+    [#1886](https://github.com/microsoft/PSRule/pull/1886)
 - Bug fixes:
   - Fixed CLI exception the term Find-Module is not recognized by @BernieWhite.
     [#1860](https://github.com/microsoft/PSRule/issues/1860)
