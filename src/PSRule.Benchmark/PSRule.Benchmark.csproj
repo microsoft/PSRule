@@ -18,6 +18,7 @@
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.4" />
     <PackageReference Include="System.Management.Automation" Version="7.4.4" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>
