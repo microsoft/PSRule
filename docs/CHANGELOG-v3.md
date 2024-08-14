@@ -44,8 +44,8 @@ What's changed since pre-release v3.0.0-B0203:
     [#1869](https://github.com/microsoft/PSRule/pull/1869)
   - Bump xunit.runner.visualstudio to v2.8.2.
     [#1869](https://github.com/microsoft/PSRule/pull/1869)
-  - Bump System.Drawing.Common to v8.0.7.
-    [#1867](https://github.com/microsoft/PSRule/pull/1867)
+  - Bump System.Drawing.Common to v8.0.8.
+    [#1887](https://github.com/microsoft/PSRule/pull/1887)
   - Bump YamlDotNet to v15.3.0.
     [#1856](https://github.com/microsoft/PSRule/pull/1856)
   - Bump Microsoft.CodeAnalysis.Common to v4.10.0.
