@@ -22,7 +22,8 @@
         "streetsidesoftware.code-spell-checker",
         "bewhite.psrule-vscode-preview",
         "eamodio.gitlens",
-        "ms-sarifvscode.sarif-viewer"
+        "ms-sarifvscode.sarif-viewer",
+        "github.vscode-github-actions"
       ]
     }
   },
