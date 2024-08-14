@@ -54,6 +54,8 @@ What's changed since pre-release v3.0.0-B0203:
     [#1872](https://github.com/microsoft/PSRule/pull/1872)
   - Bump PSScriptAnalyzer to v1.22.0.
     [#1858](https://github.com/microsoft/PSRule/pull/1858)
+  - Bump BenchmarkDotNet from 0.13.12 to 0.14.0.
+    [#1886](https://github.com/microsoft/PSRule/pull/1886)
 - Bug fixes:
   - Fixed CLI exception the term Find-Module is not recognized by @BernieWhite.
     [#1860](https://github.com/microsoft/PSRule/issues/1860)
