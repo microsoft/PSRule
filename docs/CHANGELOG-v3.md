@@ -72,9 +72,6 @@ What's changed since pre-release v3.0.0-B0198:
     - The `File` and `Detect` input formats are no longer required and have been removed.
     - Processing files and objects with rules is no longer recommended, and disabled by default.
     - The `Input.FileObjects` can be set to `true` to enable processing of files as objects with rules.
-- Engineering:
-  - Bump Microsoft.NET.Test.Sdk to v17.10.0.
-    [#1826](https://github.com/microsoft/PSRule/pull/1826)
 - Bug fixes:
   - Fixed reason reported for `startsWith` by @BernieWhite.
     [#1818](https://github.com/microsoft/PSRule/issues/1818)
@@ -122,8 +119,6 @@ What's changed since pre-release v3.0.0-B0141:
     [#1673](https://github.com/microsoft/PSRule/pull/1673)
     - Running PSRule from PowerShell 7.x is supported on 7.4 and above.
     - Running PSRule from Windows PowerShell 5.1 is still supported but deprecated and will be removed in PSRule v4.
-  - Bump Microsoft.NET.Test.Sdk to v17.9.0.
-    [#1752](https://github.com/microsoft/PSRule/pull/1752)
 - Bug fixes:
   - Fixed CLI null reference when include module is undefined by @BernieWhite.
     [#1746](https://github.com/microsoft/PSRule/issues/1746)
@@ -183,8 +178,6 @@ What's changed since pre-release v3.0.0-B0093:
     [#1699](https://github.com/microsoft/PSRule/pull/1699)
   - Bump xunit.runner.visualstudio to v2.5.5.
     [#1700](https://github.com/microsoft/PSRule/pull/1700)
-  - Bump Microsoft.NET.Test.Sdk to v17.8.0.
-    [#1659](https://github.com/microsoft/PSRule/pull/1659)
   - Bump Microsoft.CodeAnalysis.NetAnalyzers to v8.0.0.
     [#1674](https://github.com/microsoft/PSRule/pull/1674)
   - Bump Microsoft.CodeAnalysis.Common to v4.8.0.
@@ -239,8 +232,6 @@ What's changed since release v2.9.0:
     [#1602](https://github.com/microsoft/PSRule/pull/1602)
   - Bump Microsoft.CodeAnalysis.Common to v4.7.0.
     [#1593](https://github.com/microsoft/PSRule/pull/1593)
-  - Bump Microsoft.NET.Test.Sdk to v17.7.2.
-    [#1608](https://github.com/microsoft/PSRule/pull/1608)
   - Bump YamlDotNet to v13.7.1.
     [#1647](https://github.com/microsoft/PSRule/issues/1647)
   - Bump xunit to v2.5.3.

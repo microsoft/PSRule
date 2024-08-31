@@ -52,7 +52,7 @@ public sealed class InputPathBuilderTests
 
         builder.Add("./*.json");
         actual = builder.Build();
-        Assert.True(actual.Length == 3);
+        Assert.True(actual.Length == 4);
 
         builder.Add("src/");
         actual = builder.Build();
