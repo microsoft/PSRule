@@ -7,23 +7,6 @@
       "name": "Module4"
     },
     "spec": {
-      "binding": {
-        "field": {
-          "kind": [
-            "Id"
-          ],
-          "uniqueIdentifer": [
-            "AlternateName",
-            "Id"
-          ]
-        },
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "Kind"
-        ]
-      },
       "configuration": {
         "ruleConfig1": "Test"
       },
@@ -42,23 +25,6 @@
       "name": "Module4a"
     },
     "spec": {
-      "binding": {
-        "field": {
-          "kind": [
-            "Id"
-          ],
-          "uniqueIdentifer": [
-            "AlternateName",
-            "Id"
-          ]
-        },
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "Kind"
-        ]
-      },
       "configuration": {
         "ruleConfig1": "Test2"
       },
@@ -77,14 +43,6 @@
       "name": "Baseline2"
     },
     "spec": {
-      "binding": {
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "Kind"
-        ]
-      },
       "configuration": {
         "ruleConfig2": "Test3"
       },
@@ -103,19 +61,6 @@
       "name": "Baseline3"
     },
     "spec": {
-      "binding": {
-        "field": {
-          "alternativeType": [
-            "AlternateName"
-          ]
-        },
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "Kind"
-        ]
-      },
       "configuration": {
         "ruleConfig2": "Test3"
       },

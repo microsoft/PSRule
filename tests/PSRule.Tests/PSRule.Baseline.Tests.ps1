@@ -47,17 +47,6 @@ kind: Baseline
 metadata:
   name: Module4
 spec:
-  binding:
-    field:
-      kind:
-      - Id
-      uniqueIdentifer:
-      - AlternateName
-      - Id
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
   configuration:
     ruleConfig1: Test
   rule:
@@ -71,17 +60,6 @@ kind: Baseline
 metadata:
   name: Module4a
 spec:
-  binding:
-    field:
-      kind:
-      - Id
-      uniqueIdentifer:
-      - AlternateName
-      - Id
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
   configuration:
     ruleConfig1: Test2
   rule:
@@ -95,11 +73,6 @@ kind: Baseline
 metadata:
   name: Baseline2
 spec:
-  binding:
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
   configuration:
     ruleConfig2: Test3
   rule:
@@ -113,14 +86,6 @@ kind: Baseline
 metadata:
   name: Baseline3
 spec:
-  binding:
-    field:
-      alternativeType:
-      - AlternateName
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
   configuration:
     ruleConfig2: Test3
   rule:
@@ -139,23 +104,6 @@ spec:
             "name": "Module4"
         },
         "spec": {
-            "binding": {
-                "field": {
-                    "kind": [
-                        "Id"
-                    ],
-                    "uniqueIdentifer": [
-                        "AlternateName",
-                        "Id"
-                    ]
-                },
-                "targetName": [
-                    "AlternateName"
-                ],
-                "targetType": [
-                    "Kind"
-                ]
-            },
             "configuration": {
                 "ruleConfig1": "Test"
             },
@@ -178,14 +126,6 @@ spec:
             "name": "Baseline2"
         },
         "spec": {
-            "binding": {
-                "targetName": [
-                    "AlternateName"
-                ],
-                "targetType": [
-                    "Kind"
-                ]
-            },
             "configuration": {
                 "ruleConfig2": "Test3"
             },
@@ -208,19 +148,6 @@ spec:
             "name": "Baseline3"
         },
         "spec": {
-            "binding": {
-                "field": {
-                    "alternativeType": [
-                        "AlternateName"
-                    ]
-                },
-                "targetName": [
-                    "AlternateName"
-                ],
-                "targetType": [
-                    "Kind"
-                ]
-            },
             "configuration": {
                 "ruleConfig2": "Test3"
             },
@@ -244,23 +171,6 @@ $baselineTwoSpaceJsonTestCases = @(
       "name": "Module4"
     },
     "spec": {
-      "binding": {
-        "field": {
-          "kind": [
-            "Id"
-          ],
-          "uniqueIdentifer": [
-            "AlternateName",
-            "Id"
-          ]
-        },
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "Kind"
-        ]
-      },
       "configuration": {
         "ruleConfig1": "Test"
       },
@@ -283,14 +193,6 @@ $baselineTwoSpaceJsonTestCases = @(
       "name": "Baseline2"
     },
     "spec": {
-      "binding": {
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "Kind"
-        ]
-      },
       "configuration": {
         "ruleConfig2": "Test3"
       },
@@ -313,19 +215,6 @@ $baselineTwoSpaceJsonTestCases = @(
       "name": "Baseline3"
     },
     "spec": {
-      "binding": {
-        "field": {
-          "alternativeType": [
-            "AlternateName"
-          ]
-        },
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "Kind"
-        ]
-      },
       "configuration": {
         "ruleConfig2": "Test3"
       },
@@ -342,17 +231,17 @@ $baselineZeroSpaceJsonTestCases = @(
     @{Baseline = 'Module4'; ExpectedJson = @"
 [{
 // Synopsis: This is an example baseline
-"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Module4"},"spec":{"binding":{"field":{"kind":["Id"],"uniqueIdentifer":["AlternateName","Id"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig1":"Test"},"rule":{"include":["M4.Rule1"]}}}]
+"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Module4"},"spec":{"configuration":{"ruleConfig1":"Test"},"rule":{"include":["M4.Rule1"]}}}]
 "@}
     @{Baseline = 'Baseline2'; ExpectedJson = @"
 [{
 // Synopsis: This is an example baseline
-"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline2"},"spec":{"binding":{"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]
+"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline2"},"spec":{"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]
 "@}
     @{Baseline = 'Baseline3'; ExpectedJson = @"
 [{
 // Synopsis: This is an example baseline
-"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline3"},"spec":{"binding":{"field":{"alternativeType":["AlternateName"]},"targetName":["AlternateName"],"targetType":["Kind"]},"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]
+"apiVersion":"github.com/microsoft/PSRule/v1","kind":"Baseline","metadata":{"name":"Baseline3"},"spec":{"configuration":{"ruleConfig2":"Test3"},"rule":{"include":["M4.Rule1"]}}}]
 "@}
 )
     #endregion
@@ -698,89 +587,98 @@ Describe 'Baseline' -Tag 'Baseline' {
         }
 
         It 'With -Baseline' {
-            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline1');
+            $options = @{
+                'Binding.TargetName' = 'AlternateName'
+                'Binding.TargetType' = 'kind'
+            }
+
+            $result = @($testObject | Invoke-PSRule -Option $options -Path $ruleFilePath,$baselineFilePath -Baseline 'TestBaseline1');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result[0].RuleName | Should -Be 'WithBaseline';
             $result[0].Outcome | Should -Be 'Pass';
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].TargetType | Should -Be 'TestObjectType';
-            $result[0].Field.kind | Should -Be 'TestObjectType';
 
             # Use a baseline group by name
-            $result = @($testObject | Invoke-PSRule -Path $ruleFilePath,$baselineFilePath -Baseline '@latest' -Option @{
+            $options = @{
+                'Binding.TargetName' = 'AlternateName'
+                'Binding.TargetType' = 'kind'
                 'Baseline.Group' = @{
                     latest = 'TestBaseline1'
                 }
-            });
+            }
+            $result = @($testObject | Invoke-PSRule -Option $options -Path $ruleFilePath,$baselineFilePath -Baseline '@latest');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result[0].RuleName | Should -Be 'WithBaseline';
             $result[0].Outcome | Should -Be 'Pass';
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].TargetType | Should -Be 'TestObjectType';
-            $result[0].Field.kind | Should -Be 'TestObjectType';
         }
 
         It 'With -Module' {
             $Null = Import-Module (Join-Path $here -ChildPath 'TestModule4') -Force;
 
+            $options = @{
+                'Binding.TargetName' = 'AlternateName'
+                'Binding.TargetType' = 'kind'
+            }
+
             # Module
-            $result = @($testObject | Invoke-PSRule -Module TestModule4);
+            $result = @($testObject | Invoke-PSRule -Option $options -Module TestModule4);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result[0].RuleName | Should -Be 'M4.Rule1';
             $result[0].Outcome | Should -Be 'Pass';
 
             # Module + Workspace
-            $option = @{
+            $options = @{
                 'Configuration.ruleConfig1' = 'Test2'
                 'Rule.Include' = @('M4.Rule1', 'M4.Rule2')
+                'Binding.TargetName' = 'AlternateName'
+                'Binding.TargetType' = 'kind'
                 'Binding.Field' = @{ kind = 'Kind' }
             }
-            $result = @($testObject | Invoke-PSRule -Module TestModule4 -Option $option);
+            $result = @($testObject | Invoke-PSRule -Module TestModule4 -Option $options);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result[0].RuleName | Should -Be 'M4.Rule1';
             $result[0].Outcome | Should -Be 'Fail';
             $result[0].TargetName | Should -Be 'TestObject1';
             $result[0].TargetType | Should -Be 'TestObjectType';
-            $result[0].Field.kind | Should -Be 'TestObjectType';
-            $result[0].Field.uniqueIdentifer | Should -Be '1';
-            $result[0].Field.AlternativeType | Should -Be 'TestObjectType';
             $result[1].RuleName | Should -Be 'M4.Rule2';
             $result[1].Outcome | Should -Be 'Pass';
             $result[1].TargetName | Should -Be 'TestObject1';
             $result[1].TargetType | Should -Be 'TestObjectType';
-            $result[1].Field.AlternativeType | Should -Be 'TestObjectType';
 
             # Module + Workspace + Parameter
-            $option = @{
+            $options = @{
                 'Configuration.ruleConfig1' = 'Test2'
                 'Rule.Include' = @('M4.Rule1', 'M4.Rule2')
+                'Binding.TargetName' = 'AlternateName'
+                'Binding.TargetType' = 'kind'
             }
-            $result = @($testObject | Invoke-PSRule -Module TestModule4 -Option $option -Name 'M4.Rule2');
+            $result = @($testObject | Invoke-PSRule -Module TestModule4 -Option $options -Name 'M4.Rule2');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result[0].RuleName | Should -Be 'M4.Rule2';
             $result[0].Outcome | Should -Be 'Pass';
-            $result[0].Field.kind | Should -Be '1';
-            $result[0].Field.uniqueIdentifer | Should -Be '1';
 
             # Module + Workspace + Parameter + Explicit
-            $option = @{
+            $options = @{
                 'Configuration.ruleConfig1' = 'Test2'
                 'Rule.Include' = @('M4.Rule1', 'M4.Rule2')
+                'Binding.TargetName' = 'AlternateName'
+                'Binding.TargetType' = 'kind'
             }
-            $result = @($testObject | Invoke-PSRule -Module TestModule4 -Option $option -Name 'M4.Rule2', 'M4.Rule3' -Baseline 'Baseline2');
+            $result = @($testObject | Invoke-PSRule -Module TestModule4 -Option $options -Name 'M4.Rule2', 'M4.Rule3' -Baseline 'Baseline2');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result[0].RuleName | Should -Be 'M4.Rule2';
             $result[0].Outcome | Should -Be 'Pass';
-            $result[0].Field.AlternativeType | Should -Be 'TestObjectType';
             $result[1].RuleName | Should -Be 'M4.Rule3';
             $result[1].Outcome | Should -Be 'Pass';
-            $result[1].Field.AlternativeType | Should -Be 'TestObjectType';
 
             # Module Config + Module + Workspace + Parameter + Explicit
             $result = @($testObject | Invoke-PSRule -Module TestModule4 -Name 'M4.Rule4' -Baseline 'Baseline3');
@@ -788,7 +686,6 @@ Describe 'Baseline' -Tag 'Baseline' {
             $result.Length | Should -Be 1;
             $result[0].RuleName | Should -Be 'M4.Rule4';
             $result[0].Outcome | Should -Be 'Pass';
-            $result[0].Field.AlternativeType | Should -Be 'TestObject1';
 
             # Explict with default
             $result = @($testObject | Invoke-PSRule -Module TestModule4 -Path $ruleFilePath -Baseline 'Module4');
@@ -798,6 +695,8 @@ Describe 'Baseline' -Tag 'Baseline' {
 
             # Explict with local scope
             $result = @($testObject | Invoke-PSRule -Module TestModule4 -Path $ruleFilePath -Baseline 'Module4' -Option @{
+                'Binding.TargetName' = 'AlternateName'
+                'Binding.TargetType' = 'kind'
                 'Rule.IncludeLocal' = $True
             });
             $result | Should -Not -BeNullOrEmpty;

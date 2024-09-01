@@ -4,7 +4,6 @@
 using System.Management.Automation;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
-using PSRule.Definitions.Baselines;
 using PSRule.Definitions.ModuleConfigs;
 using PSRule.Pipeline;
 
@@ -85,8 +84,8 @@ public sealed class TargetBinderTests
         {
             Binding = new BindingOption
             {
-                TargetName = new[] { "name" },
-                TargetType = new[] { "type" }
+                TargetName = ["name"],
+                TargetType = ["type"]
             }
         });
 
@@ -94,8 +93,8 @@ public sealed class TargetBinderTests
         {
             Binding = new BindingOption
             {
-                TargetName = new[] { "AlternativeName" },
-                TargetType = new[] { "type" }
+                TargetName = ["AlternativeName"],
+                TargetType = ["type"]
             }
         });
 
@@ -103,8 +102,8 @@ public sealed class TargetBinderTests
         {
             Binding = new BindingOption
             {
-                TargetName = new[] { "name" },
-                TargetType = new[] { "type" },
+                TargetName = ["name"],
+                TargetType = ["type"],
                 PreferTargetInfo = true
             }
         });
@@ -127,15 +126,6 @@ public sealed class TargetBinderTests
         local.Configure(option.Build(local.Name));
         builder.With(local);
         return builder.Build();
-    }
-
-    private static IBaselineV1Spec GetOption(string[] targetName, string[] targetType, bool preferTargetInfo = false)
-    {
-        var result = new BaselineOption.BaselineInline();
-        result.Binding.TargetName = targetName;
-        result.Binding.TargetType = targetType;
-        result.Binding.PreferTargetInfo = preferTargetInfo;
-        return result;
     }
 
     #endregion Helper methods

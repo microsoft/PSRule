@@ -26,11 +26,11 @@ internal sealed class OptionContextBuilder
 
     internal OptionContextBuilder(string[] include = null, Hashtable tag = null, string[] convention = null)
     {
-        _ModuleBaselineScope = new Dictionary<string, bool>();
-        _Scopes = new List<OptionScope>();
+        _ModuleBaselineScope = [];
+        _Scopes = [];
         _Comparer = new OptionScopeComparer();
         _DefaultCulture = GetDefaultCulture();
-        _ConventionOrder = new List<string>();
+        _ConventionOrder = [];
         Parameter(include, tag, convention);
     }
 

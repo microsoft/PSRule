@@ -7,8 +7,6 @@
 
 # Synopsis: Test rule in TestModule4
 Rule 'M4.Rule1' {
-    $PSRule.TargetName -eq 'TestObject1'
-    $PSRule.TargetType -eq 'TestObjectType'
     $Configuration.ruleConfig1 -eq 'Test'
 }
 

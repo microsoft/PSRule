@@ -4,17 +4,6 @@ kind: Baseline
 metadata:
   name: Module4
 spec:
-  binding:
-    field:
-      kind:
-      - Id
-      uniqueIdentifer:
-      - AlternateName
-      - Id
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
   configuration:
     ruleConfig1: Test
   rule:
@@ -27,17 +16,6 @@ kind: Baseline
 metadata:
   name: Module4a
 spec:
-  binding:
-    field:
-      kind:
-      - Id
-      uniqueIdentifer:
-      - AlternateName
-      - Id
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
   configuration:
     ruleConfig1: Test2
   rule:
@@ -50,11 +28,6 @@ kind: Baseline
 metadata:
   name: Baseline2
 spec:
-  binding:
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
   configuration:
     ruleConfig2: Test3
   rule:
@@ -67,14 +40,6 @@ kind: Baseline
 metadata:
   name: Baseline3
 spec:
-  binding:
-    field:
-      alternativeType:
-      - AlternateName
-    targetName:
-    - AlternateName
-    targetType:
-    - Kind
   configuration:
     ruleConfig2: Test3
   rule:

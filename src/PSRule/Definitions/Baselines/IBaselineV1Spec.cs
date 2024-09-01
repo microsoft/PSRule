@@ -11,11 +11,6 @@ namespace PSRule.Definitions.Baselines;
 internal interface IBaselineV1Spec
 {
     /// <summary>
-    /// Options that affect property binding.
-    /// </summary>
-    BindingOption Binding { get; set; }
-
-    /// <summary>
     /// Allows configuration key/ values to be specified that can be used within rule definitions.
     /// </summary>
     ConfigurationOption Configuration { get; set; }

@@ -42,22 +42,22 @@ public sealed class OptionContextTests
         Assert.NotNull(ruleFilter);
         Assert.True(ruleFilter.IncludeLocal);
 
-        // With explict baseline
+        // With explicit baseline
         builder = new OptionContextBuilder(GetOption());
-        builder.Baseline(ScopeType.Explicit, "BaselineExplicit", null, GetBaseline(ruleInclude: new[] { "abc" }), false);
+        builder.Baseline(ScopeType.Explicit, "BaselineExplicit", null, GetBaseline(ruleInclude: ["abc"]), false);
         localScope.Configure(builder.Build(localScope.Name));
         ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
         Assert.NotNull(ruleFilter);
         Assert.False(ruleFilter.IncludeLocal);
 
         // With include from parameters
-        builder = new OptionContextBuilder(GetOption(), include: new string[] { "abc" });
+        builder = new OptionContextBuilder(GetOption(), include: ["abc"]);
         localScope.Configure(builder.Build(localScope.Name));
         ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
         Assert.NotNull(ruleFilter);
         Assert.False(ruleFilter.IncludeLocal);
 
-        builder = new OptionContextBuilder(GetOption(ruleInclude: new[] { "abc" }));
+        builder = new OptionContextBuilder(GetOption(ruleInclude: ["abc"]));
         localScope.Configure(builder.Build(localScope.Name));
         ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
         Assert.NotNull(ruleFilter);
@@ -89,7 +89,7 @@ public sealed class OptionContextTests
         Assert.Equal("value6", option6);
 
         // With module default baseline
-        builder.Baseline(ScopeType.Module, "BaselineDefault", "Module1", GetBaseline(targetType: new[] { "defaultType" }, ruleInclude: new[] { "defaultRule" }), false);
+        builder.Baseline(ScopeType.Module, "BaselineDefault", "Module1", GetBaseline(targetType: ["defaultType"], ruleInclude: ["defaultRule"]), false);
         context = builder.Build(null);
 
         Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
@@ -102,18 +102,18 @@ public sealed class OptionContextTests
         Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
         Assert.Equal(new[] { "rule1", "rule2" }, context.Rule.Include);
 
-        // With explict baseline
+        // With explicit baseline
         builder.Baseline(ScopeType.Explicit, "BaselineExplicit", "Module1", GetBaseline(), false);
         context = builder.Build(null);
 
         Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
-        Assert.Equal(new[] { "typeName" }, context.Binding.TargetType);
+        Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
         Assert.Equal(new[] { "rule1" }, context.Rule.Include);
 
         context = builder.Build("Module1");
 
         Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
-        Assert.Equal(new[] { "typeName" }, context.Binding.TargetType);
+        Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
         Assert.Equal(new[] { "rule1" }, context.Rule.Include);
     }
 
@@ -124,7 +124,7 @@ public sealed class OptionContextTests
         var option = new PSRuleOption();
 
         // Specify a culture otherwise it varies within CI.
-        option.Output.Culture = culture ?? new string[] { "en-ZZ" };
+        option.Output.Culture = culture ?? ["en-ZZ"];
 
         option.Rule.Include = ruleInclude;
 
@@ -141,14 +141,9 @@ public sealed class OptionContextTests
 
     private static BaselineSpec GetBaseline(string[] targetType = null, string[] ruleInclude = null)
     {
-        targetType ??= new[] { "typeName" };
-        ruleInclude ??= new[] { "rule1" };
+        ruleInclude ??= ["rule1"];
         return new BaselineSpec
         {
-            Binding = new BindingOption
-            {
-                TargetType = targetType
-            },
             Rule = new RuleOption
             {
                 Include = ruleInclude

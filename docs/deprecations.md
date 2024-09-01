@@ -95,6 +95,17 @@ From _v3_ these properties will be removed.
 These changes do not affect normal usage of PSRule.
 Supporting scripts that directly use the old names may not work correctly until you update these names.
 
+### Binding configuration in baselines
+
+Prior to v3, a baseline could configure a binding configuration to modify how objects are recognized by name, type, and scope.
+This existed to support scenarios before a module configuration and language scopes where core to how PSRule operates.
+
+- Rules within a module will automatically use binding configuration from the module configuration.
+  If no binding configuration is set, the configuration of the workspace will be used.
+- Rules within the workspace will automatically use the binding configuration from options (`ps-rule.yaml`).
+
+Configuring binding configuration on a baseline is removed from PSRule v3.
+
 ## Deprecations for v2
 
 ### Default baseline by module manifest

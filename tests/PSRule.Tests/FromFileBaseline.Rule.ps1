@@ -7,9 +7,7 @@
 
 # Synopsis: Test for baseline
 Rule 'WithBaseline' -Tag @{ category = 'group2'; severity = 'high' } {
-    $PSRule.TargetName -eq 'TestObject1'
-    $PSRule.TargetType -eq 'TestObjectType'
-    $PSRule.Field.kind -eq 'TestObjectType'
+    $Configuration.GetStringOrDefault('key1', $Null) -eq 'value1'
 } -Labels @{ 'framework.v1/control' = @('c-2') }
 
 # Synopsis: Test for baseline
