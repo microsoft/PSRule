@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections;
+using System.Diagnostics;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
@@ -38,6 +39,7 @@ internal enum ScopeType
     Module = 4
 }
 
+[DebuggerDisplay("{Type} - {LanguageScope}")]
 internal class OptionScope
 {
     public readonly ScopeType Type;
@@ -136,7 +138,6 @@ internal class OptionScope
     {
         return new OptionScope(type, module)
         {
-            Binding = spec.Binding,
             Configuration = spec.Configuration,
             Rule = new RuleOption
             {

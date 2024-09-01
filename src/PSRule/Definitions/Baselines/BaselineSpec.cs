@@ -11,9 +11,6 @@ namespace PSRule.Definitions.Baselines;
 public sealed class BaselineSpec : Spec, IBaselineV1Spec
 {
     /// <inheritdoc/>
-    public BindingOption Binding { get; set; }
-
-    /// <inheritdoc/>
     public ConfigurationOption Configuration { get; set; }
 
     /// <inheritdoc/>

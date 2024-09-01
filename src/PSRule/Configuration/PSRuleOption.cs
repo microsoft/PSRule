@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Management.Automation;
 using Newtonsoft.Json;
 using PSRule.Converters.Yaml;
-using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -336,6 +335,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
 
         // Start loading matching values
         option.Baseline.Load();
+        option.Binding.Load();
         option.Convention.Load();
         option.Execution.Load();
         option.Include.Load();
@@ -365,6 +365,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         // Start loading matching values
         var index = BuildIndex(hashtable);
         option.Baseline.Load(index);
+        option.Binding.Load(index);
         option.Convention.Load(index);
         option.Execution.Load(index);
         option.Include.Load(index);

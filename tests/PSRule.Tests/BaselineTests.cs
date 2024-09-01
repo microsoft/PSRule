@@ -59,10 +59,10 @@ public sealed class BaselineTests
         // TestBaseline6
         Assert.Equal("TestBaseline6", baseline[5].Name);
         var labels = baseline[5].Spec.Rule.Labels;
-        Assert.True(labels.Contains("framework.v1/control", new string[] { "*" }));
-        Assert.True(labels.Contains("framework.v1/control", new string[] { "c-1" }));
-        Assert.False(labels.Contains("framework.v1/control", new string[] { "c-3" }));
-        Assert.False(labels.Contains("framework.v3/control", new string[] { "*" }));
+        Assert.True(labels.Contains("framework.v1/control", ["*"]));
+        Assert.True(labels.Contains("framework.v1/control", ["c-1"]));
+        Assert.False(labels.Contains("framework.v1/control", ["c-3"]));
+        Assert.False(labels.Contains("framework.v3/control", ["*"]));
     }
 
     [Fact]
@@ -100,10 +100,10 @@ public sealed class BaselineTests
         // TestBaseline6
         Assert.Equal("TestBaseline6", baseline[5].Name);
         var labels = baseline[5].Spec.Rule.Labels;
-        Assert.True(labels.Contains("framework.v1/control", new string[] { "*" }));
-        Assert.True(labels.Contains("framework.v1/control", new string[] { "c-1" }));
-        Assert.False(labels.Contains("framework.v1/control", new string[] { "c-3" }));
-        Assert.False(labels.Contains("framework.v3/control", new string[] { "*" }));
+        Assert.True(labels.Contains("framework.v1/control", ["*"]));
+        Assert.True(labels.Contains("framework.v1/control", ["c-1"]));
+        Assert.False(labels.Contains("framework.v1/control", ["c-3"]));
+        Assert.False(labels.Contains("framework.v3/control", ["*"]));
     }
 
     [Theory]
@@ -130,7 +130,7 @@ public sealed class BaselineTests
         var baseline = GetBaselines(GetSource(path));
         Assert.NotNull(baseline);
 
-        var filter = new BaselineFilter(new string[] { "TestBaseline5" });
+        var filter = new BaselineFilter(["TestBaseline5"]);
         var actual = baseline.FirstOrDefault(b => filter.Match(b));
 
         Assert.Equal("TestBaseline5", actual.Name);
@@ -149,11 +149,6 @@ public sealed class BaselineTests
         Assert.Equal("Baseline", actual[0]["kind"]);
         Assert.Equal("TestBaseline1", actual[0]["metadata"]["name"]);
         Assert.NotNull(actual[0]["spec"]);
-        Assert.Equal("kind", actual[0]["spec"]["binding"]["field"]["kind"][0]);
-        Assert.Equal("Id", actual[0]["spec"]["binding"]["field"]["uniqueIdentifer"][0]);
-        Assert.Equal("AlternateName", actual[0]["spec"]["binding"]["field"]["uniqueIdentifer"][1]);
-        Assert.Equal("AlternateName", actual[0]["spec"]["binding"]["targetName"][0]);
-        Assert.Equal("kind", actual[0]["spec"]["binding"]["targetType"][0]);
         Assert.Equal("WithBaseline", actual[0]["spec"]["rule"]["include"][0]);
         Assert.Equal("value1", actual[0]["spec"]["configuration"]["key1"]);
         Assert.Equal("abc", actual[0]["spec"]["configuration"]["key2"][0]["value1"]);
@@ -172,11 +167,6 @@ public sealed class BaselineTests
         Assert.Equal("Baseline", actual[0]["kind"]);
         Assert.Equal("TestBaseline1", actual[0]["metadata"]["name"]);
         Assert.NotNull(actual[0]["spec"]);
-        Assert.Equal("kind", actual[0]["spec"]["binding"]["field"]["kind"][0]);
-        Assert.Equal("AlternateName", actual[0]["spec"]["binding"]["field"]["uniqueIdentifer"][0]);
-        Assert.Equal("Id", actual[0]["spec"]["binding"]["field"]["uniqueIdentifer"][1]);
-        Assert.Equal("AlternateName", actual[0]["spec"]["binding"]["targetName"][0]);
-        Assert.Equal("kind", actual[0]["spec"]["binding"]["targetType"][0]);
         Assert.Equal("WithBaseline", actual[0]["spec"]["rule"]["include"][0]);
         Assert.Equal("value1", actual[0]["spec"]["configuration"]["key1"]);
         Assert.Equal("abc", actual[0]["spec"]["configuration"]["key2"][0]["value1"]);
@@ -211,10 +201,10 @@ public sealed class BaselineTests
         var file = new SourceFile(GetSourcePath(path), moduleName, type, null);
         var source = new Source(
             module: new Source.ModuleInfo(AppDomain.CurrentDomain.BaseDirectory, moduleName, "1.0.0", null, "4de0fd26-6aae-401f-a943-b49f082f141e", "Microsoft", null),
-            file: new SourceFile[] { file },
+            file: [file],
             dependency: false
         );
-        return new Source[] { source };
+        return [source];
     }
 
     private static string GetSourcePath(string fileName)

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections;
 using System.ComponentModel;
 
 namespace PSRule.Configuration;
@@ -8,7 +9,7 @@ namespace PSRule.Configuration;
 /// <summary>
 /// Options that affect property binding of TargetName and TargetType.
 /// </summary>
-public sealed class BindingOption : IEquatable<BindingOption>
+public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
 {
     private const bool DEFAULT_IGNORECASE = true;
     private const bool DEFAULT_PREFERTARGETINFO = false;
@@ -172,4 +173,57 @@ public sealed class BindingOption : IEquatable<BindingOption>
     /// </remarks>
     [DefaultValue(null)]
     public bool? UseQualifiedName { get; set; }
+
+    /// <summary>
+    /// Load from environment variables.
+    /// </summary>
+    internal void Load()
+    {
+        // Binding.Field - currently not supported
+
+        if (Environment.TryBool("PSRULE_BINDING_IGNORECASE", out var ignoreCase))
+            IgnoreCase = ignoreCase;
+
+        if (Environment.TryString("PSRULE_BINDING_NAMESEPARATOR", out var nameSeparator))
+            NameSeparator = nameSeparator;
+
+        if (Environment.TryBool("PSRULE_BINDING_PREFERTARGETINFO", out var preferTargetInfo))
+            PreferTargetInfo = preferTargetInfo;
+
+        if (Environment.TryStringArray("PSRULE_BINDING_TARGETNAME", out var targetName))
+            TargetName = targetName;
+
+        if (Environment.TryStringArray("PSRULE_BINDING_TARGETTYPE", out var targetType))
+            TargetType = targetType;
+
+        if (Environment.TryBool("PSRULE_BINDING_USEQUALIFIEDNAME", out var useQualifiedName))
+            UseQualifiedName = useQualifiedName;
+    }
+
+    /// <summary>
+    /// Load from a dictionary.
+    /// </summary>
+    internal void Load(Dictionary<string, object> index)
+    {
+        if (index.TryPopValue("Binding.Field", out Hashtable map))
+            Field = new FieldMap(map);
+
+        if (index.TryPopBool("Binding.IgnoreCase", out var ignoreCase))
+            IgnoreCase = ignoreCase;
+
+        if (index.TryPopString("Binding.NameSeparator", out var nameSeparator))
+            NameSeparator = nameSeparator;
+
+        if (index.TryPopBool("Binding.PreferTargetInfo", out var preferTargetInfo))
+            PreferTargetInfo = preferTargetInfo;
+
+        if (index.TryPopStringArray("Binding.TargetName", out var targetName))
+            TargetName = targetName;
+
+        if (index.TryPopStringArray("Binding.TargetType", out var targetType))
+            TargetType = targetType;
+
+        if (index.TryPopValue("Binding.UseQualifiedName", out bool useQualifiedName))
+            UseQualifiedName = useQualifiedName;
+    }
 }

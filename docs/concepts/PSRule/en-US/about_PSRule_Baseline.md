@@ -13,13 +13,6 @@ A baseline includes a set of rule and configuration options that are used for ev
 
 The following baseline options can be configured:
 
-- [Binding.Field](about_PSRule_Options.md#bindingfield)
-- [Binding.IgnoreCase](about_PSRule_Options.md#bindingignorecase)
-- [Binding.NameSeparator](about_PSRule_Options.md#bindingnameseparator)
-- [Binding.PreferTargetInfo](about_PSRule_Options.md#bindingprefertargetinfo)
-- [Binding.TargetName](about_PSRule_Options.md#bindingtargetname)
-- [Binding.TargetType](about_PSRule_Options.md#bindingtargettype)
-- [Binding.UseQualifiedName](about_PSRule_Options.md#bindingusequalifiedname)
 - [Configuration](about_PSRule_Options.md#configuration)
 - [Rule.Include](about_PSRule_Options.md#ruleinclude)
 - [Rule.IncludeLocal](about_PSRule_Options.md#ruleincludelocal)
@@ -55,7 +48,6 @@ metadata:
   annotations: { }
 spec:
   # One or more baseline options
-  binding: { }
   rule: { }
   configuration: { }
 ```
@@ -70,16 +62,6 @@ kind: Baseline
 metadata:
   name: Baseline1
 spec:
-  binding:
-    field:
-      id:
-      - ResourceId
-    targetName:
-    - Name
-    - ResourceName
-    - ResourceGroupName
-    targetType:
-    - ResourceType
   rule:
     include:
     - Rule1
@@ -96,13 +78,6 @@ kind: Baseline
 metadata:
   name: Baseline2
 spec:
-  binding:
-    targetName:
-    - Name
-    - ResourceName
-    - ResourceGroupName
-    targetType:
-    - ResourceType
   rule:
     include:
     - Rule1
@@ -125,7 +100,6 @@ To define a JSON baseline spec use the following structure:
       "annotations": {}
     },
     "spec": {
-      "binding": {},
       "rule": {},
       "configuration": {}
     }
@@ -145,21 +119,6 @@ For example:
       "name": "Baseline1"
     },
     "spec": {
-      "binding": {
-        "field": {
-          "id": [
-            "ResourceId"
-          ]
-        },
-        "targetName": [
-          "Name",
-          "ResourceName",
-          "ResourceGroupName"
-        ],
-        "targetType": [
-          "ResourceType"
-        ]
-      },
       "rule": {
         "include": [
           "Rule1",
@@ -182,16 +141,6 @@ For example:
       "name": "Baseline2"
     },
     "spec": {
-      "binding": {
-        "targetName": [
-          "Name",
-          "ResourceName",
-          "ResourceGroupName"
-        ],
-        "targetType": [
-          "ResourceType"
-        ]
-      },
       "rule": {
         "include": [
           "Rule1",
@@ -276,11 +225,6 @@ kind: Baseline
 metadata:
   name: TestBaseline1
 spec:
-  binding:
-    targetName:
-    - AlternateName
-    targetType:
-    - kind
   rule:
     include:
     - 'WithBaseline'
@@ -294,11 +238,6 @@ kind: Baseline
 metadata:
   name: TestBaseline2
 spec:
-  binding:
-    targetName:
-    - AlternateName
-    targetType:
-    - kind
   rule:
     include:
     - 'WithBaseline'
@@ -320,14 +259,6 @@ spec:
       "name": "TestBaseline1"
     },
     "spec": {
-      "binding": {
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "kind"
-        ]
-      },
       "rule": {
         "include": [
           "WithBaseline"
@@ -346,14 +277,6 @@ spec:
       "name": "TestBaseline2"
     },
     "spec": {
-      "binding": {
-        "targetName": [
-          "AlternateName"
-        ],
-        "targetType": [
-          "kind"
-        ]
-      },
       "rule": {
         "include": [
           "WithBaseline"
@@ -376,4 +299,3 @@ An online version of this document is available at https://microsoft.github.io/P
 - Options
 - PSRule
 - Baseline
-- Binding

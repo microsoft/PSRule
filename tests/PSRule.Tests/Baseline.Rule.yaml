@@ -9,17 +9,6 @@ metadata:
     key: value
 spec:
   # Additional comment
-  binding:
-    field:
-      kind:
-      - kind
-      uniqueIdentifer:
-      - Id
-      - AlternateName
-    targetName:
-    - AlternateName
-    targetType:
-    - kind
   rule:
     include:
     # Additional comment
@@ -38,11 +27,6 @@ kind: Baseline
 metadata:
   name: TestBaseline2
 spec:
-  binding:
-    targetName:
-    - metadata.name
-    targetType:
-    - kind
   rule:
     include:
     - ''

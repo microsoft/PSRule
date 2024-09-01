@@ -37,6 +37,9 @@ What's changed since pre-release v3.0.0-B0203:
     - The `Execution.Break` option can be set to `Never`, `OnError`, `OnWarning`, or `OnInformation`.
     - If a rule fails with a severity level equal or higher than the configured level the pipeline will break.
 - General improvements:
+  - **Breaking change**: Improve scope handling for correctly handling cases with multiple module by @BernieWhite.
+    - As a result of this change the `binding` property can no longer be used within baselines.
+    - Use module configuration or workspace options instead.
   - Added support for native logging within emitters by @BernieWhite.
     [#1837](https://github.com/microsoft/PSRule/issues/1837)
 - Engineering:
