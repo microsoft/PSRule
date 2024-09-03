@@ -14,17 +14,15 @@ namespace PSRule.Pipeline;
 /// <summary>
 /// A stream of input objects that will be evaluated.
 /// </summary>
-internal sealed class PipelineInputStream
+internal sealed class PipelineInputStream : IPipelineReader
 {
-    private readonly VisitTargetObject _Input;
     private readonly InputPathBuilder _InputPath;
     private readonly PathFilter _InputFilter;
     private readonly ConcurrentQueue<ITargetObject> _Queue;
     private readonly EmitterCollection _EmitterCollection;
 
-    public PipelineInputStream(VisitTargetObject input, InputPathBuilder inputPath, PathFilter inputFilter, PSRuleOption option)
+    public PipelineInputStream(InputPathBuilder inputPath, PathFilter inputFilter, PSRuleOption option)
     {
-        _Input = input;
         _InputPath = inputPath;
         _InputFilter = inputFilter;
         _Queue = new ConcurrentQueue<ITargetObject>();
@@ -35,12 +33,7 @@ internal sealed class PipelineInputStream
 
     public bool IsEmpty => _Queue.IsEmpty;
 
-    /// <summary>
-    /// Add a new object into the stream.
-    /// </summary>
-    /// <param name="sourceObject">An object to process.</param>
-    /// <param name="targetType">A pre-bound type.</param>
-    /// <param name="skipExpansion">Determines if expansion is skipped.</param>
+    /// <inheritdoc/>
     public void Enqueue(object sourceObject, string? targetType = null, bool skipExpansion = false)
     {
         if (sourceObject == null)
@@ -55,11 +48,13 @@ internal sealed class PipelineInputStream
         _EmitterCollection.Visit(sourceObject);
     }
 
+    /// <inheritdoc/>
     public bool TryDequeue(out ITargetObject sourceObject)
     {
         return _Queue.TryDequeue(out sourceObject);
     }
 
+    /// <inheritdoc/>
     public void Open()
     {
         if (_InputPath == null || _InputPath.Count == 0)
@@ -97,11 +92,8 @@ internal sealed class PipelineInputStream
         return true;
     }
 
-    /// <summary>
-    /// Add a path to the list of inputs.
-    /// </summary>
-    /// <param name="path">The path of files to add.</param>
-    internal void Add(string path)
+    /// <inheritdoc/>
+    public void Add(string path)
     {
         _InputPath.Add(path);
     }

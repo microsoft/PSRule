@@ -5,6 +5,8 @@ using PSRule.Data;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 internal interface IPipelineReader
 {
     int Count { get; }

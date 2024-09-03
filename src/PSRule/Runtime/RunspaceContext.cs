@@ -673,16 +673,16 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     internal void AddService(string id, object service)
     {
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
-        if (!StringComparer.OrdinalIgnoreCase.Equals(LanguageScope.Name, scopeName))
+        if (!StringComparer.OrdinalIgnoreCase.Equals(LanguageScope.Name, scopeName) || string.IsNullOrEmpty(name))
             return;
 
-        LanguageScope.AddService(name, service);
+        LanguageScope.AddService(name!, service);
     }
 
     internal object? GetService(string id)
     {
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
-        return !_LanguageScopes.TryScope(scopeName, out var scope) ? null : scope.GetService(name);
+        return !_LanguageScopes.TryScope(scopeName, out var scope) || string.IsNullOrEmpty(name) ? null : scope.GetService(name!);
     }
 
     private void RunConventionInitialize()
