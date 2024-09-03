@@ -11,7 +11,7 @@ internal static class ResourceHelper
 
     private const char SCOPE_SEPARATOR = '\\';
 
-    internal const string STANDALONE_SCOPENAME = ".";
+    internal const string STANDALONE_SCOPE_NAME = ".";
 
     internal static string GetIdString(string scope, string name)
     {
@@ -63,7 +63,7 @@ internal static class ResourceHelper
 
     internal static ResourceId GetRuleId(string? defaultScope, string name, ResourceIdKind kind)
     {
-        defaultScope ??= STANDALONE_SCOPENAME;
+        defaultScope ??= STANDALONE_SCOPE_NAME;
         return name.IndexOf(SCOPE_SEPARATOR) > 0 ? ResourceId.Parse(name, kind) : new ResourceId(defaultScope, name, kind);
     }
 
@@ -87,6 +87,6 @@ internal static class ResourceHelper
 
     internal static string NormalizeScope(string? scope)
     {
-        return scope == null || string.IsNullOrEmpty(scope) ? STANDALONE_SCOPENAME : scope;
+        return scope == null || string.IsNullOrEmpty(scope) ? STANDALONE_SCOPE_NAME : scope;
     }
 }

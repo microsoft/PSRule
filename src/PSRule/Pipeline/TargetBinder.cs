@@ -72,7 +72,7 @@ internal sealed class TargetBinderBuilder
         _BindTargetName = bindTargetName;
         _BindTargetType = bindTargetType;
         _BindField = bindField;
-        _BindingContext = new List<ITargetBindingContext>();
+        _BindingContext = [];
         if (typeFilter != null && typeFilter.Length > 0)
             _TypeFilter = new HashSet<string>(typeFilter, StringComparer.OrdinalIgnoreCase);
     }
@@ -82,7 +82,7 @@ internal sealed class TargetBinderBuilder
     /// </summary>
     public ITargetBinder Build()
     {
-        return new TargetBinder(_BindingContext.ToArray());
+        return new TargetBinder([.. _BindingContext]);
     }
 
     /// <summary>
@@ -114,8 +114,8 @@ internal sealed class TargetBinder : ITargetBinder
 
     internal TargetBinder(ITargetBindingContext[] bindingContext)
     {
-        _BindingContext = new Dictionary<string, ITargetBindingContext>();
-        _BindingResult = new Dictionary<string, ITargetBindingResult>();
+        _BindingContext = [];
+        _BindingResult = [];
         for (var i = 0; bindingContext != null && i < bindingContext.Length; i++)
             _BindingContext.Add(bindingContext[i].LanguageScope ?? STANDALONE_SCOPE, bindingContext[i]);
     }

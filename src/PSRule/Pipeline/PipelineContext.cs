@@ -114,27 +114,6 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
         }
     }
 
-    internal enum ResourceIssueType
-    {
-        Unknown
-    }
-
-    internal sealed class ResourceIssue
-    {
-        public ResourceIssue(ResourceKind kind, string id, ResourceIssueType issue)
-        {
-            Kind = kind;
-            Id = id;
-            Issue = issue;
-        }
-
-        public ResourceKind Kind { get; }
-
-        public string Id { get; }
-
-        public ResourceIssueType Issue { get; }
-    }
-
     internal Runspace GetRunspace()
     {
         if (_Runspace == null)

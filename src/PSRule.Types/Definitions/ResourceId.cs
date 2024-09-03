@@ -134,7 +134,7 @@ public struct ResourceId : IEquatable<ResourceId>, IEquatable<string>
         if (string.IsNullOrEmpty(id) || !TryParse(id, out var scope, out var name) || name == null)
             return false;
 
-        scope ??= ResourceHelper.STANDALONE_SCOPENAME;
+        scope ??= ResourceHelper.STANDALONE_SCOPE_NAME;
         value = new ResourceId(id, scope, name, kind);
         return true;
     }

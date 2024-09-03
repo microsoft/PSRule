@@ -247,7 +247,7 @@ internal static class HostHelper
     private static ILanguageBlock[] GetYamlLanguageBlocks(Source[] sources, RunspaceContext context)
     {
         var result = new Collection<ILanguageBlock>();
-        var visitor = new ResourceValidator(context);
+        var visitor = new ResourceValidator(context.Writer);
         var d = new DeserializerBuilder()
             .IgnoreUnmatchedProperties()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
@@ -313,7 +313,7 @@ internal static class HostHelper
     private static ILanguageBlock[] GetJsonLanguageBlocks(Source[] sources, RunspaceContext context)
     {
         var result = new Collection<ILanguageBlock>();
-        var visitor = new ResourceValidator(context);
+        var visitor = new ResourceValidator(context.Writer);
         var deserializer = new JsonSerializer
         {
             DateTimeZoneHandling = DateTimeZoneHandling.Utc
