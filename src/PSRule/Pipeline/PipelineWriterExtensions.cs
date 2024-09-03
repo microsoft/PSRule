@@ -109,6 +109,14 @@ public static class PipelineWriterExtensions
         ));
     }
 
+    internal static void VerboseRuleDiscovery(this IPipelineWriter writer, string path)
+    {
+        if (writer == null || !writer.ShouldWriteVerbose() || string.IsNullOrEmpty(path))
+            return;
+
+        writer.WriteVerbose($"[PSRule][D] -- Discovering rules in: {path}");
+    }
+
     private static string Format(string message, params object[] args)
     {
         return args == null || args.Length == 0 ? message : string.Format(Thread.CurrentThread.CurrentCulture, message, args);

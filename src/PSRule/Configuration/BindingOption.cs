@@ -7,8 +7,11 @@ using System.ComponentModel;
 namespace PSRule.Configuration;
 
 /// <summary>
-/// Options that affect property binding of TargetName and TargetType.
+/// Options that configure property binding.
 /// </summary>
+/// <remarks>
+/// See <see href="https://aka.ms/ps-rule/options"/>.
+/// </remarks>
 public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
 {
     private const bool DEFAULT_IGNORECASE = true;
