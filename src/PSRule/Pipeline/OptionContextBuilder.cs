@@ -119,7 +119,7 @@ internal sealed class OptionContextBuilder
 
     private static bool ShouldCombine(string languageScope, OptionScope optionScope)
     {
-        return optionScope.LanguageScope == ResourceHelper.STANDALONE_SCOPENAME || optionScope.LanguageScope == languageScope || optionScope.Type == ScopeType.Explicit;
+        return optionScope.LanguageScope == ResourceHelper.STANDALONE_SCOPE_NAME || optionScope.LanguageScope == languageScope || optionScope.Type == ScopeType.Explicit;
     }
 
     /// <summary>

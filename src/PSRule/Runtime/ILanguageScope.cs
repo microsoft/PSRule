@@ -7,8 +7,11 @@ using PSRule.Pipeline;
 
 namespace PSRule.Runtime;
 
+#nullable enable
+
 /// <summary>
 /// A named scope for language elements.
+/// Any elements in a language scope are not visible to language elements in another scope.
 /// </summary>
 internal interface ILanguageScope : IDisposable
 {
@@ -29,14 +32,17 @@ internal interface ILanguageScope : IDisposable
     /// <summary>
     /// Try to get a specific configuration value by name.
     /// </summary>
-    bool TryConfigurationValue(string key, out object value);
+    bool TryConfigurationValue(string key, out object? value);
 
+    /// <summary>
+    /// Add a filter to the language scope.
+    /// </summary>
     void WithFilter(IResourceFilter resourceFilter);
 
     /// <summary>
     /// Get a filter for a specific resource kind.
     /// </summary>
-    IResourceFilter GetFilter(ResourceKind kind);
+    IResourceFilter? GetFilter(ResourceKind kind);
 
     /// <summary>
     /// Add a service to the scope.
@@ -46,11 +52,22 @@ internal interface ILanguageScope : IDisposable
     /// <summary>
     /// Get a previously added service.
     /// </summary>
-    object GetService(string name);
+    object? GetService(string name);
 
-    bool TryGetType(object o, out string type, out string path);
+    /// <summary>
+    /// Try to bind the type of the object.
+    /// </summary>
+    bool TryGetType(object o, out string? type, out string? path);
 
-    bool TryGetName(object o, out string name, out string path);
+    /// <summary>
+    /// Try to bind the name of the object.
+    /// </summary>
+    bool TryGetName(object o, out string? name, out string? path);
 
-    bool TryGetScope(object o, out string[] scope);
+    /// <summary>
+    /// Try to bind the scope of the object.
+    /// </summary>
+    bool TryGetScope(object o, out string[]? scope);
 }
+
+#nullable restore

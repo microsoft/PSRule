@@ -3,8 +3,8 @@
 
 using System.Management.Automation;
 using System.Text.RegularExpressions;
+using PSRule.Pipeline;
 using PSRule.Resources;
-using PSRule.Runtime;
 
 namespace PSRule.Definitions;
 
@@ -22,11 +22,11 @@ internal sealed class ResourceValidator : IResourceValidator
 
     private static readonly Regex ValidName = new("^[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F][^<>:/\\\\|?*\"'`+@\x00-\x1F]{1,126}[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F]$", RegexOptions.Compiled, TimeSpan.FromSeconds(5));
 
-    private readonly RunspaceContext _Context;
+    private readonly IPipelineWriter _Writer;
 
-    public ResourceValidator(RunspaceContext context)
+    public ResourceValidator(IPipelineWriter writer)
     {
-        _Context = context;
+        _Writer = writer;
     }
 
     internal static bool IsNameValid(string name)
@@ -74,7 +74,7 @@ internal sealed class ResourceValidator : IResourceValidator
 
     private void ReportError(string errorId, string message, params object[] args)
     {
-        if (_Context == null)
+        if (_Writer == null)
             return;
 
         ReportError(new Pipeline.ParseException(
@@ -85,10 +85,10 @@ internal sealed class ResourceValidator : IResourceValidator
 
     private void ReportError(Pipeline.ParseException exception)
     {
-        if (_Context == null)
+        if (_Writer == null)
             return;
 
-        _Context.WriteError(new ErrorRecord(
+        _Writer.WriteError(new ErrorRecord(
             exception: exception,
             errorId: exception.ErrorId,
             errorCategory: ErrorCategory.InvalidOperation,

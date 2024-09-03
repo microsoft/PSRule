@@ -14,6 +14,7 @@ namespace PSRule.Commands;
 
 /// <summary>
 /// A Rule language block.
+/// When processed, creates a rule language element that can be used later during rule execution.
 /// </summary>
 [Cmdlet(VerbsCommon.New, RuleLanguageNouns.RuleDefinition)]
 internal sealed class NewRuleDefinitionCommand : LanguageBlock
@@ -89,7 +90,7 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
     public string[] Alias { get; set; }
 
     /// <summary>
-    /// An optional reference identifer for the resource.
+    /// An optional reference identifier for the resource.
     /// </summary>
     [Parameter(Mandatory = false)]
     [ValidateLength(3, 128)]
