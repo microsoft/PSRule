@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Pipeline;
+using PSRule.Runtime.Binding;
 
 namespace PSRule.Runtime;
 
@@ -20,7 +20,7 @@ internal interface ILanguageScope : IDisposable
     /// </summary>
     string Name { get; }
 
-    BindingOption Binding { get; }
+    StringComparer GetBindingComparer();
 
     /// <summary>
     /// Get an ordered culture preference list which will be tries for finding help.
@@ -54,6 +54,10 @@ internal interface ILanguageScope : IDisposable
     /// </summary>
     object? GetService(string name);
 
+    ITargetBindingResult? Bind(TargetObject targetObject);
+
+    ITargetBindingResult? Bind(object targetObject);
+
     /// <summary>
     /// Try to bind the type of the object.
     /// </summary>
@@ -63,11 +67,6 @@ internal interface ILanguageScope : IDisposable
     /// Try to bind the name of the object.
     /// </summary>
     bool TryGetName(object o, out string? name, out string? path);
-
-    /// <summary>
-    /// Try to bind the scope of the object.
-    /// </summary>
-    bool TryGetScope(object o, out string[]? scope);
 }
 
 #nullable restore

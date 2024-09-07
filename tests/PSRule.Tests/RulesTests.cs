@@ -60,7 +60,7 @@ public sealed class RulesTests
     [Fact]
     public void ReadYamlSubSelectorRule()
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContextBuilder(), null), new TestWriter(GetOption()));
+        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, GetOptionBuilder(), null), new TestWriter(GetOption()));
         context.Init(GetSource("FromFileSubSelector.Rule.yaml"));
         context.Begin();
 
@@ -132,7 +132,7 @@ public sealed class RulesTests
     [Fact]
     public void EvaluateYamlRule()
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContextBuilder(), null), new TestWriter(GetOption()));
+        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, GetOptionBuilder(), null), new TestWriter(GetOption()));
         context.Init(GetSource());
         context.Begin();
         ImportSelectors(context);
@@ -195,7 +195,7 @@ public sealed class RulesTests
     [Fact]
     public void RuleWithObjectPath()
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContextBuilder(), null), new TestWriter(GetOption()));
+        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, GetOptionBuilder(), null), new TestWriter(GetOption()));
         context.Init(GetSource());
         context.Begin();
         ImportSelectors(context);
@@ -263,7 +263,7 @@ public sealed class RulesTests
     [Fact]
     public void ReadJsonSubSelectorRule()
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, new OptionContextBuilder(), null), new TestWriter(GetOption()));
+        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, GetOptionBuilder(), null), new TestWriter(GetOption()));
         context.Init(GetSource("FromFileSubSelector.Rule.jsonc"));
         context.Begin();
 
@@ -339,6 +339,11 @@ public sealed class RulesTests
     private static PSRuleOption GetOption()
     {
         return new PSRuleOption();
+    }
+
+    private static OptionContextBuilder GetOptionBuilder()
+    {
+        return new OptionContextBuilder(option: GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
     }
 
     private static Source[] GetSource(string path = "FromFile.Rule.yaml")

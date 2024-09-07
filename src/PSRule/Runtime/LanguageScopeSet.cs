@@ -10,15 +10,13 @@ namespace PSRule.Runtime;
 /// </summary>
 internal sealed class LanguageScopeSet : IDisposable
 {
-    private readonly RunspaceContext _Context;
     private readonly Dictionary<string, ILanguageScope> _Scopes;
 
     private ILanguageScope _Current;
     private bool _Disposed;
 
-    public LanguageScopeSet(RunspaceContext context)
+    public LanguageScopeSet()
     {
-        _Context = context;
         _Scopes = new Dictionary<string, ILanguageScope>(StringComparer.OrdinalIgnoreCase);
         Import(null, out _Current);
     }
@@ -93,7 +91,7 @@ internal sealed class LanguageScopeSet : IDisposable
         if (_Scopes.TryGetValue(GetScopeName(name), out scope))
             return false;
 
-        scope = new LanguageScope(_Context, name);
+        scope = new LanguageScope(name);
         Add(scope);
         return true;
     }
