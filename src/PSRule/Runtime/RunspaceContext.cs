@@ -18,7 +18,7 @@ namespace PSRule.Runtime;
 #nullable enable
 
 /// <summary>
-/// A context for a PSRule runspace.
+/// A context applicable to rule execution.
 /// </summary>
 internal sealed class RunspaceContext : IDisposable, ILogger
 {

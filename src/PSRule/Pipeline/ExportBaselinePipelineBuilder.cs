@@ -43,11 +43,7 @@ internal sealed class ExportBaselinePipelineBuilder : PipelineBuilderBase
     {
         var filter = new BaselineFilter(_Name);
         return new GetBaselinePipeline(
-            pipeline: PrepareContext(
-                bindTargetName: null,
-                bindTargetType: null,
-                bindField: null
-            ),
+            pipeline: PrepareContext(PipelineHookActions.Empty),
             source: Source,
             reader: PrepareReader(),
             writer: writer ?? PrepareWriter(),

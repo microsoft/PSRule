@@ -50,10 +50,7 @@ internal sealed class GetRuleHelpPipelineBuilder : PipelineBuilderBase, IHelpPip
     public override IPipeline Build(IPipelineWriter writer = null)
     {
         return new GetRuleHelpPipeline(
-            pipeline: PrepareContext(
-                bindTargetName: null,
-                bindTargetType: null,
-                bindField: null),
+            pipeline: PrepareContext(PipelineHookActions.Empty),
             source: Source,
             reader: PrepareReader(),
             writer: writer ?? PrepareWriter());
