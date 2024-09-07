@@ -38,8 +38,11 @@ What's changed since pre-release v3.0.0-B0203:
     - If a rule fails with a severity level equal or higher than the configured level the pipeline will break.
 - General improvements:
   - **Breaking change**: Improve scope handling for correctly handling cases with multiple module by @BernieWhite.
-    - As a result of this change the `binding` property can no longer be used within baselines.
-    - Use module configuration or workspace options instead.
+    [#1215](https://github.com/microsoft/PSRule/issues/1215)
+    - As a result of this change:
+      - The `binding` property can no longer be used within baselines.
+      - Custom inline script blocks can no longer be used for custom binding.
+    - Use module configuration or workspace to configure binding options instead.
   - Added support for native logging within emitters by @BernieWhite.
     [#1837](https://github.com/microsoft/PSRule/issues/1837)
 - Engineering:
