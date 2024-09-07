@@ -41,11 +41,7 @@ internal sealed class GetBaselinePipelineBuilder : PipelineBuilderBase
     {
         var filter = new BaselineFilter(ResolveBaselineGroup(_Name));
         return new GetBaselinePipeline(
-            pipeline: PrepareContext(
-                bindTargetName: null,
-                bindTargetType: null,
-                bindField: null
-            ),
+            pipeline: PrepareContext(PipelineHookActions.Empty),
             source: Source,
             reader: PrepareReader(),
             writer: writer ?? PrepareWriter(),

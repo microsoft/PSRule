@@ -13,6 +13,9 @@ using PSRule.Resources;
 
 namespace PSRule.Pipeline;
 
+/// <summary>
+/// A base instance for a pipeline builder.
+/// </summary>
 internal abstract class PipelineBuilderBase : IPipelineBuilder
 {
     private const string ENGINE_MODULE_NAME = "PSRule";
@@ -20,10 +23,6 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     protected readonly PSRuleOption Option;
     protected readonly Source[] Source;
     protected readonly IHostContext HostContext;
-    protected BindTargetMethod BindTargetNameHook;
-    protected BindTargetMethod BindTargetTypeHook;
-    protected BindTargetMethod BindFieldHook;
-    protected VisitTargetObject VisitTargetObject;
 
     private string[] _Include;
     private Hashtable _Tag;
@@ -43,9 +42,6 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         Source = source;
         _Output = new HostPipelineWriter(hostContext, Option, ShouldProcess);
         HostContext = hostContext;
-        BindTargetNameHook = PipelineHookActions.BindTargetName;
-        BindTargetTypeHook = PipelineHookActions.BindTargetType;
-        BindFieldHook = PipelineHookActions.BindField;
     }
 
     /// <summary>
@@ -167,7 +163,10 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             constraint.Equals(version);
     }
 
-    protected PipelineContext PrepareContext(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField)
+    /// <summary>
+    /// Create a pipeline context.
+    /// </summary>
+    protected PipelineContext PrepareContext((BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) binding)
     {
         var unresolved = new List<ResourceRef>();
         if (_Baseline is Configuration.BaselineOption.BaselineRef baselineRef)
@@ -177,10 +176,10 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             option: Option,
             hostContext: HostContext,
             reader: PrepareReader(),
-            bindTargetName: bindTargetName,
-            bindTargetType: bindTargetType,
-            bindField: bindField,
-            optionBuilder: GetOptionBuilder(bindTargetName, bindTargetType, bindField),
+            bindTargetName: binding.bindTargetName,
+            bindTargetType: binding.bindTargetType,
+            bindField: binding.bindField,
+            optionBuilder: GetOptionBuilder(binding),
             unresolved: unresolved
         );
     }
@@ -328,60 +327,14 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         return _InputFilter;
     }
 
-    private OptionContextBuilder GetOptionBuilder(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField)
-    {
-        return new OptionContextBuilder(Option, _Include, _Tag, _Convention, bindTargetName, bindTargetType, bindField);
-    }
-
     protected void ConfigureBinding(PSRuleOption option)
     {
-        if (option.Pipeline.BindTargetName != null && option.Pipeline.BindTargetName.Count > 0)
-        {
-            // Do not allow custom binding functions to be used with constrained language mode
-            if (Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
-                throw new PipelineConfigurationException(optionName: "BindTargetName", message: PSRuleResources.ConstrainedTargetBinding);
-
-            foreach (var action in option.Pipeline.BindTargetName)
-                BindTargetNameHook = AddBindTargetAction(action, BindTargetNameHook);
-        }
-
-        if (option.Pipeline.BindTargetType != null && option.Pipeline.BindTargetType.Count > 0)
-        {
-            // Do not allow custom binding functions to be used with constrained language mode
-            if (Option.Execution.LanguageMode == LanguageMode.ConstrainedLanguage)
-                throw new PipelineConfigurationException(optionName: "BindTargetType", message: PSRuleResources.ConstrainedTargetBinding);
-
-            foreach (var action in option.Pipeline.BindTargetType)
-                BindTargetTypeHook = AddBindTargetAction(action, BindTargetTypeHook);
-        }
     }
 
-    private static BindTargetMethod AddBindTargetAction(BindTargetFunc action, BindTargetMethod previous)
+    private OptionContextBuilder GetOptionBuilder((BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) binding)
     {
-        // Nest the previous write action in the new supplied action
-        // Execution chain will be: action -> previous -> previous..n
-        return (string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path) =>
-        {
-            return action(propertyNames, caseSensitive, preferTargetInfo, targetObject, previous, out path);
-        };
-    }
-
-    private static BindTargetMethod AddBindTargetAction(BindTargetName action, BindTargetMethod previous)
-    {
-        return AddBindTargetAction((string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, BindTargetMethod next, out string path) =>
-        {
-            path = null;
-            var targetType = action(targetObject);
-            return string.IsNullOrEmpty(targetType) ? next(propertyNames, caseSensitive, preferTargetInfo, targetObject, out path) : targetType;
-        }, previous);
-    }
-
-    protected void AddVisitTargetObjectAction(VisitTargetObjectAction action)
-    {
-        // Nest the previous write action in the new supplied action
-        // Execution chain will be: action -> previous -> previous..n
-        var previous = VisitTargetObject;
-        VisitTargetObject = (targetObject) => action(targetObject, previous);
+        var builder = new OptionContextBuilder(Option, _Include, _Tag, _Convention, binding.bindTargetName, binding.bindTargetType, binding.bindField);
+        return builder;
     }
 
     /// <summary>

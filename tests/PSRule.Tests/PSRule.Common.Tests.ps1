@@ -1030,15 +1030,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $option = @{ 'execution.mode' = 'ConstrainedLanguage' };
             { $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'ConstrainedTest2' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
             { $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'ConstrainedTest3' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
-
-            $bindFn = {
-                param ($TargetObject)
-                $Null = [Console]::WriteLine('Should fail');
-                return 'BadName';
-            }
-
-            $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -BindTargetName $bindFn;
-            { $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop } | Should -Throw 'Exception calling "Invoke" with "3" argument(s): "Binding functions are not supported in this language mode."';
         }
     }
 
@@ -1545,15 +1536,6 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             $option = @{ 'execution.mode' = 'ConstrainedLanguage' };
             { $Null = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'ConstrainedTest2' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
             { $Null = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'ConstrainedTest3' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
-
-            $bindFn = {
-                param ($TargetObject)
-                $Null = [Console]::WriteLine('Should fail');
-                return 'BadName';
-            }
-
-            $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -BindTargetName $bindFn;
-            { $Null = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop } | Should -Throw 'Exception calling "Test" with "3" argument(s): "Binding functions are not supported in this language mode."';
         }
     }
 }
@@ -1803,15 +1785,6 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $option = @{ 'execution.mode' = 'ConstrainedLanguage' };
             { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest2' -Option $option -ErrorAction Stop 6>&1 } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
             { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest3' -Option $option -ErrorAction Stop 6>&1 } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
-
-            $bindFn = {
-                param ($TargetObject)
-                $Null = [Console]::WriteLine('Should fail');
-                return 'BadName';
-            }
-
-            $option = New-PSRuleOption -Option @{ 'execution.mode' = 'ConstrainedLanguage' } -BindTargetName $bindFn;
-            { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest1' -Option $option -ErrorAction Stop 6>&1 } | Should -Throw 'Exception calling "Assert" with "3" argument(s): "Binding functions are not supported in this language mode."';
         }
     }
 }
@@ -2815,38 +2788,22 @@ Describe 'Binding' -Tag Common, Binding {
                     TargetName = 'TargetName'
                 }
                 [PSCustomObject]@{
-                    OtherName = 'OtherName'
-                    resourceName = 'ResourceName'
-                    AlternateName = 'AlternateName'
-                    TargetName = 'TargetName'
-                }
-                [PSCustomObject]@{
                     Metadata = @{
                         Name = 'MetadataName'
                     }
                 }
             )
 
-            $bindFn = {
-                param ($TargetObject)
-                $otherName = $TargetObject.PSObject.Properties['OtherName'];
-                if ($otherName -eq $Null) {
-                    return $Null
-                }
-                return $otherName.Value;
-            }
-
-            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName', 'Metadata.Name'; 'Binding.IgnoreCase' = $True } -BindTargetName $bindFn;
+            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName', 'Metadata.Name'; 'Binding.IgnoreCase' = $True };
             $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
-            $result.Count | Should -Be 5;
+            $result.Count | Should -Be 4;
             $result[0].TargetName | Should -Be 'ResourceName';
             $result[1].TargetName | Should -Be 'AlternateName';
             $result[2].TargetName | Should -Be 'TargetName';
-            $result[3].TargetName | Should -Be 'OtherName';
-            $result[4].TargetName | Should -Be 'MetadataName';
+            $result[3].TargetName | Should -Be 'MetadataName';
 
-            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName'; 'Binding.IgnoreCase' = $False } -BindTargetName $bindFn;
+            $option = New-PSRuleOption -Option @{ 'Binding.TargetName' = 'ResourceName', 'AlternateName'; 'Binding.IgnoreCase' = $False };
             $result = $testObject[0..1] | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1';
             $result | Should -Not -BeNullOrEmpty;
             $result.Count | Should -Be 2;
@@ -2918,25 +2875,6 @@ Describe 'Binding' -Tag Common, Binding {
             $result = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -Option $option;
             $result | Should -Not -BeNullOrEmpty;
             $result.TargetType | Should -Be 'TestType';
-        }
-
-        It 'Binds to custom type by script' {
-            $bindFn = {
-                param ($TargetObject)
-
-                $otherType = $TargetObject.PSObject.Properties['OtherType'];
-
-                if ($otherType -eq $Null) {
-                    return $Null
-                }
-
-                return $otherType.Value;
-            }
-
-            $option = New-PSRuleOption -Option @{ 'Binding.TargetType' = 'kind' } -BindTargetType $bindFn;
-            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1';
-            $result | Should -Not -BeNullOrEmpty;
-            $result.TargetType | Should -Be 'OtherType';
         }
     }
 }

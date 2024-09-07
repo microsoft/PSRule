@@ -58,7 +58,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         Input = new InputOption();
         Logging = new LoggingOption();
         Output = new OutputOption();
-        Pipeline = new PipelineHook();
         Repository = new RepositoryOption();
         Requires = new RequiresOption();
         Rule = new RuleOption();
@@ -79,7 +78,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         Input = new InputOption(option?.Input);
         Logging = new LoggingOption(option?.Logging);
         Output = new OutputOption(option?.Output);
-        Pipeline = new PipelineHook(option?.Pipeline);
         Repository = new RepositoryOption(option?.Repository);
         Requires = new RequiresOption(option?.Requires);
         Rule = new RuleOption(option?.Rule);
@@ -130,13 +128,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     /// Options that affect how output is generated.
     /// </summary>
     public OutputOption Output { get; set; }
-
-    /// <summary>
-    /// Configures pipeline hooks.
-    /// </summary>
-    [YamlIgnore]
-    [JsonIgnore]
-    public PipelineHook Pipeline { get; set; }
 
     /// <summary>
     /// Options for repository properties that are used by PSRule.
@@ -438,7 +429,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
             Logging == other.Logging &&
             Output == other.Output &&
             Suppression == other.Suppression &&
-            Pipeline == other.Pipeline &&
             Repository == other.Repository &&
             Rule == other.Rule;
     }
@@ -459,7 +449,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
             hash = hash * 23 + (Logging != null ? Logging.GetHashCode() : 0);
             hash = hash * 23 + (Output != null ? Output.GetHashCode() : 0);
             hash = hash * 23 + (Suppression != null ? Suppression.GetHashCode() : 0);
-            hash = hash * 23 + (Pipeline != null ? Pipeline.GetHashCode() : 0);
             hash = hash * 23 + (Repository != null ? Repository.GetHashCode() : 0);
             hash = hash * 23 + (Rule != null ? Rule.GetHashCode() : 0);
             return hash;

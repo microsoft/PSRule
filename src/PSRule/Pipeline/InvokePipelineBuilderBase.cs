@@ -4,10 +4,12 @@
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Host;
-using PSRule.Options;
 
 namespace PSRule.Pipeline;
 
+/// <summary>
+/// A pipeline builder for any pipelines that test objects against rules.
+/// </summary>
 internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvokePipelineBuilder
 {
     protected InputPathBuilder _InputPath;
@@ -91,7 +93,7 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
         Unblock(writer);
         return !RequireModules() || !RequireSources()
             ? null
-            : (IPipeline)new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, writer, Option.Output.Outcome.Value);
+            : (IPipeline)new InvokeRulePipeline(PrepareContext(PipelineHookActions.Default), Source, writer, Option.Output.Outcome.Value);
     }
 
     protected void Unblock(IPipelineWriter writer)

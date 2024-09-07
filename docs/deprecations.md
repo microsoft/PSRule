@@ -106,6 +106,13 @@ This existed to support scenarios before a module configuration and language sco
 
 Configuring binding configuration on a baseline is removed from PSRule v3.
 
+### Binding hooks
+
+Prior to v3, a custom binding PowerShell script block could be used to perform custom binding inline.
+This feature was hard to use and obsolete for most common use cases.
+
+Alternatively, configure `Binding.TargetName` and `Binding.TargetType` options to use the built-in binder.
+
 ## Deprecations for v2
 
 ### Default baseline by module manifest

@@ -17,8 +17,8 @@ Create options to configure PSRule execution.
 
 ```text
 New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
- [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
- [-BindTargetType <BindTargetName[]>] [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
+ [-SuppressTargetName <SuppressionOption>]
+ [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
  [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
  [-Convention <String[]>] [-DuplicateResourceId <ExecutionActionPreference>]
@@ -44,8 +44,8 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
 
 ```text
 New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
- [-SuppressTargetName <SuppressionOption>] [-BindTargetName <BindTargetName[]>]
- [-BindTargetType <BindTargetName[]>] [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
+ [-SuppressTargetName <SuppressionOption>]
+ [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
  [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
  [-Convention <String[]>] [-DuplicateResourceId <ExecutionActionPreference>]
@@ -71,7 +71,7 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
 
 ```text
 New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTargetName <SuppressionOption>]
- [-BindTargetName <BindTargetName[]>] [-BindTargetType <BindTargetName[]>] [-BaselineGroup <Hashtable>]
+ [-BaselineGroup <Hashtable>]
  [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
  [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
  [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
@@ -117,28 +117,6 @@ $option = New-PSRuleOption -SuppressTargetName @{ 'storageAccounts.UseHttps' = '
 Create an options object that suppresses `TestObject1` and `TestObject3` for a rule named `storageAccounts.UseHttps`.
 
 ### Example 3
-
-```powershell
-# Create a custom function that returns a TargetName string
-$bindFn = {
-    param ($TargetObject)
-
-    $otherName = $TargetObject.PSObject.Properties['OtherName'];
-
-    if ($otherName -eq $Null) {
-        return $Null
-    }
-
-    return $otherName.Value;
-}
-
-# Specify the binding function script block code to execute
-$option = New-PSRuleOption -BindTargetName $bindFn;
-```
-
-Creates an options object that uses a custom function to bind the _TargetName_ of an object.
-
-### Example 4
 
 ```powershell
 $option = New-PSRuleOption -Configuration @{ 'appServiceMinInstanceCount' = 2 };
@@ -221,23 +199,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -BindTargetName
-
-Configures a custom function to use to bind TargetName of an object.
-See about_PSRule_Options for more information.
-
-```yaml
-Type: BindTargetName[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Configuration
 
 Configures a set of baseline configuration values that can be used in rule definitions instead of using hard coded values.
@@ -264,23 +225,6 @@ See about_PSRule_Options for more information.
 
 ```yaml
 Type: Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -BindTargetType
-
-Configures a custom function to use to bind TargetType of an object.
-See about_PSRule_Options for more information.
-
-```yaml
-Type: BindTargetName[]
 Parameter Sets: (All)
 Aliases:
 

@@ -57,7 +57,7 @@ internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTarget
     /// <inheritdoc/>
     public override IPipeline Build(IPipelineWriter writer = null)
     {
-        return new GetTargetPipeline(PrepareContext(null, null, null), PrepareReader(), writer ?? PrepareWriter());
+        return new GetTargetPipeline(PrepareContext(PipelineHookActions.Empty), PrepareReader(), writer ?? PrepareWriter());
     }
 
     /// <inheritdoc/>
