@@ -1354,7 +1354,7 @@ internal sealed class LanguageExpressions
             if (svalue != DOT || context?.Context?.LanguageScope == null)
                 return Invalid(context, svalue);
 
-            if (!context.Context.LanguageScope.TryGetScope(o, out var scope))
+            if (!context.Context.TryGetScope(o, out var scope))
                 return Invalid(context, svalue);
 
             operand = Operand.FromScope(scope);

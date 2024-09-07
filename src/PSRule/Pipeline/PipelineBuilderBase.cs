@@ -180,7 +180,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             bindTargetName: bindTargetName,
             bindTargetType: bindTargetType,
             bindField: bindField,
-            optionBuilder: GetOptionBuilder(),
+            optionBuilder: GetOptionBuilder(bindTargetName, bindTargetType, bindField),
             unresolved: unresolved
         );
     }
@@ -328,9 +328,9 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         return _InputFilter;
     }
 
-    private OptionContextBuilder GetOptionBuilder()
+    private OptionContextBuilder GetOptionBuilder(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField)
     {
-        return new OptionContextBuilder(Option, _Include, _Tag, _Convention);
+        return new OptionContextBuilder(Option, _Include, _Tag, _Convention, bindTargetName, bindTargetType, bindField);
     }
 
     protected void ConfigureBinding(PSRuleOption option)

@@ -53,9 +53,6 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
     internal readonly List<SuppressionGroupVisitor> SuppressionGroup;
     internal readonly IHostContext HostContext;
     internal readonly PipelineInputStream Reader;
-    internal readonly BindTargetMethod BindTargetName;
-    internal readonly BindTargetMethod BindTargetType;
-    internal readonly BindTargetMethod BindField;
     internal readonly string RunId;
 
     internal readonly Stopwatch RunTime;
@@ -70,9 +67,6 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
         Option = option;
         HostContext = hostContext;
         Reader = reader;
-        BindTargetName = bindTargetName;
-        BindTargetType = bindTargetType;
-        BindField = bindField;
         _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode.Value;
         _PathExpressionCache = new Dictionary<string, PathExpression>();
         LocalizedDataCache = new Dictionary<string, Hashtable>();

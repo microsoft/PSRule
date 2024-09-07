@@ -7,14 +7,19 @@ using PSRule.Options;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 internal sealed class OptionContext
 {
     private ConventionOption _Convention;
     private List<string> _ConventionOrder;
 
-    public OptionContext()
+    public OptionContext(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, string[] inputTargetType)
     {
-
+        BindTargetName = bindTargetName;
+        BindTargetType = bindTargetType;
+        BindField = bindField;
+        InputTargetType = inputTargetType;
     }
 
     public Options.BaselineOption Baseline { get; set; }
@@ -58,6 +63,12 @@ internal sealed class OptionContext
 
     public IResourceFilter RuleFilter { get; set; }
 
+    public BindTargetMethod BindTargetName { get; }
+    public BindTargetMethod BindTargetType { get; }
+    public BindTargetMethod BindField { get; }
+
+    public string[] InputTargetType { get; }
+
     internal int GetConventionOrder(IConvention convention)
     {
         if (Convention?.Include == null || Convention.Include.Length == 0)
@@ -71,3 +82,5 @@ internal sealed class OptionContext
         return index > -1 ? index : int.MaxValue;
     }
 }
+
+#nullable restore

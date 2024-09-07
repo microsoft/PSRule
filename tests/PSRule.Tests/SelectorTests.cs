@@ -967,6 +967,7 @@ public sealed class SelectorTests
         );
 
         context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterLanguageScope(withName.Source);
         Assert.True(withName.Match(actual1));
 
         context.EnterTargetObject(new TargetObject(actual2));
@@ -1873,7 +1874,7 @@ public sealed class SelectorTests
 
     private static SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
     {
-        var builder = new OptionContextBuilder(GetOption());
+        var builder = new OptionContextBuilder(GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
         context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, builder, null), null);
         context.Init(source);
         context.Begin();

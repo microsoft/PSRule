@@ -24,7 +24,7 @@ public sealed class OptionContextTests
         var builder = new OptionContextBuilder(GetOption());
 
         // Check empty scope
-        var testScope = new LanguageScope(null, "Empty");
+        var testScope = new LanguageScope("Empty");
         testScope.Configure(builder.Build(testScope.Name));
         Assert.Equal(new string[] { "en-ZZ" }, testScope.Culture);
     }
@@ -35,7 +35,7 @@ public sealed class OptionContextTests
         // Create option context
         var builder = new OptionContextBuilder(GetOption());
 
-        var localScope = new LanguageScope(null, null);
+        var localScope = new LanguageScope(null);
         localScope.Configure(builder.Build(null));
 
         var ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
