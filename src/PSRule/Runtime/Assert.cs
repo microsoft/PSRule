@@ -146,7 +146,7 @@ public sealed class Assert
             if (results[i].Result)
                 return Pass();
             else
-                result.AddReason(result);
+                result.AddReason(results[i]);
         }
         return result;
     }

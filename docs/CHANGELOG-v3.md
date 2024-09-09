@@ -65,6 +65,8 @@ What's changed since pre-release v3.0.0-B0203:
 - Bug fixes:
   - Fixed CLI exception the term Find-Module is not recognized by @BernieWhite.
     [#1860](https://github.com/microsoft/PSRule/issues/1860)
+  - Fixed aggregation of reasons with `$Assert.AnyOf()` by @BernieWhite.
+    [#1829](https://github.com/microsoft/PSRule/issues/1829)
 
 ## v3.0.0-B0203 (pre-release)
 
