@@ -104,16 +104,75 @@ public sealed class AssertTests
         Assert.False(assert.AllOf().Result);
     }
 
+    /// <summary>
+    /// Tests for <see cref="Runtime.Assert.AnyOf"/>.
+    /// </summary>
+    [Fact]
+    public void AnyOf()
+    {
+        SetContext();
+        var assert = GetAssertionHelper();
+        var actual1 = assert.Create(false, "Test reason 1");
+        var actual2 = assert.Create(true, "Test reason 2");
+        var actual3 = assert.Fail("Fail reason");
+
+        // Pass cases with no reasons.
+        var result = assert.AnyOf(actual2, actual3);
+        Assert.True(result.Result);
+        Assert.Empty(result.GetReason());
+        Assert.True(assert.AnyOf(actual2).Result);
+        Assert.True(assert.AnyOf(actual3, actual2, actual1).Result);
+
+        // Check reasons are returned.
+        result = assert.AnyOf(actual1, actual3);
+        Assert.False(result.Result);
+        Assert.Equal("Test reason 1 Fail reason", result.ToString());
+        Assert.Equal<string>(["Test reason 1", "Fail reason"], result.GetReason());
+
+        // Empty fail case.
+        Assert.False(assert.AnyOf().Result);
+    }
+
+    /// <summary>
+    /// Tests for <see cref="Runtime.Assert.AllOf"/>.
+    /// </summary>
+    [Fact]
+    public void AllOf()
+    {
+        SetContext();
+        var assert = GetAssertionHelper();
+        var actual1 = assert.Create(false, "Test reason 1");
+        var actual2 = assert.Create(true, "Test reason 2");
+        var actual3 = assert.Fail("Fail reason");
+
+        // Fail cases.
+        var result = assert.AllOf(actual2, actual3);
+        Assert.False(result.Result);
+        Assert.Equal("Fail reason", result.ToString());
+        Assert.Equal("Fail reason", result.GetReason()[0]);
+
+        result = assert.AllOf(actual1, actual2, actual3);
+        Assert.Equal("Test reason 1 Fail reason", result.ToString());
+        Assert.Equal<string>(["Test reason 1", "Fail reason"], result.GetReason());
+
+        // Pass cases.
+        Assert.True(assert.AllOf(actual2, actual2).Result);
+        Assert.True(assert.AllOf(actual2).Result);
+
+        // Empty fail case.
+        Assert.False(assert.AllOf().Result);
+    }
+
     [Fact]
     public void WithinRollupBlock()
     {
         SetContext();
         var assert = GetAssertionHelper();
-        var actual1 = RuleConditionHelper.Create(new object[] { PSObject.AsPSObject(assert.Create(true, "Test reason")), PSObject.AsPSObject(assert.Create(false, "Test reason")) });
+        var actual1 = RuleConditionHelper.Create([PSObject.AsPSObject(assert.Create(true, "Test reason")), PSObject.AsPSObject(assert.Create(false, "Test reason"))]);
         Assert.True(actual1.AnyOf());
         Assert.False(actual1.AllOf());
 
-        var actual2 = RuleConditionHelper.Create(new object[] { assert.Create(true, "Test reason"), assert.Create(false, "Test reason") });
+        var actual2 = RuleConditionHelper.Create([assert.Create(true, "Test reason"), assert.Create(false, "Test reason")]);
         Assert.True(actual2.AnyOf());
         Assert.False(actual2.AllOf());
     }
