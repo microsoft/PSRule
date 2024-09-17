@@ -20,6 +20,9 @@ using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Pipeline;
 
+/// <summary>
+/// Context applicable to the whole pipeline, including during early stage setup.
+/// </summary>
 internal sealed class PipelineContext : IDisposable, IBindingContext
 {
     private const string ErrorPreference = "ErrorActionPreference";
@@ -44,7 +47,7 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
     // Track whether Dispose has been called.
     private bool _Disposed;
 
-    internal PSRuleOption Option;
+    public PSRuleOption Option { get; }
 
     internal readonly Dictionary<string, Hashtable> LocalizedDataCache;
     internal readonly Dictionary<string, object> ExpressionCache;
