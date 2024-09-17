@@ -67,6 +67,8 @@ What's changed since pre-release v3.0.0-B0203:
     [#1860](https://github.com/microsoft/PSRule/issues/1860)
   - Fixed aggregation of reasons with `$Assert.AnyOf()` by @BernieWhite.
     [#1829](https://github.com/microsoft/PSRule/issues/1829)
+  - Added `Problem` to validate sets of `OutputOutcome` by @nightroman
+    [#2542](https://github.com/microsoft/PSRule/issues/2542)
 
 ## v3.0.0-B0203 (pre-release)
 
