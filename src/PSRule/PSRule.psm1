@@ -1309,7 +1309,7 @@ function New-PSRuleOption {
 
         # Sets the Output.Outcome option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
+        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Problem', 'Processed', 'All')]
         [Alias('Outcome')]
         [PSRule.Rules.RuleOutcome]$OutputOutcome = 'Processed',
 
@@ -1612,7 +1612,7 @@ function Set-PSRuleOption {
 
         # Sets the Output.Outcome option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
+        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Problem', 'Processed', 'All')]
         [Alias('Outcome')]
         [PSRule.Rules.RuleOutcome]$OutputOutcome = 'Processed',
 
@@ -2376,7 +2376,7 @@ function SetOptions {
 
         # Sets the Output.Outcome option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
+        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Problem', 'Processed', 'All')]
         [Alias('Outcome')]
         [PSRule.Rules.RuleOutcome]$OutputOutcome = 'Processed',
 
