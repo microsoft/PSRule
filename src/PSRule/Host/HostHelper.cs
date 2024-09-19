@@ -57,11 +57,13 @@ internal static class HostHelper
     /// <summary>
     /// Get meta resources which are resource defined in YAML or JSON.
     /// </summary>
-    private static IEnumerable<ILanguageBlock> GetYamlJsonLanguageBlocks(Source[] source, RunspaceContext context)
+    internal static IEnumerable<T> GetMetaResources<T>(Source[] source, IResourceDiscoveryContext context) where T : ILanguageBlock
     {
-        var results = new List<ILanguageBlock>();
-        results.AddRange(GetYamlLanguageBlocks(source, context));
-        results.AddRange(GetJsonLanguageBlocks(source, context));
+        if (source == null || source.Length == 0) return [];
+
+        var results = new List<T>();
+        results.AddRange(GetYamlLanguageBlocks(source, context).OfType<T>());
+        results.AddRange(GetJsonLanguageBlocks(source, context).OfType<T>());
         return results;
     }
 
@@ -70,7 +72,7 @@ internal static class HostHelper
     /// </summary>
     internal static IEnumerable<Baseline> GetBaseline(Source[] source, RunspaceContext context)
     {
-        return ToBaselineV1(GetYamlJsonLanguageBlocks(source, context), context);
+        return ToBaselineV1(GetMetaResources<ILanguageBlock>(source, context), context);
     }
 
     /// <summary>
@@ -78,7 +80,7 @@ internal static class HostHelper
     /// </summary>
     internal static IEnumerable<ModuleConfigV1> GetModuleConfigForTests(Source[] source, RunspaceContext context)
     {
-        return ToModuleConfigV1(GetYamlJsonLanguageBlocks(source, context), context);
+        return ToModuleConfigV1(GetMetaResources<ILanguageBlock>(source, context), context);
     }
 
     /// <summary>
@@ -86,7 +88,7 @@ internal static class HostHelper
     /// </summary>
     internal static IEnumerable<SelectorV1> GetSelectorForTests(Source[] source, RunspaceContext context)
     {
-        return ToSelectorV1(GetYamlJsonLanguageBlocks(source, context), context);
+        return ToSelectorV1(GetMetaResources<ILanguageBlock>(source, context), context);
     }
 
     /// <summary>
@@ -94,15 +96,7 @@ internal static class HostHelper
     /// </summary>
     internal static IEnumerable<SuppressionGroupV1> GetSuppressionGroupForTests(Source[] source, RunspaceContext context)
     {
-        return ToSuppressionGroupV1(GetYamlJsonLanguageBlocks(source, context), context);
-    }
-
-    /// <summary>
-    /// Import meta resources which are resource defined in YAML or JSON.
-    /// </summary>
-    internal static IEnumerable<ILanguageBlock> ImportResource(Source[] source, RunspaceContext context)
-    {
-        return source == null || source.Length == 0 ? Array.Empty<ILanguageBlock>() : GetYamlJsonLanguageBlocks(source, context);
+        return ToSuppressionGroupV1(GetMetaResources<ILanguageBlock>(source, context), context);
     }
 
     /// <summary>
@@ -167,16 +161,16 @@ internal static class HostHelper
     {
         var results = new List<ILanguageBlock>();
         results.AddRange(GetPSLanguageBlocks(context, sources));
-        results.AddRange(GetYamlJsonLanguageBlocks(sources, context));
+        results.AddRange(GetMetaResources<ILanguageBlock>(sources, context));
         return [.. results];
     }
 
     /// <summary>
     /// Execute PowerShell script files to get language blocks.
     /// </summary>
-    private static ILanguageBlock[] GetPSLanguageBlocks(RunspaceContext context, Source[] sources)
+    private static ILanguageBlock[] GetPSLanguageBlocks(IScriptResourceDiscoveryContext context, Source[] sources)
     {
-        if (context.Pipeline.Option.Execution.RestrictScriptSource == Options.RestrictScriptSource.DisablePowerShell)
+        if (context.GetExecutionOption().RestrictScriptSource == Options.RestrictScriptSource.DisablePowerShell)
             return [];
 
         var results = new List<ILanguageBlock>();
@@ -196,7 +190,7 @@ internal static class HostHelper
                         continue;
 
                     ps.Commands.Clear();
-                    context.VerboseRuleDiscovery(path: file.Path);
+                    context.Writer?.VerboseRuleDiscovery(path: file.Path);
                     context.EnterLanguageScope(file);
                     try
                     {
@@ -207,14 +201,14 @@ internal static class HostHelper
                         if (visitor.Errors != null && visitor.Errors.Count > 0)
                         {
                             foreach (var record in visitor.Errors)
-                                context.WriteError(record);
+                                context.Writer?.WriteError(record);
 
                             continue;
                         }
                         if (errors != null && errors.Length > 0)
                         {
                             foreach (var error in errors)
-                                context.WriteError(error);
+                                context.Writer?.WriteError(error);
 
                             continue;
                         }
@@ -242,7 +236,7 @@ internal static class HostHelper
         }
         finally
         {
-            context.Writer.ExitScope();
+            context.Writer?.ExitScope();
             context.PopScope(RunspaceScope.Source);
             ps.Runspace = null;
             ps.Dispose();
@@ -253,7 +247,7 @@ internal static class HostHelper
     /// <summary>
     /// Get language blocks from YAML source files.
     /// </summary>
-    private static ILanguageBlock[] GetYamlLanguageBlocks(Source[] sources, RunspaceContext context)
+    private static ILanguageBlock[] GetYamlLanguageBlocks(Source[] sources, IResourceDiscoveryContext context)
     {
         var result = new Collection<ILanguageBlock>();
         var visitor = new ResourceValidator(context.Writer);
@@ -284,7 +278,7 @@ internal static class HostHelper
                     if (file.Type != SourceType.Yaml)
                         continue;
 
-                    context.VerboseRuleDiscovery(path: file.Path);
+                    context.Writer?.VerboseRuleDiscovery(path: file.Path);
                     context.EnterLanguageScope(file);
                     try
                     {
@@ -319,7 +313,7 @@ internal static class HostHelper
     /// <summary>
     /// Get language blocks from JSON source files.
     /// </summary>
-    private static ILanguageBlock[] GetJsonLanguageBlocks(Source[] sources, RunspaceContext context)
+    private static ILanguageBlock[] GetJsonLanguageBlocks(Source[] sources, IResourceDiscoveryContext context)
     {
         var result = new Collection<ILanguageBlock>();
         var visitor = new ResourceValidator(context.Writer);
@@ -344,7 +338,7 @@ internal static class HostHelper
                     if (file.Type != SourceType.Json)
                         continue;
 
-                    context.VerboseRuleDiscovery(file.Path);
+                    context.Writer?.VerboseRuleDiscovery(file.Path);
                     context.EnterLanguageScope(file);
                     try
                     {
@@ -636,7 +630,7 @@ internal static class HostHelper
     private static Baseline[] ToBaselineV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
     {
         if (blocks == null)
-            return Array.Empty<Baseline>();
+            return [];
 
         // Index baselines by BaselineId
         var results = new Dictionary<string, Baseline>(StringComparer.OrdinalIgnoreCase);

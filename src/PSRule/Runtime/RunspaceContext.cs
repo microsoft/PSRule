@@ -20,7 +20,7 @@ namespace PSRule.Runtime;
 /// <summary>
 /// A context applicable to rule execution.
 /// </summary>
-internal sealed class RunspaceContext : IDisposable, ILogger
+internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext
 {
     private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
     private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
@@ -31,7 +31,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     internal static RunspaceContext? CurrentThread;
 
     internal readonly PipelineContext Pipeline;
-    internal readonly IPipelineWriter Writer;
 
     // Fields exposed to engine
     internal RuleRecord? RuleRecord;
@@ -99,11 +98,11 @@ internal sealed class RunspaceContext : IDisposable, ILogger
 
     internal bool HadErrors => _RuleErrors > 0;
 
+    public IPipelineWriter Writer { get; }
+
     internal IEnumerable<InvokeResult>? Output { get; private set; }
 
     internal TargetObject? TargetObject { get; private set; }
-
-    internal ITargetBinder? TargetBinder { get; private set; }
 
     internal SourceScope? Source { get; private set; }
 
@@ -128,12 +127,12 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         return scope.HasFlag(current);
     }
 
-    internal void PushScope(RunspaceScope scope)
+    public void PushScope(RunspaceScope scope)
     {
         _Scope.Push(scope);
     }
 
-    internal void PopScope(RunspaceScope scope)
+    public void PopScope(RunspaceScope scope)
     {
         var current = _Scope.Peek();
         if (current != scope)
@@ -259,14 +258,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         ));
     }
 
-    public void VerboseRuleDiscovery(string path)
-    {
-        if (Writer == null || !Writer.ShouldWriteVerbose() || string.IsNullOrEmpty(path))
-            return;
-
-        Writer.WriteVerbose($"[PSRule][D] -- Discovering rules in: {path}");
-    }
-
     public void VerboseFoundResource(string name, string moduleName, string scriptName)
     {
         if (Writer == null || !Writer.ShouldWriteVerbose())
@@ -321,30 +312,12 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         Writer.WriteVerbose(string.Concat(GetLogPrefix(), " -- [", pass, "/", count, "] [", outcome, "]"));
     }
 
-    public void WriteError(ErrorRecord record)
+    public ExecutionOption GetExecutionOption()
     {
-        if (Writer == null || !Writer.ShouldWriteError())
-            return;
-
-        Writer.WriteError(errorRecord: record);
+        return Pipeline.Option.Execution;
     }
 
-    public void WriteError(ParseError error)
-    {
-        if (Writer == null || !Writer.ShouldWriteError())
-            return;
-
-        var record = new ErrorRecord
-        (
-            exception: new Pipeline.ParseException(message: error.Message, errorId: error.ErrorId),
-            errorId: error.ErrorId,
-            errorCategory: ErrorCategory.InvalidOperation,
-            targetObject: null
-        );
-        Writer.WriteError(errorRecord: record);
-    }
-
-    internal PowerShell GetPowerShell()
+    public PowerShell GetPowerShell()
     {
         var result = PowerShell.Create();
         result.Runspace = Pipeline.GetRunspace();
@@ -545,7 +518,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         return _LogPrefix ?? string.Empty;
     }
 
-    internal void EnterLanguageScope(ISourceFile file)
+    public void EnterLanguageScope(ISourceFile file)
     {
         // TODO: Look at scope caching, and a scope stack.
 
@@ -560,7 +533,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         Source = new SourceScope(file);
     }
 
-    internal void ExitLanguageScope(ISourceFile file)
+    public void ExitLanguageScope(ISourceFile file)
     {
         // Look at scope popping and validation.
 
@@ -744,7 +717,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     public void Init(Source[] source)
     {
         InitLanguageScopes(source);
-        var resources = Host.HostHelper.ImportResource(source, this).OfType<IResource>();
+        var resources = Host.HostHelper.GetMetaResources<IResource>(source, this);
 
         // Process module configurations first
         foreach (var resource in resources.Where(r => r.Kind == ResourceKind.ModuleConfig).ToArray())
