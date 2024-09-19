@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
+using System.Management.Automation.Language;
 using PSRule.Resources;
 
 namespace PSRule.Pipeline;
@@ -96,6 +97,21 @@ public static class PipelineWriterExtensions
             return;
 
         writer.WriteError(new ErrorRecord(exception, errorId, errorCategory, null));
+    }
+
+    internal static void WriteError(this IPipelineWriter writer, ParseError error)
+    {
+        if (writer == null || !writer.ShouldWriteError())
+            return;
+
+        var record = new ErrorRecord
+        (
+            exception: new Pipeline.ParseException(message: error.Message, errorId: error.ErrorId),
+            errorId: error.ErrorId,
+            errorCategory: ErrorCategory.InvalidOperation,
+            targetObject: null
+        );
+        writer.WriteError(errorRecord: record);
     }
 
     internal static void WriteDebug(this IPipelineWriter writer, string message, params object[] args)
