@@ -6,17 +6,6 @@ using System.Diagnostics;
 namespace PSRule.Data;
 
 /// <summary>
-/// A semantic version constraint.
-/// </summary>
-public interface ISemanticVersionConstraint
-{
-    /// <summary>
-    /// Determines if the semantic version meets the requirments of the constraint.
-    /// </summary>
-    bool Equals(SemanticVersion.Version version);
-}
-
-/// <summary>
 /// A helper for comparing semantic version strings.
 /// </summary>
 public static class SemanticVersion
@@ -28,7 +17,7 @@ public static class SemanticVersion
     private const char VLOWER = 'v';
     private const char GREATER = '>';
     private const char LESS = '<';
-    private const char SEPARATOR = '.';
+    private const char DOT = '.';
     private const char DASH = '-';
     private const char PLUS = '+';
     private const char ZERO = '0';
@@ -89,23 +78,36 @@ public static class SemanticVersion
     {
         private List<ConstraintExpression>? _Constraints;
         private readonly string _Value;
+        private readonly bool _IncludePrerelease;
 
-        internal VersionConstraint(string value)
+        /// <summary>
+        /// A version constraint that accepts any version including pre-releases.
+        /// </summary>
+        public static readonly VersionConstraint Any = new(string.Empty, includePrerelease: true);
+
+        /// <summary>
+        /// A version constraint that accepts any stable version.
+        /// </summary>
+        public static readonly VersionConstraint AnyStable = new(string.Empty, includePrerelease: false);
+
+        internal VersionConstraint(string value, bool includePrerelease)
         {
             _Value = value;
+            _IncludePrerelease = includePrerelease;
         }
 
         /// <inheritdoc/>
-        public bool Equals(Version version)
+        public bool Accepts(Version? version)
         {
+            if (version is null) return false;
             if (_Constraints == null || _Constraints.Count == 0)
-                return true;
+                return version.Stable || _IncludePrerelease;
 
             var match = false;
             var i = 0;
             while (!match && i < _Constraints.Count)
             {
-                var result = _Constraints[i].Equals(version);
+                var result = _Constraints[i].Accepts(version);
 
                 // True OR
                 if (result && _Constraints[i].Join == JoinOperator.Or)
@@ -133,20 +135,6 @@ public static class SemanticVersion
             return false;
         }
 
-        internal void Join(int major, int minor, int patch, PR prid, ComparisonOperator flag, JoinOperator join, bool includePrerelease)
-        {
-            _Constraints ??= new List<ConstraintExpression>();
-            _Constraints.Add(new ConstraintExpression(
-                major,
-                minor,
-                patch,
-                prid,
-                flag,
-                join == JoinOperator.None ? JoinOperator.Or : join,
-                includePrerelease
-            ));
-        }
-
         /// <inheritdoc/>
         public override string ToString()
         {
@@ -157,6 +145,20 @@ public static class SemanticVersion
         public override int GetHashCode()
         {
             return _Value.GetHashCode();
+        }
+
+        internal void Join(int major, int minor, int patch, PR prid, ComparisonOperator flag, JoinOperator join, bool includePrerelease)
+        {
+            _Constraints ??= [];
+            _Constraints.Add(new ConstraintExpression(
+                major,
+                minor,
+                patch,
+                prid,
+                flag,
+                join == JoinOperator.None ? JoinOperator.Or : join,
+                includePrerelease
+            ));
         }
     }
 
@@ -190,17 +192,18 @@ public static class SemanticVersion
             return TryParseConstraint(value, out constraint);
         }
 
-        public bool Equals(System.Version version)
+        public bool Accepts(System.Version version)
         {
-            return Equals(version.Major, version.Minor, version.Build, null);
+            return Accepts(version.Major, version.Minor, version.Build, null);
         }
 
-        public bool Equals(Version version)
+        /// <inheritdoc/>
+        public bool Accepts(Version? version)
         {
-            return Equals(version.Major, version.Minor, version.Patch, version.Prerelease);
+            return version is not null && Accepts(version.Major, version.Minor, version.Patch, version.Prerelease);
         }
 
-        public bool Equals(int major, int minor, int patch, PR? prid)
+        public bool Accepts(int major, int minor, int patch, PR? prid)
         {
             if (_Flag == ComparisonOperator.Equals)
                 return EQ(major, minor, patch, prid);
@@ -340,8 +343,11 @@ public static class SemanticVersion
     /// <summary>
     /// A semantic version.
     /// </summary>
+    [DebuggerDisplay("{_VersionString}")]
     public sealed class Version : IComparable<Version>, IEquatable<Version>
     {
+        private readonly string _VersionString;
+
         /// <summary>
         /// The major part of the version.
         /// </summary>
@@ -374,7 +380,14 @@ public static class SemanticVersion
             Patch = patch;
             Prerelease = prerelease;
             Build = build;
+
+            _VersionString = GetVersionString();
         }
+
+        /// <summary>
+        /// Determines if the version is stable or a pre-release.
+        /// </summary>
+        public bool Stable => Prerelease == null || Prerelease.Stable;
 
         /// <summary>
         /// Try to parse a semantic version from a string.
@@ -387,7 +400,7 @@ public static class SemanticVersion
         /// <inheritdoc/>
         public override string ToString()
         {
-            return string.Concat(Major, '.', Minor, '.', Patch);
+            return _VersionString;
         }
 
         /// <inheritdoc/>
@@ -432,7 +445,7 @@ public static class SemanticVersion
         /// </summary>
         public bool Equals(Version? other)
         {
-            return other != null &&
+            return other is not null &&
                 Equals(other.Major, other.Minor, other.Patch, other.Prerelease?.Value);
         }
 
@@ -452,7 +465,7 @@ public static class SemanticVersion
         /// </summary>
         public int CompareTo(Version? other)
         {
-            if (other == null)
+            if (other is null)
                 return 1;
 
             if (Major != other.Major)
@@ -461,7 +474,37 @@ public static class SemanticVersion
             if (Minor != other.Minor)
                 return Minor > other.Minor ? 16 : -16;
 
-            return Patch != other.Patch ? Patch > other.Patch ? 8 : -8 : 0;
+            if (Patch != other.Patch)
+                return Patch > other.Patch ? 8 : -8;
+
+            return Prerelease != other.Prerelease ? PR.Compare(Prerelease, other.Prerelease) : 0;
+        }
+
+        private string GetVersionString()
+        {
+            var count = 5 + (Prerelease != null && !Prerelease.Stable ? 2 : 0) + (Build != null && Build.Length > 0 ? 2 : 0);
+            var parts = new object[count];
+
+            parts[0] = Major;
+            parts[1] = DOT;
+            parts[2] = Minor;
+            parts[3] = DOT;
+            parts[4] = Patch;
+
+            var next = 5;
+            if (Prerelease != null && !Prerelease.Stable)
+            {
+                parts[next++] = DASH;
+                parts[next++] = Prerelease.Value;
+            }
+
+            if (Build != null && Build.Length > 0)
+            {
+                parts[next++] = PLUS;
+                parts[next++] = Build;
+            }
+
+            return string.Concat(parts);
         }
     }
 
@@ -469,10 +512,10 @@ public static class SemanticVersion
     /// A semantic version pre-release identifier.
     /// </summary>
     [DebuggerDisplay("{Value}")]
-    public sealed class PR
+    public sealed class PR : IComparable<PR>, IEquatable<PR>
     {
         internal static readonly PR Empty = new();
-        private static readonly char[] SEPARATORS = new char[] { SEPARATOR };
+        private static readonly char[] SEPARATORS = new char[] { DOT };
 
         private readonly string[]? _Identifiers;
 
@@ -501,16 +544,16 @@ public static class SemanticVersion
         /// <summary>
         /// Compare the pre-release identifer to another pre-release identifier.
         /// </summary>
-        public int CompareTo(PR? pr)
+        public int CompareTo(PR? other)
         {
-            if (pr == null || pr.Stable || pr._Identifiers == null)
+            if (other is null || other.Stable || other._Identifiers == null)
                 return Stable ? 0 : -1;
             else if (Stable || _Identifiers == null)
                 return 1;
 
             var i = -1;
             var left = _Identifiers;
-            var right = pr._Identifiers;
+            var right = other._Identifiers;
 
             while (++i < left.Length && i < right.Length)
             {
@@ -544,9 +587,20 @@ public static class SemanticVersion
         }
 
         /// <inheritdoc/>
+        public bool Equals(PR? other)
+        {
+            if (other is null)
+                return Stable;
+
+            return Stable && other.Stable ||
+                Value.Equals(other.Value);
+        }
+
+
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            return obj is PR prerelease && Value.Equals(prerelease.Value);
+            return obj is PR other && Equals(other);
         }
 
         /// <inheritdoc/>
@@ -559,6 +613,18 @@ public static class SemanticVersion
         public override string ToString()
         {
             return Value.ToString();
+        }
+
+        /// <summary>
+        /// Compare two <see cref="PR"/> instances.
+        /// </summary>
+        public static int Compare(PR pr1, PR pr2)
+        {
+            if (pr1 == pr2) return 0;
+            if (pr1 == null || pr1.Stable) return 1;
+            if (pr2 == null || pr2.Stable) return -1;
+
+            return pr1.CompareTo(pr2);
         }
     }
 
@@ -652,7 +718,7 @@ public static class SemanticVersion
 
         internal bool TrySegments(out int[] segments)
         {
-            segments = new int[] { -1, -1, -1, -1 };
+            segments = [-1, -1, -1, -1];
             var segmentIndex = 0;
             SkipLeading();
             while (!EOF)
@@ -766,7 +832,7 @@ public static class SemanticVersion
         [DebuggerStepThrough()]
         private static bool IsSeparator(char c)
         {
-            return c == SEPARATOR;
+            return c == DOT;
         }
 
         [DebuggerStepThrough()]
@@ -782,7 +848,7 @@ public static class SemanticVersion
                 return true;
 
             numeric = false;
-            return char.IsDigit(c) || IsLetter(c) || c == DASH || c == SEPARATOR;
+            return char.IsDigit(c) || IsLetter(c) || c == DASH || c == DOT;
         }
 
         [DebuggerStepThrough()]
@@ -819,7 +885,7 @@ public static class SemanticVersion
     /// </summary>
     public static bool TryParseConstraint(string value, out ISemanticVersionConstraint constraint, bool includePrerelease = false)
     {
-        var c = new VersionConstraint(value);
+        var c = new VersionConstraint(value, includePrerelease);
         constraint = c;
         if (string.IsNullOrEmpty(value))
             return true;

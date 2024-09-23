@@ -27,6 +27,17 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0267:
+
+- General improvements:
+  - **Breaking change**: Empty version comparison only accepts stable versions by default by @BernieWhite.
+    [#2557](https://github.com/microsoft/PSRule/issues/2557)
+    - `version` and `apiVersion` assertions only accept stable versions by default for all cases.
+    - Pre-release versions can be accepted by setting `includePrerelease` to `true`.
+- Bug fixes:
+  - Fixed CLI upgrade uses pre-release module by @BernieWhite.
+    [#2549](https://github.com/microsoft/PSRule/issues/2549)
+
 ## v3.0.0-B0267 (pre-release)
 
 What's changed since pre-release v3.0.0-B0203:

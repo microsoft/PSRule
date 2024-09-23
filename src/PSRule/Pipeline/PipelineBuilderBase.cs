@@ -160,7 +160,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     {
         return SemanticVersion.TryParseVersion(moduleVersion, out var version) &&
             SemanticVersion.TryParseConstraint(requiredVersion, out var constraint) &&
-            constraint.Equals(version);
+            constraint.Accepts(version);
     }
 
     /// <summary>

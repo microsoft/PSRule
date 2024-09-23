@@ -98,7 +98,7 @@ public sealed class ModuleCommand
                 // Check if the installed version matches the constraint.
                 if (IsInstalled(pwsh, includeModule, null, out var installedVersion) &&
                     !operationOptions.Force &&
-                    (moduleConstraint == null || moduleConstraint.Equals(installedVersion)))
+                    (moduleConstraint == null || moduleConstraint.Accepts(installedVersion)))
                 {
                     // invocation.Log(Messages.UsingModule, includeModule, installedVersion.ToString());
                     clientContext.LogVerbose($"The module {includeModule} is already installed.");
@@ -224,13 +224,13 @@ public sealed class ModuleCommand
             if (!file.Modules.TryGetValue(module, out var item) || operationOptions.Force)
             {
                 // Get a constraint if set from options.
-                var moduleConstraint = requires.TryGetValue(module, out var c) ? c : null;
+                var moduleConstraint = requires.TryGetValue(module, out var c) ? c : ModuleConstraint.Any(module, includePrerelease: false);
 
                 // Get target version if specified in command-line.
                 var targetVersion = !string.IsNullOrEmpty(operationOptions.Version) && SemanticVersion.TryParseVersion(operationOptions.Version, out var v) && v != null ? v : null;
 
                 // Check if the target version is valid with the constraint if set.
-                if (targetVersion != null && moduleConstraint != null && !moduleConstraint.Constraint.Equals(targetVersion))
+                if (targetVersion != null && moduleConstraint != null && !moduleConstraint.Constraint.Accepts(targetVersion))
                 {
                     clientContext.LogError(Messages.Error_503, operationOptions.Version!);
                     return ERROR_MODULE_ADD_VIOLATES_CONSTRAINT;
@@ -316,7 +316,7 @@ public sealed class ModuleCommand
         foreach (var kv in file.Modules)
         {
             // Get a constraint if set from options.
-            var moduleConstraint = requires.TryGetValue(kv.Key, out var c) ? c : null;
+            var moduleConstraint = requires.TryGetValue(kv.Key, out var c) ? c : ModuleConstraint.Any(kv.Key, includePrerelease: false);
 
             // Find the ideal version.
             var idealVersion = await FindVersionAsync(kv.Key, moduleConstraint, null, null, cancellationToken);
@@ -408,7 +408,7 @@ public sealed class ModuleCommand
                 versionString != null &&
                 SemanticVersion.TryParseVersion(versionString, out var v) &&
                 v != null &&
-                (targetVersion == null || targetVersion.Equals(v)) &&
+                (targetVersion == null || targetVersion.CompareTo(v) == 0) &&
                 v.CompareTo(installedVersion) > 0)
                 installedVersion = v;
         }
@@ -452,8 +452,8 @@ public sealed class ModuleCommand
             if (version.ToFullString() is string versionString &&
                 SemanticVersion.TryParseVersion(versionString, out var v) &&
                 v != null &&
-                (constraint == null || constraint.Constraint.Equals(v)) &&
-                (targetVersion == null || targetVersion.Equals(v)) &&
+                (constraint == null || constraint.Accepts(v)) &&
+                (targetVersion == null || targetVersion.CompareTo(v) == 0) &&
                 v.CompareTo(result) > 0 &&
                 v.CompareTo(installedVersion) > 0)
                 result = v;

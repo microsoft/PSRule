@@ -6,17 +6,6 @@ using System.Diagnostics;
 namespace PSRule.Data;
 
 /// <summary>
-/// An date version constraint.
-/// </summary>
-public interface IDateVersionConstraint
-{
-    /// <summary>
-    /// Determines if the date version meets the requirments of the constraint.
-    /// </summary>
-    bool Equals(DateVersion.Version version);
-}
-
-/// <summary>
 /// A helper for comparing date version strings.
 /// An date version is represented as YYYY-MM-DD-prerelease.
 /// </summary>
@@ -75,18 +64,37 @@ public static class DateVersion
     public sealed class VersionConstraint : IDateVersionConstraint
     {
         private List<ConstraintExpression>? _Constraints;
+        private readonly string _Value;
+        private readonly bool _IncludePrerelease;
+
+        /// <summary>
+        /// A version constraint that accepts any version including pre-releases.
+        /// </summary>
+        public static readonly VersionConstraint Any = new(string.Empty, includePrerelease: true);
+
+        /// <summary>
+        /// A version constraint that accepts any stable version.
+        /// </summary>
+        public static readonly VersionConstraint AnyStable = new(string.Empty, includePrerelease: false);
+
+        internal VersionConstraint(string value, bool includePrerelease)
+        {
+            _Value = value;
+            _IncludePrerelease = includePrerelease;
+        }
 
         /// <inheritdoc/>
-        public bool Equals(Version version)
+        public bool Accepts(Version? version)
         {
+            if (version is null) return false;
             if (_Constraints == null || _Constraints.Count == 0)
-                return true;
+                return version.Stable || _IncludePrerelease;
 
             var match = false;
             var i = 0;
             while (!match && i < _Constraints.Count)
             {
-                var result = _Constraints[i].Equals(version);
+                var result = _Constraints[i].Accepts(version);
 
                 // True OR
                 if (result && _Constraints[i].Join == JoinOperator.Or)
@@ -159,12 +167,13 @@ public static class DateVersion
             return TryParseConstraint(value, out constraint);
         }
 
-        public bool Equals(Version version)
+        /// <inheritdoc/>
+        public bool Accepts(Version? version)
         {
-            return Equals(version.Year, version.Month, version.Day, version.Prerelease);
+            return version is not null && Accepts(version.Year, version.Month, version.Day, version.Prerelease);
         }
 
-        public bool Equals(int year, int month, int day, PR prid)
+        public bool Accepts(int year, int month, int day, PR prid)
         {
             if (_Flag == ComparisonOperator.Equals)
                 return EQ(year, month, day, prid);
@@ -277,8 +286,11 @@ public static class DateVersion
     /// <summary>
     /// An date version.
     /// </summary>
+    [DebuggerDisplay("{_VersionString}")]
     public sealed class Version : IComparable<Version>, IEquatable<Version>
     {
+        private readonly string _VersionString;
+
         /// <summary>
         /// The year part of the version.
         /// </summary>
@@ -305,12 +317,19 @@ public static class DateVersion
             Month = month;
             Day = day;
             Prerelease = prerelease;
+
+            _VersionString = GetVersionString();
         }
+
+        /// <summary>
+        /// Determines if the version is stable or a pre-release.
+        /// </summary>
+        public bool Stable => Prerelease == null || Prerelease.Stable;
 
         /// <inheritdoc/>
         public override string ToString()
         {
-            return string.Concat(Year, DASH, Month, DASH, Day);
+            return _VersionString;
         }
 
         /// <inheritdoc/>
@@ -338,7 +357,7 @@ public static class DateVersion
         /// </summary>
         public bool Equals(Version other)
         {
-            return other != null &&
+            return other is not null &&
                 Equals(other.Year, other.Month, other.Day);
         }
 
@@ -357,7 +376,7 @@ public static class DateVersion
         /// </summary>
         public int CompareTo(Version other)
         {
-            if (other == null)
+            if (other is null)
                 return 1;
 
             if (Year != other.Year)
@@ -369,13 +388,34 @@ public static class DateVersion
             if (Day != other.Day)
                 return Day > other.Day ? 8 : -8;
 
-            if ((Prerelease == null || Prerelease.Stable) && (other.Prerelease == null || other.Prerelease.Stable))
+            if ((Prerelease is null || Prerelease.Stable) && (other.Prerelease is null || other.Prerelease.Stable))
                 return 0;
 
-            if (Prerelease != null && !Prerelease.Stable && other.Prerelease != null && !other.Prerelease.Stable)
+            if (Prerelease is not null && !Prerelease.Stable && other.Prerelease is not null && !other.Prerelease.Stable)
                 return Prerelease.CompareTo(other.Prerelease);
 
-            return Prerelease == null || Prerelease.Stable ? 1 : -1;
+            return Prerelease is null || Prerelease.Stable ? 1 : -1;
+        }
+
+        private string GetVersionString()
+        {
+            var count = 5 + (Prerelease != null && !Prerelease.Stable ? 2 : 0);
+            var parts = new object[count];
+
+            parts[0] = Year;
+            parts[1] = DASH;
+            parts[2] = Month;
+            parts[3] = DASH;
+            parts[4] = Day;
+
+            var next = 5;
+            if (Prerelease != null && !Prerelease.Stable)
+            {
+                parts[next++] = DASH;
+                parts[next++] = Prerelease.Value;
+            }
+
+            return string.Concat(parts);
         }
     }
 
@@ -730,7 +770,7 @@ public static class DateVersion
     /// </summary>
     public static bool TryParseConstraint(string value, out IDateVersionConstraint constraint, bool includePrerelease = false)
     {
-        var c = new VersionConstraint();
+        var c = new VersionConstraint(value, includePrerelease);
         constraint = c;
         if (string.IsNullOrEmpty(value))
             return true;

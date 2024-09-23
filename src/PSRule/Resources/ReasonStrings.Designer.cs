@@ -711,9 +711,9 @@ namespace PSRule.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The version &apos;{0}&apos; does not match the constraint &apos;{1}&apos;..
         /// </summary>
-        internal static string VersionContraint {
+        internal static string VersionConstraint {
             get {
-                return ResourceManager.GetString("VersionContraint", resourceCulture);
+                return ResourceManager.GetString("VersionConstraint", resourceCulture);
             }
         }
         
