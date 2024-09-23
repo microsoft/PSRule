@@ -1356,6 +1356,21 @@
     "spec": {
       "if": {
         "field": "version",
+        "version": "",
+        "includePrerelease": true
+      }
+    }
+  },
+  {
+    // Synopsis: Test any valid stable version
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "JsonVersionAnyStableVersion"
+    },
+    "spec": {
+      "if": {
+        "field": "version",
         "version": ""
       }
     }
@@ -1897,6 +1912,21 @@
     "kind": "Selector",
     "metadata": {
       "name": "JsonAPIVersionAnyVersion"
+    },
+    "spec": {
+      "if": {
+        "field": "dateVersion",
+        "apiVersion": "",
+        "includePrerelease": true
+      }
+    }
+  },
+  {
+    // Synopsis: Test comparison with apiVersion.
+    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "kind": "Selector",
+    "metadata": {
+      "name": "JsonAPIVersionAnyStableVersion"
     },
     "spec": {
       "if": {

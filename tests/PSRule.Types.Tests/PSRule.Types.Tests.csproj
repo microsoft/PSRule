@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>PSRule.CommandLine</RootNamespace>
-    <ProjectGuid>{46127fdf-9241-4b8a-9868-012b89e3318e}</ProjectGuid>
+    <RootNamespace>PSRule</RootNamespace>
+    <ProjectGuid>{8860178f-4b4a-4e28-8cc3-85dfe2a2fe4b}</ProjectGuid>
     <LangVersion>12.0</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-    <PackageReference Include="xunit" Version="2.9.0" />
+    <PackageReference Include="xunit" Version="2.9.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\PSRule.CommandLine\PSRule.CommandLine.csproj" />
+    <ProjectReference Include="..\..\src\PSRule.Types\PSRule.Types.csproj" />
   </ItemGroup>
 
 </Project>

@@ -14,13 +14,6 @@ using PSRule.Runtime;
 
 namespace PSRule;
 
-internal enum TestEnumValue
-{
-    None = 0,
-
-    All = 1
-}
-
 public sealed class SelectorTests
 {
     private const string SelectorYamlFileName = "Selectors.Rule.yaml";
@@ -39,7 +32,7 @@ public sealed class SelectorTests
         context.Begin();
         var selector = HostHelper.GetSelectorForTests(GetSource(path), context).ToArray();
         Assert.NotNull(selector);
-        Assert.Equal(102, selector.Length);
+        Assert.Equal(104, selector.Length);
 
         var actual = selector[0];
         var visitor = new SelectorVisitor(context, actual.Id, actual.Source, actual.Spec.If);
@@ -1573,6 +1566,15 @@ public sealed class SelectorTests
         Assert.True(version.Match(actual5));
         Assert.False(version.Match(actual6));
         Assert.False(version.Match(actual7));
+
+        version = GetSelectorVisitor($"{type}VersionAnyStableVersion", GetSource(path), out _);
+        Assert.True(version.Match(actual1));
+        Assert.True(version.Match(actual2));
+        Assert.True(version.Match(actual3));
+        Assert.True(version.Match(actual4));
+        Assert.False(version.Match(actual5));
+        Assert.False(version.Match(actual6));
+        Assert.False(version.Match(actual7));
     }
 
     [Theory]
@@ -1612,6 +1614,15 @@ public sealed class SelectorTests
         Assert.True(version.Match(actual3));
         Assert.True(version.Match(actual4));
         Assert.True(version.Match(actual5));
+        Assert.False(version.Match(actual6));
+        Assert.False(version.Match(actual7));
+
+        version = GetSelectorVisitor($"{type}APIVersionAnyStableVersion", GetSource(path), out _);
+        Assert.True(version.Match(actual1));
+        Assert.True(version.Match(actual2));
+        Assert.True(version.Match(actual3));
+        Assert.False(version.Match(actual4));
+        Assert.False(version.Match(actual5));
         Assert.False(version.Match(actual6));
         Assert.False(version.Match(actual7));
     }
