@@ -939,6 +939,18 @@ spec:
   if:
     field: 'version'
     version: ''
+    includePrerelease: true
+
+---
+# Synopsis: Test any valid stable version
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlVersionAnyStableVersion
+spec:
+  if:
+    field: 'version'
+    version: ''
 
 ---
 # Synopsis: Test hasDefault
@@ -1359,6 +1371,18 @@ apiVersion: github.com/microsoft/PSRule/v1
 kind: Selector
 metadata:
   name: YamlAPIVersionAnyVersion
+spec:
+  if:
+    field: dateVersion
+    apiVersion: ''
+    includePrerelease: true
+
+---
+# Synopsis: Test comparison with apiVersion.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: YamlAPIVersionAnyStableVersion
 spec:
   if:
     field: dateVersion

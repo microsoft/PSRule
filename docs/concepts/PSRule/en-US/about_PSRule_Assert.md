@@ -141,11 +141,12 @@ Notable differences between object paths and JSONPath are:
 
 ### APIVersion
 
-The `APIVersion` assertion method checks the field value is a valid date version.
+The `APIVersion` assertion method checks the field value is a valid stable date version.
 A constraint can optionally be provided to require the date version to be within a range.
+By default, only stable versions are accepted unless pre-releases are included.
 
 A date version uses the format `yyyy-MM-dd` (`2015-10-01`).
-Additionally an optional string prerelease identifier can be used `yyyy-MM-dd-prerelease` (`2015-10-01-preview.1`).
+Additionally an optional string pre-release identifier can be used `yyyy-MM-dd-prerelease` (`2015-10-01-preview.1`).
 
 The following parameters are accepted:
 
@@ -153,7 +154,7 @@ The following parameters are accepted:
 - `field` - The name of the field to check.
   This is a case insensitive compare.
 - `constraint` (optional) - A version constraint, see below for details of version constrain format.
-- `includePrerelease` (optional) - Determines if prerelease versions are included.
+- `includePrerelease` (optional) - Determines if pre-release versions are included.
   Unless specified this defaults to `$False`.
 
 The following are supported constraints:
@@ -183,14 +184,14 @@ By example:
   - Pass: `2014-01-01`, `2015-10-01`, `2019-06-30`, `2022-02-01`.
   - Fail: `2015-01-01`, `2022-09-01`.
 
-Handling for prerelease versions:
+Handling for pre-release versions:
 
-- Constraints and versions containing prerelease identifiers are supported.
+- Constraints and versions containing pre-release identifiers are supported.
   i.e. `>=2015-10-01-preview` or `2015-10-01-preview`.
-- A version containing a prerelease identifer follows similar ordering to semantic versioning.
+- A version containing a pre-release identifier follows similar ordering to semantic versioning.
   i.e. `2015-10-01-preview` < `2015-10-01-preview.1` < `2015-10-01` < `2022-03-01-preview` < `2022-03-01`.
-- A constraint without a prerelease identifer will only match a stable version by default.
-  Set `includePrerelease` to `$True` to include prerelease versions.
+- A constraint without a pre-release identifier will only match a stable version by default.
+  Set `includePrerelease` to `$True` to include pre-;release versions.
   Alternatively use the `@pre` or `@prerelease` flag in a constraint.
 
 Reasons include:
@@ -204,8 +205,12 @@ Reasons include:
 Examples:
 
 ```powershell
-Rule 'ValidAPIVersion' {
+Rule 'ValidStableAPIVersion' {
     $Assert.APIVersion($TargetObject, 'apiVersion')
+}
+
+Rule 'AnyValidAPIVersion' {
+    $Assert.APIVersion($TargetObject, 'apiVersion', '', $True)
 }
 
 Rule 'MinimumAPIVersion' {
@@ -1584,17 +1589,18 @@ Rule 'Subset' {
 
 ### Version
 
-The `Version` assertion method checks the field value is a valid semantic version.
+The `Version` assertion method checks the field value is a valid stable semantic version.
 A constraint can optionally be provided to require the semantic version to be within a range.
+By default, only stable versions are accepted unless pre-releases are included.
 
 The following parameters are accepted:
 
 - `inputObject` - The object being checked for the specified field.
 - `field` - The name of the field to check.
-This is a case insensitive compare.
+  This is a case insensitive compare.
 - `constraint` (optional) - A version constraint, see below for details of version constrain format.
-- `includePrerelease` (optional) - Determines if prerelease versions are included.
-Unless specified this defaults to `$False`.
+- `includePrerelease` (optional) - Determines if pre-release versions are included.
+  Unless specified this defaults to `$False`.
 
 The following are supported constraints:
 
@@ -1627,17 +1633,17 @@ By example:
   - Pass: `1.2.3`, `3.4.5`, `3.5.0`, `4.9.9`.
   - Fail: `3.0.0`, `5.0.0`.
 
-Handling for prerelease versions:
+Handling for pre-release versions:
 
-- Constraints and versions containing prerelease identifiers are supported.
-i.e. `>=1.2.3-build.1` or `1.2.3-build.1`.
-- A version containing a prerelease identifer follows semantic versioning rules.
+- Constraints and versions containing pre-release identifiers are supported.
+  i.e. `>=1.2.3-build.1` or `1.2.3-build.1`.
+- A version containing a pre-release identifier follows semantic versioning rules.
 i.e. `1.2.3-alpha` < `1.2.3-alpha.1` < `1.2.3-alpha.beta` < `1.2.3-beta` < `1.2.3-beta.2` < `1.2.3-beta.11` < `1.2.3-rc.1` < `1.2.3`.
-- A constraint without a prerelease identifer will only match a stable version by default.
-Set `includePrerelease` to `$True` to include prerelease versions.
-- Constraints with a prerelease identifer will only match:
-  - Matching prerelease versions of the same major.minor.patch version by default.
-  Set `includePrerelease` to `$True` to include prerelease versions of all matching versions.
+- A constraint without a pre-release identifier will only match a stable version by default.
+  Set `includePrerelease` to `$True` to include pre-release versions.
+- Constraints with a pre-release identifier will only match:
+  - Matching pre-release versions of the same major.minor.patch version by default.
+  Set `includePrerelease` to `$True` to include pre-release versions of all matching versions.
   Alternatively use the `@pre` or `@prerelease` flag in a constraint.
   - Matching stable versions.
 
@@ -1672,8 +1678,12 @@ Reasons include:
 Examples:
 
 ```powershell
-Rule 'ValidVersion' {
+Rule 'ValidStableVersion' {
     $Assert.Version($TargetObject, 'version')
+}
+
+Rule 'AnyValidVersion' {
+    $Assert.Version($TargetObject, 'version', '', $True)
 }
 
 Rule 'MinimumVersion' {
