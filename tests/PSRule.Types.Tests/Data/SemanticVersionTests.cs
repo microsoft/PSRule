@@ -1,10 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using Microsoft.PowerShell;
-using PSRule.Data;
-
-namespace PSRule;
+namespace PSRule.Data;
 
 /// <summary>
 /// Tests for semantic version comparison.
@@ -18,20 +15,20 @@ public sealed class SemanticVersionTests
     public void Version()
     {
         Assert.True(SemanticVersion.TryParseVersion("1.2.3-alpha.3+7223b39", out var actual1));
-        Assert.Equal(1, actual1.Major);
+        Assert.Equal(1, actual1!.Major);
         Assert.Equal(2, actual1.Minor);
         Assert.Equal(3, actual1.Patch);
         Assert.Equal("alpha.3", actual1.Prerelease.Value);
         Assert.Equal("7223b39", actual1.Build);
 
         Assert.True(SemanticVersion.TryParseVersion("v1.2.3-alpha.3", out var actual2));
-        Assert.Equal(1, actual2.Major);
+        Assert.Equal(1, actual2!.Major);
         Assert.Equal(2, actual2.Minor);
         Assert.Equal(3, actual2.Patch);
         Assert.Equal("alpha.3", actual2.Prerelease.Value);
 
         Assert.True(SemanticVersion.TryParseVersion("v1.2.3+7223b39", out var actual3));
-        Assert.Equal(1, actual3.Major);
+        Assert.Equal(1, actual3!.Major);
         Assert.Equal(2, actual3.Minor);
         Assert.Equal(3, actual3.Patch);
         Assert.Equal("7223b39", actual3.Build);
@@ -48,11 +45,11 @@ public sealed class SemanticVersionTests
         Assert.True(SemanticVersion.TryParseVersion("10.0.0", out var actual3));
         Assert.True(SemanticVersion.TryParseVersion("1.0.2", out var actual4));
 
-        Assert.True(actual1.CompareTo(actual1) == 0);
+        Assert.Equal(0, actual1!.CompareTo(actual1));
         Assert.True(actual1.CompareTo(actual2) < 0);
         Assert.True(actual1.CompareTo(actual3) < 0);
         Assert.True(actual1.CompareTo(actual4) < 0);
-        Assert.True(actual2.CompareTo(actual2) == 0);
+        Assert.Equal(0, actual2!.CompareTo(actual2));
         Assert.True(actual2.CompareTo(actual1) > 0);
         Assert.True(actual2.CompareTo(actual3) < 0);
         Assert.True(actual2.CompareTo(actual4) > 0);
@@ -205,7 +202,7 @@ public sealed class SemanticVersionTests
         var actual7 = new SemanticVersion.PR("beta.11");
         var actual8 = new SemanticVersion.PR("rc.1");
 
-        Assert.True(actual1.CompareTo(actual1) == 0);
+        Assert.Equal(0, actual1.CompareTo(actual1));
         Assert.True(actual1.CompareTo(actual2) > 0);
         Assert.True(actual1.CompareTo(actual6) > 0);
         Assert.True(actual2.CompareTo(actual3) < 0);
@@ -226,6 +223,17 @@ public sealed class SemanticVersionTests
     public void ToString_WhenValid_ShouldReturnString(string version)
     {
         Assert.True(SemanticVersion.TryParseVersion(version, out var actual));
-        Assert.Equal(version, actual.ToString());
+        Assert.Equal(version, actual!.ToString());
+    }
+
+    [Theory]
+    [InlineData("1.2.3")]
+    [InlineData("1.2.3-alpha.3+7223b39")]
+    [InlineData("3.4.5-alpha.9")]
+    [InlineData("3.4.5+7223b39")]
+    public void ToShortString_WhenValid_ShouldReturnString(string version)
+    {
+        Assert.True(SemanticVersion.TryParseVersion(version, out var actual));
+        Assert.Equal(string.Join(".", actual!.Major, actual.Minor, actual.Patch), actual!.ToShortString());
     }
 }
