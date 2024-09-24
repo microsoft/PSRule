@@ -29,6 +29,15 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v3.0.0-B0267:
 
+- New features:
+  - Allow CLI upgrade command to upgrade a single module by @BernieWhite.
+    [#2551](https://github.com/microsoft/PSRule/issues/2551)
+    - A single or specific modules can be upgraded by name when using `module upgrade`.
+    - By default, all modules are upgraded.
+  - Allow CLI to install pre-release modules by @BernieWhite.
+    [#2550](https://github.com/microsoft/PSRule/issues/2550)
+    - Add and upgrade pre-release modules with `--prerelease`.
+    - Pre-release modules will be restored from the lock file with `module restore`.
 - General improvements:
   - **Breaking change**: Empty version comparison only accepts stable versions by default by @BernieWhite.
     [#2557](https://github.com/microsoft/PSRule/issues/2557)

@@ -29,6 +29,7 @@ internal sealed class ClientBuilder
     private readonly Option<string> _Module_Add_Version;
     private readonly Option<bool> _Module_Add_Force;
     private readonly Option<bool> _Module_Add_SkipVerification;
+    private readonly Option<bool> _Module_Prerelease;
     private readonly Option<string[]> _Global_Path;
     private readonly Option<DirectoryInfo> _Run_OutputPath;
     private readonly Option<string> _Run_OutputFormat;
@@ -43,70 +44,74 @@ internal sealed class ClientBuilder
 
         // Global options.
         _Global_Option = new Option<string>(
-            new string[] { "--option" },
+            ["--option"],
             getDefaultValue: () => "ps-rule.yaml",
             description: CmdStrings.Global_Option_Description
         );
         _Global_Verbose = new Option<bool>(
-            new string[] { "--verbose" },
+            ["--verbose"],
             description: CmdStrings.Global_Verbose_Description
         );
         _Global_Debug = new Option<bool>(
-            new string[] { "--debug" },
+            ["--debug"],
             description: CmdStrings.Global_Debug_Description
         );
         _Global_Path = new Option<string[]>(
-            new string[] { "-p", "--path" },
+            ["-p", "--path"],
             description: CmdStrings.Global_Path_Description
         );
 
         // Options for the run command.
         _Run_OutputPath = new Option<DirectoryInfo>(
-            new string[] { "--output-path" },
+            ["--output-path"],
             description: CmdStrings.Run_OutputPath_Description
         );
         _Run_OutputFormat = new Option<string>(
-            new string[] { "-o", "--output" },
+            ["-o", "--output"],
             description: CmdStrings.Run_OutputFormat_Description
         );
         _Run_InputPath = new Option<string[]>(
-            new string[] { "-f", "--input-path" },
+            ["-f", "--input-path"],
             description: CmdStrings.Run_InputPath_Description
         );
         _Run_Module = new Option<string[]>(
-            new string[] { "-m", "--module" },
+            ["-m", "--module"],
             description: CmdStrings.Run_Module_Description
         );
         _Run_Baseline = new Option<string>(
-            new string[] { "--baseline" },
+            ["--baseline"],
             description: CmdStrings.Run_Baseline_Description
         );
         _Run_Outcome = new Option<string[]>(
-            new string[] { "--outcome" },
+            ["--outcome"],
             description: CmdStrings.Run_Outcome_Description
         ).FromAmong("Pass", "Fail", "Error", "Processed", "Problem");
         _Run_Outcome.Arity = ArgumentArity.ZeroOrMore;
 
         // Options for the module command.
         _Module_Init_Force = new Option<bool>(
-            new string[] { ARG_FORCE },
+            [ARG_FORCE],
             description: CmdStrings.Module_Init_Force_Description
         );
         _Module_Add_Version = new Option<string>
         (
-            new string[] { "--version" },
+            ["--version"],
             description: CmdStrings.Module_Add_Version_Description
         );
         _Module_Add_Force = new Option<bool>(
-            new string[] { ARG_FORCE },
+            [ARG_FORCE],
             description: CmdStrings.Module_Add_Force_Description
         );
         _Module_Add_SkipVerification = new Option<bool>(
-            new string[] { "--skip-verification" },
+            ["--skip-verification"],
             description: CmdStrings.Module_Add_SkipVerification_Description
         );
+        _Module_Prerelease = new Option<bool>(
+            ["--prerelease"],
+            description: CmdStrings.Module_Prerelease_Description
+        );
         _Module_Restore_Force = new Option<bool>(
-            new string[] { ARG_FORCE },
+            [ARG_FORCE],
             description: CmdStrings.Module_Restore_Force_Description
         );
 
@@ -165,12 +170,12 @@ internal sealed class ClientBuilder
     {
         var cmd = new Command("module", CmdStrings.Module_Description);
 
-        var moduleArg = new Argument<string[]>
+        var requiredModuleArg = new Argument<string[]>
         (
             "module",
-            CmdStrings.Module_Module_Description
+            CmdStrings.Module_RequiredModule_Description
         );
-        moduleArg.Arity = ArgumentArity.OneOrMore;
+        requiredModuleArg.Arity = ArgumentArity.OneOrMore;
 
         // Init
         var init = new Command
@@ -219,19 +224,21 @@ internal sealed class ClientBuilder
             "add",
             CmdStrings.Module_Add_Description
         );
-        add.AddArgument(moduleArg);
+        add.AddArgument(requiredModuleArg);
         add.AddOption(_Module_Add_Version);
         add.AddOption(_Module_Add_Force);
         add.AddOption(_Module_Add_SkipVerification);
+        add.AddOption(_Module_Prerelease);
         add.SetHandler(async (invocation) =>
         {
             var option = new ModuleOptions
             {
                 Path = invocation.ParseResult.GetValueForOption(_Global_Path),
-                Module = invocation.ParseResult.GetValueForArgument(moduleArg),
+                Module = invocation.ParseResult.GetValueForArgument(requiredModuleArg),
                 Version = invocation.ParseResult.GetValueForOption(_Module_Add_Version),
                 Force = invocation.ParseResult.GetValueForOption(_Module_Add_Force),
                 SkipVerification = invocation.ParseResult.GetValueForOption(_Module_Add_SkipVerification),
+                Prerelease = invocation.ParseResult.GetValueForOption(_Module_Prerelease),
             };
 
             var client = GetClientContext(invocation);
@@ -244,13 +251,13 @@ internal sealed class ClientBuilder
             "remove",
             CmdStrings.Module_Remove_Description
         );
-        remove.AddArgument(moduleArg);
+        remove.AddArgument(requiredModuleArg);
         remove.SetHandler(async (invocation) =>
         {
             var option = new ModuleOptions
             {
                 Path = invocation.ParseResult.GetValueForOption(_Global_Path),
-                Module = invocation.ParseResult.GetValueForArgument(moduleArg),
+                Module = invocation.ParseResult.GetValueForArgument(requiredModuleArg),
             };
 
             var client = GetClientContext(invocation);
@@ -263,11 +270,21 @@ internal sealed class ClientBuilder
             "upgrade",
             CmdStrings.Module_Upgrade_Description
         );
+        var optionalModuleArg = new Argument<string[]>
+        (
+            "module",
+            CmdStrings.Module_OptionalModule_Description
+        );
+        optionalModuleArg.Arity = ArgumentArity.ZeroOrMore;
+        upgrade.AddArgument(optionalModuleArg);
+        upgrade.AddOption(_Module_Prerelease);
         upgrade.SetHandler(async (invocation) =>
         {
             var option = new ModuleOptions
             {
                 Path = invocation.ParseResult.GetValueForOption(_Global_Path),
+                Module = invocation.ParseResult.GetValueForArgument(requiredModuleArg),
+                Prerelease = invocation.ParseResult.GetValueForOption(_Module_Prerelease),
             };
 
             var client = GetClientContext(invocation);

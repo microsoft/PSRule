@@ -178,11 +178,20 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The name of one or more modules..
+        ///   Looks up a localized string similar to Optionally specifies one or more modules to apply to..
         /// </summary>
-        internal static string Module_Module_Description {
+        internal static string Module_OptionalModule_Description {
             get {
-                return ResourceManager.GetString("Module_Module_Description", resourceCulture);
+                return ResourceManager.GetString("Module_OptionalModule_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept pre-release versions in addition to stable module versions..
+        /// </summary>
+        internal static string Module_Prerelease_Description {
+            get {
+                return ResourceManager.GetString("Module_Prerelease_Description", resourceCulture);
             }
         }
         
@@ -192,6 +201,15 @@ namespace PSRule.Tool.Resources {
         internal static string Module_Remove_Description {
             get {
                 return ResourceManager.GetString("Module_Remove_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of one or more modules..
+        /// </summary>
+        internal static string Module_RequiredModule_Description {
+            get {
+                return ResourceManager.GetString("Module_RequiredModule_Description", resourceCulture);
             }
         }
         
