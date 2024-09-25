@@ -6,7 +6,6 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
-using PSRule.Pipeline;
 using PSRule.Runtime;
 using YamlDotNet.Serialization;
 

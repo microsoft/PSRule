@@ -7,5 +7,5 @@ namespace PSRule.Definitions;
 /// 
 /// </summary>
 public interface IResourceAnnotations : IDictionary<string, object>
-{ 
+{
 }

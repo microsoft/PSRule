@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
-using System.Net.Http.Headers;
 using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
