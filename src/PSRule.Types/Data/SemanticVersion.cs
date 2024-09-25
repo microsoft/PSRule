@@ -346,7 +346,8 @@ public static class SemanticVersion
     [DebuggerDisplay("{_VersionString}")]
     public sealed class Version : IComparable<Version>, IEquatable<Version>
     {
-        private readonly string _VersionString;
+        private string? _VersionString;
+        private string? _ShortVersionString;
 
         /// <summary>
         /// The major part of the version.
@@ -380,8 +381,6 @@ public static class SemanticVersion
             Patch = patch;
             Prerelease = prerelease;
             Build = build;
-
-            _VersionString = GetVersionString();
         }
 
         /// <summary>
@@ -397,10 +396,20 @@ public static class SemanticVersion
             return TryParseVersion(value, out version);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Get the version as a string.
+        /// </summary>
         public override string ToString()
         {
-            return _VersionString;
+            return _VersionString ??= GetVersionString(simple: false);
+        }
+
+        /// <summary>
+        /// Get the version as a string returning only the major.minor.patch part of the version.
+        /// </summary>
+        public string ToShortString()
+        {
+            return _ShortVersionString ??= GetVersionString(simple: true);
         }
 
         /// <inheritdoc/>
@@ -480,10 +489,14 @@ public static class SemanticVersion
             return Prerelease != other.Prerelease ? PR.Compare(Prerelease, other.Prerelease) : 0;
         }
 
-        private string GetVersionString()
+        /// <summary>
+        /// Returns a version string.
+        /// </summary>
+        /// <param name="simple">When <c>true</c>, only return the major.minor.patch version.</param>
+        private string GetVersionString(bool simple = false)
         {
-            var count = 5 + (Prerelease != null && !Prerelease.Stable ? 2 : 0) + (Build != null && Build.Length > 0 ? 2 : 0);
-            var parts = new object[count];
+            var size = 5 + (!simple && Prerelease != null && !Prerelease.Stable ? 2 : 0) + (!simple && Build != null && Build.Length > 0 ? 2 : 0);
+            var parts = new object[size];
 
             parts[0] = Major;
             parts[1] = DOT;
@@ -491,19 +504,21 @@ public static class SemanticVersion
             parts[3] = DOT;
             parts[4] = Patch;
 
-            var next = 5;
-            if (Prerelease != null && !Prerelease.Stable)
+            if (size > 5)
             {
-                parts[next++] = DASH;
-                parts[next++] = Prerelease.Value;
-            }
+                var next = 5;
+                if (Prerelease != null && !Prerelease.Stable)
+                {
+                    parts[next++] = DASH;
+                    parts[next++] = Prerelease.Value;
+                }
 
-            if (Build != null && Build.Length > 0)
-            {
-                parts[next++] = PLUS;
-                parts[next++] = Build;
+                if (Build != null && Build.Length > 0)
+                {
+                    parts[next++] = PLUS;
+                    parts[next++] = Build;
+                }
             }
-
             return string.Concat(parts);
         }
     }

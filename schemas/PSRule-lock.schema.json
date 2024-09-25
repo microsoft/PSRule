@@ -23,6 +23,11 @@
             "type": "string",
             "title": "Module version",
             "description": "The version of the module to use."
+          },
+          "includePrerelease": {
+            "type": "boolean",
+            "title": "Include prerelease",
+            "description": "Accept pre-release versions in addition to stable module versions."
           }
         },
         "required": [

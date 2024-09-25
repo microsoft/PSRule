@@ -141,8 +141,11 @@
   <data name="Module_Description" xml:space="preserve">
     <value>Manage or restore modules tracked by the module lock file and configured options.</value>
   </data>
-  <data name="Module_Module_Description" xml:space="preserve">
+  <data name="Module_RequiredModule_Description" xml:space="preserve">
     <value>The name of one or more modules.</value>
+  </data>
+  <data name="Module_OptionalModule_Description" xml:space="preserve">
+    <value>Optionally specifies one or more modules to apply to.</value>
   </data>
   <data name="Module_Remove_Description" xml:space="preserve">
     <value>Remove one or more modules from the lock file.</value>
@@ -191,5 +194,8 @@
   </data>
   <data name="Run_OutputPath_Description" xml:space="preserve">
     <value>Specifies a path to write results to.</value>
+  </data>
+  <data name="Module_Prerelease_Description" xml:space="preserve">
+    <value>Accept pre-release versions in addition to stable module versions.</value>
   </data>
 </root>
