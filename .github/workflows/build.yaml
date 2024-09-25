@@ -47,6 +47,11 @@ jobs:
         timeout-minutes: 5
         run: Invoke-Build -Configuration Release -AssertStyle GitHubActions
 
+      - name: Lint .NET
+        shell: pwsh
+        timeout-minutes: 5
+        run: dotnet format --verify-no-changes
+
       - name: Upload module
         uses: actions/upload-artifact@v4
         with:

@@ -4,7 +4,6 @@
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 using PSRule.Definitions;
-using PSRule.Pipeline;
 
 namespace PSRule.Rules;
 

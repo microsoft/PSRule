@@ -4,7 +4,6 @@
 using System.Collections;
 using System.Diagnostics;
 using System.Management.Automation;
-using Newtonsoft.Json;
 using PSRule.Converters.Yaml;
 using PSRule.Definitions.Baselines;
 using PSRule.Pipeline;

@@ -11,5 +11,5 @@ public interface IResourceMetadata
     /// <summary>
     /// Annotations on the resource.
     /// </summary>
-    public IResourceAnnotations Annotations { get;}
+    public IResourceAnnotations Annotations { get; }
 }

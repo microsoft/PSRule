@@ -5,7 +5,9 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Management.Automation;
 using Newtonsoft.Json;
+using NuGet.Common;
 using NuGet.Configuration;
+using NuGet.Packaging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
@@ -15,8 +17,6 @@ using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline.Dependencies;
 using SemanticVersion = PSRule.Data.SemanticVersion;
-using NuGet.Packaging;
-using NuGet.Common;
 
 namespace PSRule.CommandLine.Commands;
 

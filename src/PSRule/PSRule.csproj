@@ -38,8 +38,8 @@
 
   <!-- Add PSRule types -->
   <ItemGroup>
-    <ProjectReference Include="..\PSRule.Types\PSRule.Types.csproj" />
-    <ProjectReference Include="..\PSRule.Badges\PSRule.Badges.csproj" />
+    <ProjectReference Include="..\..\src\PSRule.Types\PSRule.Types.csproj" />
+    <ProjectReference Include="..\..\src\PSRule.Badges\PSRule.Badges.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,7 +4,6 @@
 using System.Diagnostics;
 using System.Management.Automation;
 using PSRule.Definitions.Expressions;
-using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
 

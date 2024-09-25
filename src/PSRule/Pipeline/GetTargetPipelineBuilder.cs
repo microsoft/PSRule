@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
-using PSRule.Options;
 
 namespace PSRule.Pipeline;
 
