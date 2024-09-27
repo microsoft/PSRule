@@ -5,7 +5,9 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Management.Automation;
 using Newtonsoft.Json;
+using NuGet.Common;
 using NuGet.Configuration;
+using NuGet.Packaging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
@@ -15,9 +17,6 @@ using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline.Dependencies;
 using SemanticVersion = PSRule.Data.SemanticVersion;
-using NuGet.Packaging;
-using NuGet.Common;
-using PSRule.Pipeline;
 
 namespace PSRule.CommandLine.Commands;
 
@@ -51,7 +50,7 @@ public sealed class ModuleCommand
         var requires = clientContext.Option.Requires.ToDictionary();
         var file = LockFile.Read(null);
 
-        using var pwsh = PowerShell.Create();
+        using var pwsh = CreatePowerShell();
 
         // Restore from the lock file.
         foreach (var kv in file.Modules)
@@ -70,9 +69,11 @@ public sealed class ModuleCommand
 
             var idealVersion = await FindVersionAsync(module, null, targetVersion, null, cancellationToken);
             if (idealVersion != null)
-                await InstallVersionAsync(clientContext, module, idealVersion.ToString(), cancellationToken);
+            {
+                installedVersion = await InstallVersionAsync(clientContext, module, idealVersion, cancellationToken);
+            }
 
-            if (pwsh.HadErrors || (idealVersion == null && installedVersion == null))
+            if (pwsh.HadErrors || idealVersion == null || installedVersion == null)
             {
                 exitCode = ERROR_MODULE_FAILED_TO_INSTALL;
                 clientContext.LogError(Messages.Error_501, module, targetVersion);
@@ -98,7 +99,7 @@ public sealed class ModuleCommand
                 // Check if the installed version matches the constraint.
                 if (IsInstalled(pwsh, includeModule, null, out var installedVersion) &&
                     !operationOptions.Force &&
-                    (moduleConstraint == null || moduleConstraint.Equals(installedVersion)))
+                    (moduleConstraint == null || moduleConstraint.Accepts(installedVersion)))
                 {
                     // invocation.Log(Messages.UsingModule, includeModule, installedVersion.ToString());
                     clientContext.LogVerbose($"The module {includeModule} is already installed.");
@@ -109,7 +110,7 @@ public sealed class ModuleCommand
                 var idealVersion = await FindVersionAsync(includeModule, moduleConstraint, null, null, cancellationToken);
                 if (idealVersion != null)
                 {
-                    await InstallVersionAsync(clientContext, includeModule, idealVersion.ToString(), cancellationToken);
+                    await InstallVersionAsync(clientContext, includeModule, idealVersion, cancellationToken);
                 }
                 else if (idealVersion == null)
                 {
@@ -143,8 +144,7 @@ public sealed class ModuleCommand
         var exitCode = 0;
         var requires = clientContext.Option.Requires.ToDictionary();
         var file = !operationOptions.Force ? LockFile.Read(null) : new LockFile();
-
-        using var pwsh = PowerShell.Create();
+        using var pwsh = CreatePowerShell();
 
         // Add for any included modules.
         if (clientContext.Option?.Include?.Module != null && clientContext.Option.Include.Module.Length > 0)
@@ -197,8 +197,7 @@ public sealed class ModuleCommand
         var exitCode = 0;
         var requires = clientContext.Option.Requires.ToDictionary();
         var file = LockFile.Read(null);
-
-        var pwsh = PowerShell.Create();
+        var pwsh = CreatePowerShell();
 
         if (exitCode == 0)
         {
@@ -218,19 +217,19 @@ public sealed class ModuleCommand
         var requires = clientContext.Option.Requires.ToDictionary();
         var file = LockFile.Read(null);
 
-        using var pwsh = PowerShell.Create();
+        using var pwsh = CreatePowerShell();
         foreach (var module in operationOptions.Module)
         {
             if (!file.Modules.TryGetValue(module, out var item) || operationOptions.Force)
             {
                 // Get a constraint if set from options.
-                var moduleConstraint = requires.TryGetValue(module, out var c) ? c : null;
+                var moduleConstraint = requires.TryGetValue(module, out var c) ? c : ModuleConstraint.Any(module, includePrerelease: operationOptions.Prerelease);
 
                 // Get target version if specified in command-line.
                 var targetVersion = !string.IsNullOrEmpty(operationOptions.Version) && SemanticVersion.TryParseVersion(operationOptions.Version, out var v) && v != null ? v : null;
 
                 // Check if the target version is valid with the constraint if set.
-                if (targetVersion != null && moduleConstraint != null && !moduleConstraint.Constraint.Equals(targetVersion))
+                if (targetVersion != null && moduleConstraint != null && !moduleConstraint.Constraint.Accepts(targetVersion))
                 {
                     clientContext.LogError(Messages.Error_503, operationOptions.Version!);
                     return ERROR_MODULE_ADD_VIOLATES_CONSTRAINT;
@@ -250,7 +249,8 @@ public sealed class ModuleCommand
                 clientContext.LogVerbose(Messages.UsingModule, module, idealVersion.ToString());
                 item = new LockEntry
                 {
-                    Version = idealVersion
+                    Version = idealVersion,
+                    IncludePrerelease = operationOptions.Prerelease && !idealVersion.Stable ? true : null,
                 };
                 file.Modules[module] = item;
             }
@@ -281,7 +281,7 @@ public sealed class ModuleCommand
 
         var file = LockFile.Read(null);
 
-        using var pwsh = PowerShell.Create();
+        using var pwsh = CreatePowerShell();
         foreach (var module in operationOptions.Module)
         {
             if (file.Modules.TryGetValue(module, out var constraint))
@@ -311,12 +311,13 @@ public sealed class ModuleCommand
         var exitCode = 0;
         var requires = clientContext.Option.Requires.ToDictionary();
         var file = LockFile.Read(null);
+        var filteredModules = operationOptions.Module != null && operationOptions.Module.Length > 0 ? new HashSet<string>(operationOptions.Module, StringComparer.OrdinalIgnoreCase) : null;
 
-        using var pwsh = PowerShell.Create();
-        foreach (var kv in file.Modules)
+        using var pwsh = CreatePowerShell();
+        foreach (var kv in file.Modules.Where(m => filteredModules == null || filteredModules.Contains(m.Key)))
         {
             // Get a constraint if set from options.
-            var moduleConstraint = requires.TryGetValue(kv.Key, out var c) ? c : null;
+            var moduleConstraint = requires.TryGetValue(kv.Key, out var c) ? c : ModuleConstraint.Any(kv.Key, includePrerelease: kv.Value.IncludePrerelease ?? operationOptions.Prerelease);
 
             // Find the ideal version.
             var idealVersion = await FindVersionAsync(kv.Key, moduleConstraint, null, null, cancellationToken);
@@ -332,6 +333,7 @@ public sealed class ModuleCommand
             clientContext.LogVerbose(Messages.UsingModule, kv.Key, idealVersion.ToString());
 
             kv.Value.Version = idealVersion;
+            kv.Value.IncludePrerelease = (kv.Value.IncludePrerelease.GetValueOrDefault(false) || operationOptions.Prerelease) && !idealVersion.Stable ? true : null;
             file.Modules[kv.Key] = kv.Value;
         }
 
@@ -408,7 +410,7 @@ public sealed class ModuleCommand
                 versionString != null &&
                 SemanticVersion.TryParseVersion(versionString, out var v) &&
                 v != null &&
-                (targetVersion == null || targetVersion.Equals(v)) &&
+                (targetVersion == null || targetVersion.CompareTo(v) == 0) &&
                 v.CompareTo(installedVersion) > 0)
                 installedVersion = v;
         }
@@ -452,8 +454,8 @@ public sealed class ModuleCommand
             if (version.ToFullString() is string versionString &&
                 SemanticVersion.TryParseVersion(versionString, out var v) &&
                 v != null &&
-                (constraint == null || constraint.Constraint.Equals(v)) &&
-                (targetVersion == null || targetVersion.Equals(v)) &&
+                (constraint == null || constraint.Accepts(v)) &&
+                (targetVersion == null || targetVersion.CompareTo(v) == 0) &&
                 v.CompareTo(result) > 0 &&
                 v.CompareTo(installedVersion) > 0)
                 result = v;
@@ -461,24 +463,26 @@ public sealed class ModuleCommand
         return result;
     }
 
-    private static async Task InstallVersionAsync([DisallowNull] ClientContext context, [DisallowNull] string name, [DisallowNull] string version, CancellationToken cancellationToken)
+    private static async Task<SemanticVersion.Version?> InstallVersionAsync([DisallowNull] ClientContext context, [DisallowNull] string name, [DisallowNull] SemanticVersion.Version version, CancellationToken cancellationToken)
     {
         context.LogVerbose(Messages.RestoringModule, name, version);
 
         var cache = new SourceCacheContext();
         var logger = new NullLogger();
         var resource = await GetSourceRepositoryAsync();
+        var stringVersion = version.ToString();
 
-        var packageVersion = new NuGetVersion(version);
+        var packageVersion = new NuGetVersion(stringVersion);
         using var packageStream = new MemoryStream();
 
-        await resource.CopyNupkgToStreamAsync(
+        if (!await resource.CopyNupkgToStreamAsync(
             name,
             packageVersion,
             packageStream,
             cache,
             logger,
-            cancellationToken);
+            cancellationToken))
+            return null;
 
         using var packageReader = new PackageArchiveReader(packageStream);
         var nuspecReader = await packageReader.GetNuspecReaderAsync(cancellationToken);
@@ -489,6 +493,7 @@ public sealed class ModuleCommand
         if (Directory.Exists(modulePath))
             Directory.Delete(modulePath, true);
 
+        var count = 0;
         var files = packageReader.GetFiles();
         packageReader.CopyFiles(modulePath, files, (name, targetPath, s) =>
         {
@@ -496,10 +501,18 @@ public sealed class ModuleCommand
                 return null;
 
             s.CopyToFile(targetPath);
+            count++;
 
             return targetPath;
 
         }, logger, cancellationToken);
+
+        // Check module path exists.
+        if (!Directory.Exists(modulePath))
+            return null;
+
+        context.LogVerbose("Module saved to: {0} -- {1}", name, modulePath);
+        return count > 0 ? version : null;
     }
 
     private static async Task<FindPackageByIdResource> GetSourceRepositoryAsync()
@@ -509,15 +522,20 @@ public sealed class ModuleCommand
         return await repository.GetResourceAsync<FindPackageByIdResource>();
     }
 
-    private static string GetModulePath(ClientContext context, string name, string version)
+    private static string GetModulePath(ClientContext context, string name, [DisallowNull] SemanticVersion.Version version)
     {
-        return Path.Combine(context.CachePath, MODULES_PATH, name, version);
+        return Path.Combine(context.CachePath, MODULES_PATH, name, version.ToShortString());
     }
 
     private static bool ShouldIgnorePackageFile(string name)
     {
         return string.Equals(name, "[Content_Types].xml", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(name, "_rels/.rels", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static PowerShell CreatePowerShell()
+    {
+        return PowerShell.Create();
     }
 
     #endregion Helper methods

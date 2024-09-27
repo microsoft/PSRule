@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
-using PSRule.Pipeline;
 
 namespace PSRule.Definitions.Expressions;
 

@@ -101,13 +101,12 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
             foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
             {
                 // Enter rule block scope
-                Context.EnterLanguageScope(ruleBlockTarget.Value.Source);
                 var ruleRecord = Context.EnterRuleBlock(ruleBlock: ruleBlockTarget.Value);
                 ruleCounter++;
 
                 try
                 {
-                    if (Context.Binding.ShouldFilter)
+                    if (Context.Binding != null && Context.Binding.ShouldFilter)
                         continue;
 
                     // Check if dependency failed
@@ -163,11 +162,9 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
                 finally
                 {
                     // Exit rule block scope
-                    Context.ExitRuleBlock();
+                    Context.ExitRuleBlock(ruleBlock: ruleBlockTarget.Value);
                     if (ShouldOutput(ruleRecord.Outcome))
                         result.Add(ruleRecord);
-
-                    Context.ExitLanguageScope(ruleBlockTarget.Value.Source);
                 }
             }
 

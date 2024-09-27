@@ -22,12 +22,12 @@ public abstract class Resource<TSpec> where TSpec : Spec, new()
         Kind = kind;
         ApiVersion = apiVersion;
         Info = info;
-        Source = source;
+        Source = source ?? throw new ArgumentNullException(nameof(source));
         Extent = extent;
-        Spec = spec;
-        Metadata = metadata;
+        Spec = spec ?? throw new ArgumentNullException(nameof(spec));
+        Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
         Name = metadata.Name;
-        Id = new ResourceId(source.Module, Name, ResourceIdKind.Id);
+        Id = new ResourceId(Source.Module, Name, ResourceIdKind.Id);
     }
 
     /// <summary>

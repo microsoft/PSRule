@@ -26,12 +26,9 @@ public class BaselineOption
     {
         public BaselineInline()
         {
-            Binding = new BindingOption();
             Configuration = new ConfigurationOption();
             Rule = new RuleOption();
         }
-
-        public BindingOption Binding { get; set; }
 
         public ConfigurationOption Configuration { get; set; }
 
@@ -87,28 +84,11 @@ public class BaselineOption
         return string.IsNullOrEmpty(value) ? null : new BaselineRef(value);
     }
 
+    /// <summary>
+    /// Load from environment variables.
+    /// </summary>
     internal static void Load(IBaselineV1Spec option)
     {
-        // Binding.Field - currently not supported
-
-        if (Environment.TryBool("PSRULE_BINDING_IGNORECASE", out var ignoreCase))
-            option.Binding.IgnoreCase = ignoreCase;
-
-        if (Environment.TryString("PSRULE_BINDING_NAMESEPARATOR", out var nameSeparator))
-            option.Binding.NameSeparator = nameSeparator;
-
-        if (Environment.TryBool("PSRULE_BINDING_PREFERTARGETINFO", out var preferTargetInfo))
-            option.Binding.PreferTargetInfo = preferTargetInfo;
-
-        if (Environment.TryStringArray("PSRULE_BINDING_TARGETNAME", out var targetName))
-            option.Binding.TargetName = targetName;
-
-        if (Environment.TryStringArray("PSRULE_BINDING_TARGETTYPE", out var targetType))
-            option.Binding.TargetType = targetType;
-
-        if (Environment.TryBool("PSRULE_BINDING_USEQUALIFIEDNAME", out var useQualifiedName))
-            option.Binding.UseQualifiedName = useQualifiedName;
-
         if (Environment.TryString("PSRULE_RULE_BASELINE", out var baseline))
             option.Rule.Baseline = baseline;
 
@@ -128,33 +108,10 @@ public class BaselineOption
     }
 
     /// <summary>
-    /// Load matching values
+    /// Load from a dictionary.
     /// </summary>
-    /// <param name="option">A baseline options object to load.</param>
-    /// <param name="properties">One or more indexed properties.</param>
     internal static void Load(IBaselineV1Spec option, Dictionary<string, object> properties)
     {
-        if (properties.TryPopValue("Binding.Field", out Hashtable map))
-            option.Binding.Field = new FieldMap(map);
-
-        if (properties.TryPopBool("Binding.IgnoreCase", out var ignoreCase))
-            option.Binding.IgnoreCase = ignoreCase;
-
-        if (properties.TryPopString("Binding.NameSeparator", out var nameSeparator))
-            option.Binding.NameSeparator = nameSeparator;
-
-        if (properties.TryPopBool("Binding.PreferTargetInfo", out var preferTargetInfo))
-            option.Binding.PreferTargetInfo = preferTargetInfo;
-
-        if (properties.TryPopStringArray("Binding.TargetName", out var targetName))
-            option.Binding.TargetName = targetName;
-
-        if (properties.TryPopStringArray("Binding.TargetType", out var targetType))
-            option.Binding.TargetType = targetType;
-
-        if (properties.TryPopValue("Binding.UseQualifiedName", out bool useQualifiedName))
-            option.Binding.UseQualifiedName = useQualifiedName;
-
         if (properties.TryPopString("Rule.Baseline", out var baseline))
             option.Rule.Baseline = baseline;
 

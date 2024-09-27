@@ -20,6 +20,9 @@ using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Pipeline;
 
+/// <summary>
+/// Context applicable to the whole pipeline, including during early stage setup.
+/// </summary>
 internal sealed class PipelineContext : IDisposable, IBindingContext
 {
     private const string ErrorPreference = "ErrorActionPreference";
@@ -44,7 +47,7 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
     // Track whether Dispose has been called.
     private bool _Disposed;
 
-    internal PSRuleOption Option;
+    public PSRuleOption Option { get; }
 
     internal readonly Dictionary<string, Hashtable> LocalizedDataCache;
     internal readonly Dictionary<string, object> ExpressionCache;
@@ -53,9 +56,6 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
     internal readonly List<SuppressionGroupVisitor> SuppressionGroup;
     internal readonly IHostContext HostContext;
     internal readonly PipelineInputStream Reader;
-    internal readonly BindTargetMethod BindTargetName;
-    internal readonly BindTargetMethod BindTargetType;
-    internal readonly BindTargetMethod BindField;
     internal readonly string RunId;
 
     internal readonly Stopwatch RunTime;
@@ -70,9 +70,6 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
         Option = option;
         HostContext = hostContext;
         Reader = reader;
-        BindTargetName = bindTargetName;
-        BindTargetType = bindTargetType;
-        BindField = bindField;
         _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode.Value;
         _PathExpressionCache = new Dictionary<string, PathExpression>();
         LocalizedDataCache = new Dictionary<string, Hashtable>();
@@ -112,27 +109,6 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
                 return System.IO.File.ReadAllLines(File.Path, Encoding.UTF8);
             }
         }
-    }
-
-    internal enum ResourceIssueType
-    {
-        Unknown
-    }
-
-    internal sealed class ResourceIssue
-    {
-        public ResourceIssue(ResourceKind kind, string id, ResourceIssueType issue)
-        {
-            Kind = kind;
-            Id = id;
-            Issue = issue;
-        }
-
-        public ResourceKind Kind { get; }
-
-        public string Id { get; }
-
-        public ResourceIssueType Issue { get; }
     }
 
     internal Runspace GetRunspace()

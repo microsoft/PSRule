@@ -50,7 +50,6 @@ internal static class BaselineYamlSerializationMapper
 
         MapPropertyName(emitter, propertyName);
         emitter.Emit(new MappingStart());
-        MapProperty(emitter, nameof(baselineSpec.Binding), baselineSpec.Binding);
         MapProperty(emitter, nameof(baselineSpec.Configuration), baselineSpec.Configuration);
         MapProperty(emitter, nameof(baselineSpec.Convention), baselineSpec.Convention);
         MapProperty(emitter, nameof(baselineSpec.Rule), baselineSpec.Rule);

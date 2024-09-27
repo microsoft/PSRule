@@ -14,6 +14,13 @@ This topic describes what options are available, when to and how to use them.
 The following workspace options are available for use:
 
 - [Baseline.Group](#baselinegroup)
+- [Binding.Field](#bindingfield)
+- [Binding.IgnoreCase](#bindingignorecase)
+- [Binding.NameSeparator](#bindingnameseparator)
+- [Binding.PreferTargetInfo](#bindingprefertargetinfo)
+- [Binding.TargetName](#bindingtargetname)
+- [Binding.TargetType](#bindingtargettype)
+- [Binding.UseQualifiedName](#bindingusequalifiedname)
 - [Convention.Include](#conventioninclude)
 - [Execution.AliasReference](#executionaliasreference)
 - [Execution.Break](#executionbreak)
@@ -60,13 +67,6 @@ The following workspace options are available for use:
 
 Additionally the following baseline options can be included:
 
-- [Binding.Field](#bindingfield)
-- [Binding.IgnoreCase](#bindingignorecase)
-- [Binding.NameSeparator](#bindingnameseparator)
-- [Binding.PreferTargetInfo](#bindingprefertargetinfo)
-- [Binding.TargetName](#bindingtargetname)
-- [Binding.TargetType](#bindingtargettype)
-- [Binding.UseQualifiedName](#bindingusequalifiedname)
 - [Configuration](#configuration)
 - [Rule.Baseline](#rulebaseline)
 - [Rule.Include](#ruleinclude)

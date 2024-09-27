@@ -1116,12 +1116,6 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.SuppressionOption]$SuppressTargetName,
 
-        [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.BindTargetName[]]$BindTargetName,
-
-        [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.BindTargetName[]]$BindTargetType,
-
         # Options
 
         # Sets the Baseline.Group option
@@ -1315,7 +1309,7 @@ function New-PSRuleOption {
 
         # Sets the Output.Outcome option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
+        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Problem', 'Processed', 'All')]
         [Alias('Outcome')]
         [PSRule.Rules.RuleOutcome]$OutputOutcome = 'Processed',
 
@@ -1371,12 +1365,6 @@ function New-PSRuleOption {
         if ($optionParams.ContainsKey('SuppressTargetName')) {
             $optionParams.Remove('SuppressTargetName');
         }
-        if ($optionParams.ContainsKey('BindTargetName')) {
-            $optionParams.Remove('BindTargetName');
-        }
-        if ($optionParams.ContainsKey('BindTargetType')) {
-            $optionParams.Remove('BindTargetType');
-        }
         if ($PSBoundParameters.ContainsKey('Option')) {
             $Option = [PSRule.Configuration.PSRuleOption]::FromFileOrEmpty($Option, $Path);
         }
@@ -1399,14 +1387,6 @@ function New-PSRuleOption {
         }
         if ($PSBoundParameters.ContainsKey('SuppressTargetName')) {
             $Option.Suppression = $SuppressTargetName;
-        }
-        if ($PSBoundParameters.ContainsKey('BindTargetName')) {
-            Write-Verbose -Message 'Set BindTargetName pipeline hook';
-            $Option.Pipeline.BindTargetName.AddRange($BindTargetName);
-        }
-        if ($PSBoundParameters.ContainsKey('BindTargetType')) {
-            Write-Verbose -Message 'Set BindTargetType pipeline hook';
-            $Option.Pipeline.BindTargetType.AddRange($BindTargetType);
         }
 
         # Options
@@ -1632,7 +1612,7 @@ function Set-PSRuleOption {
 
         # Sets the Output.Outcome option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
+        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Problem', 'Processed', 'All')]
         [Alias('Outcome')]
         [PSRule.Rules.RuleOutcome]$OutputOutcome = 'Processed',
 
@@ -2396,7 +2376,7 @@ function SetOptions {
 
         # Sets the Output.Outcome option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Processed', 'All')]
+        [ValidateSet('None', 'Fail', 'Pass', 'Error', 'Problem', 'Processed', 'All')]
         [Alias('Outcome')]
         [PSRule.Rules.RuleOutcome]$OutputOutcome = 'Processed',
 

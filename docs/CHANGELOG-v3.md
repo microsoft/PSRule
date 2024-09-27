@@ -27,6 +27,30 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v3.0.0-B0275 (pre-release)
+
+What's changed since pre-release v3.0.0-B0267:
+
+- New features:
+  - Allow CLI upgrade command to upgrade a single module by @BernieWhite.
+    [#2551](https://github.com/microsoft/PSRule/issues/2551)
+    - A single or specific modules can be upgraded by name when using `module upgrade`.
+    - By default, all modules are upgraded.
+  - Allow CLI to install pre-release modules by @BernieWhite.
+    [#2550](https://github.com/microsoft/PSRule/issues/2550)
+    - Add and upgrade pre-release modules with `--prerelease`.
+    - Pre-release modules will be restored from the lock file with `module restore`.
+- General improvements:
+  - **Breaking change**: Empty version comparison only accepts stable versions by default by @BernieWhite.
+    [#2557](https://github.com/microsoft/PSRule/issues/2557)
+    - `version` and `apiVersion` assertions only accept stable versions by default for all cases.
+    - Pre-release versions can be accepted by setting `includePrerelease` to `true`.
+- Bug fixes:
+  - Fixed CLI upgrade uses pre-release module by @BernieWhite.
+    [#2549](https://github.com/microsoft/PSRule/issues/2549)
+
+## v3.0.0-B0267 (pre-release)
+
 What's changed since pre-release v3.0.0-B0203:
 
 - New features:
@@ -37,6 +61,12 @@ What's changed since pre-release v3.0.0-B0203:
     - The `Execution.Break` option can be set to `Never`, `OnError`, `OnWarning`, or `OnInformation`.
     - If a rule fails with a severity level equal or higher than the configured level the pipeline will break.
 - General improvements:
+  - **Breaking change**: Improve scope handling for correctly handling cases with multiple module by @BernieWhite.
+    [#1215](https://github.com/microsoft/PSRule/issues/1215)
+    - As a result of this change:
+      - The `binding` property can no longer be used within baselines.
+      - Custom inline script blocks can no longer be used for custom binding.
+    - Use module configuration or workspace to configure binding options instead.
   - Added support for native logging within emitters by @BernieWhite.
     [#1837](https://github.com/microsoft/PSRule/issues/1837)
 - Engineering:
@@ -44,8 +74,8 @@ What's changed since pre-release v3.0.0-B0203:
     [#1869](https://github.com/microsoft/PSRule/pull/1869)
   - Bump xunit.runner.visualstudio to v2.8.2.
     [#1869](https://github.com/microsoft/PSRule/pull/1869)
-  - Bump System.Drawing.Common to v8.0.7.
-    [#1867](https://github.com/microsoft/PSRule/pull/1867)
+  - Bump System.Drawing.Common to v8.0.8.
+    [#1887](https://github.com/microsoft/PSRule/pull/1887)
   - Bump YamlDotNet to v15.3.0.
     [#1856](https://github.com/microsoft/PSRule/pull/1856)
   - Bump Microsoft.CodeAnalysis.Common to v4.10.0.
@@ -54,9 +84,15 @@ What's changed since pre-release v3.0.0-B0203:
     [#1872](https://github.com/microsoft/PSRule/pull/1872)
   - Bump PSScriptAnalyzer to v1.22.0.
     [#1858](https://github.com/microsoft/PSRule/pull/1858)
+  - Bump BenchmarkDotNet from 0.13.12 to 0.14.0.
+    [#1886](https://github.com/microsoft/PSRule/pull/1886)
 - Bug fixes:
   - Fixed CLI exception the term Find-Module is not recognized by @BernieWhite.
     [#1860](https://github.com/microsoft/PSRule/issues/1860)
+  - Fixed aggregation of reasons with `$Assert.AnyOf()` by @BernieWhite.
+    [#1829](https://github.com/microsoft/PSRule/issues/1829)
+  - Added `Problem` to validate sets of `OutputOutcome` by @nightroman
+    [#2542](https://github.com/microsoft/PSRule/issues/2542)
 
 ## v3.0.0-B0203 (pre-release)
 
@@ -70,9 +106,6 @@ What's changed since pre-release v3.0.0-B0198:
     - The `File` and `Detect` input formats are no longer required and have been removed.
     - Processing files and objects with rules is no longer recommended, and disabled by default.
     - The `Input.FileObjects` can be set to `true` to enable processing of files as objects with rules.
-- Engineering:
-  - Bump Microsoft.NET.Test.Sdk to v17.10.0.
-    [#1826](https://github.com/microsoft/PSRule/pull/1826)
 - Bug fixes:
   - Fixed reason reported for `startsWith` by @BernieWhite.
     [#1818](https://github.com/microsoft/PSRule/issues/1818)
@@ -120,8 +153,6 @@ What's changed since pre-release v3.0.0-B0141:
     [#1673](https://github.com/microsoft/PSRule/pull/1673)
     - Running PSRule from PowerShell 7.x is supported on 7.4 and above.
     - Running PSRule from Windows PowerShell 5.1 is still supported but deprecated and will be removed in PSRule v4.
-  - Bump Microsoft.NET.Test.Sdk to v17.9.0.
-    [#1752](https://github.com/microsoft/PSRule/pull/1752)
 - Bug fixes:
   - Fixed CLI null reference when include module is undefined by @BernieWhite.
     [#1746](https://github.com/microsoft/PSRule/issues/1746)
@@ -181,8 +212,6 @@ What's changed since pre-release v3.0.0-B0093:
     [#1699](https://github.com/microsoft/PSRule/pull/1699)
   - Bump xunit.runner.visualstudio to v2.5.5.
     [#1700](https://github.com/microsoft/PSRule/pull/1700)
-  - Bump Microsoft.NET.Test.Sdk to v17.8.0.
-    [#1659](https://github.com/microsoft/PSRule/pull/1659)
   - Bump Microsoft.CodeAnalysis.NetAnalyzers to v8.0.0.
     [#1674](https://github.com/microsoft/PSRule/pull/1674)
   - Bump Microsoft.CodeAnalysis.Common to v4.8.0.
@@ -237,8 +266,6 @@ What's changed since release v2.9.0:
     [#1602](https://github.com/microsoft/PSRule/pull/1602)
   - Bump Microsoft.CodeAnalysis.Common to v4.7.0.
     [#1593](https://github.com/microsoft/PSRule/pull/1593)
-  - Bump Microsoft.NET.Test.Sdk to v17.7.2.
-    [#1608](https://github.com/microsoft/PSRule/pull/1608)
   - Bump YamlDotNet to v13.7.1.
     [#1647](https://github.com/microsoft/PSRule/issues/1647)
   - Bump xunit to v2.5.3.

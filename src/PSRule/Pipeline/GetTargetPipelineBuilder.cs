@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
-using PSRule.Options;
 
 namespace PSRule.Pipeline;
 
@@ -57,48 +56,12 @@ internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTarget
     /// <inheritdoc/>
     public override IPipeline Build(IPipelineWriter writer = null)
     {
-        return new GetTargetPipeline(PrepareContext(null, null, null), PrepareReader(), writer ?? PrepareWriter());
+        return new GetTargetPipeline(PrepareContext(PipelineHookActions.Empty), PrepareReader(), writer ?? PrepareWriter());
     }
 
     /// <inheritdoc/>
     protected override PipelineInputStream PrepareReader()
     {
-        if (!string.IsNullOrEmpty(Option.Input.ObjectPath))
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ReadObjectPath(sourceObject, next, Option.Input.ObjectPath, true);
-            });
-        }
-
-        if (Option.Input.Format == InputFormat.Yaml)
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ConvertFromYaml(sourceObject, next);
-            });
-        }
-        else if (Option.Input.Format == InputFormat.Json)
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ConvertFromJson(sourceObject, next);
-            });
-        }
-        else if (Option.Input.Format == InputFormat.Markdown)
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ConvertFromMarkdown(sourceObject, next);
-            });
-        }
-        else if (Option.Input.Format == InputFormat.PowerShellData)
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ConvertFromPowerShellData(sourceObject, next);
-            });
-        }
-        return new PipelineInputStream(VisitTargetObject, _InputPath, GetInputObjectSourceFilter(), Option);
+        return new PipelineInputStream(_InputPath, GetInputObjectSourceFilter(), Option);
     }
 }

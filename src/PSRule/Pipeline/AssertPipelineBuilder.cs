@@ -201,10 +201,7 @@ internal sealed class AssertPipelineBuilder : InvokePipelineBuilderBase
         return !RequireModules() || !RequireSources()
             ? null
             : (IPipeline)new InvokeRulePipeline(
-                context: PrepareContext(
-                    bindTargetName: BindTargetNameHook,
-                    bindTargetType: BindTargetTypeHook,
-                    bindField: BindFieldHook),
+                context: PrepareContext(PipelineHookActions.Default),
                 source: Source,
                 writer: HandleJobSummary(writer ?? PrepareWriter()),
                 outcome: RuleOutcome.Processed);

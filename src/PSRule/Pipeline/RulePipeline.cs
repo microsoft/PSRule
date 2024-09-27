@@ -12,16 +12,16 @@ internal abstract class RulePipeline : IPipeline
     protected readonly PipelineContext Pipeline;
     protected readonly RunspaceContext Context;
     protected readonly Source[] Source;
-    protected readonly PipelineInputStream Reader;
+    protected readonly IPipelineReader Reader;
     protected readonly IPipelineWriter Writer;
 
     // Track whether Dispose has been called.
     private bool _Disposed;
 
-    protected RulePipeline(PipelineContext context, Source[] source, PipelineInputStream reader, IPipelineWriter writer)
+    protected RulePipeline(PipelineContext pipelineContext, Source[] source, IPipelineReader reader, IPipelineWriter writer)
     {
-        Result = new DefaultPipelineResult(writer, context.Option.Execution.Break.GetValueOrDefault(ExecutionOption.Default.Break.Value));
-        Pipeline = context;
+        Result = new DefaultPipelineResult(writer, pipelineContext.Option.Execution.Break.GetValueOrDefault(ExecutionOption.Default.Break.Value));
+        Pipeline = pipelineContext;
         Context = new RunspaceContext(Pipeline, writer);
         Source = source;
         Reader = reader;

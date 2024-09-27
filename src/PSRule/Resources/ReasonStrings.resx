@@ -307,7 +307,7 @@
   <data name="Version" xml:space="preserve">
     <value>The field value '{0}' is not a version string.</value>
   </data>
-  <data name="VersionContraint" xml:space="preserve">
+  <data name="VersionConstraint" xml:space="preserve">
     <value>The version '{0}' does not match the constraint '{1}'.</value>
   </data>
   <data name="Within" xml:space="preserve">

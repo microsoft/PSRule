@@ -4,10 +4,12 @@
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Host;
-using PSRule.Options;
 
 namespace PSRule.Pipeline;
 
+/// <summary>
+/// A pipeline builder for any pipelines that test objects against rules.
+/// </summary>
 internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvokePipelineBuilder
 {
     protected InputPathBuilder _InputPath;
@@ -91,7 +93,7 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
         Unblock(writer);
         return !RequireModules() || !RequireSources()
             ? null
-            : (IPipeline)new InvokeRulePipeline(PrepareContext(BindTargetNameHook, BindTargetTypeHook, BindFieldHook), Source, writer, Option.Output.Outcome.Value);
+            : (IPipeline)new InvokeRulePipeline(PrepareContext(PipelineHookActions.Default), Source, writer, Option.Output.Outcome.Value);
     }
 
     protected void Unblock(IPipelineWriter writer)
@@ -131,42 +133,6 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
 
     protected override PipelineInputStream PrepareReader()
     {
-        if (!string.IsNullOrEmpty(Option.Input.ObjectPath))
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ReadObjectPath(sourceObject, next, Option.Input.ObjectPath, true);
-            });
-        }
-
-        if (Option.Input.Format == InputFormat.Yaml)
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ConvertFromYaml(sourceObject, next);
-            });
-        }
-        else if (Option.Input.Format == InputFormat.Json)
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ConvertFromJson(sourceObject, next);
-            });
-        }
-        else if (Option.Input.Format == InputFormat.Markdown)
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ConvertFromMarkdown(sourceObject, next);
-            });
-        }
-        else if (Option.Input.Format == InputFormat.PowerShellData)
-        {
-            AddVisitTargetObjectAction((sourceObject, next) =>
-            {
-                return PipelineReceiverActions.ConvertFromPowerShellData(sourceObject, next);
-            });
-        }
-        return new PipelineInputStream(VisitTargetObject, _InputPath, GetInputObjectSourceFilter(), Option);
+        return new PipelineInputStream(_InputPath, GetInputObjectSourceFilter(), Option);
     }
 }

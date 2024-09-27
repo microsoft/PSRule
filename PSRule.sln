@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Types", "src\PSRule.Types\PSRule.Types.csproj", "{5FE4DB0B-63D1-4DDB-9762-9C0D29168BC9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Badges", "src\PSRule.Badges\PSRule.Badges.csproj", "{309BED8B-4E60-4C42-A2B4-37A2E7EBEF3F}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule", "src\PSRule\PSRule.csproj", "{0130215D-58EB-4887-B6FA-31ED02500569}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Benchmark", "src\PSRule.Benchmark\PSRule.Benchmark.csproj", "{3EC0912F-BFC7-4B53-A1A1-0BA993C6282E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Tests", "tests\PSRule.Tests\PSRule.Tests.csproj", "{D3488CE2-779F-4474-B38A-F894A4B689F7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Badges", "src\PSRule.Badges\PSRule.Badges.csproj", "{309BED8B-4E60-4C42-A2B4-37A2E7EBEF3F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.BuildTool", "src\PSRule.BuildTool\PSRule.BuildTool.csproj", "{20DDCC65-8A9A-4BDC-91EC-C3BE6F32E52E}"
 EndProject
@@ -22,8 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		src\PSRule.Common.props = src\PSRule.Common.props
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Types", "src\PSRule.Types\PSRule.Types.csproj", "{5FE4DB0B-63D1-4DDB-9762-9C0D29168BC9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.MSBuild", "src\PSRule.MSBuild\PSRule.MSBuild.csproj", "{872D2648-2F00-475E-84B5-F08BE07385B7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}"
@@ -32,7 +32,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Tool.Tests", "tests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.CommandLine", "src\PSRule.CommandLine\PSRule.CommandLine.csproj", "{9A556814-8E9D-4C76-8F6D-1AF2DA23A9E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSRule.CommandLine.Tests", "tests\PSRule.CommandLine.Tests\PSRule.CommandLine.Tests.csproj", "{C25E2FC1-E306-4D99-925C-15E5DD51F6A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.CommandLine.Tests", "tests\PSRule.CommandLine.Tests\PSRule.CommandLine.Tests.csproj", "{C25E2FC1-E306-4D99-925C-15E5DD51F6A2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Types.Tests", "tests\PSRule.Types.Tests\PSRule.Types.Tests.csproj", "{34095F78-CDA3-4E72-B64C-6366EA4B3EAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,10 @@ Global
 		{C25E2FC1-E306-4D99-925C-15E5DD51F6A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C25E2FC1-E306-4D99-925C-15E5DD51F6A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C25E2FC1-E306-4D99-925C-15E5DD51F6A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34095F78-CDA3-4E72-B64C-6366EA4B3EAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34095F78-CDA3-4E72-B64C-6366EA4B3EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34095F78-CDA3-4E72-B64C-6366EA4B3EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34095F78-CDA3-4E72-B64C-6366EA4B3EAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +102,7 @@ Global
 		{D3488CE2-779F-4474-B38A-F894A4B689F7} = {E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}
 		{DA46C891-08F1-4D01-9F98-1F8BB10CAFEC} = {E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}
 		{C25E2FC1-E306-4D99-925C-15E5DD51F6A2} = {E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}
+		{34095F78-CDA3-4E72-B64C-6366EA4B3EAF} = {E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {533491EB-BAE9-472E-B57F-A675ECD335B5}

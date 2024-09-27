@@ -67,6 +67,9 @@ Optional parameters:
 - `--version` - Specifies a specific version of the module to add.
   By default, the latest stable version of the module is added.
   Any required version constraints set by the `Requires` option are taken into consideration.
+- `--prerelease` - Accept pre-release versions in addition to stable module versions.
+  By default, pre-release versions are not included.
+  A pre-release version may also be accepted when `Requires` includes pre-releases.
 
 For example:
 
@@ -78,6 +81,12 @@ For example, a specific version of the module is added:
 
 ```bash title="PSRule CLI command-line"
 ps-rule module add PSRule.Rules.Azure --version 1.32.1
+```
+
+For example, include pre-release versions added:
+
+```bash title="PSRule CLI command-line"
+ps-rule module add PSRule.Rules.Azure --prerelease
 ```
 
 ## `module remove`
@@ -112,12 +121,24 @@ ps-rule module restore --force
 
 ## `module upgrade`
 
-Upgrade to the latest versions any modules within the lock file.
+Upgrade to the latest versions for all or a specific module within the lock file.
+
+Optional parameters:
+
+- `--prerelease` - Accept pre-release versions in addition to stable module versions.
+  By default, pre-release versions are not included.
+  A pre-release version may also be accepted when `Requires` includes pre-releases.
 
 For example:
 
 ```bash title="PSRule CLI command-line"
 ps-rule module upgrade
+```
+
+For example, upgrade a specific module and include pre-release versions:
+
+```bash title="PSRule CLI command-line"
+ps-rule module upgrade PSRule.Rules.Azure --prerelease
 ```
 
 ## Next steps

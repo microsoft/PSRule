@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
@@ -10,11 +10,6 @@ namespace PSRule.Definitions.Baselines;
 /// </summary>
 internal interface IBaselineV1Spec
 {
-    /// <summary>
-    /// Options that affect property binding.
-    /// </summary>
-    BindingOption Binding { get; set; }
-
     /// <summary>
     /// Allows configuration key/ values to be specified that can be used within rule definitions.
     /// </summary>

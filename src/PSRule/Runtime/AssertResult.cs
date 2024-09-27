@@ -19,7 +19,7 @@ public sealed class AssertResult : IEquatable<bool>
         Result = value;
         if (!Result)
         {
-            _Reason = new List<ResultReason>();
+            _Reason = [];
             AddReason(operand, reason, args);
         }
     }
@@ -60,7 +60,7 @@ public sealed class AssertResult : IEquatable<bool>
     /// <summary>
     /// Add a reason.
     /// </summary>
-    /// <param name="operand">Indentifies the operand that was the reason for the failure.</param>
+    /// <param name="operand">Identifies the operand that was the reason for the failure.</param>
     /// <param name="text">The text of a reason to add. This text should already be localized for the currently culture.</param>
     /// <param name="args">Replacement arguments for the format string.</param>
     internal void AddReason(IOperand operand, string text, params object[] args)

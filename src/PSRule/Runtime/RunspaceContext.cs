@@ -10,6 +10,7 @@ using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
+using PSRule.Runtime.Binding;
 using static PSRule.Pipeline.PipelineContext;
 
 namespace PSRule.Runtime;
@@ -17,9 +18,9 @@ namespace PSRule.Runtime;
 #nullable enable
 
 /// <summary>
-/// A context for a PSRule runspace.
+/// A context applicable to rule execution.
 /// </summary>
-internal sealed class RunspaceContext : IDisposable, ILogger
+internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext
 {
     private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
     private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
@@ -30,7 +31,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     internal static RunspaceContext? CurrentThread;
 
     internal readonly PipelineContext Pipeline;
-    internal readonly IPipelineWriter Writer;
 
     // Fields exposed to engine
     internal RuleRecord? RuleRecord;
@@ -92,17 +92,17 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         _RuleTimer = new Stopwatch();
         _Reason = [];
         _Conventions = [];
-        _LanguageScopes = new LanguageScopeSet(this);
+        _LanguageScopes = new LanguageScopeSet();
         _Scope = new Stack<RunspaceScope>();
     }
 
     internal bool HadErrors => _RuleErrors > 0;
 
+    public IPipelineWriter Writer { get; }
+
     internal IEnumerable<InvokeResult>? Output { get; private set; }
 
     internal TargetObject? TargetObject { get; private set; }
-
-    internal ITargetBinder? TargetBinder { get; private set; }
 
     internal SourceScope? Source { get; private set; }
 
@@ -127,12 +127,12 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         return scope.HasFlag(current);
     }
 
-    internal void PushScope(RunspaceScope scope)
+    public void PushScope(RunspaceScope scope)
     {
         _Scope.Push(scope);
     }
 
-    internal void PopScope(RunspaceScope scope)
+    public void PopScope(RunspaceScope scope)
     {
         var current = _Scope.Peek();
         if (current != scope)
@@ -258,14 +258,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         ));
     }
 
-    public void VerboseRuleDiscovery(string path)
-    {
-        if (Writer == null || !Writer.ShouldWriteVerbose() || string.IsNullOrEmpty(path))
-            return;
-
-        Writer.WriteVerbose($"[PSRule][D] -- Discovering rules in: {path}");
-    }
-
     public void VerboseFoundResource(string name, string moduleName, string scriptName)
     {
         if (Writer == null || !Writer.ShouldWriteVerbose())
@@ -320,30 +312,12 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         Writer.WriteVerbose(string.Concat(GetLogPrefix(), " -- [", pass, "/", count, "] [", outcome, "]"));
     }
 
-    public void WriteError(ErrorRecord record)
+    public ExecutionOption GetExecutionOption()
     {
-        if (Writer == null || !Writer.ShouldWriteError())
-            return;
-
-        Writer.WriteError(errorRecord: record);
+        return Pipeline.Option.Execution;
     }
 
-    public void WriteError(ParseError error)
-    {
-        if (Writer == null || !Writer.ShouldWriteError())
-            return;
-
-        var record = new ErrorRecord
-        (
-            exception: new Pipeline.ParseException(message: error.Message, errorId: error.ErrorId),
-            errorId: error.ErrorId,
-            errorCategory: ErrorCategory.InvalidOperation,
-            targetObject: null
-        );
-        Writer.WriteError(errorRecord: record);
-    }
-
-    internal PowerShell GetPowerShell()
+    public PowerShell GetPowerShell()
     {
         var result = PowerShell.Create();
         result.Runspace = Pipeline.GetRunspace();
@@ -544,26 +518,24 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         return _LogPrefix ?? string.Empty;
     }
 
-    internal void EnterLanguageScope(ISourceFile file)
+    public void EnterLanguageScope(ISourceFile file)
     {
         // TODO: Look at scope caching, and a scope stack.
-
-        if (Source != null && Source.File == file)
-            return;
 
         if (!file.Exists())
             throw new FileNotFoundException(PSRuleResources.ScriptNotFound, file.Path);
 
         _LanguageScopes.UseScope(file.Module);
 
-        // Change scope
-        //Pipeline.Baseline.ResetScope(moduleName: source.Module);
+        if (TargetObject != null && LanguageScope != null)
+            Binding = LanguageScope.Bind(TargetObject);
+
         Source = new SourceScope(file);
     }
 
-    internal void ExitLanguageScope(ISourceFile file)
+    public void ExitLanguageScope(ISourceFile file)
     {
-        // Look at scope poping and validation.
+        // Look at scope popping and validation.
 
         Source = null;
     }
@@ -575,7 +547,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     {
         _ObjectNumber++;
         TargetObject = targetObject;
-        TargetBinder?.Bind(TargetObject);
         if (Pipeline.ContentCache.Count > 0)
             Pipeline.ContentCache.Clear();
 
@@ -587,6 +558,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     {
         RunConventionProcess();
         TargetObject = null;
+        Binding = null;
     }
 
     public bool TrySelector(string name)
@@ -613,7 +585,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     /// </summary>
     public RuleRecord EnterRuleBlock(RuleBlock ruleBlock)
     {
-        Binding = TargetBinder?.Result(ruleBlock.Info.ModuleName);
+        EnterLanguageScope(ruleBlock.Source);
 
         _RuleErrors = 0;
         RuleBlock = ruleBlock;
@@ -641,7 +613,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     /// <summary>
     /// Exit the rule block scope.
     /// </summary>
-    public void ExitRuleBlock()
+    public void ExitRuleBlock(RuleBlock ruleBlock)
     {
         // Stop rule execution time
         _RuleTimer.Stop();
@@ -663,6 +635,8 @@ internal sealed class RunspaceContext : IDisposable, ILogger
         RuleBlock = null;
         _RuleErrors = 0;
         _Reason.Clear();
+
+        ExitLanguageScope(ruleBlock.Source);
     }
 
     internal void Import(IConvention resource)
@@ -673,16 +647,16 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     internal void AddService(string id, object service)
     {
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
-        if (!StringComparer.OrdinalIgnoreCase.Equals(LanguageScope.Name, scopeName))
+        if (!StringComparer.OrdinalIgnoreCase.Equals(LanguageScope.Name, scopeName) || string.IsNullOrEmpty(name))
             return;
 
-        LanguageScope.AddService(name, service);
+        LanguageScope.AddService(name!, service);
     }
 
     internal object? GetService(string id)
     {
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
-        return !_LanguageScopes.TryScope(scopeName, out var scope) ? null : scope.GetService(name);
+        return !_LanguageScopes.TryScope(scopeName, out var scope) || string.IsNullOrEmpty(name) ? null : scope.GetService(name!);
     }
 
     private void RunConventionInitialize()
@@ -743,7 +717,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     public void Init(Source[] source)
     {
         InitLanguageScopes(source);
-        var resources = Host.HostHelper.ImportResource(source, this).OfType<IResource>();
+        var resources = Host.HostHelper.GetMetaResources<IResource>(source, this);
 
         // Process module configurations first
         foreach (var resource in resources.Where(r => r.Kind == ResourceKind.ModuleConfig).ToArray())
@@ -786,21 +760,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     {
         Pipeline.Begin(this);
 
-        var builder = new TargetBinderBuilder(
-            Pipeline.BindTargetName,
-            Pipeline.BindTargetType,
-            Pipeline.BindField,
-            Pipeline.Option.Input.TargetType);
-
-        HashSet<string>? _TypeFilter = null;
-        if (Pipeline.Option.Input.TargetType != null && Pipeline.Option.Input.TargetType.Length > 0)
-            _TypeFilter = new HashSet<string>(Pipeline.Option.Input.TargetType, StringComparer.OrdinalIgnoreCase);
-
-        foreach (var languageScope in _LanguageScopes.Get())
-        {
-            builder.With(new TargetBinder.TargetBindingContext(languageScope.Name, languageScope.Binding, Pipeline.BindTargetName, Pipeline.BindTargetType, Pipeline.BindField, _TypeFilter));
-        }
-        TargetBinder = builder.Build();
         RunConventionInitialize();
     }
 
@@ -808,6 +767,20 @@ internal sealed class RunspaceContext : IDisposable, ILogger
     {
         Output = output;
         RunConventionEnd();
+    }
+
+    /// <summary>
+    /// Try to bind the scope of the object.
+    /// </summary>
+    public bool TryGetScope(object o, out string[]? scope)
+    {
+        if (TargetObject != null && TargetObject.Value == o)
+        {
+            scope = TargetObject.Scope;
+            return true;
+        }
+        scope = null;
+        return false;
     }
 
     public string? GetLocalizedPath(string file, out string? culture)

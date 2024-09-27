@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
-using PSRule.Configuration;
 using PSRule.Resources;
 using PSRule.Runtime;
 
@@ -287,7 +286,7 @@ internal sealed class LanguageExpressionBuilder
         if (type == null)
             return true;
 
-        var comparer = RunspaceContext.CurrentThread.LanguageScope.Binding.GetComparer();
+        var comparer = RunspaceContext.CurrentThread.LanguageScope.GetBindingComparer();
         var targetType = RunspaceContext.CurrentThread.RuleRecord.TargetType;
         for (var i = 0; i < type.Length; i++)
         {
@@ -322,7 +321,7 @@ internal sealed class LanguageExpressionBuilder
 
         var context = RunspaceContext.CurrentThread;
 
-        var stringComparer = context.LanguageScope.Binding.GetComparer();
+        var stringComparer = context.LanguageScope.GetBindingComparer();
         var resourceIdComparer = ResourceIdEqualityComparer.Default;
 
         var ruleRecord = context.RuleRecord;

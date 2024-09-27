@@ -133,9 +133,6 @@
       "description": "A specification for a baseline.",
       "markdownDescription": "A specification for a baseline. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Baseline/)",
       "properties": {
-        "binding": {
-          "$ref": "#/definitions/binding-option"
-        },
         "configuration": {
           "$ref": "#/definitions/configuration"
         },

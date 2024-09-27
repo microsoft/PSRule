@@ -17,7 +17,7 @@ public abstract class InternalResource<TSpec> : Resource<TSpec>, IResource, IAnn
     private protected InternalResource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
         : base(kind, apiVersion, source, metadata, info, extent, spec)
     {
-        _Annotations = new Dictionary<Type, ResourceAnnotation>();
+        _Annotations = [];
         Obsolete = ResourceHelper.IsObsolete(metadata);
         Flags |= ResourceHelper.IsObsolete(metadata) ? ResourceFlags.Obsolete : ResourceFlags.None;
     }

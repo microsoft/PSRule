@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
@@ -10,9 +10,6 @@ namespace PSRule.Definitions.Baselines;
 /// </summary>
 public sealed class BaselineSpec : Spec, IBaselineV1Spec
 {
-    /// <inheritdoc/>
-    public BindingOption Binding { get; set; }
-
     /// <inheritdoc/>
     public ConfigurationOption Configuration { get; set; }
 

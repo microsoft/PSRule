@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
+using System.Management.Automation.Language;
 using PSRule.Resources;
 
 namespace PSRule.Pipeline;
@@ -98,6 +99,21 @@ public static class PipelineWriterExtensions
         writer.WriteError(new ErrorRecord(exception, errorId, errorCategory, null));
     }
 
+    internal static void WriteError(this IPipelineWriter writer, ParseError error)
+    {
+        if (writer == null || !writer.ShouldWriteError())
+            return;
+
+        var record = new ErrorRecord
+        (
+            exception: new Pipeline.ParseException(message: error.Message, errorId: error.ErrorId),
+            errorId: error.ErrorId,
+            errorCategory: ErrorCategory.InvalidOperation,
+            targetObject: null
+        );
+        writer.WriteError(errorRecord: record);
+    }
+
     internal static void WriteDebug(this IPipelineWriter writer, string message, params object[] args)
     {
         if (writer == null || !writer.ShouldWriteDebug() || string.IsNullOrEmpty(message))
@@ -107,6 +123,14 @@ public static class PipelineWriterExtensions
         (
             message: Format(message, args)
         ));
+    }
+
+    internal static void VerboseRuleDiscovery(this IPipelineWriter writer, string path)
+    {
+        if (writer == null || !writer.ShouldWriteVerbose() || string.IsNullOrEmpty(path))
+            return;
+
+        writer.WriteVerbose($"[PSRule][D] -- Discovering rules in: {path}");
     }
 
     private static string Format(string message, params object[] args)

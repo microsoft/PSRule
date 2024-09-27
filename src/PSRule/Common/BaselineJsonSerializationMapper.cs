@@ -47,7 +47,6 @@ internal static class BaselineJsonSerializationMapper
 
         MapPropertyName(writer, propertyName);
         writer.WriteStartObject();
-        MapProperty(writer, serializer, nameof(baselineSpec.Binding), baselineSpec.Binding);
         MapProperty(writer, serializer, nameof(baselineSpec.Configuration), baselineSpec.Configuration);
         MapProperty(writer, nameof(baselineSpec.Convention), baselineSpec.Convention);
         MapProperty(writer, serializer, nameof(baselineSpec.Rule), baselineSpec.Rule);

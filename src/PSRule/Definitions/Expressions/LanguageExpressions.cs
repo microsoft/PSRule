@@ -1128,8 +1128,8 @@ internal sealed class LanguageExpressions
             if (!SemanticVersion.TryParseConstraint(expectedValue, out var constraint, includePrerelease))
                 throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, expectedValue));
 
-            if (constraint != null && !constraint.Equals(actualVersion))
-                return Fail(context, operand, ReasonStrings.VersionContraint, actualVersion, constraint);
+            if (constraint != null && !constraint.Accepts(actualVersion))
+                return Fail(context, operand, ReasonStrings.VersionConstraint, actualVersion, constraint);
 
             return Pass();
         }
@@ -1153,8 +1153,8 @@ internal sealed class LanguageExpressions
             if (!DateVersion.TryParseConstraint(expectedValue, out var constraint, includePrerelease))
                 throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, expectedValue));
 
-            if (constraint != null && !constraint.Equals(actualVersion))
-                return Fail(context, operand, ReasonStrings.VersionContraint, actualVersion, constraint);
+            if (constraint != null && !constraint.Accepts(actualVersion))
+                return Fail(context, operand, ReasonStrings.VersionConstraint, actualVersion, constraint);
 
             return Pass();
         }
@@ -1354,7 +1354,7 @@ internal sealed class LanguageExpressions
             if (svalue != DOT || context?.Context?.LanguageScope == null)
                 return Invalid(context, svalue);
 
-            if (!context.Context.LanguageScope.TryGetScope(o, out var scope))
+            if (!context.Context.TryGetScope(o, out var scope))
                 return Invalid(context, svalue);
 
             operand = Operand.FromScope(scope);

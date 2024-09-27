@@ -13,6 +13,8 @@ using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// A helper to create an <see cref="OptionContext"/>.
 /// </summary>
@@ -23,14 +25,18 @@ internal sealed class OptionContextBuilder
     private readonly OptionScopeComparer _Comparer;
     private readonly string[] _DefaultCulture;
     private readonly List<string> _ConventionOrder;
+    private readonly BindTargetMethod _BindTargetName;
+    private readonly BindTargetMethod _BindTargetType;
+    private readonly BindTargetMethod _BindField;
+    private readonly string[] _InputTargetType;
 
     internal OptionContextBuilder(string[] include = null, Hashtable tag = null, string[] convention = null)
     {
-        _ModuleBaselineScope = new Dictionary<string, bool>();
-        _Scopes = new List<OptionScope>();
+        _ModuleBaselineScope = [];
+        _Scopes = [];
         _Comparer = new OptionScopeComparer();
         _DefaultCulture = GetDefaultCulture();
-        _ConventionOrder = new List<string>();
+        _ConventionOrder = [];
         Parameter(include, tag, convention);
     }
 
@@ -41,10 +47,17 @@ internal sealed class OptionContextBuilder
     /// <param name="include">A list of rule identifiers to include set by parameters. If not set all rules that meet filters are included.</param>
     /// <param name="tag">A tag filter to determine which rules are included by parameters.</param>
     /// <param name="convention">A list of conventions to include by parameters.</param>
-    internal OptionContextBuilder(PSRuleOption option, string[] include = null, Hashtable tag = null, string[] convention = null)
+    /// <param name="bindTargetName"></param>
+    /// <param name="bindTargetType"></param>
+    /// <param name="bindField"></param>
+    internal OptionContextBuilder(PSRuleOption option, string[] include = null, Hashtable tag = null, string[] convention = null, BindTargetMethod bindTargetName = null, BindTargetMethod bindTargetType = null, BindTargetMethod bindField = null)
         : this(include, tag, convention)
     {
         Workspace(option);
+        _BindTargetName = bindTargetName;
+        _BindTargetType = bindTargetType;
+        _BindField = bindField;
+        _InputTargetType = option.Input.TargetType;
     }
 
     /// <summary>
@@ -53,7 +66,7 @@ internal sealed class OptionContextBuilder
     internal OptionContext Build(string languageScope)
     {
         languageScope = ResourceHelper.NormalizeScope(languageScope);
-        var context = new OptionContext();
+        var context = new OptionContext(_BindTargetName, _BindTargetType, _BindField, _InputTargetType);
 
         _Scopes.Sort(_Comparer);
 
@@ -72,6 +85,7 @@ internal sealed class OptionContextBuilder
         {
             Include = GetConventions(_Scopes)
         };
+
         return context;
     }
 
@@ -119,7 +133,7 @@ internal sealed class OptionContextBuilder
 
     private static bool ShouldCombine(string languageScope, OptionScope optionScope)
     {
-        return optionScope.LanguageScope == ResourceHelper.STANDALONE_SCOPENAME || optionScope.LanguageScope == languageScope || optionScope.Type == ScopeType.Explicit;
+        return optionScope.LanguageScope == ResourceHelper.STANDALONE_SCOPE_NAME || optionScope.LanguageScope == languageScope || optionScope.Type == ScopeType.Explicit;
     }
 
     /// <summary>
@@ -220,3 +234,5 @@ internal sealed class OptionContextBuilder
         return result.ToArray();
     }
 }
+
+#nullable restore

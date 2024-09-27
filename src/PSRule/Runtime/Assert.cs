@@ -146,7 +146,7 @@ public sealed class Assert
             if (results[i].Result)
                 return Pass();
             else
-                result.AddReason(result);
+                result.AddReason(results[i]);
         }
         return result;
     }
@@ -859,7 +859,7 @@ public sealed class Assert
             throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, value));
 
         // Assert
-        return c != null && !c.Equals(value) ? Fail(Operand.FromPath(field), ReasonStrings.VersionContraint, value, constraint) : Pass();
+        return c != null && !c.Accepts(value) ? Fail(Operand.FromPath(field), ReasonStrings.VersionConstraint, value, constraint) : Pass();
     }
 
     /// <summary>
@@ -883,7 +883,7 @@ public sealed class Assert
             throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VersionConstraintInvalid, value));
 
         // Assert
-        return c != null && !c.Equals(value) ? Fail(Operand.FromPath(field), ReasonStrings.VersionContraint, value, constraint) : Pass();
+        return c != null && !c.Accepts(value) ? Fail(Operand.FromPath(field), ReasonStrings.VersionConstraint, value, constraint) : Pass();
     }
 
     /// <summary>

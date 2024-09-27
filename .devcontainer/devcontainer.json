@@ -21,7 +21,9 @@
         "davidanson.vscode-markdownlint",
         "streetsidesoftware.code-spell-checker",
         "bewhite.psrule-vscode-preview",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "ms-sarifvscode.sarif-viewer",
+        "github.vscode-github-actions"
       ]
     }
   },
@@ -36,7 +38,7 @@
       "version": "latest"
     }
   },
-  "onCreateCommand": "sudo chown -R vscode:vscode /opt/microsoft/powershell/7/pwsh && sudo chmod u+x /opt/microsoft/powershell/7/pwsh",
+  "onCreateCommand": "sudo chown -R vscode:vscode /opt/microsoft/powershell/7/pwsh && sudo chmod u+x /opt/microsoft/powershell/7/pwsh && wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && sudo dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb && sudo apt-get update && sudo apt-get install dotnet-sdk-8.0 -y && sudo apt-get install python3-pip -y",
   "updateContentCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-build.ps1",
   "postStartCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-start.ps1"
 }

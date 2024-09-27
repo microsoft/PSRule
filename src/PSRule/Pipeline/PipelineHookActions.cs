@@ -18,6 +18,9 @@ internal delegate bool ShouldProcess(string target, string action);
 /// </summary>
 internal static class PipelineHookActions
 {
+    internal static readonly (BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) Default = (PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField);
+    internal static readonly (BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) Empty = (null, null, null);
+
     private const string Property_TargetName = "TargetName";
     private const string Property_Name = "Name";
 

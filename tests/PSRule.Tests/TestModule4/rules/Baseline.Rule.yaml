@@ -8,17 +8,6 @@ kind: Baseline
 metadata:
   name: Module4
 spec:
-  binding:
-    field:
-      kind:
-      - Id
-      uniqueIdentifer:
-      - Id
-      - AlternateName
-    targetName:
-      - AlternateName
-    targetType:
-      - Kind
   rule:
     include:
     - 'M4.Rule1'
@@ -32,17 +21,6 @@ kind: Baseline
 metadata:
   name: Module4a
 spec:
-  binding:
-    field:
-      kind:
-      - Id
-      uniqueIdentifer:
-      - Id
-      - AlternateName
-    targetName:
-      - AlternateName
-    targetType:
-      - Kind
   rule:
     include:
     - 'M4.Rule1'
@@ -56,11 +34,6 @@ kind: Baseline
 metadata:
   name: Baseline2
 spec:
-  binding:
-    targetName:
-      - AlternateName
-    targetType:
-      - Kind
   rule:
     include:
     - 'M4.Rule1'
@@ -74,13 +47,6 @@ kind: Baseline
 metadata:
   name: Baseline3
 spec:
-  binding:
-    targetName:
-      - AlternateName
-    targetType:
-      - Kind
-    field:
-      AlternativeType: [ 'AlternateName' ]
   rule:
     include:
     - 'M4.Rule1'

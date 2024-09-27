@@ -62,6 +62,43 @@ From _v3.0.0_, the `module restore` command installs modules based on:
   [5]: concepts/cli/module.md
   [6]: concepts/lockfile.md
 
+### Version and APIVersion accept stable
+
+Prior to _v3.0.0_, some usage of `version` and `apiVersion` accepted pre-release versions by default.
+For example:
+
+```yaml
+---
+# Synopsis: Any version example
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: PreviousAnyVersionExample
+spec:
+  if:
+    field: dateVersion
+    apiVersion: ''
+```
+
+When `apiVersion` is empty any version is accepted including pre-releases.
+
+From _v3.0.0_ pre-release versions are not accepted by default.
+Set the `includePrerelease` property to `true`.
+
+```yaml
+---
+# Synopsis: Test comparison with apiVersion.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Selector
+metadata:
+  name: AnyVersion
+spec:
+  if:
+    field: dateVersion
+    apiVersion: ''
+    includePrerelease: true
+```
+
 ## Upgrading to v2.0.0
 
 ### Resources naming restrictions

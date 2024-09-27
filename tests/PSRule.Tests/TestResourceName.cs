@@ -3,7 +3,6 @@
 
 using System;
 using PSRule.Definitions;
-using PSRule.Pipeline;
 
 namespace PSRule;
 

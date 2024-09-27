@@ -18,10 +18,15 @@ internal sealed class ExportConventionCommand : LanguageBlock
     private const string Cmdlet_BodyParameter = "Body";
     private const string Cmdlet_ScopeParameter = "Scope";
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+
     [Parameter(Mandatory = true, Position = 0)]
     [ValidateNotNullOrEmpty()]
     [ValidateLength(3, 128)]
+
     public string Name { get; set; }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     /// <summary>
     /// A script block to call once before any objects are processed.

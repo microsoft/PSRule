@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
-using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -103,7 +102,7 @@ internal sealed class InvokeRuleBlockCommand : Cmdlet
         if (Type == null)
             return true;
 
-        var comparer = RunspaceContext.CurrentThread.LanguageScope.Binding.GetComparer();
+        var comparer = RunspaceContext.CurrentThread.LanguageScope.GetBindingComparer();
         var targetType = RunspaceContext.CurrentThread.RuleRecord.TargetType;
         for (var i = 0; i < Type.Length; i++)
         {
