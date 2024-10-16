@@ -34,7 +34,7 @@ internal sealed class SuppressionRuleYamlTypeConverter : IYamlTypeConverter
         return type == typeof(SuppressionRule);
     }
 
-    public object? ReadYaml(IParser parser, Type type)
+    public object? ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {
         var result = new SuppressionRule();
         if (parser.TryConsume<SequenceStart>(out _))
@@ -66,7 +66,7 @@ internal sealed class SuppressionRuleYamlTypeConverter : IYamlTypeConverter
         return result;
     }
 
-    public void WriteYaml(IEmitter emitter, object? value, Type type)
+    public void WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
     {
         throw new NotImplementedException();
     }
@@ -82,7 +82,7 @@ internal sealed class FieldMapYamlTypeConverter : IYamlTypeConverter
         return type == typeof(FieldMap);
     }
 
-    public object? ReadYaml(IParser parser, Type type)
+    public object? ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {
         var result = new FieldMap();
         if (parser.TryConsume<MappingStart>(out _))
@@ -111,7 +111,7 @@ internal sealed class FieldMapYamlTypeConverter : IYamlTypeConverter
         return result;
     }
 
-    public void WriteYaml(IEmitter emitter, object? value, Type type)
+    public void WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
     {
         if (type == typeof(FieldMap) && value == null)
         {
@@ -146,7 +146,7 @@ internal sealed class PSObjectYamlTypeConverter : MappingTypeConverter, IYamlTyp
         return type == typeof(PSObject);
     }
 
-    public object? ReadYaml(IParser parser, Type type)
+    public object? ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {
         // Handle empty objects
         if (parser.TryConsume<Scalar>(out var scalar) && scalar != null)
@@ -161,7 +161,7 @@ internal sealed class PSObjectYamlTypeConverter : MappingTypeConverter, IYamlTyp
             while (parser.TryConsume<Scalar>(out scalar) && scalar != null)
             {
                 var name = scalar.Value;
-                var property = ReadNoteProperty(parser, name) ?? throw new NotImplementedException();
+                var property = ReadNoteProperty(parser, name, rootDeserializer) ?? throw new NotImplementedException();
                 result.Properties.Add(property);
             }
 #pragma warning restore
@@ -171,12 +171,12 @@ internal sealed class PSObjectYamlTypeConverter : MappingTypeConverter, IYamlTyp
         return result;
     }
 
-    public void WriteYaml(IEmitter emitter, object? value, Type type)
+    public void WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
     {
         Map(emitter, value);
     }
 
-    private PSNoteProperty? ReadNoteProperty(IParser parser, string name)
+    private PSNoteProperty? ReadNoteProperty(IParser parser, string name, ObjectDeserializer rootDeserializer)
     {
         if (parser.TryConsume<SequenceStart>(out _))
         {
@@ -185,7 +185,7 @@ internal sealed class PSObjectYamlTypeConverter : MappingTypeConverter, IYamlTyp
             {
                 if (parser.Current is MappingStart)
                 {
-                    values.Add(PSObject.AsPSObject(ReadYaml(parser, typeof(PSObject))));
+                    values.Add(PSObject.AsPSObject(ReadYaml(parser, typeof(PSObject), rootDeserializer)));
                 }
                 else if (parser.TryConsume<Scalar>(out var scalar))
                 {
@@ -198,7 +198,7 @@ internal sealed class PSObjectYamlTypeConverter : MappingTypeConverter, IYamlTyp
         }
         else if (parser.Current is MappingStart)
         {
-            return new PSNoteProperty(name, ReadYaml(parser, typeof(PSObject)));
+            return new PSNoteProperty(name, ReadYaml(parser, typeof(PSObject), rootDeserializer));
         }
         else if (parser.TryConsume<Scalar>(out var scalar))
         {
@@ -312,6 +312,16 @@ internal sealed class PSOptionYamlTypeResolver : INodeTypeResolver
 /// </summary>
 internal sealed class OrderedPropertiesTypeInspector(ITypeInspector innerTypeDescriptor) : TypeInspectorSkeleton
 {
+    public override string GetEnumName(Type enumType, string name)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override string GetEnumValue(object enumValue)
+    {
+        throw new NotImplementedException();
+    }
+
     public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container)
     {
         return innerTypeDescriptor
@@ -373,6 +383,16 @@ internal sealed class FieldYamlTypeInspector : TypeInspectorSkeleton
         return !(name == "TargetObject" || name == "Exception");
     }
 
+    public override string GetEnumName(Type enumType, string name)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override string GetEnumValue(object enumValue)
+    {
+        throw new NotImplementedException();
+    }
+
     private sealed class Field : IPropertyDescriptor
     {
         private readonly FieldInfo _FieldInfo;
@@ -398,6 +418,12 @@ internal sealed class FieldYamlTypeInspector : TypeInspectorSkeleton
         public bool CanWrite => false;
 
         public ScalarStyle ScalarStyle { get; set; }
+
+        public bool AllowNulls => throw new NotImplementedException();
+
+        public bool Required => throw new NotImplementedException();
+
+        public Type? ConverterType => throw new NotImplementedException();
 
         public void Write(object target, object? value)
         {
@@ -443,6 +469,12 @@ internal sealed class FieldYamlTypeInspector : TypeInspectorSkeleton
 
         public ScalarStyle ScalarStyle { get; set; }
 
+        public bool AllowNulls => true;
+
+        public bool Required => false;
+
+        public Type ConverterType => null;
+
         public T? GetCustomAttribute<T>() where T : Attribute
         {
             return _PropertyInfo.GetCustomAttributes(typeof(T), true).OfType<T>().FirstOrDefault();
@@ -481,22 +513,22 @@ internal sealed class ResourceNodeDeserializer : INodeDeserializer
         _Factory = new SpecFactory();
     }
 
-    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
+    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value, ObjectDeserializer rootDeserializer)
     {
         if (typeof(ResourceObject).IsAssignableFrom(expectedType))
         {
-            var comment = reader.Current == null || RunspaceContext.CurrentThread == null ? null : HostHelper.GetCommentMeta(RunspaceContext.CurrentThread.Source?.File, reader.Current.Start.Line - 2, reader.Current.Start.Column);
-            var resource = MapResource(reader, nestedObjectDeserializer, comment);
+            var comment = reader.Current == null || RunspaceContext.CurrentThread == null ? null : HostHelper.GetCommentMeta(RunspaceContext.CurrentThread.Source?.File, (int)reader.Current.Start.Line - 2, (int)reader.Current.Start.Column);
+            var resource = MapResource(reader, nestedObjectDeserializer, comment, rootDeserializer);
             value = new ResourceObject(resource);
             return true;
         }
         else
         {
-            return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value);
+            return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value, rootDeserializer);
         }
     }
 
-    private IResource? MapResource(IParser reader, Func<IParser, Type, object?> nestedObjectDeserializer, CommentMetadata? comment)
+    private IResource? MapResource(IParser reader, Func<IParser, Type, object?> nestedObjectDeserializer, CommentMetadata? comment, ObjectDeserializer rootDeserializer)
     {
         IResource? result = null;
         string? apiVersion = null;
@@ -504,7 +536,7 @@ internal sealed class ResourceNodeDeserializer : INodeDeserializer
         ResourceMetadata? metadata = null;
         if (reader.TryConsume<MappingStart>(out var mappingStart) && mappingStart != null)
         {
-            var extent = new SourceExtent(RunspaceContext.CurrentThread!.Source!.File, mappingStart.Start.Line, mappingStart.Start.Column);
+            var extent = new SourceExtent(RunspaceContext.CurrentThread!.Source!.File, (int?)mappingStart.Start.Line, (int?)mappingStart.Start.Column);
             while (reader.TryConsume<Scalar>(out var scalar) && scalar != null)
             {
                 // Read apiVersion
@@ -518,12 +550,12 @@ internal sealed class ResourceNodeDeserializer : INodeDeserializer
                     kind = kindValue;
                 }
                 // Read metadata
-                else if (TryMetadata(reader, scalar, nestedObjectDeserializer, out var metadataValue))
+                else if (TryMetadata(reader, scalar, nestedObjectDeserializer, out var metadataValue, rootDeserializer))
                 {
                     metadata = metadataValue;
                 }
                 // Read spec
-                else if (kind != null && apiVersion != null && TrySpec(reader, scalar, apiVersion, kind, nestedObjectDeserializer, metadata, comment, extent, out var resource))
+                else if (kind != null && apiVersion != null && TrySpec(reader, scalar, apiVersion, kind, nestedObjectDeserializer, metadata, comment, extent, out var resource, rootDeserializer))
                 {
                     result = resource;
                 }
@@ -560,7 +592,7 @@ internal sealed class ResourceNodeDeserializer : INodeDeserializer
         return false;
     }
 
-    private bool TryMetadata(IParser reader, Scalar scalar, Func<IParser, Type, object?> nestedObjectDeserializer, out ResourceMetadata? metadata)
+    private bool TryMetadata(IParser reader, Scalar scalar, Func<IParser, Type, object?> nestedObjectDeserializer, out ResourceMetadata? metadata, ObjectDeserializer rootDeserializer)
     {
         metadata = null;
         if (scalar.Value != FIELD_METADATA)
@@ -568,7 +600,7 @@ internal sealed class ResourceNodeDeserializer : INodeDeserializer
 
         if (reader.Current is MappingStart)
         {
-            if (!_Next.Deserialize(reader, typeof(ResourceMetadata), nestedObjectDeserializer, out var value) || value is not ResourceMetadata metadata_value)
+            if (!_Next.Deserialize(reader, typeof(ResourceMetadata), nestedObjectDeserializer, out var value, rootDeserializer) || value is not ResourceMetadata metadata_value)
                 return false;
 
             metadata = metadata_value;
@@ -577,18 +609,18 @@ internal sealed class ResourceNodeDeserializer : INodeDeserializer
         return false;
     }
 
-    private bool TrySpec(IParser reader, Scalar scalar, string apiVersion, string kind, Func<IParser, Type, object?> nestedObjectDeserializer, ResourceMetadata? metadata, CommentMetadata? comment, ISourceExtent extent, out IResource? spec)
+    private bool TrySpec(IParser reader, Scalar scalar, string apiVersion, string kind, Func<IParser, Type, object?> nestedObjectDeserializer, ResourceMetadata? metadata, CommentMetadata? comment, ISourceExtent extent, out IResource? spec, ObjectDeserializer rootDeserializer)
     {
         spec = null;
-        return scalar.Value == FIELD_SPEC && TryResource(reader, apiVersion, kind, nestedObjectDeserializer, metadata, comment, extent, out spec);
+        return scalar.Value == FIELD_SPEC && TryResource(reader, apiVersion, kind, nestedObjectDeserializer, metadata, comment, extent, out spec, rootDeserializer);
     }
 
-    private bool TryResource(IParser reader, string apiVersion, string kind, Func<IParser, Type, object?> nestedObjectDeserializer, ResourceMetadata? metadata, CommentMetadata? comment, ISourceExtent extent, out IResource? spec)
+    private bool TryResource(IParser reader, string apiVersion, string kind, Func<IParser, Type, object?> nestedObjectDeserializer, ResourceMetadata? metadata, CommentMetadata? comment, ISourceExtent extent, out IResource? spec, ObjectDeserializer rootDeserializer)
     {
         spec = null;
         if (_Factory.TryDescriptor(apiVersion, kind, out var descriptor) && reader.Current is MappingStart)
         {
-            if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out var value))
+            if (!_Next.Deserialize(reader, descriptor.SpecType, nestedObjectDeserializer, out var value, rootDeserializer))
                 return false;
 
             spec = descriptor.CreateInstance(extent.File, metadata, comment, extent, value);
@@ -616,7 +648,7 @@ internal sealed class LanguageExpressionDeserializer : INodeDeserializer
         _FunctionBuilder = new FunctionBuilder();
     }
 
-    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
+    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value, ObjectDeserializer rootDeserializer)
     {
         if (typeof(LanguageExpression).IsAssignableFrom(expectedType))
         {
@@ -626,7 +658,7 @@ internal sealed class LanguageExpressionDeserializer : INodeDeserializer
         }
         else
         {
-            return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value);
+            return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value, rootDeserializer);
         }
     }
 
@@ -888,16 +920,16 @@ internal sealed class PSObjectYamlDeserializer : INodeDeserializer
         _Converter = new PSObjectYamlTypeConverter();
     }
 
-    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
+    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value, ObjectDeserializer rootDeserializer)
     {
         if (expectedType == typeof(PSObject[]) && reader.Current is MappingStart)
         {
             var parser = reader as YamlEmitterParser;
             var fileInfo = parser?.Info ?? _SourceInfo;
 
-            var lineNumber = reader.Current.Start.Line;
-            var linePosition = reader.Current.Start.Column;
-            value = _Converter.ReadYaml(reader, typeof(PSObject));
+            var lineNumber = (int)reader.Current.Start.Line;
+            var linePosition = (int)reader.Current.Start.Column;
+            value = _Converter.ReadYaml(reader, typeof(PSObject), rootDeserializer);
             if (value is PSObject pso)
             {
                 pso.UseTargetInfo(out var info);
@@ -909,7 +941,7 @@ internal sealed class PSObjectYamlDeserializer : INodeDeserializer
         }
         else
         {
-            return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value);
+            return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value, rootDeserializer);
         }
     }
 }
@@ -925,12 +957,12 @@ internal sealed class TargetObjectYamlDeserializer : INodeDeserializer
         _Converter = new PSObjectYamlTypeConverter();
     }
 
-    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
+    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value, ObjectDeserializer rootDeserializer)
     {
         value = null;
         if (expectedType == typeof(TargetObject[]) && reader.Current is MappingStart)
         {
-            if (TryGetTargetObject(reader, out var targetObject) && targetObject != null)
+            if (TryGetTargetObject(reader, out var targetObject, rootDeserializer) && targetObject != null)
             {
                 value = new TargetObject[] { targetObject };
                 return true;
@@ -942,7 +974,7 @@ internal sealed class TargetObjectYamlDeserializer : INodeDeserializer
             var result = new List<TargetObject>();
             while (reader.Current is MappingStart)
             {
-                if (TryGetTargetObject(reader, out var targetObject) && targetObject != null)
+                if (TryGetTargetObject(reader, out var targetObject, rootDeserializer) && targetObject != null)
                 {
                     result.Add(targetObject);
                 }
@@ -952,19 +984,19 @@ internal sealed class TargetObjectYamlDeserializer : INodeDeserializer
         }
         else
         {
-            return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value);
+            return _Next.Deserialize(reader, expectedType, nestedObjectDeserializer, out value, rootDeserializer);
         }
     }
 
-    private bool TryGetTargetObject(IParser reader, out TargetObject? value)
+    private bool TryGetTargetObject(IParser reader, out TargetObject? value, ObjectDeserializer rootDeserializer)
     {
         value = null;
         var parser = reader as YamlEmitterParser;
         var fileInfo = parser?.Info;
-        var lineNumber = reader.Current?.Start.Line;
-        var linePosition = reader.Current?.Start.Column;
+        var lineNumber = (int?)reader.Current?.Start.Line;
+        var linePosition = (int?)reader.Current?.Start.Column;
 
-        if (_Converter.ReadYaml(reader, typeof(PSObject)) is PSObject o)
+        if (_Converter.ReadYaml(reader, typeof(PSObject), rootDeserializer) is PSObject o)
         {
             o.UseTargetInfo(out var info);
             info.SetSource(fileInfo?.Path, lineNumber, linePosition);
@@ -985,13 +1017,13 @@ internal sealed class InfoStringYamlTypeConverter : IYamlTypeConverter
         return type == typeof(InfoString);
     }
 
-    public object? ReadYaml(IParser parser, Type type)
+    public object? ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {
         return parser.TryConsume<Scalar>(out var scalar) &&
             !string.IsNullOrEmpty(scalar.Value) ? new InfoString(scalar.Value) : new InfoString();
     }
 
-    public void WriteYaml(IEmitter emitter, object? value, Type type)
+    public void WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
     {
         if (value is InfoString info && info.HasValue && info.Text != null)
             emitter.Emit(new Scalar(info.Text));
