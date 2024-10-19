@@ -20,7 +20,7 @@ public sealed class StringArrayMapConverter : IYamlTypeConverter
     }
 
     /// <inheritdoc/>
-    object? IYamlTypeConverter.ReadYaml(IParser parser, Type type)
+    object? IYamlTypeConverter.ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {
         var result = new StringArrayMap();
         if (parser.TryConsume<MappingStart>(out _))
@@ -56,7 +56,7 @@ public sealed class StringArrayMapConverter : IYamlTypeConverter
     }
 
     /// <inheritdoc/>
-    void IYamlTypeConverter.WriteYaml(IEmitter emitter, object? value, Type type)
+    void IYamlTypeConverter.WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
     {
         if (type == typeof(StringArrayMap) && value == null)
         {
