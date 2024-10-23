@@ -16,6 +16,12 @@ updates:
       - dependencies
     reviewers:
       - microsoft/psrule
+    groups:
+      # Group PowerShell packages that have inter-dependencies
+      dev-powershell:
+        patterns:
+          - System.Management.Automation
+          - Microsoft.PowerShell.SDK
 
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: github-actions
