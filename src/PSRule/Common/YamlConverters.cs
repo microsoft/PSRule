@@ -310,18 +310,8 @@ internal sealed class PSOptionYamlTypeResolver : INodeTypeResolver
 /// <summary>
 /// A YAML type inspector to order properties alphabetically
 /// </summary>
-internal sealed class OrderedPropertiesTypeInspector(ITypeInspector innerTypeDescriptor) : TypeInspectorSkeleton
+internal sealed class OrderedPropertiesTypeInspector(ITypeInspector innerTypeDescriptor) : ReflectionTypeInspector
 {
-    public override string GetEnumName(Type enumType, string name)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override string GetEnumValue(object enumValue)
-    {
-        throw new NotImplementedException();
-    }
-
     public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container)
     {
         return innerTypeDescriptor
@@ -333,7 +323,7 @@ internal sealed class OrderedPropertiesTypeInspector(ITypeInspector innerTypeDes
 /// <summary>
 /// A YAML type inspector to read fields and properties from a type for serialization.
 /// </summary>
-internal sealed class FieldYamlTypeInspector : TypeInspectorSkeleton
+internal sealed class FieldYamlTypeInspector : ReflectionTypeInspector
 {
     private readonly ITypeResolver _TypeResolver;
     private readonly INamingConvention _NamingConvention;
@@ -383,16 +373,6 @@ internal sealed class FieldYamlTypeInspector : TypeInspectorSkeleton
         return !(name == "TargetObject" || name == "Exception");
     }
 
-    public override string GetEnumName(Type enumType, string name)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override string GetEnumValue(object enumValue)
-    {
-        throw new NotImplementedException();
-    }
-
     private sealed class Field : IPropertyDescriptor
     {
         private readonly FieldInfo _FieldInfo;
@@ -419,11 +399,11 @@ internal sealed class FieldYamlTypeInspector : TypeInspectorSkeleton
 
         public ScalarStyle ScalarStyle { get; set; }
 
-        public bool AllowNulls => throw new NotImplementedException();
+        public bool AllowNulls => true;
 
-        public bool Required => throw new NotImplementedException();
+        public bool Required => false;
 
-        public Type? ConverterType => throw new NotImplementedException();
+        public Type? ConverterType => null;
 
         public void Write(object target, object? value)
         {
@@ -473,7 +453,7 @@ internal sealed class FieldYamlTypeInspector : TypeInspectorSkeleton
 
         public bool Required => false;
 
-        public Type ConverterType => null;
+        public Type? ConverterType => null;
 
         public T? GetCustomAttribute<T>() where T : Attribute
         {
