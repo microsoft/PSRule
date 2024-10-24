@@ -19,7 +19,7 @@ public sealed class StringArrayConverter : IYamlTypeConverter
     }
 
     /// <inheritdoc/>
-    object? IYamlTypeConverter.ReadYaml(IParser parser, Type type)
+    object? IYamlTypeConverter.ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {
         if (parser.TryConsume<SequenceStart>(out _))
         {
@@ -38,7 +38,7 @@ public sealed class StringArrayConverter : IYamlTypeConverter
     }
 
     /// <inheritdoc/>
-    void IYamlTypeConverter.WriteYaml(IEmitter emitter, object? value, Type type)
+    void IYamlTypeConverter.WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
     {
         throw new NotImplementedException();
     }
