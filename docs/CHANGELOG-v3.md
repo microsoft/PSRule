@@ -27,6 +27,10 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+- Engineering:
+  - Bump YamlDotNet to v16.1.3.
+    [#1874](https://github.com/microsoft/PSRule/pull/1874)
+
 ## v3.0.0-B0275 (pre-release)
 
 What's changed since pre-release v3.0.0-B0267:
