@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.IO;
-using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Host;
 using PSRule.Pipeline;
@@ -11,7 +8,7 @@ using PSRule.Runtime;
 
 namespace PSRule;
 
-public sealed class ResourceValidatorTests
+public sealed class ResourceValidatorTests : BaseTests
 {
     [Fact]
     public void ResourceName()
@@ -66,21 +63,11 @@ public sealed class ResourceValidatorTests
 
     #region Helper methods
 
-    private static Source[] GetSource(string path = "FromFile.Rule.yaml")
+    private static new Source[] GetSource(string path = "FromFile.Rule.yaml")
     {
         var builder = new SourcePipelineBuilder(null, null);
         builder.Directory(GetSourcePath(path));
         return builder.Build();
-    }
-
-    private static PSRuleOption GetOption()
-    {
-        return new PSRuleOption();
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
 
     #endregion Helper methods

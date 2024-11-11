@@ -3,6 +3,9 @@
 
 using System;
 using System.IO;
+using System.Management.Automation;
+using PSRule.Configuration;
+using PSRule.Pipeline;
 using PSRule.Pipeline.Emitters;
 
 namespace PSRule;
@@ -14,9 +17,19 @@ public abstract class BaseTests
 {
     #region Helper methods
 
+    protected virtual PSRuleOption GetOption()
+    {
+        return new PSRuleOption();
+    }
+
+    internal TestWriter GetTestWriter(PSRuleOption option = default)
+    {
+        return new TestWriter(option ?? GetOption());
+    }
+
     protected static string GetSourcePath(string fileName)
     {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+        return Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName));
     }
 
     internal static InternalFileInfo GetFileInfo(string fileName)
@@ -30,6 +43,22 @@ public abstract class BaseTests
         using var stream = file.GetFileStream();
         using var reader = stream.AsTextReader();
         return reader.ReadToEnd();
+    }
+
+    protected static Source[] GetSource(string path)
+    {
+        var builder = new SourcePipelineBuilder(null, null);
+        builder.Directory(GetSourcePath(path));
+        return builder.Build();
+    }
+
+    protected static PSObject GetObject(params (string name, object value)[] properties)
+    {
+        var result = new PSObject();
+        for (var i = 0; properties != null && i < properties.Length; i++)
+            result.Properties.Add(new PSNoteProperty(properties[i].name, properties[i].value));
+
+        return result;
     }
 
     #endregion Helper methods

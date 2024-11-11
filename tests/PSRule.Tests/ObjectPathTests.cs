@@ -24,7 +24,7 @@ public sealed class ObjectPathTests
         Assert.Equal(2, actual[1].Value.PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<int>("value2"));
     }
 
-    private TargetObject GetYamlContent()
+    private static TargetObject GetYamlContent()
     {
         var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ObjectFromNestedFile.yaml");
         return new TargetObject(new PSObject(File.ReadAllText(path)));

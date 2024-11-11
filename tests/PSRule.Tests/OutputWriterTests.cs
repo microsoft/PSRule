@@ -8,7 +8,6 @@ using System.Management.Automation;
 using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
@@ -17,7 +16,7 @@ using PSRule.Rules;
 
 namespace PSRule;
 
-public sealed class OutputWriterTests
+public sealed class OutputWriterTests : BaseTests
 {
     [Fact]
     public void Sarif()
@@ -458,11 +457,6 @@ public sealed class OutputWriterTests
         {
             Time = 1000
         };
-    }
-
-    private static PSRuleOption GetOption()
-    {
-        return new PSRuleOption();
     }
 
     #endregion Helper methods

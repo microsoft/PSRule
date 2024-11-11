@@ -12,7 +12,7 @@ namespace PSRule;
 /// <summary>
 /// Tests for <see cref="PSRuleOption"/>.
 /// </summary>
-public sealed class PSRuleOptionTests
+public sealed class PSRuleOptionTests : BaseTests
 {
     [Fact]
     public void GetRootedBasePath()
@@ -89,7 +89,7 @@ public sealed class PSRuleOptionTests
 
     #region Helper methods
 
-    private static Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
+    private Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
     {
         var builder = new OptionContextBuilder(option);
         var context = new Runtime.RunspaceContext(PipelineContext.New(option, null, null, new TestWriter(GetOption()), builder, null));
@@ -105,14 +105,9 @@ public sealed class PSRuleOptionTests
         return builder.Build();
     }
 
-    private static PSRuleOption GetOption()
+    protected sealed override PSRuleOption GetOption()
     {
         return PSRuleOption.FromFile(GetSourcePath("PSRule.Tests.yml"));
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
 
     #endregion Helper methods

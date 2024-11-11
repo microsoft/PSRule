@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using PSRule.Pipeline.Dependencies;
 
 namespace PSRule;
 
-public sealed class LockFileTests
+public sealed class LockFileTests : BaseTests
 {
     [Fact]
     public void ReadFile()
@@ -18,13 +17,4 @@ public sealed class LockFileTests
         Assert.True(lockFile.Modules.TryGetValue("psrule.rules.msft.oss", out item));
         Assert.Equal("1.1.0", item.Version.ToString());
     }
-
-    #region Helper methods
-
-    private static string GetSourcePath(string fileName)
-    {
-        return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-    }
-
-    #endregion Helper methods
 }

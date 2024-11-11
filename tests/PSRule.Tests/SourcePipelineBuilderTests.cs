@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.IO;
-using PSRule.Configuration;
 using PSRule.Options;
 using PSRule.Pipeline;
 
@@ -12,7 +9,7 @@ namespace PSRule;
 /// <summary>
 /// Tests for <see cref="SourcePipelineBuilder"/>.
 /// </summary>
-public sealed class SourcePipelineBuilderTests
+public sealed class SourcePipelineBuilderTests : BaseTests
 {
     [Fact]
     public void Add_single_file()
@@ -111,18 +108,4 @@ public sealed class SourcePipelineBuilderTests
         Assert.Single(sources);
         Assert.Equal(20, sources[0].File.Length);
     }
-
-    #region Helper methods
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-    }
-
-    private static PSRuleOption GetOption()
-    {
-        return new PSRuleOption();
-    }
-
-    #endregion Helper methods
 }

@@ -2,9 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
-using System.IO;
 using System.Linq;
-using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Pipeline;
@@ -12,7 +10,7 @@ using PSRule.Runtime;
 
 namespace PSRule;
 
-public sealed class SuppressionGroupTests
+public sealed class SuppressionGroupTests : BaseTests
 {
     [Theory]
     [InlineData("SuppressionGroups.Rule.yaml")]
@@ -80,37 +78,16 @@ public sealed class SuppressionGroupTests
 
     #region Helper methods
 
-    private static PSRuleOption GetOption()
+    protected sealed override PSRuleOption GetOption()
     {
         var option = new PSRuleOption();
-        option.Output.Culture = new string[] { "en-US", "en" };
+        option.Output.Culture = ["en-US", "en"];
         return option;
     }
 
-    private static OptionContextBuilder GetOptionContext()
+    private OptionContextBuilder GetOptionContext()
     {
         return new OptionContextBuilder(GetOption());
-    }
-
-    private static Source[] GetSource(string path)
-    {
-        var builder = new SourcePipelineBuilder(null, null);
-        builder.Directory(GetSourcePath(path));
-        return builder.Build();
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-    }
-
-    private static PSObject GetObject(params (string name, object value)[] properties)
-    {
-        var result = new PSObject();
-        for (var i = 0; properties != null && i < properties.Length; i++)
-            result.Properties.Add(new PSNoteProperty(properties[i].name, properties[i].value));
-
-        return result;
     }
 
     #endregion Helper methods

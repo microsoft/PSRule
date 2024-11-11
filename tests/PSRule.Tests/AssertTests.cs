@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace PSRule;
 
 [Trait(LANGUAGE, LANGUAGEELEMENT)]
-public sealed class AssertTests
+public sealed class AssertTests : BaseTests
 {
     private const string LANGUAGE = "Language";
     private const string LANGUAGEELEMENT = "Variable";
@@ -1559,30 +1559,16 @@ public sealed class AssertTests
 
     #region Helper methods
 
-    private static void SetContext()
+    private void SetContext()
     {
-        var context = PipelineContext.New(new Configuration.PSRuleOption(), null, null, new TestWriter(new Configuration.PSRuleOption()), null, null);
+        var context = PipelineContext.New(new Configuration.PSRuleOption(), null, null, GetTestWriter(), null, null);
         var runspace = new RunspaceContext(context);
         runspace.PushScope(RunspaceScope.Rule);
-    }
-
-    private static PSObject GetObject(params (string name, object value)[] properties)
-    {
-        var result = new PSObject();
-        for (var i = 0; properties != null && i < properties.Length; i++)
-            result.Properties.Add(new PSNoteProperty(properties[i].name, properties[i].value));
-
-        return result;
     }
 
     private static Runtime.Assert GetAssertionHelper()
     {
         return new Runtime.Assert();
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
 
     private bool AssertionResult(AssertResult result)

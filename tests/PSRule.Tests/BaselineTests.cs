@@ -2,12 +2,10 @@
 // Licensed under the MIT License.
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Host;
@@ -18,7 +16,7 @@ using YamlDotNet.Serialization;
 
 namespace PSRule;
 
-public sealed class BaselineTests
+public sealed class BaselineTests : BaseTests
 {
     private const string BaselineYamlFileName = "Baseline.Rule.yaml";
     private const string BaselineJsonFileName = "Baseline.Rule.jsonc";
@@ -175,25 +173,13 @@ public sealed class BaselineTests
 
     #region Helper methods
 
-    private static Baseline[] GetBaselines(Source[] source)
+    private Baseline[] GetBaselines(Source[] source)
     {
         var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), new OptionContextBuilder(), null));
         context.Init(source);
         context.Begin();
         var baseline = HostHelper.GetBaseline(source, context).ToArray();
         return baseline;
-    }
-
-    private static PSRuleOption GetOption()
-    {
-        return new PSRuleOption();
-    }
-
-    private static Source[] GetSource(string path)
-    {
-        var builder = new SourcePipelineBuilder(null, null);
-        builder.Directory(GetSourcePath(path));
-        return builder.Build();
     }
 
     private static Source[] GetSourceInModule(string path, string moduleName, SourceType type)
@@ -205,11 +191,6 @@ public sealed class BaselineTests
             dependency: false
         );
         return [source];
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
 
     #endregion Helper methods
