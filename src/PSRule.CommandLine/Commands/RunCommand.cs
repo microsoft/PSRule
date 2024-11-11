@@ -28,7 +28,7 @@ public sealed class RunCommand
     /// <summary>
     /// Call <c>run</c>.
     /// </summary>
-    public static int Run(RunOptions operationOptions, ClientContext clientContext)
+    public static async Task<int> RunAsync(RunOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
     {
         var exitCode = 0;
         var file = LockFile.Read(null);
@@ -41,7 +41,17 @@ public sealed class RunCommand
         if (operationOptions.Outcome != null && operationOptions.Outcome.Value != Rules.RuleOutcome.None)
             clientContext.Option.Output.Outcome = operationOptions.Outcome;
 
-        // Build command
+        // Run restore command.
+        if (!operationOptions.NoRestore)
+        {
+            exitCode = await ModuleCommand.ModuleRestoreAsync(new RestoreOptions
+            {
+                Path = operationOptions.Path,
+                WriteOutput = false,
+            }, clientContext, cancellationToken);
+        }
+
+        // Build command.
         var builder = CommandLineBuilder.Assert(operationOptions.Module ?? [], clientContext.Option, clientContext.Host, file);
         builder.Baseline(BaselineOption.FromString(operationOptions.Baseline));
         builder.InputPath(inputPath);
@@ -56,6 +66,8 @@ public sealed class RunCommand
             if (pipeline.Result.ShouldBreakFromFailure)
                 exitCode = ERROR_BREAK_ON_FAILURE;
         }
-        return clientContext.Host.HadErrors || pipeline == null ? ERROR_GENERIC : exitCode;
+        exitCode = clientContext.Host.HadErrors || pipeline == null ? ERROR_GENERIC : exitCode;
+        clientContext.LogVerbose("[PSRule][R] -- Completed run with exit code {0}.", exitCode);
+        return await Task.FromResult(exitCode);
     }
 }

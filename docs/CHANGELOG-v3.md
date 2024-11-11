@@ -27,6 +27,10 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+- General improvements:
+  - Automatically restore missing modules when running CLI by @BernieWhite.
+    [#2552](https://github.com/microsoft/PSRule/issues/2552)
+    - Modules are automatically restored unless `--no-restore` is used with the `run` command.
 - Engineering:
   - Bump YamlDotNet to v16.1.3.
     [#1874](https://github.com/microsoft/PSRule/pull/1874)

@@ -135,7 +135,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     /// <inheritdoc/>
     public void ModuleByName(string name, string version = null)
     {
-        Log($"Looking for module by name: {name}@{version}");
+        Log($"[PSRule][S] -- Looking for module by name: {name}@{version}");
 
         var basePath = FindModule(name, version) ?? throw ModuleNotFound(name, version);
         var info = LoadManifest(basePath, name) ?? throw ModuleNotFound(name, version);
@@ -175,7 +175,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         if (_LocalPath == null)
             return false;
 
-        Log($"Searching for module in: {_LocalPath}");
+        Log($"[PSRule][S] -- Searching for module in: {_LocalPath}");
         if (!string.IsNullOrEmpty(version))
         {
             path = Environment.GetRootedBasePath(Path.Combine(_LocalPath, "Modules", name, version));
@@ -200,10 +200,10 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
             return false;
 
         var unsorted = new List<string>();
-        Log("Searching for module in PowerShell search paths.");
+        Log("[PSRule][S] -- Searching for module in PowerShell search paths.");
         for (var i = 0; i < searchPaths.Length; i++)
         {
-            Debug($"Search for module search path: {searchPaths[i]}");
+            Debug($"[PSRule][S] -- Search for module search path: {searchPaths[i]}");
             var searchPath = Environment.GetRootedBasePath(Path.Combine(searchPaths[i], name));
 
             // Try a specific version.
@@ -213,7 +213,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
                 var manifestPath = Path.Combine(versionPath, GetManifestName(name));
                 if (File.Exists(manifestPath))
                 {
-                    Debug($"Found module manifest: {manifestPath}");
+                    Debug($"[PSRule][S] -- Found module manifest: {manifestPath}");
                     unsorted.Add(versionPath);
                 }
                 continue;
@@ -227,7 +227,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
                     var manifestPath = Path.Combine(versionPath, GetManifestName(name));
                     if (File.Exists(manifestPath))
                     {
-                        Debug($"Found module manifest: {manifestPath}");
+                        Debug($"[PSRule][S] -- Found module manifest: {manifestPath}");
                         unsorted.Add(versionPath);
                     }
                 }
@@ -256,7 +256,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         if (!File.Exists(path))
             return null;
 
-        Log("Loading manifest for: {0}", basePath);
+        Log("[PSRule][S] -- Loading manifest for: {0}", basePath);
         using var reader = new StreamReader(path);
         var data = reader.ReadToEnd();
         var ast = System.Management.Automation.Language.Parser.ParseInput(data, out _, out _);

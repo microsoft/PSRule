@@ -241,6 +241,15 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restore from the module lock file and configured options. This is a shortcut for module restore..
+        /// </summary>
+        internal static string Restore_Description {
+            get {
+                return ResourceManager.GetString("Restore_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The name of a specific baseline to use..
         /// </summary>
         internal static string Run_Baseline_Description {
@@ -273,6 +282,15 @@ namespace PSRule.Tool.Resources {
         internal static string Run_Module_Description {
             get {
                 return ResourceManager.GetString("Run_Module_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not restore modules before running rules..
+        /// </summary>
+        internal static string Run_NoRestore_Description {
+            get {
+                return ResourceManager.GetString("Run_NoRestore_Description", resourceCulture);
             }
         }
         

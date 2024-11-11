@@ -29,6 +29,11 @@ The name of one or more modules that contain rules or resources to use during a 
 The name of a specific baseline to use.
 Currently, only a single baseline can be used during a run.
 
+### `--no-restore`
+
+Do not restore modules before running rules.
+By default, modules are restored automatically before running rules.
+
 ### `--outcome`
 
 Specifies the rule results to show in output.
