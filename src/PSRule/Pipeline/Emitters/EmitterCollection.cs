@@ -46,12 +46,15 @@ internal sealed class EmitterCollection : IDisposable
     /// Visit an object with applicable emitters.
     /// </summary>
     /// <param name="o">The object to visit.</param>
+    /// <returns>Returns <c>true</c> if the object was processed by any emitter.</returns>
     public bool Visit(object? o)
     {
         if (o == null) return false;
 
-        if (TryGetFile(o, out var info) && info != null)
+        if (TryGetFile(o, out var info, out var exists) && info != null)
         {
+            if (!exists) return false;
+
             if (_ShouldEmitFile && _Context.ShouldQueue(info.Path))
             {
                 // Emit the file.
@@ -90,23 +93,27 @@ internal sealed class EmitterCollection : IDisposable
         return o is PSObject pso ? pso.BaseObject : o;
     }
 
-    private static bool TryGetFile(object o, out InternalFileInfo? info)
+    private static bool TryGetFile(object o, out InternalFileInfo? info, out bool exists)
     {
         info = null;
+        exists = false;
         o = GetBaseObject(o);
-        if (o is FileInfo fileInfo && fileInfo.Exists)
+        if (o is FileInfo fileInfo)
         {
             info = new InternalFileInfo(fileInfo.FullName, fileInfo.Extension);
+            exists = fileInfo.Exists;
             return true;
         }
-        if (o is InputFileInfo inputFileInfo && inputFileInfo.AsFileInfo().Exists)
+        if (o is InputFileInfo inputFileInfo)
         {
             info = new InternalFileInfo(inputFileInfo.FullName, inputFileInfo.Extension);
+            exists = inputFileInfo.AsFileInfo().Exists;
             return true;
         }
-        if (o is InternalFileInfo internalFile && File.Exists(internalFile.Path))
+        if (o is InternalFileInfo internalFile)
         {
             info = internalFile;
+            exists = File.Exists(internalFile.Path);
             return true;
         }
         return false;
@@ -160,7 +167,12 @@ internal sealed class EmitterCollection : IDisposable
     {
         return next == null ?
             (context, o, type) => e.Accepts(context, type) && e.Visit(context, o) :
-            (context, o, type) => e.Accepts(context, type) && e.Visit(context, o) || next(context, o, type);
+            (context, o, type) =>
+            {
+                var r1 = e.Accepts(context, type) && e.Visit(context, o);
+                var r2 = next(context, o, type);
+                return r1 || r2;
+            };
     }
 }
 
