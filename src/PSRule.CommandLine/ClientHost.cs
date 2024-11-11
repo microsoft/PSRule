@@ -20,11 +20,11 @@ public sealed class ClientHost : HostContext
     private readonly ConsoleColor _ForegroundColor;
 
     /// <summary>
-    /// 
+    /// Create a client host.
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="verbose"></param>
-    /// <param name="debug"></param>
+    /// <param name="context">A client context.</param>
+    /// <param name="verbose">Enable or disable verbose log output.</param>
+    /// <param name="debug">Enable or disable debug log output.</param>
     public ClientHost(ClientContext context, bool verbose, bool debug)
     {
         _Context = context;
@@ -33,11 +33,11 @@ public sealed class ClientHost : HostContext
         _BackgroundColor = Console.BackgroundColor;
         _ForegroundColor = Console.ForegroundColor;
 
-        Verbose($"Using working path: {Directory.GetCurrentDirectory()}");
+        Verbose($"[PSRule] -- Using working path: {Directory.GetCurrentDirectory()}");
     }
 
     /// <summary>
-    /// 
+    /// Handles preference variables.
     /// </summary>
     /// <param name="variableName"></param>
     /// <returns></returns>

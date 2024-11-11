@@ -6,7 +6,7 @@ using PSRule.Rules;
 namespace PSRule.CommandLine.Models;
 
 /// <summary>
-/// 
+/// Options for the run command.
 /// </summary>
 public sealed class RunOptions
 {
@@ -34,4 +34,9 @@ public sealed class RunOptions
     /// 
     /// </summary>
     public string[]? InputPath { get; set; }
+
+    /// <summary>
+    /// Do not restore modules before running rules.
+    /// </summary>
+    public bool NoRestore { get; set; }
 }

@@ -12,6 +12,8 @@ The following commands are available in the CLI:
 
 - [run](./run.md) &mdash; Run rules against an input path and output the results.
 - [module](./module.md) &mdash; Manage or restore modules tracked by the module lock file and configured options.
+- [restore](./restore.md) &mdash; Restore from the module lock file and configured options.
+  This is a shortcut for module restore.
 
 ## `--version`
 

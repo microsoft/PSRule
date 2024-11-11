@@ -52,6 +52,8 @@ public sealed class ModuleCommand
 
         using var pwsh = CreatePowerShell();
 
+        clientContext.LogVerbose("[PSRule][M] -- Determining modules to restore.");
+
         // Restore from the lock file.
         foreach (var kv in file.Modules)
         {
@@ -63,7 +65,7 @@ public sealed class ModuleCommand
             // clientContext.LogVerbose(Messages.UsingModule, module, targetVersion.ToString());
             if (IsInstalled(pwsh, module, targetVersion, out var installedVersion) && !operationOptions.Force)
             {
-                clientContext.LogVerbose($"The module {module} is already installed.");
+                clientContext.LogVerbose($"[PSRule][M] -- The module {module} is already installed.");
                 continue;
             }
 
@@ -102,7 +104,7 @@ public sealed class ModuleCommand
                     (moduleConstraint == null || moduleConstraint.Accepts(installedVersion)))
                 {
                     // invocation.Log(Messages.UsingModule, includeModule, installedVersion.ToString());
-                    clientContext.LogVerbose($"The module {includeModule} is already installed.");
+                    clientContext.LogVerbose($"[PSRule][M] -- The module {includeModule} is already installed.");
                     continue;
                 }
 
@@ -130,6 +132,11 @@ public sealed class ModuleCommand
         }
 
         if (exitCode == 0)
+        {
+            clientContext.LogVerbose("[PSRule][M] -- All modules are restored and up-to-date.");
+        }
+
+        if (exitCode == 0 && operationOptions.WriteOutput)
         {
             ListModules(clientContext, GetModules(pwsh, file, clientContext.Option));
         }

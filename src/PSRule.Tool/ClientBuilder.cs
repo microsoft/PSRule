@@ -37,6 +37,7 @@ internal sealed class ClientBuilder
     private readonly Option<string[]> _Run_Module;
     private readonly Option<string> _Run_Baseline;
     private readonly Option<string[]> _Run_Outcome;
+    private readonly Option<bool> _Run_NoRestore;
 
     private ClientBuilder(RootCommand cmd)
     {
@@ -87,6 +88,10 @@ internal sealed class ClientBuilder
             description: CmdStrings.Run_Outcome_Description
         ).FromAmong("Pass", "Fail", "Error", "Processed", "Problem");
         _Run_Outcome.Arity = ArgumentArity.ZeroOrMore;
+        _Run_NoRestore = new Option<bool>(
+            "--no-restore",
+            description: CmdStrings.Run_NoRestore_Description
+        );
 
         // Options for the module command.
         _Module_Init_Force = new Option<bool>(
@@ -131,6 +136,7 @@ internal sealed class ClientBuilder
         var builder = new ClientBuilder(cmd);
         builder.AddRun();
         builder.AddModule();
+        builder.AddRestore();
         return builder.Command;
     }
 
@@ -147,7 +153,8 @@ internal sealed class ClientBuilder
         cmd.AddOption(_Run_Module);
         cmd.AddOption(_Run_Baseline);
         cmd.AddOption(_Run_Outcome);
-        cmd.SetHandler((invocation) =>
+        cmd.AddOption(_Run_NoRestore);
+        cmd.SetHandler(async (invocation) =>
         {
             var option = new RunOptions
             {
@@ -156,9 +163,10 @@ internal sealed class ClientBuilder
                 Module = invocation.ParseResult.GetValueForOption(_Run_Module),
                 Baseline = invocation.ParseResult.GetValueForOption(_Run_Baseline),
                 Outcome = ParseOutcome(invocation.ParseResult.GetValueForOption(_Run_Outcome)),
+                NoRestore = invocation.ParseResult.GetValueForOption(_Run_NoRestore),
             };
             var client = GetClientContext(invocation);
-            invocation.ExitCode = RunCommand.Run(option, client);
+            invocation.ExitCode = await RunCommand.RunAsync(option, client);
         });
         Command.AddCommand(cmd);
     }
@@ -293,7 +301,6 @@ internal sealed class ClientBuilder
 
         // Restore
         var restore = new Command("restore", CmdStrings.Module_Restore_Description);
-        // restore.AddOption(_Path);
         restore.AddOption(_Module_Restore_Force);
         restore.SetHandler(async (invocation) =>
         {
@@ -315,6 +322,27 @@ internal sealed class ClientBuilder
 
         cmd.AddOption(_Global_Path);
         Command.AddCommand(cmd);
+    }
+
+    /// <summary>
+    /// Add the <c>restore</c> command.
+    /// </summary>
+    private void AddRestore()
+    {
+        var restore = new Command("restore", CmdStrings.Restore_Description);
+        restore.AddOption(_Module_Restore_Force);
+        restore.SetHandler(async (invocation) =>
+        {
+            var option = new RestoreOptions
+            {
+                Path = invocation.ParseResult.GetValueForOption(_Global_Path),
+                Force = invocation.ParseResult.GetValueForOption(_Module_Restore_Force),
+            };
+            var client = GetClientContext(invocation);
+            invocation.ExitCode = await ModuleCommand.ModuleRestoreAsync(option, client);
+        });
+
+        Command.AddCommand(restore);
     }
 
     private ClientContext GetClientContext(InvocationContext invocation)

@@ -126,7 +126,7 @@ public static class Environment
     /// <remarks>
     /// A base path always includes a trailing <c>/</c>.
     /// </remarks>
-    internal static string GetRootedBasePath(string path, bool normalize = false, string? basePath = null)
+    public static string GetRootedBasePath(string path, bool normalize = false, string? basePath = null)
     {
         if (string.IsNullOrEmpty(path))
             path = string.Empty;
