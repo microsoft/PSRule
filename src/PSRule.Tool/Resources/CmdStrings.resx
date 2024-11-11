@@ -198,4 +198,10 @@
   <data name="Module_Prerelease_Description" xml:space="preserve">
     <value>Accept pre-release versions in addition to stable module versions.</value>
   </data>
+  <data name="Restore_Description" xml:space="preserve">
+    <value>Restore from the module lock file and configured options. This is a shortcut for module restore.</value>
+  </data>
+  <data name="Run_NoRestore_Description" xml:space="preserve">
+    <value>Do not restore modules before running rules.</value>
+  </data>
 </root>
