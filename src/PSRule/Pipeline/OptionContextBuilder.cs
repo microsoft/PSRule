@@ -25,12 +25,12 @@ internal sealed class OptionContextBuilder
     private readonly OptionScopeComparer _Comparer;
     private readonly string[] _DefaultCulture;
     private readonly List<string> _ConventionOrder;
-    private readonly BindTargetMethod _BindTargetName;
-    private readonly BindTargetMethod _BindTargetType;
-    private readonly BindTargetMethod _BindField;
-    private readonly string[] _InputTargetType;
+    private readonly BindTargetMethod? _BindTargetName;
+    private readonly BindTargetMethod? _BindTargetType;
+    private readonly BindTargetMethod? _BindField;
+    private readonly string[]? _InputTargetType;
 
-    internal OptionContextBuilder(string[] include = null, Hashtable tag = null, string[] convention = null)
+    internal OptionContextBuilder(string[]? include = null, Hashtable? tag = null, string[]? convention = null)
     {
         _ModuleBaselineScope = [];
         _Scopes = [];
@@ -50,7 +50,7 @@ internal sealed class OptionContextBuilder
     /// <param name="bindTargetName"></param>
     /// <param name="bindTargetType"></param>
     /// <param name="bindField"></param>
-    internal OptionContextBuilder(PSRuleOption option, string[] include = null, Hashtable tag = null, string[] convention = null, BindTargetMethod bindTargetName = null, BindTargetMethod bindTargetType = null, BindTargetMethod bindField = null)
+    internal OptionContextBuilder(PSRuleOption option, string[]? include = null, Hashtable? tag = null, string[]? convention = null, BindTargetMethod? bindTargetName = null, BindTargetMethod? bindTargetType = null, BindTargetMethod? bindField = null)
         : this(include, tag, convention)
     {
         Workspace(option);
@@ -109,7 +109,7 @@ internal sealed class OptionContextBuilder
         }
     }
 
-    private void Parameter(string[] ruleInclude, Hashtable ruleTag, string[] conventionInclude)
+    private void Parameter(string[]? ruleInclude, Hashtable? ruleTag, string[]? conventionInclude)
     {
         _Scopes.Add(OptionScope.FromParameters(ruleInclude, ruleTag, conventionInclude));
     }

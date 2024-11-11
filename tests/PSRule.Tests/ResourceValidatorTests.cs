@@ -17,7 +17,7 @@ public sealed class ResourceValidatorTests
     public void ResourceName()
     {
         var writer = new TestWriter(GetOption());
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContextBuilder(), null), writer);
+        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, writer, new OptionContextBuilder(), null));
 
         // Get good rules
         var rule = HostHelper.GetRule(GetSource(), context, includeDependencies: false);

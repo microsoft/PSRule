@@ -1519,19 +1519,19 @@ public sealed class AssertTests
         var value = GetObject((name: "name", value: "abcdefg"), (name: "value", value: 123));
 
         // String
-        Assert.True(assert.Like(value, "name", new string[] { "123*", "ab*" }).Result);
-        Assert.True(assert.Like(value, "name", new string[] { "123*", "ab*" }, caseSensitive: true).Result);
-        Assert.True(assert.Like(value, "name", new string[] { "AB*" }).Result);
-        Assert.True(assert.Like(value, "name", new string[] { "*cd*" }).Result);
-        Assert.True(assert.Like(value, "name", new string[] { "*fg*" }).Result);
-        Assert.False(assert.Like(value, "name", new string[] { "abcdefgh" }).Result);
-        Assert.False(assert.Like(value, "name", new string[] { "AB*" }, caseSensitive: true).Result);
-        Assert.False(assert.Like(value, "name", new string[] { "cd" }).Result);
+        Assert.True(assert.Like(value, "name", ["123*", "ab*"]).Result);
+        Assert.True(assert.Like(value, "name", ["123*", "ab*"], caseSensitive: true).Result);
+        Assert.True(assert.Like(value, "name", ["AB*"]).Result);
+        Assert.True(assert.Like(value, "name", ["*cd*"]).Result);
+        Assert.True(assert.Like(value, "name", ["*fg*"]).Result);
+        Assert.False(assert.Like(value, "name", ["abcdefgh"]).Result);
+        Assert.False(assert.Like(value, "name", ["AB*"], caseSensitive: true).Result);
+        Assert.False(assert.Like(value, "name", ["cd"]).Result);
 
         // Integer
-        Assert.False(assert.Like(value, "value", new string[] { "12*" }).Result);
+        Assert.False(assert.Like(value, "value", ["12*"]).Result);
 
-        Assert.Equal("value", assert.Like(value, "value", new string[] { "12*" }).ToResultReason().FirstOrDefault().Path);
+        Assert.Equal("value", assert.Like(value, "value", ["12*"]).ToResultReason().FirstOrDefault().Path);
     }
 
     [Fact]
@@ -1542,27 +1542,27 @@ public sealed class AssertTests
         var value = GetObject((name: "name", value: "abcdefg"), (name: "value", value: 123));
 
         // String
-        Assert.False(assert.NotLike(value, "name", new string[] { "123*", "ab*" }).Result);
-        Assert.False(assert.NotLike(value, "name", new string[] { "123*", "ab*" }, caseSensitive: true).Result);
-        Assert.False(assert.NotLike(value, "name", new string[] { "AB*" }).Result);
-        Assert.False(assert.NotLike(value, "name", new string[] { "*cd*" }).Result);
-        Assert.False(assert.NotLike(value, "name", new string[] { "*fg*" }).Result);
-        Assert.True(assert.NotLike(value, "name", new string[] { "abcdefgh" }).Result);
-        Assert.True(assert.NotLike(value, "name", new string[] { "AB*" }, caseSensitive: true).Result);
-        Assert.True(assert.NotLike(value, "name", new string[] { "cd" }).Result);
+        Assert.False(assert.NotLike(value, "name", ["123*", "ab*"]).Result);
+        Assert.False(assert.NotLike(value, "name", ["123*", "ab*"], caseSensitive: true).Result);
+        Assert.False(assert.NotLike(value, "name", ["AB*"]).Result);
+        Assert.False(assert.NotLike(value, "name", ["*cd*"]).Result);
+        Assert.False(assert.NotLike(value, "name", ["*fg*"]).Result);
+        Assert.True(assert.NotLike(value, "name", ["abcdefgh"]).Result);
+        Assert.True(assert.NotLike(value, "name", ["AB*"], caseSensitive: true).Result);
+        Assert.True(assert.NotLike(value, "name", ["cd"]).Result);
 
         // Integer
-        Assert.True(assert.NotLike(value, "value", new string[] { "12*" }).Result);
+        Assert.True(assert.NotLike(value, "value", ["12*"]).Result);
 
-        Assert.Equal("name", assert.NotLike(value, "name", new string[] { "123*", "ab*" }).ToResultReason().FirstOrDefault().Path);
+        Assert.Equal("name", assert.NotLike(value, "name", ["123*", "ab*"]).ToResultReason().FirstOrDefault().Path);
     }
 
     #region Helper methods
 
     private static void SetContext()
     {
-        var context = PipelineContext.New(new Configuration.PSRuleOption(), null, null, null, null, null, null, null);
-        var runspace = new RunspaceContext(context, null);
+        var context = PipelineContext.New(new Configuration.PSRuleOption(), null, null, new TestWriter(new Configuration.PSRuleOption()), null, null);
+        var runspace = new RunspaceContext(context);
         runspace.PushScope(RunspaceScope.Rule);
     }
 

@@ -24,7 +24,7 @@ internal sealed class ResourceCache : IResourceCache
     internal readonly List<SelectorV1> Selectors;
     internal readonly List<SuppressionGroupV1> SuppressionGroups;
 
-    public ResourceCache(IList<ResourceRef> unresolved)
+    public ResourceCache(IList<ResourceRef>? unresolved)
     {
         _TrackedIssues = [];
         Selectors = [];

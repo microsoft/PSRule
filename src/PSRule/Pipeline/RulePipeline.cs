@@ -22,7 +22,7 @@ internal abstract class RulePipeline : IPipeline
     {
         Result = new DefaultPipelineResult(writer, pipelineContext.Option.Execution.Break.GetValueOrDefault(ExecutionOption.Default.Break.Value));
         Pipeline = pipelineContext;
-        Context = new RunspaceContext(Pipeline, writer);
+        Context = new RunspaceContext(Pipeline);
         Source = source;
         Reader = reader;
         Writer = writer;

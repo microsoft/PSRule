@@ -376,7 +376,7 @@ public sealed class OutputWriterTests
         var option = GetOption();
         var output = new TestWriter(option);
         var result = new InvokeResult();
-        var context = PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContextBuilder(), null);
+        var context = PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), new OptionContextBuilder(), null);
         result.Add(GetPass());
         result.Add(GetFail());
         result.Add(GetFail("rid-003", SeverityLevel.Warning, ruleId: "TestModule\\Rule-003"));

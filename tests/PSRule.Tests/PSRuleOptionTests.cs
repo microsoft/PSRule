@@ -92,7 +92,7 @@ public sealed class PSRuleOptionTests
     private static Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
     {
         var builder = new OptionContextBuilder(option);
-        var context = new Runtime.RunspaceContext(PipelineContext.New(option, null, null, null, null, null, builder, null), null);
+        var context = new Runtime.RunspaceContext(PipelineContext.New(option, null, null, new TestWriter(GetOption()), builder, null));
         context.Init(null);
         context.Begin();
         return new Runtime.Configuration(context);

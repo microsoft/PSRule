@@ -18,7 +18,7 @@ public sealed class ModuleConfigTests
     [InlineData("ModuleConfig.Rule.jsonc")]
     public void ReadModuleConfig(string path)
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, new OptionContextBuilder(), null), null);
+        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), new OptionContextBuilder(), null));
         var configuration = HostHelper.GetModuleConfigForTests(GetSource(path), context).ToArray();
         Assert.NotNull(configuration);
         Assert.Equal("Configuration1", configuration[0].Name);

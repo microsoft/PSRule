@@ -19,7 +19,7 @@ public sealed class SuppressionGroupTests
     [InlineData("SuppressionGroups.Rule.jsonc")]
     public void ReadSuppressionGroup(string path)
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, null, null, null, GetOptionContext(), null), null);
+        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), GetOptionContext(), null));
         context.Init(GetSource(path));
         context.Begin();
         var suppressionGroup = HostHelper.GetSuppressionGroupForTests(GetSource(path), context).ToArray();

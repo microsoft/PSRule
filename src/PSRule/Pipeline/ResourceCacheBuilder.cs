@@ -6,6 +6,8 @@ using PSRule.Host;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// Defines a builder to create a resource cache.
 /// </summary>
@@ -14,12 +16,13 @@ internal sealed class ResourceCacheBuilder(IPipelineWriter writer)
     private IEnumerable<IResource> _Resources;
     private readonly IPipelineWriter _Writer = writer;
 
-    public void Import(Source[] sources)
+    public ResourceCacheBuilder Import(Source[] sources)
     {
         _Resources = HostHelper.GetMetaResources<IResource>(sources, new ResourceCacheDiscoveryContext(_Writer));
+        return this;
     }
 
-    public ResourceCache Build(List<ResourceRef> unresolved)
+    public ResourceCache Build(List<ResourceRef>? unresolved)
     {
         var cache = new ResourceCache(unresolved);
 
@@ -29,3 +32,5 @@ internal sealed class ResourceCacheBuilder(IPipelineWriter writer)
         return cache;
     }
 }
+
+#nullable restore

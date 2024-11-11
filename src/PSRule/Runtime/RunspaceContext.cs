@@ -73,9 +73,8 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
     // Track whether Dispose has been called.
     private bool _Disposed;
 
-    internal RunspaceContext(PipelineContext pipeline, IPipelineWriter writer)
+    internal RunspaceContext(PipelineContext pipeline)
     {
-        Writer = writer;
         CurrentThread = this;
         Pipeline = pipeline;
 
@@ -98,7 +97,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     internal bool HadErrors => _RuleErrors > 0;
 
-    public IPipelineWriter Writer { get; }
+    public IPipelineWriter Writer => Pipeline.Writer;
 
     internal IEnumerable<InvokeResult>? Output { get; private set; }
 
