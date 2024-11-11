@@ -351,48 +351,46 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
             UnprocessedObject = unprocessedObject;
     }
 
-    /// <summary>
-    /// Load from dictionary.
-    /// </summary>
-    internal void Load(Dictionary<string, object> index)
+    /// <inheritdoc/>
+    public void Import(IDictionary<string, object> dictionary)
     {
-        if (index.TryPopEnum("Execution.Break", out BreakLevel @break))
+        if (dictionary.TryPopEnum("Execution.Break", out BreakLevel @break))
             Break = @break;
 
-        if (index.TryPopEnum("Execution.HashAlgorithm", out HashAlgorithm hashAlgorithm))
+        if (dictionary.TryPopEnum("Execution.HashAlgorithm", out HashAlgorithm hashAlgorithm))
             HashAlgorithm = hashAlgorithm;
 
-        if (index.TryPopEnum("Execution.DuplicateResourceId", out ExecutionActionPreference duplicateResourceId))
+        if (dictionary.TryPopEnum("Execution.DuplicateResourceId", out ExecutionActionPreference duplicateResourceId))
             DuplicateResourceId = duplicateResourceId;
 
-        if (index.TryPopEnum("Execution.LanguageMode", out LanguageMode languageMode))
+        if (dictionary.TryPopEnum("Execution.LanguageMode", out LanguageMode languageMode))
             LanguageMode = languageMode;
 
-        if (index.TryPopEnum("Execution.InitialSessionState", out SessionState initialSessionState))
+        if (dictionary.TryPopEnum("Execution.InitialSessionState", out SessionState initialSessionState))
             InitialSessionState = initialSessionState;
 
-        if (index.TryPopEnum("Execution.RestrictScriptSource", out RestrictScriptSource restrictScriptSource))
+        if (dictionary.TryPopEnum("Execution.RestrictScriptSource", out RestrictScriptSource restrictScriptSource))
             RestrictScriptSource = restrictScriptSource;
 
-        if (index.TryPopEnum("Execution.SuppressionGroupExpired", out ExecutionActionPreference suppressionGroupExpired))
+        if (dictionary.TryPopEnum("Execution.SuppressionGroupExpired", out ExecutionActionPreference suppressionGroupExpired))
             SuppressionGroupExpired = suppressionGroupExpired;
 
-        if (index.TryPopEnum("Execution.RuleExcluded", out ExecutionActionPreference ruleExcluded))
+        if (dictionary.TryPopEnum("Execution.RuleExcluded", out ExecutionActionPreference ruleExcluded))
             RuleExcluded = ruleExcluded;
 
-        if (index.TryPopEnum("Execution.RuleSuppressed", out ExecutionActionPreference ruleSuppressed))
+        if (dictionary.TryPopEnum("Execution.RuleSuppressed", out ExecutionActionPreference ruleSuppressed))
             RuleSuppressed = ruleSuppressed;
 
-        if (index.TryPopEnum("Execution.AliasReference", out ExecutionActionPreference aliasReference))
+        if (dictionary.TryPopEnum("Execution.AliasReference", out ExecutionActionPreference aliasReference))
             AliasReference = aliasReference;
 
-        if (index.TryPopEnum("Execution.RuleInconclusive", out ExecutionActionPreference ruleInconclusive))
+        if (dictionary.TryPopEnum("Execution.RuleInconclusive", out ExecutionActionPreference ruleInconclusive))
             RuleInconclusive = ruleInconclusive;
 
-        if (index.TryPopEnum("Execution.InvariantCulture", out ExecutionActionPreference invariantCulture))
+        if (dictionary.TryPopEnum("Execution.InvariantCulture", out ExecutionActionPreference invariantCulture))
             InvariantCulture = invariantCulture;
 
-        if (index.TryPopEnum("Execution.UnprocessedObject", out ExecutionActionPreference unprocessedObject))
+        if (dictionary.TryPopEnum("Execution.UnprocessedObject", out ExecutionActionPreference unprocessedObject))
             UnprocessedObject = unprocessedObject;
     }
 }

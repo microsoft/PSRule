@@ -203,30 +203,28 @@ public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
             UseQualifiedName = useQualifiedName;
     }
 
-    /// <summary>
-    /// Load from a dictionary.
-    /// </summary>
-    internal void Load(Dictionary<string, object> index)
+    /// <inheritdoc/>
+    public void Import(IDictionary<string, object> dictionary)
     {
-        if (index.TryPopValue("Binding.Field", out Hashtable map))
+        if (dictionary.TryPopValue("Binding.Field", out Hashtable map))
             Field = new FieldMap(map);
 
-        if (index.TryPopBool("Binding.IgnoreCase", out var ignoreCase))
+        if (dictionary.TryPopBool("Binding.IgnoreCase", out var ignoreCase))
             IgnoreCase = ignoreCase;
 
-        if (index.TryPopString("Binding.NameSeparator", out var nameSeparator))
+        if (dictionary.TryPopString("Binding.NameSeparator", out var nameSeparator))
             NameSeparator = nameSeparator;
 
-        if (index.TryPopBool("Binding.PreferTargetInfo", out var preferTargetInfo))
+        if (dictionary.TryPopBool("Binding.PreferTargetInfo", out var preferTargetInfo))
             PreferTargetInfo = preferTargetInfo;
 
-        if (index.TryPopStringArray("Binding.TargetName", out var targetName))
+        if (dictionary.TryPopStringArray("Binding.TargetName", out var targetName))
             TargetName = targetName;
 
-        if (index.TryPopStringArray("Binding.TargetType", out var targetType))
+        if (dictionary.TryPopStringArray("Binding.TargetType", out var targetType))
             TargetType = targetType;
 
-        if (index.TryPopValue("Binding.UseQualifiedName", out bool useQualifiedName))
+        if (dictionary.TryPopValue("Binding.UseQualifiedName", out bool useQualifiedName))
             UseQualifiedName = useQualifiedName;
     }
 }

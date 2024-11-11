@@ -160,13 +160,17 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         var yaml = GetYaml();
         return string.IsNullOrEmpty(_SourcePath)
             ? yaml
-            : string.Concat(
-                string.Format(
+            : string.Concat
+            (
+                string.Format
+                (
                     Thread.CurrentThread.CurrentCulture,
                     PSRuleResources.OptionsSourceComment,
-                    _SourcePath),
+                    _SourcePath
+                ),
                 System.Environment.NewLine,
-                yaml);
+                yaml
+            );
     }
 
     /// <summary>
@@ -354,10 +358,10 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
 
         // Start loading matching values
         var index = BuildIndex(hashtable);
-        option.Baseline.Load(index);
-        option.Binding.Load(index);
+        option.Baseline.Import(index);
+        option.Binding.Import(index);
         option.Convention.Load(index);
-        option.Execution.Load(index);
+        option.Execution.Import(index);
         option.Include.Load(index);
         option.Input.Load(index);
         option.Logging.Load(index);
@@ -526,6 +530,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
             .WithTypeConverter(new FieldMapYamlTypeConverter())
             .WithTypeConverter(new StringArrayMapConverter())
             .Build();
+
         return s.Serialize(this);
     }
 }

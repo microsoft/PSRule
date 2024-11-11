@@ -89,12 +89,10 @@ public sealed class BaselineOption : IEquatable<BaselineOption>, IBaselineOption
             Group = group;
     }
 
-    /// <summary>
-    /// Load from a dictionary.
-    /// </summary>
-    internal void Load(Dictionary<string, object> index)
+    /// <inheritdoc/>
+    public void Import(IDictionary<string, object> dictionary)
     {
-        if (index.TryPopStringArrayMap("Baseline.Group", out var group))
+        if (dictionary.TryPopStringArrayMap("Baseline.Group", out var group))
             Group = group;
     }
 }
