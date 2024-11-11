@@ -23,7 +23,7 @@ namespace PSRule.Pipeline;
 /// <summary>
 /// Context applicable to the whole pipeline, including during early stage setup.
 /// </summary>
-internal sealed class PipelineContext : IDisposable, IBindingContext
+internal sealed class PipelineContext : IPipelineContext, IBindingContext
 {
     private const string ErrorPreference = "ErrorActionPreference";
     private const string WarningPreference = "WarningPreference";
@@ -64,21 +64,24 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
 
     public System.Security.Cryptography.HashAlgorithm ObjectHashAlgorithm { get; }
 
-    private PipelineContext(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
+    public IPipelineWriter Writer { get; }
+
+    private PipelineContext(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, IPipelineWriter writer, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
     {
         _OptionBuilder = optionBuilder;
         Option = option;
         HostContext = hostContext;
         Reader = reader;
+        Writer = writer;
         _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode.Value;
-        _PathExpressionCache = new Dictionary<string, PathExpression>();
-        LocalizedDataCache = new Dictionary<string, Hashtable>();
-        ExpressionCache = new Dictionary<string, object>();
-        ContentCache = new Dictionary<string, PSObject[]>();
-        Selector = new Dictionary<string, SelectorVisitor>();
-        SuppressionGroup = new List<SuppressionGroupVisitor>();
-        _Unresolved = unresolved ?? new List<ResourceRef>();
-        _TrackedIssues = new List<ResourceIssue>();
+        _PathExpressionCache = [];
+        LocalizedDataCache = [];
+        ExpressionCache = [];
+        ContentCache = [];
+        Selector = [];
+        SuppressionGroup = [];
+        _Unresolved = unresolved ?? [];
+        _TrackedIssues = [];
 
         ObjectHashAlgorithm = option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm.Value).GetHashAlgorithm();
         RunId = Environment.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
@@ -86,9 +89,9 @@ internal sealed class PipelineContext : IDisposable, IBindingContext
         _DefaultOptionContext = _OptionBuilder?.Build(null);
     }
 
-    public static PipelineContext New(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
+    public static PipelineContext New(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, IPipelineWriter writer, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
     {
-        var context = new PipelineContext(option, hostContext, reader, bindTargetName, bindTargetType, bindField, optionBuilder, unresolved);
+        var context = new PipelineContext(option, hostContext, reader, writer, optionBuilder, unresolved);
         CurrentThread = context;
         return context;
     }

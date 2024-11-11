@@ -166,8 +166,9 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     /// <summary>
     /// Create a pipeline context.
     /// </summary>
-    protected PipelineContext PrepareContext((BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) binding)
+    protected PipelineContext PrepareContext((BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) binding, IPipelineWriter writer = default)
     {
+        writer ??= PrepareWriter();
         var unresolved = new List<ResourceRef>();
         if (_Baseline is Configuration.BaselineOption.BaselineRef baselineRef)
             unresolved.Add(new BaselineRef(ResolveBaselineGroup(baselineRef.Name), ScopeType.Explicit));
@@ -176,9 +177,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             option: Option,
             hostContext: HostContext,
             reader: PrepareReader(),
-            bindTargetName: binding.bindTargetName,
-            bindTargetType: binding.bindTargetType,
-            bindField: binding.bindField,
+            writer: writer,
             optionBuilder: GetOptionBuilder(binding),
             unresolved: unresolved
         );

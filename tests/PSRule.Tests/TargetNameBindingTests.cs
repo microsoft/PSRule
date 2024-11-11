@@ -41,13 +41,13 @@ public sealed class TargetNameBindingTests
         var pso2 = PSObject.AsPSObject(testObject2);
 
         // SHA512
-        PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, null, null, null, null, null);
+        PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), null, null);
 
         Assert.Equal("f3d2f8ce966af96a8d320e8f5c088604324885a0d02f44b174", PipelineHookActions.BindTargetName(null, false, false, pso1, out _));
         Assert.Equal("f3d2f8ce966af96a8d320e8f5c088604324885a0d02f44b174", PipelineHookActions.BindTargetName(null, false, false, pso2, out _));
 
         // SHA256
-        PipelineContext.CurrentThread = PipelineContext.New(GetOption(HashAlgorithm.SHA256), null, null, null, null, null, null, null);
+        PipelineContext.CurrentThread = PipelineContext.New(GetOption(HashAlgorithm.SHA256), null, null, new TestWriter(GetOption()), null, null);
 
         Assert.Equal("67327c8cd8622d17cf1702a76cbbb685e9ef260ce39c9f6779", PipelineHookActions.BindTargetName(null, false, false, pso1, out _));
         Assert.Equal("67327c8cd8622d17cf1702a76cbbb685e9ef260ce39c9f6779", PipelineHookActions.BindTargetName(null, false, false, pso2, out _));
@@ -59,7 +59,7 @@ public sealed class TargetNameBindingTests
         var testObject1 = new TestModel3 { Name = "OtherName" };
         var pso1 = PSObject.AsPSObject(testObject1);
 
-        PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, null, null, null, null, null);
+        PipelineContext.CurrentThread = PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), null, null);
 
         var actual = PipelineHookActions.BindTargetName(new string[] { "Name" }, false, false, pso1, out var path);
         Assert.Equal("OtherName", actual);
