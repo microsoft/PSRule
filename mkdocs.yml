@@ -104,6 +104,7 @@ nav:
           - Index: concepts/cli/index.md
           - run: concepts/cli/run.md
           - module: concepts/cli/module.md
+          - restore: concepts/cli/restore.md
       - Assertion methods: concepts/PSRule/en-US/about_PSRule_Assert.md
       - Baselines: concepts/PSRule/en-US/about_PSRule_Baseline.md
       - Badges: concepts/PSRule/en-US/about_PSRule_Badges.md

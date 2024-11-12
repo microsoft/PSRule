@@ -25,7 +25,7 @@ internal interface ILanguageScope : IDisposable
     /// <summary>
     /// Get an ordered culture preference list which will be tries for finding help.
     /// </summary>
-    string[] Culture { get; }
+    string[]? Culture { get; }
 
     void Configure(OptionContext context);
 

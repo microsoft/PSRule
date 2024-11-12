@@ -95,6 +95,7 @@ public sealed class PSRuleOptionTests : BaseTests
         var context = new Runtime.RunspaceContext(PipelineContext.New(option, null, null, new TestWriter(GetOption()), builder, null));
         context.Init(null);
         context.Begin();
+        context.EnterLanguageScope(GetSource()[0].File[0]);
         return new Runtime.Configuration(context);
     }
 

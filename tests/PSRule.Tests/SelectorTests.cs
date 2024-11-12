@@ -1873,6 +1873,7 @@ public sealed class SelectorTests : BaseTests
         context.Init(source);
         context.Begin();
         var selector = HostHelper.GetSelectorForTests(source, context).ToArray().FirstOrDefault(s => s.Name == name);
+        context.EnterLanguageScope(selector.Source);
         return new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
     }
 

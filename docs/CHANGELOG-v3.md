@@ -32,8 +32,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
     [#2552](https://github.com/microsoft/PSRule/issues/2552)
     - Modules are automatically restored unless `--no-restore` is used with the `run` command.
 - Engineering:
-  - Bump YamlDotNet to v16.1.3.
-    [#1874](https://github.com/microsoft/PSRule/pull/1874)
+  - Bump YamlDotNet to v16.2.0.
+    [#2596](https://github.com/microsoft/PSRule/pull/2596)
 
 ## v3.0.0-B0275 (pre-release)
 

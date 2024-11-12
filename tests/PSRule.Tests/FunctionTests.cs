@@ -625,6 +625,7 @@ public sealed class FunctionTests
         context.Init(s);
         context.Begin();
         context.PushScope(Runtime.RunspaceScope.Precondition);
+        context.EnterLanguageScope(s[0].File[0]);
         context.EnterTargetObject(new TargetObject(targetObject));
         return result;
     }
