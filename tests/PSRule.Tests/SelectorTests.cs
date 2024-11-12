@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using Newtonsoft.Json.Linq;
@@ -14,7 +13,7 @@ using PSRule.Runtime;
 
 namespace PSRule;
 
-public sealed class SelectorTests
+public sealed class SelectorTests : BaseTests
 {
     private const string SelectorYamlFileName = "Selectors.Rule.yaml";
     private const string SelectorJsonFileName = "Selectors.Rule.jsonc";
@@ -1860,30 +1859,14 @@ public sealed class SelectorTests
 
     #region Helper methods
 
-    private static PSRuleOption GetOption()
+    protected sealed override PSRuleOption GetOption()
     {
         var option = new PSRuleOption();
         option.Configuration["ConfigArray"] = new string[] { "1", "2", "3", "4", "5" };
         return option;
     }
 
-    private static Source[] GetSource(string path)
-    {
-        var builder = new SourcePipelineBuilder(null, null);
-        builder.Directory(GetSourcePath(path));
-        return builder.Build();
-    }
-
-    private static PSObject GetObject(params (string name, object value)[] properties)
-    {
-        var result = new PSObject();
-        for (var i = 0; properties != null && i < properties.Length; i++)
-            result.Properties.Add(new PSNoteProperty(properties[i].name, properties[i].value));
-
-        return result;
-    }
-
-    private static SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
+    private SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
     {
         var builder = new OptionContextBuilder(GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
         context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), builder, null));
@@ -1891,11 +1874,6 @@ public sealed class SelectorTests
         context.Begin();
         var selector = HostHelper.GetSelectorForTests(source, context).ToArray().FirstOrDefault(s => s.Name == name);
         return new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
 
     #endregion Helper methods

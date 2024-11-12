@@ -334,7 +334,7 @@ public sealed class PathExpressionTests
 
     #region Helper methods
 
-    private static object GetJsonContent()
+    private static JToken GetJsonContent()
     {
         var settings = new JsonLoadSettings
         {
@@ -346,7 +346,7 @@ public sealed class PathExpressionTests
         return JToken.Load(reader, settings);
     }
 
-    private static object GetPSObjectContent()
+    private static PSObject GetPSObjectContent()
     {
         var result = new PSObject();
         result.Properties.Add(new PSNoteProperty("string", ""));

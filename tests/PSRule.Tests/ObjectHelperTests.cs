@@ -73,10 +73,10 @@ public sealed class ObjectHelperTests
         {
             Name = "TestObject1",
             Value = new TestObject2 { Value1 = "Value1" },
-            Value2 = new string[] { "1", "2" },
+            Value2 = ["1", "2"],
             Metadata = new Hashtable(),
-            Value3 = new List<string>(new string[] { "1", "2" }),
-            Value4 = new List<string>(new string[] { "1" }).AsReadOnly(),
+            Value3 = new List<string>(["1", "2"]),
+            Value4 = new List<string>(["1"]).AsReadOnly(),
             Value5 = value5
         };
         result.Metadata.Add("app.kubernetes.io/name", "KubeName");

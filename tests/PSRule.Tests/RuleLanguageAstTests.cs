@@ -1,13 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.IO;
 using PSRule.Host;
 
 namespace PSRule;
 
-public sealed class RuleLanguageAstTests
+public sealed class RuleLanguageAstTests : BaseTests
 {
     [Fact]
     public void RuleName()
@@ -18,13 +16,4 @@ public sealed class RuleLanguageAstTests
 
         Assert.Equal("PSRule.Parse.InvalidResourceName", visitor.Errors[0].FullyQualifiedErrorId);
     }
-
-    #region Helper methods
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-    }
-
-    #endregion Helper methods
 }

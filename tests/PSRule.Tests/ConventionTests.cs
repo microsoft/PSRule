@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.IO;
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Pipeline;
@@ -10,7 +8,7 @@ using static PSRule.PipelineTests;
 
 namespace PSRule;
 
-public sealed class ConventionTests
+public sealed class ConventionTests : BaseTests
 {
     [Fact]
     public void WithConventions()
@@ -98,13 +96,8 @@ public sealed class ConventionTests
     private static PSRuleOption GetOption(string path = null)
     {
         var option = path == null ? new PSRuleOption() : PSRuleOption.FromFile(path);
-        option.Output.Culture = new[] { "en-US" };
+        option.Output.Culture = ["en-US"];
         return option;
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
 
     #endregion Helper methods

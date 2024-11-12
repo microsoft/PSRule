@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.IO;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
@@ -15,7 +13,7 @@ namespace PSRule;
 /// <summary>
 /// Tests for <see cref="OptionContext"/>.
 /// </summary>
-public sealed class OptionContextTests
+public sealed class OptionContextTests : BaseTests
 {
     [Fact]
     public void Build()
@@ -149,11 +147,6 @@ public sealed class OptionContextTests
                 Include = ruleInclude
             }
         };
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
 
     #endregion Helper methods
