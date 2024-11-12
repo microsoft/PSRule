@@ -65,10 +65,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
     private readonly List<ResultReason> _Reason;
     private readonly List<IConvention> _Conventions;
 
-    /// <summary>
-    /// A collection of languages scopes for this pipeline.
-    /// </summary>
-    private readonly LanguageScopeSet _LanguageScopes;
+    private ILanguageScope? _CurrentLanguageScope;
 
     // Track whether Dispose has been called.
     private bool _Disposed;
@@ -91,7 +88,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         _RuleTimer = new Stopwatch();
         _Reason = [];
         _Conventions = [];
-        _LanguageScopes = new LanguageScopeSet();
         _Scope = new Stack<RunspaceScope>();
     }
 
@@ -105,12 +101,12 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     internal SourceScope? Source { get; private set; }
 
-    internal ILanguageScope LanguageScope
+    internal ILanguageScope? LanguageScope
     {
         [DebuggerStepThrough]
         get
         {
-            return _LanguageScopes.Current;
+            return _CurrentLanguageScope;
         }
     }
 
@@ -524,7 +520,10 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         if (!file.Exists())
             throw new FileNotFoundException(PSRuleResources.ScriptNotFound, file.Path);
 
-        _LanguageScopes.UseScope(file.Module);
+        if (!Pipeline.LanguageScopes.TryScope(file.Module, out var scope))
+            throw new Exception("Language scope is unknown.");
+
+        _CurrentLanguageScope = scope;
 
         if (TargetObject != null && LanguageScope != null)
             Binding = LanguageScope.Bind(TargetObject);
@@ -535,6 +534,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
     public void ExitLanguageScope(ISourceFile file)
     {
         // Look at scope popping and validation.
+        _CurrentLanguageScope = null;
 
         Source = null;
     }
@@ -645,6 +645,8 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     internal void AddService(string id, object service)
     {
+        if (LanguageScope == null) throw new Exception("Can not call out of scope.");
+
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
         if (!StringComparer.OrdinalIgnoreCase.Equals(LanguageScope.Name, scopeName) || string.IsNullOrEmpty(name))
             return;
@@ -654,8 +656,10 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     internal object? GetService(string id)
     {
+        if (LanguageScope == null) throw new Exception("Can not call out of scope.");
+
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
-        return !_LanguageScopes.TryScope(scopeName, out var scope) || string.IsNullOrEmpty(name) ? null : scope.GetService(name!);
+        return !Pipeline.LanguageScopes.TryScope(scopeName, out var scope) || string.IsNullOrEmpty(name) ? null : scope.GetService(name!);
     }
 
     private void RunConventionInitialize()
@@ -722,7 +726,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         foreach (var resource in resources.Where(r => r.Kind == ResourceKind.ModuleConfig).ToArray())
             Pipeline.Import(this, resource);
 
-        foreach (var languageScope in _LanguageScopes.Get())
+        foreach (var languageScope in Pipeline.LanguageScopes.Get())
             Pipeline.UpdateLanguageScope(languageScope);
 
         foreach (var resource in resources)
@@ -745,14 +749,14 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         foreach (var resource in resources.Where(r => r.Kind != ResourceKind.ModuleConfig).ToArray())
             Pipeline.Import(this, resource);
 
-        foreach (var languageScope in _LanguageScopes.Get())
+        foreach (var languageScope in Pipeline.LanguageScopes.Get())
             Pipeline.UpdateLanguageScope(languageScope);
     }
 
     private void InitLanguageScopes(Source[] source)
     {
         for (var i = 0; source != null && i < source.Length; i++)
-            _LanguageScopes.Import(source[i].Scope, out _);
+            Pipeline.LanguageScopes.Import(source[i].Scope);
     }
 
     public void Begin()
@@ -788,7 +792,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         if (string.IsNullOrEmpty(Source?.File.HelpPath))
             return null;
 
-        var cultures = LanguageScope.Culture;
+        var cultures = LanguageScope?.Culture;
         if (!_RaisedUsingInvariantCulture && (cultures == null || cultures.Length == 0))
         {
             this.Throw(_InvariantCulture, PSRuleResources.UsingInvariantCulture);
@@ -907,7 +911,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
                     if (_Conventions[i] is IDisposable d)
                         d.Dispose();
                 }
-                _LanguageScopes.Dispose();
             }
             _Disposed = true;
         }

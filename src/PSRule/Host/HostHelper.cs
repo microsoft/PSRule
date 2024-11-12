@@ -658,8 +658,7 @@ internal static class HostHelper
 
     private static SuppressionGroupV1[] ToSuppressionGroupV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
     {
-        if (blocks == null)
-            return Array.Empty<SuppressionGroupV1>();
+        if (blocks == null) return [];
 
         // Index suppression groups by Id.
         var results = new Dictionary<string, SuppressionGroupV1>(StringComparer.OrdinalIgnoreCase);
@@ -682,13 +681,12 @@ internal static class HostHelper
                 context.ExitLanguageScope(block.Source);
             }
         }
-        return results.Values.ToArray();
+        return [.. results.Values];
     }
 
     private static ModuleConfigV1[] ToModuleConfigV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
     {
-        if (blocks == null)
-            return Array.Empty<ModuleConfigV1>();
+        if (blocks == null) return [];
 
         // Index configurations by Name.
         var results = new Dictionary<string, ModuleConfigV1>(StringComparer.OrdinalIgnoreCase);
@@ -766,39 +764,86 @@ internal static class HostHelper
 
     private static bool Match(RunspaceContext context, RuleBlock resource)
     {
-        var filter = context.LanguageScope.GetFilter(ResourceKind.Rule);
-        return filter == null || filter.Match(resource);
+        try
+        {
+            context.EnterLanguageScope(resource.Source);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.Rule);
+            return filter == null || filter.Match(resource);
+        }
+        finally
+        {
+            context.ExitLanguageScope(resource.Source);
+        }
     }
 
     private static bool Match(RunspaceContext context, IRuleV1 resource)
     {
-        context.EnterLanguageScope(resource.Source);
-        var filter = context.LanguageScope.GetFilter(ResourceKind.Rule);
-        return filter == null || filter.Match(resource);
+        try
+        {
+            context.EnterLanguageScope(resource.Source);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.Rule);
+            return filter == null || filter.Match(resource);
+        }
+        finally
+        {
+            context.ExitLanguageScope(resource.Source);
+        }
     }
 
     private static bool Match(RunspaceContext context, Baseline resource)
     {
-        var filter = context.LanguageScope.GetFilter(ResourceKind.Baseline);
-        return filter == null || filter.Match(resource);
+        try
+        {
+            context.EnterLanguageScope(resource.Source);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.Baseline);
+            return filter == null || filter.Match(resource);
+        }
+        finally
+        {
+            context.ExitLanguageScope(resource.Source);
+        }
     }
 
     private static bool Match(RunspaceContext context, ScriptBlockConvention block)
     {
-        var filter = context.LanguageScope.GetFilter(ResourceKind.Convention);
-        return filter == null || filter.Match(block);
+        try
+        {
+            context.EnterLanguageScope(block.Source);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.Convention);
+            return filter == null || filter.Match(block);
+        }
+        finally
+        {
+            context.ExitLanguageScope(block.Source);
+        }
     }
 
     private static bool Match(RunspaceContext context, SelectorV1 resource)
     {
-        var filter = context.LanguageScope.GetFilter(ResourceKind.Selector);
-        return filter == null || filter.Match(resource);
+        try
+        {
+            context.EnterLanguageScope(resource.Source);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.Selector);
+            return filter == null || filter.Match(resource);
+        }
+        finally
+        {
+            context.ExitLanguageScope(resource.Source);
+        }
     }
 
     private static bool Match(RunspaceContext context, SuppressionGroupV1 suppressionGroup)
     {
-        var filter = context.LanguageScope.GetFilter(ResourceKind.SuppressionGroup);
-        return filter == null || filter.Match(suppressionGroup);
+        try
+        {
+            context.EnterLanguageScope(suppressionGroup.Source);
+            var filter = context.LanguageScope.GetFilter(ResourceKind.SuppressionGroup);
+            return filter == null || filter.Match(suppressionGroup);
+        }
+        finally
+        {
+            //context.ExitLanguageScope(suppressionGroup.Source);
+        }
     }
 
     private static IConvention[] Sort(RunspaceContext context, IConvention[] conventions)

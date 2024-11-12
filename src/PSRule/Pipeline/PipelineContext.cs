@@ -66,6 +66,11 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
 
     public IPipelineWriter Writer { get; }
 
+    /// <summary>
+    /// A collection of languages scopes for this pipeline.
+    /// </summary>
+    public ILanguageScopeCollection LanguageScopes { get; }
+
     private PipelineContext(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, IPipelineWriter writer, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
     {
         _OptionBuilder = optionBuilder;
@@ -87,6 +92,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         RunId = Environment.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
         RunTime = Stopwatch.StartNew();
         _DefaultOptionContext = _OptionBuilder?.Build(null);
+        LanguageScopes = new LanguageScopeSet();
     }
 
     public static PipelineContext New(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, IPipelineWriter writer, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
@@ -299,6 +305,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
                 ObjectHashAlgorithm?.Dispose();
                 _Runspace?.Dispose();
                 _PathExpressionCache.Clear();
+                LanguageScopes.Dispose();
                 LocalizedDataCache.Clear();
                 ExpressionCache.Clear();
                 ContentCache.Clear();

@@ -8,7 +8,7 @@ namespace PSRule.Runtime;
 /// <summary>
 /// A collection of <see cref="ILanguageScope"/>.
 /// </summary>
-internal sealed class LanguageScopeSet : IDisposable
+internal sealed class LanguageScopeSet : ILanguageScopeCollection
 {
     private readonly Dictionary<string, ILanguageScope> _Scopes;
 
@@ -18,15 +18,7 @@ internal sealed class LanguageScopeSet : IDisposable
     public LanguageScopeSet()
     {
         _Scopes = new Dictionary<string, ILanguageScope>(StringComparer.OrdinalIgnoreCase);
-        Import(null, out _Current);
-    }
-
-    public ILanguageScope Current
-    {
-        get
-        {
-            return _Current;
-        }
+        Import(null);
     }
 
     #region IDisposable
@@ -64,34 +56,22 @@ internal sealed class LanguageScopeSet : IDisposable
         _Scopes.Add(languageScope.Name, languageScope);
     }
 
-    internal IEnumerable<ILanguageScope> Get()
+    public IEnumerable<ILanguageScope> Get()
     {
         return _Scopes.Values;
     }
 
-    /// <summary>
-    /// Switch to a specific language scope by name.
-    /// </summary>
-    /// <param name="name">The name of the language scope to switch to.</param>
-    internal void UseScope(string name)
-    {
-        if (!_Scopes.TryGetValue(GetScopeName(name), out var scope))
-            throw new Exception($"The specified scope '{name}' was not found.");
-
-        _Current = scope;
-    }
-
-    internal bool TryScope(string name, out ILanguageScope scope)
+    public bool TryScope(string name, out ILanguageScope scope)
     {
         return _Scopes.TryGetValue(GetScopeName(name), out scope);
     }
 
-    internal bool Import(string name, out ILanguageScope scope)
+    public bool Import(string name)
     {
-        if (_Scopes.TryGetValue(GetScopeName(name), out scope))
+        if (_Scopes.ContainsKey(GetScopeName(name)))
             return false;
 
-        scope = new LanguageScope(name);
+        var scope = new LanguageScope(name);
         Add(scope);
         return true;
     }

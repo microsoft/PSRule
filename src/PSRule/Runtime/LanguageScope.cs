@@ -24,6 +24,7 @@ internal sealed class LanguageScope : ILanguageScope
 
     public LanguageScope(string name)
     {
+        _Configuration = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         Name = ResourceHelper.NormalizeScope(name);
         _Filter = [];
         _Service = [];
@@ -33,7 +34,7 @@ internal sealed class LanguageScope : ILanguageScope
     public string Name { [DebuggerStepThrough] get; }
 
     /// <inheritdoc/>
-    public string[] Culture { [DebuggerStepThrough] get; [DebuggerStepThrough] private set; }
+    public string[]? Culture { [DebuggerStepThrough] get; [DebuggerStepThrough] private set; }
 
     public StringComparer GetBindingComparer() => _BindingComparer ?? StringComparer.OrdinalIgnoreCase;
 
@@ -50,6 +51,7 @@ internal sealed class LanguageScope : ILanguageScope
         if (context == null) throw new ArgumentNullException(nameof(context));
 
         _Configuration = context.Configuration;
+        _Configuration ??= new Dictionary<string, object>();
         WithFilter(context.RuleFilter);
         WithFilter(context.ConventionFilter);
         _BindingComparer = context.Binding.GetComparer();
@@ -62,7 +64,7 @@ internal sealed class LanguageScope : ILanguageScope
     /// <inheritdoc/>
     public bool TryConfigurationValue(string key, out object? value)
     {
-        value = null;
+        value = default;
         return !string.IsNullOrEmpty(key) && _Configuration != null && _Configuration.TryGetValue(key, out value);
     }
 
@@ -113,8 +115,8 @@ internal sealed class LanguageScope : ILanguageScope
             path = result.TargetTypePath;
             return true;
         }
-        type = null;
-        path = null;
+        type = default;
+        path = default;
         return false;
     }
 
@@ -128,8 +130,8 @@ internal sealed class LanguageScope : ILanguageScope
             path = result.TargetNamePath;
             return true;
         }
-        name = null;
-        path = null;
+        name = default;
+        path = default;
         return false;
     }
 
