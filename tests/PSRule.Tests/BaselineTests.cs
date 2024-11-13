@@ -173,12 +173,12 @@ public sealed class BaselineTests : ContextBaseTests
 
     #region Helper methods
 
-    private Baseline[] GetBaselines(Source[] source)
+    private Baseline[] GetBaselines(Source[] sources)
     {
-        var context = new RunspaceContext(GetPipelineContext());
-        context.Init(source);
+        var context = new RunspaceContext(GetPipelineContext(sources: sources));
+        context.Init(sources);
         context.Begin();
-        var baseline = HostHelper.GetBaseline(source, context).ToArray();
+        var baseline = HostHelper.GetBaseline(sources, context).ToArray();
         return baseline;
     }
 

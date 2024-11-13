@@ -719,7 +719,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     public void Init(Source[] source)
     {
-        InitLanguageScopes(source);
         var resources = Host.HostHelper.GetMetaResources<IResource>(source, this);
 
         // Process module configurations first
@@ -751,12 +750,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
         foreach (var languageScope in Pipeline.LanguageScope.Get())
             Pipeline.UpdateLanguageScope(languageScope);
-    }
-
-    private void InitLanguageScopes(Source[] source)
-    {
-        for (var i = 0; source != null && i < source.Length; i++)
-            Pipeline.LanguageScope.Import(source[i].Scope);
     }
 
     public void Begin()

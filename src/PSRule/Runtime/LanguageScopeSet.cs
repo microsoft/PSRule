@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-// using System.Collections.Immutable;
+using System.Collections.Immutable;
 using PSRule.Definitions;
 
 namespace PSRule.Runtime;
@@ -13,20 +13,15 @@ namespace PSRule.Runtime;
 /// </summary>
 internal sealed class LanguageScopeSet : ILanguageScopeSet
 {
-    // private readonly ImmutableDictionary<string, ILanguageScope>? _Scopes;
-    private readonly Dictionary<string, ILanguageScope> _Scopes = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ImmutableDictionary<string, ILanguageScope>? _Scopes;
 
     private bool _Disposed;
-
-    internal LanguageScopeSet() { }
 
     internal LanguageScopeSet(IDictionary<string, ILanguageScope> scopeSet)
     {
         if (scopeSet == null) throw new ArgumentNullException(nameof(scopeSet));
 
-        // _Scopes = scopeSet.ToImmutableDictionary();
-        foreach (var kv in scopeSet)
-            Add(kv.Value);
+        _Scopes = scopeSet.ToImmutableDictionary();
     }
 
     #region IDisposable
@@ -41,9 +36,9 @@ internal sealed class LanguageScopeSet : ILanguageScopeSet
                 if (_Scopes != null && _Scopes.Count > 0)
                 {
                     foreach (var kv in _Scopes)
+                    {
                         kv.Value.Dispose();
-
-                    _Scopes.Clear();
+                    }
                 }
             }
             _Disposed = true;
@@ -59,11 +54,6 @@ internal sealed class LanguageScopeSet : ILanguageScopeSet
 
     #endregion IDisposable
 
-    private void Add(ILanguageScope languageScope)
-    {
-        _Scopes.Add(languageScope.Name, languageScope);
-    }
-
     /// <inheritdoc/>
     public IEnumerable<ILanguageScope> Get()
     {
@@ -74,16 +64,6 @@ internal sealed class LanguageScopeSet : ILanguageScopeSet
     {
         scope = default;
         return _Scopes != null && _Scopes.TryGetValue(GetScopeName(name), out scope);
-    }
-
-    public bool Import(string name)
-    {
-        if (_Scopes.ContainsKey(GetScopeName(name)))
-            return false;
-
-        var scope = new LanguageScope(name);
-        Add(scope);
-        return true;
     }
 
     private static string GetScopeName(string? name)
