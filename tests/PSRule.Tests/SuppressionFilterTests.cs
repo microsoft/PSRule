@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.IO;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Host;
@@ -12,16 +10,17 @@ using PSRule.Runtime;
 
 namespace PSRule;
 
-public sealed class SuppressionFilterTests
+public sealed class SuppressionFilterTests : ContextBaseTests
 {
     [Fact]
     public void Match()
     {
         var option = GetOption();
-        var context = new RunspaceContext(PipelineContext.New(option, null, null, new TestWriter(GetOption()), new OptionContextBuilder(), null));
-        context.Init(GetSource());
+        var sources = GetSource();
+        var context = new RunspaceContext(GetPipelineContext(option: option, sources: sources));
+        context.Init(sources);
         context.Begin();
-        var rules = HostHelper.GetRule(GetSource(), context, includeDependencies: false);
+        var rules = HostHelper.GetRule(sources, context, includeDependencies: false);
         var resourceIndex = new ResourceIndex(rules);
         var filter = new SuppressionFilter(context, option.Suppression, resourceIndex);
 
@@ -52,11 +51,6 @@ public sealed class SuppressionFilterTests
     private static PSRuleOption GetOption(string path = "PSRule.Tests14.yml")
     {
         return PSRuleOption.FromFileOrEmpty(path);
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
 
     #endregion Helper methods

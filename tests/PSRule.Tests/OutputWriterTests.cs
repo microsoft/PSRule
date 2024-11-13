@@ -16,7 +16,7 @@ using PSRule.Rules;
 
 namespace PSRule;
 
-public sealed class OutputWriterTests : BaseTests
+public sealed class OutputWriterTests : ContextBaseTests
 {
     [Fact]
     public void Sarif()
@@ -375,7 +375,7 @@ public sealed class OutputWriterTests : BaseTests
         var option = GetOption();
         var output = new TestWriter(option);
         var result = new InvokeResult();
-        var context = PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), new OptionContextBuilder(), null);
+        var context = GetPipelineContext(option: option, writer: output);
         result.Add(GetPass());
         result.Add(GetFail());
         result.Add(GetFail("rid-003", SeverityLevel.Warning, ruleId: "TestModule\\Rule-003"));

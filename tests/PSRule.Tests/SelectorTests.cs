@@ -13,7 +13,7 @@ using PSRule.Runtime;
 
 namespace PSRule;
 
-public sealed class SelectorTests : BaseTests
+public sealed class SelectorTests : ContextBaseTests
 {
     private const string SelectorYamlFileName = "Selectors.Rule.yaml";
     private const string SelectorJsonFileName = "Selectors.Rule.jsonc";
@@ -26,10 +26,11 @@ public sealed class SelectorTests : BaseTests
     public void ReadSelector(string type, string path)
     {
         var testObject = GetObject((name: "value", value: 3));
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), new OptionContextBuilder(), null));
-        context.Init(GetSource(path));
+        var sources = GetSource(path);
+        var context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources));
+        context.Init(sources);
         context.Begin();
-        var selector = HostHelper.GetSelectorForTests(GetSource(path), context).ToArray();
+        var selector = HostHelper.GetSelectorForTests(sources, context).ToArray();
         Assert.NotNull(selector);
         Assert.Equal(104, selector.Length);
 
@@ -1866,13 +1867,13 @@ public sealed class SelectorTests : BaseTests
         return option;
     }
 
-    private SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
+    private SelectorVisitor GetSelectorVisitor(string name, Source[] sources, out RunspaceContext context)
     {
-        var builder = new OptionContextBuilder(GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
-        context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), builder, null));
-        context.Init(source);
+        var optionBuilder = new OptionContextBuilder(option: GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
+        context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: optionBuilder));
+        context.Init(sources);
         context.Begin();
-        var selector = HostHelper.GetSelectorForTests(source, context).ToArray().FirstOrDefault(s => s.Name == name);
+        var selector = HostHelper.GetSelectorForTests(sources, context).ToArray().FirstOrDefault(s => s.Name == name);
         context.EnterLanguageScope(selector.Source);
         return new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
     }

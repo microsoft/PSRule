@@ -520,7 +520,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         if (!file.Exists())
             throw new FileNotFoundException(PSRuleResources.ScriptNotFound, file.Path);
 
-        if (!Pipeline.LanguageScopes.TryScope(file.Module, out var scope))
+        if (!Pipeline.LanguageScope.TryScope(file.Module, out var scope))
             throw new Exception("Language scope is unknown.");
 
         _CurrentLanguageScope = scope;
@@ -659,7 +659,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         if (LanguageScope == null) throw new Exception("Can not call out of scope.");
 
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
-        return !Pipeline.LanguageScopes.TryScope(scopeName, out var scope) || string.IsNullOrEmpty(name) ? null : scope.GetService(name!);
+        return !Pipeline.LanguageScope.TryScope(scopeName, out var scope) || string.IsNullOrEmpty(name) ? null : scope.GetService(name!);
     }
 
     private void RunConventionInitialize()
@@ -726,7 +726,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         foreach (var resource in resources.Where(r => r.Kind == ResourceKind.ModuleConfig).ToArray())
             Pipeline.Import(this, resource);
 
-        foreach (var languageScope in Pipeline.LanguageScopes.Get())
+        foreach (var languageScope in Pipeline.LanguageScope.Get())
             Pipeline.UpdateLanguageScope(languageScope);
 
         foreach (var resource in resources)
@@ -749,14 +749,14 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         foreach (var resource in resources.Where(r => r.Kind != ResourceKind.ModuleConfig).ToArray())
             Pipeline.Import(this, resource);
 
-        foreach (var languageScope in Pipeline.LanguageScopes.Get())
+        foreach (var languageScope in Pipeline.LanguageScope.Get())
             Pipeline.UpdateLanguageScope(languageScope);
     }
 
     private void InitLanguageScopes(Source[] source)
     {
         for (var i = 0; source != null && i < source.Length; i++)
-            Pipeline.LanguageScopes.Import(source[i].Scope);
+            Pipeline.LanguageScope.Import(source[i].Scope);
     }
 
     public void Begin()

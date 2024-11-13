@@ -10,17 +10,18 @@ using PSRule.Runtime;
 
 namespace PSRule;
 
-public sealed class SuppressionGroupTests : BaseTests
+public sealed class SuppressionGroupTests : ContextBaseTests
 {
     [Theory]
     [InlineData("SuppressionGroups.Rule.yaml")]
     [InlineData("SuppressionGroups.Rule.jsonc")]
     public void ReadSuppressionGroup(string path)
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), GetOptionContext(), null));
-        context.Init(GetSource(path));
+        var sources = GetSource(path);
+        var context = new RunspaceContext(GetPipelineContext(option: GetOption(), optionBuilder: GetOptionContext()));
+        context.Init(sources);
         context.Begin();
-        var suppressionGroup = HostHelper.GetSuppressionGroupForTests(GetSource(path), context).ToArray();
+        var suppressionGroup = HostHelper.GetSuppressionGroupForTests(sources, context).ToArray();
         Assert.NotNull(suppressionGroup);
         Assert.Equal(5, suppressionGroup.Length);
 

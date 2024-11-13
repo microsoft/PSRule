@@ -13,7 +13,7 @@ namespace PSRule;
 /// <summary>
 /// Define tests for expression functions are working correctly.
 /// </summary>
-public sealed class FunctionTests
+public sealed class FunctionTests : ContextBaseTests
 {
     [Fact]
     public void Concat()
@@ -601,7 +601,7 @@ public sealed class FunctionTests
         return Functions.Builtin.Single(f => f.Name == name).Fn;
     }
 
-    private static PSRuleOption GetOption()
+    protected override PSRuleOption GetOption()
     {
         var option = new PSRuleOption();
         option.Configuration["config1"] = "123";
@@ -615,24 +615,19 @@ public sealed class FunctionTests
         return builder.Build();
     }
 
-    private static ExpressionContext GetContext()
+    private ExpressionContext GetContext()
     {
         var targetObject = new PSObject();
         targetObject.Properties.Add(new PSNoteProperty("name", "TestObject1"));
-        var context = new Runtime.RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), new OptionContextBuilder(GetOption(), null, null, null), null));
-        var s = GetSource();
-        var result = new ExpressionContext(context, s[0].File[0], Definitions.ResourceKind.Rule, targetObject);
-        context.Init(s);
+        var sources = GetSource();
+        var context = new Runtime.RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: new OptionContextBuilder(GetOption(), null, null, null)));
+        var result = new ExpressionContext(context, sources[0].File[0], Definitions.ResourceKind.Rule, targetObject);
+        context.Init(sources);
         context.Begin();
         context.PushScope(Runtime.RunspaceScope.Precondition);
-        context.EnterLanguageScope(s[0].File[0]);
+        context.EnterLanguageScope(sources[0].File[0]);
         context.EnterTargetObject(new TargetObject(targetObject));
         return result;
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
 
     #endregion Helper methods

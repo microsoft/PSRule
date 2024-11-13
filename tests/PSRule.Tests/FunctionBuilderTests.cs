@@ -1,10 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.IO;
 using System.Linq;
-using PSRule.Configuration;
 using PSRule.Definitions.Selectors;
 using PSRule.Host;
 using PSRule.Pipeline;
@@ -12,7 +9,7 @@ using PSRule.Runtime;
 
 namespace PSRule;
 
-public sealed class FunctionBuilderTests
+public sealed class FunctionBuilderTests : ContextBaseTests
 {
     private const string FunctionYamlFileName = "Functions.Rule.yaml";
     private const string FunctionJsonFileName = "Functions.Rule.jsonc";
@@ -32,30 +29,13 @@ public sealed class FunctionBuilderTests
 
     #region Helper methods
 
-    private static PSRuleOption GetOption()
+    private SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
     {
-        return new PSRuleOption();
-    }
-
-    private static Source[] GetSource(string path)
-    {
-        var builder = new SourcePipelineBuilder(null, null);
-        builder.Directory(GetSourcePath(path));
-        return builder.Build();
-    }
-
-    private static SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
-    {
-        context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), new OptionContextBuilder(), null));
+        context = new RunspaceContext(GetPipelineContext());
         context.Init(source);
         context.Begin();
         var selector = HostHelper.GetSelectorForTests(source, context).ToArray().FirstOrDefault(s => s.Name == name);
         return new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
 
     #endregion Helper methods

@@ -67,11 +67,11 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     public IPipelineWriter Writer { get; }
 
     /// <summary>
-    /// A collection of languages scopes for this pipeline.
+    /// A set of languages scopes for this pipeline.
     /// </summary>
-    public ILanguageScopeCollection LanguageScopes { get; }
+    public ILanguageScopeSet LanguageScope { get; }
 
-    private PipelineContext(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, IPipelineWriter writer, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
+    private PipelineContext(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
     {
         _OptionBuilder = optionBuilder;
         Option = option;
@@ -92,12 +92,12 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         RunId = Environment.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
         RunTime = Stopwatch.StartNew();
         _DefaultOptionContext = _OptionBuilder?.Build(null);
-        LanguageScopes = new LanguageScopeSet();
+        LanguageScope = languageScope;
     }
 
-    public static PipelineContext New(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, IPipelineWriter writer, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
+    public static PipelineContext New(PSRuleOption option, IHostContext hostContext, PipelineInputStream reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, IList<ResourceRef> unresolved)
     {
-        var context = new PipelineContext(option, hostContext, reader, writer, optionBuilder, unresolved);
+        var context = new PipelineContext(option, hostContext, reader, writer, languageScope, optionBuilder, unresolved);
         CurrentThread = context;
         return context;
     }
@@ -305,7 +305,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
                 ObjectHashAlgorithm?.Dispose();
                 _Runspace?.Dispose();
                 _PathExpressionCache.Clear();
-                LanguageScopes.Dispose();
+                LanguageScope.Dispose();
                 LocalizedDataCache.Clear();
                 ExpressionCache.Clear();
                 ContentCache.Clear();

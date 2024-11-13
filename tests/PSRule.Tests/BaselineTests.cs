@@ -16,7 +16,7 @@ using YamlDotNet.Serialization;
 
 namespace PSRule;
 
-public sealed class BaselineTests : BaseTests
+public sealed class BaselineTests : ContextBaseTests
 {
     private const string BaselineYamlFileName = "Baseline.Rule.yaml";
     private const string BaselineJsonFileName = "Baseline.Rule.jsonc";
@@ -175,7 +175,7 @@ public sealed class BaselineTests : BaseTests
 
     private Baseline[] GetBaselines(Source[] source)
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), new OptionContextBuilder(), null));
+        var context = new RunspaceContext(GetPipelineContext());
         context.Init(source);
         context.Begin();
         var baseline = HostHelper.GetBaseline(source, context).ToArray();
