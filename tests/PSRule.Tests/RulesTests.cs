@@ -1,12 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using Newtonsoft.Json;
-using PSRule.Configuration;
 using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Rules;
@@ -14,7 +12,7 @@ using PSRule.Runtime;
 
 namespace PSRule;
 
-public sealed class RulesTests
+public sealed class RulesTests : ContextBaseTests
 {
     #region Yaml rules
 
@@ -24,7 +22,7 @@ public sealed class RulesTests
     [Fact]
     public void ReadYamlRule()
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), new OptionContextBuilder(), null));
+        var context = new RunspaceContext(GetPipelineContext(sources: GetSource()));
         context.Init(GetSource());
         context.Begin();
 
@@ -60,24 +58,25 @@ public sealed class RulesTests
     [Fact]
     public void ReadYamlSubSelectorRule()
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), GetOptionBuilder(), null));
-        context.Init(GetSource("FromFileSubSelector.Rule.yaml"));
+        var sources = GetSource("FromFileSubSelector.Rule.yaml");
+        var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
+        context.Init(sources);
         context.Begin();
 
         // From current path
-        var rule = HostHelper.GetRule(GetSource("FromFileSubSelector.Rule.yaml"), context, includeDependencies: false);
+        var rule = HostHelper.GetRule(sources, context, includeDependencies: false);
         Assert.NotNull(rule);
         Assert.Equal("YamlRuleWithPrecondition", rule[0].Name);
         Assert.Equal("YamlRuleWithSubselector", rule[1].Name);
         Assert.Equal("YamlRuleWithSubselectorReordered", rule[2].Name);
         Assert.Equal("YamlRuleWithQuantifier", rule[3].Name);
 
-        context.Init(GetSource("FromFileSubSelector.Rule.yaml"));
+        context.Init(sources);
         context.Begin();
-        var subselector1 = GetRuleVisitor(context, "YamlRuleWithPrecondition", GetSource("FromFileSubSelector.Rule.yaml"));
-        var subselector2 = GetRuleVisitor(context, "YamlRuleWithSubselector", GetSource("FromFileSubSelector.Rule.yaml"));
-        var subselector3 = GetRuleVisitor(context, "YamlRuleWithSubselectorReordered", GetSource("FromFileSubSelector.Rule.yaml"));
-        var subselector4 = GetRuleVisitor(context, "YamlRuleWithQuantifier", GetSource("FromFileSubSelector.Rule.yaml"));
+        var subselector1 = GetRuleVisitor(context, "YamlRuleWithPrecondition", sources);
+        var subselector2 = GetRuleVisitor(context, "YamlRuleWithSubselector", sources);
+        var subselector3 = GetRuleVisitor(context, "YamlRuleWithSubselectorReordered", sources);
+        var subselector4 = GetRuleVisitor(context, "YamlRuleWithQuantifier", sources);
         context.EnterLanguageScope(subselector1.Source);
 
         var actual1 = GetObject((name: "kind", value: "test"), (name: "resources", value: new string[] { "abc", "abc" }));
@@ -132,8 +131,9 @@ public sealed class RulesTests
     [Fact]
     public void EvaluateYamlRule()
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), GetOptionBuilder(), null));
-        context.Init(GetSource());
+        var sources = GetSource();
+        var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
+        context.Init(sources);
         context.Begin();
         ImportSelectors(context);
         var yamlTrue = GetRuleVisitor(context, "RuleYamlTrue");
@@ -195,8 +195,9 @@ public sealed class RulesTests
     [Fact]
     public void RuleWithObjectPath()
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), GetOptionBuilder(), null));
-        context.Init(GetSource());
+        var sources = GetSource();
+        var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
+        context.Init(sources);
         context.Begin();
         ImportSelectors(context);
         var yamlObjectPath = GetRuleVisitor(context, "YamlObjectPath");
@@ -227,8 +228,9 @@ public sealed class RulesTests
     [Fact]
     public void ReadJsonRule()
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), new OptionContextBuilder(), null));
-        context.Init(GetSource());
+        var sources = GetSource();
+        var context = new RunspaceContext(GetPipelineContext(sources: [.. sources, .. GetSource("FromFile.Rule.jsonc"), .. GetSource("../../../FromFile.Rule.jsonc")]));
+        context.Init(sources);
         context.Begin();
 
         // From current path
@@ -263,12 +265,13 @@ public sealed class RulesTests
     [Fact]
     public void ReadJsonSubSelectorRule()
     {
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, new TestWriter(GetOption()), GetOptionBuilder(), null));
-        context.Init(GetSource("FromFileSubSelector.Rule.jsonc"));
+        var sources = GetSource("FromFileSubSelector.Rule.jsonc");
+        var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
+        context.Init(sources);
         context.Begin();
 
         // From current path
-        var rule = HostHelper.GetRule(GetSource("FromFileSubSelector.Rule.jsonc"), context, includeDependencies: false);
+        var rule = HostHelper.GetRule(sources, context, includeDependencies: false);
         Assert.NotNull(rule);
         Assert.Equal("JsonRuleWithPrecondition", rule[0].Name);
         Assert.Equal("JsonRuleWithSubselector", rule[1].Name);
@@ -277,10 +280,10 @@ public sealed class RulesTests
 
         context.Init(GetSource("FromFileSubSelector.Rule.yaml"));
         context.Begin();
-        var subselector1 = GetRuleVisitor(context, "JsonRuleWithPrecondition", GetSource("FromFileSubSelector.Rule.jsonc"));
-        var subselector2 = GetRuleVisitor(context, "JsonRuleWithSubselector", GetSource("FromFileSubSelector.Rule.jsonc"));
-        var subselector3 = GetRuleVisitor(context, "JsonRuleWithSubselectorReordered", GetSource("FromFileSubSelector.Rule.jsonc"));
-        var subselector4 = GetRuleVisitor(context, "JsonRuleWithQuantifier", GetSource("FromFileSubSelector.Rule.jsonc"));
+        var subselector1 = GetRuleVisitor(context, "JsonRuleWithPrecondition", sources);
+        var subselector2 = GetRuleVisitor(context, "JsonRuleWithSubselector", sources);
+        var subselector3 = GetRuleVisitor(context, "JsonRuleWithSubselectorReordered", sources);
+        var subselector4 = GetRuleVisitor(context, "JsonRuleWithQuantifier", sources);
         context.EnterLanguageScope(subselector1.Source);
 
         var actual1 = GetObject((name: "kind", value: "test"), (name: "resources", value: new string[] { "abc", "abc" }));
@@ -336,24 +339,14 @@ public sealed class RulesTests
 
     #region Helper methods
 
-    private static PSRuleOption GetOption()
-    {
-        return new PSRuleOption();
-    }
-
-    private static OptionContextBuilder GetOptionBuilder()
-    {
-        return new OptionContextBuilder(option: GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
-    }
-
-    private static Source[] GetSource(string path = "FromFile.Rule.yaml")
+    private new static Source[] GetSource(string path = "FromFile.Rule.yaml")
     {
         var builder = new SourcePipelineBuilder(null, null);
         builder.Directory(GetSourcePath(path));
         return builder.Build();
     }
 
-    private static TargetObject GetObject(params (string name, object value)[] properties)
+    private new static TargetObject GetObject(params (string name, object value)[] properties)
     {
         var result = new PSObject();
         for (var i = 0; properties != null && i < properties.Length; i++)
@@ -383,11 +376,6 @@ public sealed class RulesTests
         var selectors = HostHelper.GetSelectorForTests(source ?? GetSource(), context).ToArray();
         foreach (var selector in selectors)
             context.Pipeline.Import(context, selector);
-    }
-
-    private static string GetSourcePath(string path)
-    {
-        return Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path));
     }
 
     #endregion Helper methods

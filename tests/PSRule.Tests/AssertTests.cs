@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace PSRule;
 
 [Trait(LANGUAGE, LANGUAGEELEMENT)]
-public sealed class AssertTests : BaseTests
+public sealed class AssertTests : ContextBaseTests
 {
     private const string LANGUAGE = "Language";
     private const string LANGUAGEELEMENT = "Variable";
@@ -1561,7 +1561,7 @@ public sealed class AssertTests : BaseTests
 
     private void SetContext()
     {
-        var context = PipelineContext.New(new Configuration.PSRuleOption(), null, null, GetTestWriter(), null, null);
+        var context = GetPipelineContext();
         var runspace = new RunspaceContext(context);
         runspace.PushScope(RunspaceScope.Rule);
     }

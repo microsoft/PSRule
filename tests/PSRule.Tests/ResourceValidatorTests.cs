@@ -8,16 +8,17 @@ using PSRule.Runtime;
 
 namespace PSRule;
 
-public sealed class ResourceValidatorTests : BaseTests
+public sealed class ResourceValidatorTests : ContextBaseTests
 {
     [Fact]
     public void ResourceName()
     {
-        var writer = new TestWriter(GetOption());
-        var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, writer, new OptionContextBuilder(), null));
+        var writer = GetTestWriter();
+        var sources = GetSource();
+        var context = new RunspaceContext(GetPipelineContext(writer: writer, sources: sources));
 
         // Get good rules
-        var rule = HostHelper.GetRule(GetSource(), context, includeDependencies: false);
+        var rule = HostHelper.GetRule(sources, context, includeDependencies: false);
         Assert.NotNull(rule);
         Assert.Empty(writer.Errors);
 

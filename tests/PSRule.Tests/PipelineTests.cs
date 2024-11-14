@@ -16,7 +16,7 @@ using PSRule.Rules;
 
 namespace PSRule;
 
-public sealed class PipelineTests
+public sealed class PipelineTests : ContextBaseTests
 {
     internal class TestObject
     {
@@ -177,10 +177,12 @@ public sealed class PipelineTests
     [Fact]
     public void PipelineWithInvariantCulture()
     {
-        var writer = new TestWriter(GetOption());
+        var option = GetOption();
+        var sources = GetSource();
+        var writer = GetTestWriter(option);
         Environment.UseCurrentCulture(CultureInfo.InvariantCulture);
-        var context = PipelineContext.New(GetOption(), null, null, writer, new OptionContextBuilder(), null);
-        var pipeline = new GetRulePipeline(context, GetSource(), new PipelineInputStream(null, null, null), writer, false);
+        var context = GetPipelineContext(option: option, sources: sources, writer: writer);
+        var pipeline = new GetRulePipeline(context, sources, new PipelineInputStream(null, null, null), writer, false);
         try
         {
             pipeline.Begin();
@@ -198,10 +200,10 @@ public sealed class PipelineTests
     public void PipelineWithInvariantCultureDisabled()
     {
         Environment.UseCurrentCulture(CultureInfo.InvariantCulture);
-        var option = new PSRuleOption();
+        var option = GetOption();
         option.Execution.InvariantCulture = ExecutionActionPreference.Ignore;
-        var context = PipelineContext.New(option, null, null, new TestWriter(GetOption()), new OptionContextBuilder(), null);
-        var writer = new TestWriter(option);
+        var context = GetPipelineContext(option: option);
+        var writer = GetTestWriter(option);
         var pipeline = new GetRulePipeline(context, GetSource(), new PipelineInputStream(null, null, null), writer, false);
         try
         {

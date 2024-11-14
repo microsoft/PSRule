@@ -10,6 +10,7 @@ using PSRule.Definitions.Baselines;
 using PSRule.Options;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
@@ -178,9 +179,17 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             hostContext: HostContext,
             reader: PrepareReader(),
             writer: writer,
+            languageScope: GetLanguageScopeSet(),
             optionBuilder: GetOptionBuilder(binding),
             unresolved: unresolved
         );
+    }
+
+    private ILanguageScopeSet GetLanguageScopeSet()
+    {
+        var builder = new LanguageScopeSetBuilder();
+        builder.Init(Option, Source);
+        return builder.Build();
     }
 
     protected string[] ResolveBaselineGroup(string[] name)

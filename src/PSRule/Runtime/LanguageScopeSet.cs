@@ -1,24 +1,27 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections.Immutable;
 using PSRule.Definitions;
 
 namespace PSRule.Runtime;
 
-/// <summary>
-/// A collection of <see cref="ILanguageScope"/>.
-/// </summary>
-internal sealed class LanguageScopeSet : ILanguageScopeCollection
-{
-    private readonly Dictionary<string, ILanguageScope> _Scopes;
+#nullable enable
 
-    private ILanguageScope _Current;
+/// <summary>
+/// A set of <see cref="ILanguageScope"/>.
+/// </summary>
+internal sealed class LanguageScopeSet : ILanguageScopeSet
+{
+    private readonly ImmutableDictionary<string, ILanguageScope>? _Scopes;
+
     private bool _Disposed;
 
-    public LanguageScopeSet()
+    internal LanguageScopeSet(IDictionary<string, ILanguageScope> scopeSet)
     {
-        _Scopes = new Dictionary<string, ILanguageScope>(StringComparer.OrdinalIgnoreCase);
-        Import(null);
+        if (scopeSet == null) throw new ArgumentNullException(nameof(scopeSet));
+
+        _Scopes = scopeSet.ToImmutableDictionary();
     }
 
     #region IDisposable
@@ -33,9 +36,9 @@ internal sealed class LanguageScopeSet : ILanguageScopeCollection
                 if (_Scopes != null && _Scopes.Count > 0)
                 {
                     foreach (var kv in _Scopes)
+                    {
                         kv.Value.Dispose();
-
-                    _Scopes.Clear();
+                    }
                 }
             }
             _Disposed = true;
@@ -51,33 +54,22 @@ internal sealed class LanguageScopeSet : ILanguageScopeCollection
 
     #endregion IDisposable
 
-    internal void Add(ILanguageScope languageScope)
-    {
-        _Scopes.Add(languageScope.Name, languageScope);
-    }
-
+    /// <inheritdoc/>
     public IEnumerable<ILanguageScope> Get()
     {
-        return _Scopes.Values;
+        return _Scopes == null || _Scopes.Count == 0 ? [] : _Scopes.Values;
     }
 
-    public bool TryScope(string name, out ILanguageScope scope)
+    public bool TryScope(string? name, out ILanguageScope? scope)
     {
-        return _Scopes.TryGetValue(GetScopeName(name), out scope);
+        scope = default;
+        return _Scopes != null && _Scopes.TryGetValue(GetScopeName(name), out scope);
     }
 
-    public bool Import(string name)
-    {
-        if (_Scopes.ContainsKey(GetScopeName(name)))
-            return false;
-
-        var scope = new LanguageScope(name);
-        Add(scope);
-        return true;
-    }
-
-    private static string GetScopeName(string name)
+    private static string GetScopeName(string? name)
     {
         return ResourceHelper.NormalizeScope(name);
     }
 }
+
+#nullable restore

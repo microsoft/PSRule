@@ -12,7 +12,7 @@ namespace PSRule;
 /// <summary>
 /// Tests for <see cref="PSRuleOption"/>.
 /// </summary>
-public sealed class PSRuleOptionTests : BaseTests
+public sealed class PSRuleOptionTests : ContextBaseTests
 {
     [Fact]
     public void GetRootedBasePath()
@@ -91,8 +91,8 @@ public sealed class PSRuleOptionTests : BaseTests
 
     private Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
     {
-        var builder = new OptionContextBuilder(option);
-        var context = new Runtime.RunspaceContext(PipelineContext.New(option, null, null, new TestWriter(GetOption()), builder, null));
+        var optionBuilder = new OptionContextBuilder(option);
+        var context = new Runtime.RunspaceContext(GetPipelineContext(option: option, optionBuilder: optionBuilder));
         context.Init(null);
         context.Begin();
         context.EnterLanguageScope(GetSource()[0].File[0]);
