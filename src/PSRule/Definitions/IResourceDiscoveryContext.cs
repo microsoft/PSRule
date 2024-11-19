@@ -19,6 +19,11 @@ internal interface IResourceDiscoveryContext
     IPipelineWriter Writer { get; }
 
     /// <summary>
+    /// The current source file.
+    /// </summary>
+    ISourceFile? Source { get; }
+
+    /// <summary>
     /// Enter a language scope.
     /// </summary>
     /// <param name="file">The source file to enter.</param>

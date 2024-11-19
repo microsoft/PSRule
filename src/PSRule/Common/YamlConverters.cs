@@ -12,7 +12,6 @@ using PSRule.Definitions.Expressions;
 using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Emitters;
-using PSRule.Runtime;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -479,16 +478,18 @@ internal sealed class FieldYamlTypeInspector : ReflectionTypeInspector
 /// </summary>
 internal sealed class ResourceNodeDeserializer : INodeDeserializer
 {
-    private const string FIELD_APIVERSION = "apiVersion";
+    private const string FIELD_API_VERSION = "apiVersion";
     private const string FIELD_KIND = "kind";
     private const string FIELD_METADATA = "metadata";
     private const string FIELD_SPEC = "spec";
 
+    private readonly IResourceDiscoveryContext _Context;
     private readonly INodeDeserializer _Next;
     private readonly SpecFactory _Factory;
 
-    public ResourceNodeDeserializer(INodeDeserializer next)
+    public ResourceNodeDeserializer(IResourceDiscoveryContext context, INodeDeserializer next)
     {
+        _Context = context;
         _Next = next;
         _Factory = new SpecFactory();
     }
@@ -497,7 +498,7 @@ internal sealed class ResourceNodeDeserializer : INodeDeserializer
     {
         if (typeof(ResourceObject).IsAssignableFrom(expectedType))
         {
-            var comment = reader.Current == null || RunspaceContext.CurrentThread == null ? null : HostHelper.GetCommentMeta(RunspaceContext.CurrentThread.Source?.File, (int)reader.Current.Start.Line - 2, (int)reader.Current.Start.Column);
+            var comment = reader.Current == null ? null : GetCommentMetadata(reader.Current.Start.Line - 2, reader.Current.Start.Column);
             var resource = MapResource(reader, nestedObjectDeserializer, comment, rootDeserializer);
             value = new ResourceObject(resource);
             return true;
@@ -516,7 +517,7 @@ internal sealed class ResourceNodeDeserializer : INodeDeserializer
         ResourceMetadata? metadata = null;
         if (reader.TryConsume<MappingStart>(out var mappingStart) && mappingStart != null)
         {
-            var extent = new SourceExtent(RunspaceContext.CurrentThread!.Source!.File, (int?)mappingStart.Start.Line, (int?)mappingStart.Start.Column);
+            var extent = GetSourceExtent(mappingStart.Start.Line, mappingStart.Start.Column);
             while (reader.TryConsume<Scalar>(out var scalar) && scalar != null)
             {
                 // Read apiVersion
@@ -553,7 +554,7 @@ internal sealed class ResourceNodeDeserializer : INodeDeserializer
     private static bool TryApiVersion(IParser reader, Scalar scalar, out string? apiVersion)
     {
         apiVersion = null;
-        if (scalar.Value == FIELD_APIVERSION)
+        if (scalar.Value == FIELD_API_VERSION)
         {
             apiVersion = reader.Consume<Scalar>().Value;
             return true;
@@ -570,6 +571,16 @@ internal sealed class ResourceNodeDeserializer : INodeDeserializer
             return true;
         }
         return false;
+    }
+
+    private CommentMetadata? GetCommentMetadata(long line, long column)
+    {
+        return _Context == null || _Context.Source == null ? null : HostHelper.GetCommentMeta(_Context.Source, (int)line, (int)column);
+    }
+
+    private SourceExtent GetSourceExtent(long? line, long? column)
+    {
+        return new SourceExtent(_Context.Source, (int?)line, (int?)column);
     }
 
     private bool TryMetadata(IParser reader, Scalar scalar, Func<IParser, Type, object?> nestedObjectDeserializer, out ResourceMetadata? metadata, ObjectDeserializer rootDeserializer)
@@ -617,12 +628,14 @@ internal sealed class LanguageExpressionDeserializer : INodeDeserializer
 {
     private const string OPERATOR_IF = "if";
 
+    private readonly IResourceDiscoveryContext _Context;
     private readonly INodeDeserializer _Next;
     private readonly LanguageExpressionFactory _Factory;
     private readonly FunctionBuilder _FunctionBuilder;
 
-    public LanguageExpressionDeserializer(INodeDeserializer next)
+    public LanguageExpressionDeserializer(IResourceDiscoveryContext context, INodeDeserializer next)
     {
+        _Context = context;
         _Next = next;
         _Factory = new LanguageExpressionFactory();
         _FunctionBuilder = new FunctionBuilder();
@@ -874,7 +887,7 @@ internal sealed class LanguageExpressionDeserializer : INodeDeserializer
         expression = null;
         if (_Factory.TryDescriptor(type, out var descriptor))
         {
-            expression = (T)descriptor.CreateInstance(RunspaceContext.CurrentThread!.Source!.File, properties);
+            expression = (T)descriptor.CreateInstance(_Context.Source, properties);
             return expression != null;
         }
         return false;

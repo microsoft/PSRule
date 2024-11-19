@@ -353,7 +353,7 @@ internal sealed class OrderedPropertiesContractResolver : DefaultContractResolve
 /// </summary>
 internal sealed class ResourceObjectJsonConverter : JsonConverter
 {
-    private const string FIELD_APIVERSION = "apiVersion";
+    private const string FIELD_API_VERSION = "apiVersion";
     private const string FIELD_KIND = "kind";
     private const string FIELD_METADATA = "metadata";
     private const string FIELD_SPEC = "spec";
@@ -363,10 +363,12 @@ internal sealed class ResourceObjectJsonConverter : JsonConverter
 
     public override bool CanWrite => false;
 
+    private readonly IResourceDiscoveryContext _Context;
     private readonly SpecFactory _Factory;
 
-    public ResourceObjectJsonConverter()
+    public ResourceObjectJsonConverter(IResourceDiscoveryContext context)
     {
+        _Context = context;
         _Factory = new SpecFactory();
     }
 
@@ -388,7 +390,7 @@ internal sealed class ResourceObjectJsonConverter : JsonConverter
 
     private IResource MapResource(JsonReader reader, JsonSerializer serializer)
     {
-        reader.GetSourceExtent(RunspaceContext.CurrentThread.Source.File, out var extent);
+        reader.GetSourceExtent(_Context.Source, out var extent);
         reader.SkipComments(out _);
         if (reader.TokenType != JsonToken.StartObject || !reader.Read())
             throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
@@ -471,7 +473,7 @@ internal sealed class ResourceObjectJsonConverter : JsonConverter
     private static bool TryApiVersion(JsonReader reader, string propertyName, out string apiVersion)
     {
         apiVersion = null;
-        if (propertyName == FIELD_APIVERSION)
+        if (propertyName == FIELD_API_VERSION)
         {
             apiVersion = reader.ReadAsString();
             return true;
@@ -523,7 +525,7 @@ internal sealed class ResourceObjectJsonConverter : JsonConverter
                 reader.SkipComments(out _);
                 var deserializedSpec = serializer.Deserialize(reader, objectType: descriptor.SpecType);
                 spec = descriptor.CreateInstance(
-                    source: RunspaceContext.CurrentThread.Source.File,
+                    source: _Context.Source,
                     metadata: metadata,
                     comment: comment,
                     extent: extent,
@@ -665,11 +667,13 @@ internal sealed class LanguageExpressionJsonConverter : JsonConverter
 {
     private const string OPERATOR_IF = "if";
 
+    private readonly IResourceDiscoveryContext _Context;
     private readonly LanguageExpressionFactory _Factory;
     private readonly FunctionBuilder _FunctionBuilder;
 
-    public LanguageExpressionJsonConverter()
+    public LanguageExpressionJsonConverter(IResourceDiscoveryContext context)
     {
+        _Context = context;
         _Factory = new LanguageExpressionFactory();
         _FunctionBuilder = new FunctionBuilder();
     }
@@ -946,7 +950,7 @@ internal sealed class LanguageExpressionJsonConverter : JsonConverter
         if (_Factory.TryDescriptor(type, out var descriptor))
         {
             expression = (T)descriptor.CreateInstance(
-                source: RunspaceContext.CurrentThread.Source.File,
+                source: _Context.Source,
                 properties: properties
             );
             return expression != null;

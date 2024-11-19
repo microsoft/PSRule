@@ -108,7 +108,7 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
             throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordSourceScope, LanguageKeywords.Rule));
 
         var context = RunspaceContext.CurrentThread;
-        var source = context.Source.File;
+        var source = context.Source;
         var errorPreference = GetErrorActionPreference();
         var metadata = GetCommentMetadata(source, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
         var level = ResourceHelper.GetLevel(Level);
