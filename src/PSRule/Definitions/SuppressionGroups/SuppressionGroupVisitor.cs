@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Diagnostics;
 using PSRule.Definitions.Expressions;
 using PSRule.Resources;
 using PSRule.Runtime;
-using System.Diagnostics;
 
 namespace PSRule.Definitions.SuppressionGroups;
 

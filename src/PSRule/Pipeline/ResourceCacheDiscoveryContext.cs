@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Definitions;
-using PSRule.Options;
 using PSRule.Resources;
 using PSRule.Runtime;
 
