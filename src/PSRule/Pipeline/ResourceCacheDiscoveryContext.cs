@@ -15,10 +15,6 @@ namespace PSRule.Pipeline;
 /// </summary>
 internal sealed class ResourceCacheDiscoveryContext(IPipelineWriter writer) : IResourceDiscoveryContext
 {
-    private readonly ExecutionActionPreference _InvariantCulture; // TODO set
-
-    private bool _RaisedUsingInvariantCulture = false;
-
     public IPipelineWriter Writer { get; } = writer;
 
     public ISourceFile? Source { get; private set; }
