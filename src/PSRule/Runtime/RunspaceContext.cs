@@ -11,7 +11,6 @@ using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime.Binding;
-using static PSRule.Pipeline.PipelineContext;
 
 namespace PSRule.Runtime;
 
@@ -24,7 +23,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 {
     private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
     private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
-    private const string ERRORID_INVALIDRULERESULT = "PSRule.Runtime.InvalidRuleResult";
+    private const string ERROR_ID_INVALID_RULE_RESULT = "PSRule.Runtime.InvalidRuleResult";
     private const string WARN_KEY_SEPARATOR = "_";
 
     [ThreadStatic]
@@ -99,7 +98,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     internal TargetObject? TargetObject { get; private set; }
 
-    internal SourceScope? Source { get; private set; }
+    public ISourceFile? Source { get; private set; }
 
     internal ILanguageScope? LanguageScope
     {
@@ -247,7 +246,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
                 PSRuleResources.InvalidRuleResult,
                 RuleBlock?.Id
             )),
-            errorId: ERRORID_INVALIDRULERESULT,
+            errorId: ERROR_ID_INVALID_RULE_RESULT,
             errorCategory: ErrorCategory.InvalidResult,
             targetObject: null
         ));
@@ -528,7 +527,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         if (TargetObject != null && LanguageScope != null)
             Binding = LanguageScope.Bind(TargetObject);
 
-        Source = new SourceScope(file);
+        Source = file;
     }
 
     public void ExitLanguageScope(ISourceFile file)
@@ -562,7 +561,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     public bool TrySelector(string name)
     {
-        return TrySelector(ResourceHelper.GetRuleId(Source?.File?.Module, name, ResourceIdKind.Unknown));
+        return TrySelector(ResourceHelper.GetRuleId(Source?.Module, name, ResourceIdKind.Unknown));
     }
 
     public bool TrySelector(ResourceId id)
@@ -659,7 +658,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         if (LanguageScope == null) throw new Exception("Can not call out of scope.");
 
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
-        return !Pipeline.LanguageScope.TryScope(scopeName, out var scope) || string.IsNullOrEmpty(name) ? null : scope.GetService(name!);
+        return !Pipeline.LanguageScope.TryScope(scopeName, out var scope) || string.IsNullOrEmpty(name) ? null : scope.GetService(name);
     }
 
     private void RunConventionInitialize()
@@ -782,7 +781,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
     public string? GetLocalizedPath(string file, out string? culture)
     {
         culture = null;
-        if (string.IsNullOrEmpty(Source?.File.HelpPath))
+        if (string.IsNullOrEmpty(Source?.HelpPath))
             return null;
 
         var cultures = LanguageScope?.Culture;
@@ -795,7 +794,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
         for (var i = 0; cultures != null && i < cultures.Length; i++)
         {
-            var path = Path.Combine(Source?.File.HelpPath, cultures[i], file);
+            var path = Path.Combine(Source?.HelpPath, cultures[i], file);
             if (File.Exists(path))
             {
                 culture = cultures[i];

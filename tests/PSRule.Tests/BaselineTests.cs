@@ -16,6 +16,8 @@ using YamlDotNet.Serialization;
 
 namespace PSRule;
 
+#nullable enable
+
 public sealed class BaselineTests : ContextBaseTests
 {
     private const string BaselineYamlFileName = "Baseline.Rule.yaml";
@@ -161,14 +163,14 @@ public sealed class BaselineTests : ContextBaseTests
         var actual = (JArray)JsonConvert.DeserializeObject<dynamic>(json);
 
         // TestBaseline1
-        Assert.Equal("github.com/microsoft/PSRule/v1", actual[0]["apiVersion"]);
-        Assert.Equal("Baseline", actual[0]["kind"]);
-        Assert.Equal("TestBaseline1", actual[0]["metadata"]["name"]);
-        Assert.NotNull(actual[0]["spec"]);
-        Assert.Equal("WithBaseline", actual[0]["spec"]["rule"]["include"][0]);
-        Assert.Equal("value1", actual[0]["spec"]["configuration"]["key1"]);
-        Assert.Equal("abc", actual[0]["spec"]["configuration"]["key2"][0]["value1"]);
-        Assert.Equal("def", actual[0]["spec"]["configuration"]["key2"][1]["value2"]);
+        Assert.Equal("github.com/microsoft/PSRule/v1", actual?[0]["apiVersion"]);
+        Assert.Equal("Baseline", actual?[0]["kind"]);
+        Assert.Equal("TestBaseline1", actual?[0]["metadata"]?["name"]);
+        Assert.NotNull(actual?[0]["spec"]);
+        Assert.Equal("WithBaseline", actual?[0]["spec"]?["rule"]?["include"]?[0]);
+        Assert.Equal("value1", actual?[0]["spec"]?["configuration"]?["key1"]);
+        Assert.Equal("abc", actual?[0]["spec"]?["configuration"]?["key2"]?[0]?["value1"]);
+        Assert.Equal("def", actual?[0]["spec"]?["configuration"]?["key2"]?[1]?["value2"]);
     }
 
     #region Helper methods
@@ -195,3 +197,5 @@ public sealed class BaselineTests : ContextBaseTests
 
     #endregion Helper methods
 }
+
+#nullable restore

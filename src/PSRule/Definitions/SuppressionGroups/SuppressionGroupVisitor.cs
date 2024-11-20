@@ -1,12 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Diagnostics;
 using PSRule.Definitions.Expressions;
 using PSRule.Resources;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions.SuppressionGroups;
 
+[DebuggerDisplay("{Id.Value}")]
 internal sealed class SuppressionGroupVisitor
 {
     private readonly LanguageExpressionOuterFn _Fn;
@@ -20,6 +22,7 @@ internal sealed class SuppressionGroupVisitor
         Source = source;
         InstanceId = Guid.NewGuid();
         Rule = spec.Rule;
+        Info = info;
         _Info = new SuppressionInfo(id, info);
         _Fn = new LanguageExpressionBuilder()
             .WithRule(Rule)
@@ -68,6 +71,8 @@ internal sealed class SuppressionGroupVisitor
     }
 
     public ResourceId Id { get; }
+
+    public IResourceHelpInfo Info { get; }
 
     public ISourceFile Source { get; }
 

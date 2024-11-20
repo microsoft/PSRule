@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Management.Automation;
+using System.Text;
 using Newtonsoft.Json;
 using PSRule.Annotations;
 using PSRule.Converters.Yaml;
@@ -104,11 +105,10 @@ internal static class HostHelper
     /// </summary>
     internal static CommentMetadata GetCommentMeta(ISourceFile file, int lineNumber, int offset)
     {
-        var context = RunspaceContext.CurrentThread;
-        if (lineNumber < 0 || RunspaceContext.CurrentThread.IsScope(RunspaceScope.None) || context.Source.SourceContentCache == null)
+        if (lineNumber < 0 || !file.Exists())
             return new CommentMetadata();
 
-        var lines = context.Source.SourceContentCache;
+        var lines = File.ReadAllLines(file.Path, Encoding.UTF8); ;
         var i = lineNumber;
         var comments = new List<string>();
 
@@ -263,7 +263,7 @@ internal static class HostHelper
             .WithTypeConverter(new PSObjectYamlTypeConverter())
             .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
             .WithNodeDeserializer(
-                inner => new ResourceNodeDeserializer(new LanguageExpressionDeserializer(inner)),
+                inner => new ResourceNodeDeserializer(context, new LanguageExpressionDeserializer(context, inner)),
                 s => s.InsteadOf<ObjectNodeDeserializer>())
             .Build();
 
@@ -292,7 +292,9 @@ internal static class HostHelper
                                 continue;
 
                             if (item.Visit(visitor))
+                            {
                                 result.Add(item.Block);
+                            }
                         }
                     }
                     finally
@@ -321,10 +323,10 @@ internal static class HostHelper
         {
             DateTimeZoneHandling = DateTimeZoneHandling.Utc
         };
-        deserializer.Converters.Add(new ResourceObjectJsonConverter());
+        deserializer.Converters.Add(new ResourceObjectJsonConverter(context));
         deserializer.Converters.Add(new FieldMapJsonConverter());
         deserializer.Converters.Add(new StringArrayJsonConverter());
-        deserializer.Converters.Add(new LanguageExpressionJsonConverter());
+        deserializer.Converters.Add(new LanguageExpressionJsonConverter(context));
 
         try
         {
@@ -351,9 +353,11 @@ internal static class HostHelper
                             reader.SkipComments(out _);
                             while (reader.TokenType != JsonToken.EndArray)
                             {
-                                var value = deserializer.Deserialize<ResourceObject>(reader);
-                                if (value?.Block != null && value.Visit(visitor))
-                                    result.Add(value.Block);
+                                var item = deserializer.Deserialize<ResourceObject>(reader);
+                                if (item?.Block != null && item.Visit(visitor))
+                                {
+                                    result.Add(item.Block);
+                                }
 
                                 // Consume all end objects at the end of each resource
                                 while (reader.TryConsume(JsonToken.EndObject)) { }
@@ -624,7 +628,7 @@ internal static class HostHelper
             }
 
         }
-        return results.Values.ToArray();
+        return [.. results.Values];
     }
 
     private static Baseline[] ToBaselineV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
@@ -695,7 +699,7 @@ internal static class HostHelper
             if (!results.ContainsKey(block.Name))
                 results[block.Name] = block;
         }
-        return results.Values.ToArray();
+        return [.. results.Values];
     }
 
     /// <summary>
@@ -858,7 +862,7 @@ internal static class HostHelper
             ? new RuleHelpInfo(
                 name: name,
                 displayName: defaultDisplayName ?? name,
-                moduleName: context.Source.File.Module,
+                moduleName: context.Source.Module,
                 synopsis: InfoString.Create(defaultSynopsis),
                 description: defaultDescription,
                 recommendation: defaultRecommendation
@@ -866,7 +870,7 @@ internal static class HostHelper
             : new RuleHelpInfo(
                 name: name,
                 displayName: document.Name ?? defaultDisplayName ?? name,
-                moduleName: context.Source.File.Module,
+                moduleName: context.Source.Module,
                 synopsis: document.Synopsis ?? new InfoString(defaultSynopsis),
                 description: document.Description ?? defaultDescription,
                 recommendation: document.Recommendation ?? defaultRecommendation ?? document.Synopsis ?? InfoString.Create(defaultSynopsis)
@@ -895,7 +899,7 @@ internal static class HostHelper
     {
         path = null;
         culture = null;
-        if (string.IsNullOrEmpty(context.Source.File.HelpPath))
+        if (string.IsNullOrEmpty(context.Source.HelpPath))
             return false;
 
         var helpFileName = string.Concat(name, Markdown_Extension);

@@ -16,7 +16,7 @@ internal sealed class ResourceBuilder
     private readonly List<ILanguageBlock> _Output;
     private readonly IDeserializer _Deserializer;
 
-    internal ResourceBuilder()
+    internal ResourceBuilder(IResourceDiscoveryContext context)
     {
         _Output = new List<ILanguageBlock>();
         _Deserializer = new DeserializerBuilder()
@@ -29,7 +29,7 @@ internal sealed class ResourceBuilder
             .WithTypeConverter(new StringArrayMapConverter())
             .WithTypeConverter(new StringArrayConverter())
             .WithNodeDeserializer(
-                inner => new ResourceNodeDeserializer(new LanguageExpressionDeserializer(inner)),
+                inner => new ResourceNodeDeserializer(context, new LanguageExpressionDeserializer(context, inner)),
                 s => s.InsteadOf<ObjectNodeDeserializer>())
             .Build();
     }
