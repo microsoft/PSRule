@@ -3,39 +3,41 @@
 # Configure binding
 binding:
   targetName:
-  - ResourceName
-  - AlternateName
+    - ResourceName
+    - AlternateName
   targetType:
-  - ResourceType
-  - kind
+    - ResourceType
+    - kind
 
 # Configure conventions
 convention:
   include:
-  - 'Convention1'
-  - 'Convention2'
+    - 'Convention1'
+    - 'Convention2'
 
 # Configure input
 input:
   targetType:
-  - virtualMachine
-  - virtualNetwork
+    - virtualMachine
+    - virtualNetwork
 
 # Configure output
 output:
   banner: 1
   culture:
-  - 'en-CC'
-  - 'en-DD'
+    - 'en-CC'
+    - 'en-DD'
+
+override: {}
 
 # Configure required module versions
-requires: { }
+requires: {}
 
 # Configure baseline
 rule:
   include:
-  - rule1
-  - rule2
+    - rule1
+    - rule2
   exclude:
-  - rule3
-  - rule4
+    - rule3
+    - rule4

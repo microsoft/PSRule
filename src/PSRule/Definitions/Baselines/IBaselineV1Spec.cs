@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Options;
 
 namespace PSRule.Definitions.Baselines;
 
@@ -16,12 +17,12 @@ internal interface IBaselineV1Spec
     ConfigurationOption Configuration { get; set; }
 
     /// <summary>
-    /// Options that configure conventions.
-    /// </summary>
-    ConventionOption Convention { get; set; }
-
-    /// <summary>
     /// Options for that affect which rules are executed by including and filtering discovered rules.
     /// </summary>
     RuleOption Rule { get; set; }
+
+    /// <summary>
+    /// Options that configure additional rule overrides.
+    /// </summary>
+    OverrideOption Override { get; set; }
 }

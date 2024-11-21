@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -9,6 +8,7 @@ using System.Management.Automation;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
+using PSRule.Definitions.Rules;
 using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -80,9 +80,15 @@ public sealed class PipelineTests : ContextBaseTests
 
         var actual = (writer.Output[0] as InvokeResult).AsRecord().FirstOrDefault();
         Assert.Equal(RuleOutcome.Pass, actual.Outcome);
+        Assert.Equal(SeverityLevel.Error, actual.Default.Level);
+        Assert.Equal(SeverityLevel.Warning, actual.Override.Level);
+        Assert.Equal(SeverityLevel.Warning, actual.Level);
 
         actual = (writer.Output[1] as InvokeResult).AsRecord().FirstOrDefault();
         Assert.Equal(RuleOutcome.Fail, actual.Outcome);
+        Assert.Equal(SeverityLevel.Error, actual.Default.Level);
+        Assert.Equal(SeverityLevel.Warning, actual.Override.Level);
+        Assert.Equal(SeverityLevel.Warning, actual.Level);
         Assert.Equal("Name", actual.Detail.Reason.First().Path);
         Assert.Equal("resources[1].Name", actual.Detail.Reason.First().FullPath);
     }
@@ -351,12 +357,9 @@ public sealed class PipelineTests : ContextBaseTests
         var option = path == null ? new PSRuleOption() : PSRuleOption.FromFile(path);
         option.Rule.IncludeLocal = false;
         option.Execution.RuleExcluded = ruleExcludedAction;
+        option.Override.Level ??= [];
+        option.Override.Level.Add("ScriptReasonTest", SeverityLevel.Warning);
         return option;
-    }
-
-    private static string GetSourcePath(string fileName)
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
     }
 
     private static PSObject GetTestObject()

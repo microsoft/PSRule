@@ -3,7 +3,10 @@
 
 using System.Diagnostics;
 using PSRule.Configuration;
+using PSRule.Data;
 using PSRule.Definitions;
+using PSRule.Definitions.Rules;
+using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Runtime.Binding;
 
@@ -15,6 +18,7 @@ namespace PSRule.Runtime;
 internal sealed class LanguageScope : ILanguageScope
 {
     private IDictionary<string, object>? _Configuration;
+    private WildcardMap<RuleOverride>? _Override;
     private readonly Dictionary<string, object> _Service;
     private readonly Dictionary<ResourceKind, IResourceFilter> _Filter;
     private ITargetBinder? _TargetBinder;
@@ -59,6 +63,18 @@ internal sealed class LanguageScope : ILanguageScope
 
         var builder = new TargetBinderBuilder(context.BindTargetName, context.BindTargetType, context.BindField, context.InputTargetType);
         _TargetBinder = builder.Build(context.Binding);
+        _Override = WithOverride(context.Override);
+    }
+
+    private static WildcardMap<RuleOverride>? WithOverride(OverrideOption option)
+    {
+        if (option == null || option.Level == null)
+            return default;
+
+        var overrides = option.Level
+            .Where(l => l.Value != SeverityLevel.None)
+            .Select(l => new KeyValuePair<string, RuleOverride>(l.Key, new RuleOverride { Level = l.Value }));
+        return new WildcardMap<RuleOverride>(overrides);
     }
 
     /// <inheritdoc/>
@@ -66,6 +82,17 @@ internal sealed class LanguageScope : ILanguageScope
     {
         value = default;
         return !string.IsNullOrEmpty(key) && _Configuration != null && _Configuration.TryGetValue(key, out value);
+    }
+
+    /// <inheritdoc/>
+    public bool TryGetOverride(ResourceId id, out RuleOverride? value)
+    {
+        value = default;
+        if (_Override == null)
+            return false;
+
+        return _Override.TryGetValue(id.Value, out value) ||
+            _Override.TryGetValue(id.Name, out value);
     }
 
     /// <inheritdoc/>

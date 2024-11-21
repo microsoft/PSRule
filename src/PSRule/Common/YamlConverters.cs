@@ -6,6 +6,7 @@ using System.Management.Automation;
 using System.Reflection;
 using PSRule.Annotations;
 using PSRule.Configuration;
+using PSRule.Converters;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Expressions;
@@ -1020,6 +1021,57 @@ internal sealed class InfoStringYamlTypeConverter : IYamlTypeConverter
     {
         if (value is InfoString info && info.HasValue && info.Text != null)
             emitter.Emit(new Scalar(info.Text));
+    }
+}
+
+/// <summary>
+/// A converter for converting <see cref="EnumMap{T}"/> to/ from YAML.
+/// </summary>
+internal sealed class EnumMapYamlTypeConverter<T> : IYamlTypeConverter where T : struct, Enum
+{
+    public bool Accepts(Type type)
+    {
+        return typeof(EnumMap<T>).IsAssignableFrom(type);
+    }
+
+    public object? ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
+    {
+        var map = new EnumMap<T>();
+        if (parser.TryConsume<MappingStart>(out _))
+        {
+            while (parser.TryConsume<Scalar>(out var s1))
+            {
+                var propertyName = s1.Value;
+                if (parser.TryConsume<Scalar>(out var s2) && TypeConverter.TryEnum<T>(s2.Value, convert: true, out var value) && value != null)
+                    map.Add(propertyName, value.Value);
+            }
+            parser.Require<MappingEnd>();
+            parser.MoveNext();
+        }
+        else
+        {
+            parser.SkipThisAndNestedEvents();
+        }
+        return map;
+    }
+
+    public void WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)
+    {
+        if (type == typeof(EnumMap<T>) && value == null)
+        {
+            emitter.Emit(new MappingStart());
+            emitter.Emit(new MappingEnd());
+        }
+        if (value is not EnumMap<T> map)
+            return;
+
+        emitter.Emit(new MappingStart());
+        foreach (var kv in map)
+        {
+            emitter.Emit(new Scalar(kv.Key));
+            emitter.Emit(new Scalar(kv.Value.ToString()));
+        }
+        emitter.Emit(new MappingEnd());
     }
 }
 

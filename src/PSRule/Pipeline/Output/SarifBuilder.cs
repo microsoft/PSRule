@@ -41,13 +41,13 @@ internal sealed class SarifBuilder
     public SarifBuilder(Source[] source, PSRuleOption option)
     {
         _Option = option;
-        _Rules = new Dictionary<string, ReportingDescriptorReference>();
-        _Extensions = new Dictionary<string, ToolComponent>();
-        _Artifacts = new Dictionary<string, Artifact>();
+        _Rules = [];
+        _Extensions = [];
+        _Artifacts = [];
         _Run = new Run
         {
             Tool = GetTool(source),
-            Results = new List<Result>(),
+            Results = [],
             Invocations = GetInvocation(),
             AutomationDetails = GetAutomationDetails(),
             OriginalUriBaseIds = GetBaseIds(),
@@ -279,8 +279,8 @@ internal sealed class SarifBuilder
             DefaultConfiguration = new ReportingConfiguration
             {
                 Enabled = true,
-                Level = GetLevel(record),
-            }
+                Level = GetLevel(record.Default.Level),
+            },
         };
 
         toolComponent.Rules.Add(descriptor);
@@ -294,9 +294,27 @@ internal sealed class SarifBuilder
                 Guid = toolComponent.Guid,
                 Name = toolComponent.Name,
                 Index = _Run.Tool.Extensions == null ? -1 : _Run.Tool.Extensions.IndexOf(toolComponent),
-            }
+            },
         };
+
         _Rules.Add(id, descriptorReference);
+
+        // Create a configuration override if applicable.
+        if (record.Override != null && record.Override.Level.HasValue && record.Override.Level.Value != SeverityLevel.None && record.Override.Level != record.Default.Level)
+        {
+            if (_Run.Invocations[0].RuleConfigurationOverrides == null)
+                _Run.Invocations[0].RuleConfigurationOverrides = [];
+
+            _Run.Invocations[0].RuleConfigurationOverrides.Add(new ConfigurationOverride
+            {
+                Descriptor = descriptorReference,
+                Configuration = new ReportingConfiguration
+                {
+                    Level = GetLevel(record.Override.Level.Value),
+                }
+            });
+        }
+
         return descriptorReference;
     }
 
@@ -417,10 +435,24 @@ internal sealed class SarifBuilder
         if (record.Outcome != RuleOutcome.Fail)
             return FailureLevel.None;
 
-        if (record.Level == SeverityLevel.Error)
-            return FailureLevel.Error;
+        return record.Level switch
+        {
+            SeverityLevel.Error => FailureLevel.Error,
+            SeverityLevel.Warning => FailureLevel.Warning,
+            SeverityLevel.Information => FailureLevel.Note,
+            _ => FailureLevel.None,
+        };
+    }
 
-        return record.Level == SeverityLevel.Warning ? FailureLevel.Warning : FailureLevel.Note;
+    private static FailureLevel GetLevel(SeverityLevel level)
+    {
+        return level switch
+        {
+            SeverityLevel.Error => FailureLevel.Error,
+            SeverityLevel.Warning => FailureLevel.Warning,
+            SeverityLevel.Information => FailureLevel.Note,
+            _ => FailureLevel.None,
+        };
     }
 
     private Tool GetTool(Source[] source)

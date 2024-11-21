@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
-using PSRule.Definitions.Rules;
 using PSRule.Rules;
 
 namespace PSRule.Pipeline.Formatters;
@@ -51,13 +50,13 @@ internal sealed class AzurePipelinesFormatter : AssertFormatterBase, IAssertForm
     {
         base.FailDetail(record);
         var message = GetFailMessage(record);
-        if (record.Level == SeverityLevel.Error)
+        if (record.Level == Definitions.Rules.SeverityLevel.Error)
             Error(message);
 
-        if (record.Level == SeverityLevel.Warning)
+        if (record.Level == Definitions.Rules.SeverityLevel.Warning)
             Warning(message);
 
-        if (record.Level != SeverityLevel.Information)
+        if (record.Level != Definitions.Rules.SeverityLevel.Information)
             LineBreak();
     }
 }

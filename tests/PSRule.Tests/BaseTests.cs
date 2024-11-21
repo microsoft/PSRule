@@ -10,6 +10,8 @@ using PSRule.Pipeline.Emitters;
 
 namespace PSRule;
 
+#nullable enable
+
 /// <summary>
 /// A base class for all tests.
 /// </summary>
@@ -22,7 +24,12 @@ public abstract class BaseTests
         return new PSRuleOption();
     }
 
-    internal TestWriter GetTestWriter(PSRuleOption option = default)
+    protected virtual PSRuleOption GetOption(string path)
+    {
+        return PSRuleOption.FromFile(path);
+    }
+
+    internal TestWriter GetTestWriter(PSRuleOption? option = default)
     {
         return new TestWriter(option ?? GetOption());
     }
@@ -63,3 +70,5 @@ public abstract class BaseTests
 
     #endregion Helper methods
 }
+
+#nullable restore

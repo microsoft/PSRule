@@ -5,6 +5,7 @@ using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
+using PSRule.Options;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 
@@ -51,7 +52,7 @@ internal static class BaselineYamlSerializationMapper
         MapPropertyName(emitter, propertyName);
         emitter.Emit(new MappingStart());
         MapProperty(emitter, nameof(baselineSpec.Configuration), baselineSpec.Configuration);
-        MapProperty(emitter, nameof(baselineSpec.Convention), baselineSpec.Convention);
+        MapProperty(emitter, nameof(baselineSpec.Override), baselineSpec.Override);
         MapProperty(emitter, nameof(baselineSpec.Rule), baselineSpec.Rule);
         emitter.Emit(new MappingEnd());
     }
@@ -152,6 +153,20 @@ internal static class BaselineYamlSerializationMapper
         MapPropertyName(emitter, propertyName);
         emitter.Emit(new MappingStart());
         MapProperty(emitter, propertyName, value.Include);
+        emitter.Emit(new MappingEnd());
+    }
+
+    /// <summary>
+    /// Map a OverrideOption property.
+    /// </summary>
+    private static void MapProperty(IEmitter emitter, string propertyName, OverrideOption value)
+    {
+        if (value == null)
+            return;
+
+        MapPropertyName(emitter, propertyName);
+        emitter.Emit(new MappingStart());
+        MapProperty(emitter, nameof(value.Level), value.Level?.ToDictionary());
         emitter.Emit(new MappingEnd());
     }
 

@@ -23,7 +23,7 @@ internal delegate RuleConditionResult RuleCondition();
 [DebuggerDisplay("{Id} @{Source.Path}")]
 internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable, IResource, IRuleV1
 {
-    internal RuleBlock(ISourceFile source, ResourceId id, ResourceId? @ref, SeverityLevel level, RuleHelpInfo info, ICondition condition, IResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, ISourceExtent extent, ResourceFlags flags, IResourceLabels labels)
+    internal RuleBlock(ISourceFile source, ResourceId id, ResourceId? @ref, RuleProperties @default, RuleOverride @override, RuleHelpInfo info, ICondition condition, IResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, ISourceExtent extent, ResourceFlags flags, IResourceLabels labels)
     {
         Source = source;
         Name = id.Name;
@@ -33,7 +33,9 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
         Ref = @ref;
         Alias = alias;
 
-        Level = level;
+        Default = @default;
+        Override = @override;
+        Level = Override != null && Override.Level.HasValue && Override.Level != SeverityLevel.None ? Override.Level.Value : Default.Level;
         Info = info;
         Condition = condition;
         Tag = tag;
@@ -105,6 +107,14 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     [JsonIgnore]
     [YamlIgnore]
     public ResourceFlags Flags { get; }
+
+    [JsonIgnore]
+    [YamlIgnore]
+    public RuleProperties Default { get; }
+
+    [JsonIgnore]
+    [YamlIgnore]
+    public RuleOverride Override { get; }
 
     ResourceId[] IDependencyTarget.DependsOn => DependsOn;
 

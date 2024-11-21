@@ -14,6 +14,7 @@ A baseline includes a set of rule and configuration options that are used for ev
 The following baseline options can be configured:
 
 - [Configuration](about_PSRule_Options.md#configuration)
+- [Override.Level](about_PSRule_Options.md#overridelevel)
 - [Rule.Include](about_PSRule_Options.md#ruleinclude)
 - [Rule.IncludeLocal](about_PSRule_Options.md#ruleincludelocal)
 - [Rule.Exclude](about_PSRule_Options.md#ruleexclude)
@@ -48,8 +49,9 @@ metadata:
   annotations: { }
 spec:
   # One or more baseline options
-  rule: { }
   configuration: { }
+  override: {}
+  rule: { }
 ```
 
 For example:
@@ -100,8 +102,9 @@ To define a JSON baseline spec use the following structure:
       "annotations": {}
     },
     "spec": {
+      "configuration": {},
+      "override": {},
       "rule": {},
-      "configuration": {}
     }
   }
 ]
