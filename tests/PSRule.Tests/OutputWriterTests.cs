@@ -88,13 +88,58 @@ public sealed class OutputWriterTests : ContextBaseTests
         Assert.Equal("rid-002", actual["runs"][0]["results"][0]["ruleId"].Value<string>());
         Assert.Equal("error", actual["runs"][0]["results"][0]["level"].Value<string>());
 
-        // Fail with warning
+        // Fail with warning (default value is omitted)
         Assert.Equal("rid-003", actual["runs"][0]["results"][1]["ruleId"].Value<string>());
         Assert.Null(actual["runs"][0]["results"][1]["level"]);
 
         // Fail with note
         Assert.Equal("rid-004", actual["runs"][0]["results"][2]["ruleId"].Value<string>());
         Assert.Equal("note", actual["runs"][0]["results"][2]["level"].Value<string>());
+    }
+
+    [Fact]
+    public void Output_WhenRuleLevelIsOverridden_ShouldReturnOverrideInSarifFormat()
+    {
+        var option = GetOption();
+        var output = new TestWriter(option);
+        var result = new InvokeResult();
+        result.Add(GetPass());
+        result.Add(GetFail());
+        result.Add(GetFail("rid-003", SeverityLevel.Warning, overrideLevel: SeverityLevel.Information));
+        result.Add(GetFail("rid-004", SeverityLevel.Information, overrideLevel: SeverityLevel.Warning));
+        var writer = new SarifOutputWriter(null, output, option, null);
+        writer.Begin();
+        writer.WriteObject(result, false);
+        writer.End(new DefaultPipelineResult(null, Options.BreakLevel.None));
+
+        var doc = JsonConvert.DeserializeObject<JObject>(output.Output.OfType<string>().FirstOrDefault());
+        Assert.NotNull(doc);
+        Assert.Equal("PSRule", doc["runs"][0]["tool"]["driver"]["name"].Value<string>());
+        Assert.Equal("0.0.1", doc["runs"][0]["tool"]["driver"]["semanticVersion"].Value<string>().Split('+')[0]);
+
+        // Fail with error
+        var actual = doc["runs"][0]["results"].Where(r => r["ruleId"].Value<string>() == "rid-002").FirstOrDefault();
+        Assert.Equal("error", actual["level"].Value<string>());
+
+        // Fail with note
+        actual = doc["runs"][0]["results"].Where(r => r["ruleId"].Value<string>() == "rid-003").FirstOrDefault();
+        Assert.Equal("note", actual["level"].Value<string>());
+
+        var ruleDefault = doc["runs"][0]["tool"]["driver"]["rules"].Where(r => r["id"].Value<string>() == "rid-003").FirstOrDefault();
+        Assert.Null(ruleDefault["defaultConfiguration"]);
+
+        var ruleOverride = doc["runs"][0]["invocations"][0]["ruleConfigurationOverrides"].Where(r => r["descriptor"]["id"].Value<string>() == "rid-003").FirstOrDefault();
+        Assert.Equal("note", actual["level"].Value<string>());
+
+        // Fail with warning (default value is omitted)
+        actual = doc["runs"][0]["results"].Where(r => r["ruleId"].Value<string>() == "rid-004").FirstOrDefault();
+        Assert.Null(actual["level"]);
+
+        ruleDefault = doc["runs"][0]["tool"]["driver"]["rules"].Where(r => r["id"].Value<string>() == "rid-004").FirstOrDefault();
+        Assert.Equal("note", ruleDefault["defaultConfiguration"]["level"].Value<string>());
+
+        ruleOverride = doc["runs"][0]["invocations"][0]["ruleConfigurationOverrides"].Where(r => r["descriptor"]["id"].Value<string>() == "rid-004").FirstOrDefault();
+        Assert.Null(actual["level"]);
     }
 
     [Fact]
@@ -326,7 +371,7 @@ public sealed class OutputWriterTests : ContextBaseTests
         result.Add(GetPass());
         result.Add(GetFail());
         result.Add(GetFail("rid-003", SeverityLevel.Warning));
-        result.Add(GetFail("rid-004", SeverityLevel.Information, "Synopsis \"with quotes\"."));
+        result.Add(GetFail("rid-004", SeverityLevel.Information, synopsis: "Synopsis \"with quotes\"."));
         var writer = new NUnit3OutputWriter(output, option, null);
         writer.Begin();
         writer.WriteObject(result, false);
@@ -413,7 +458,10 @@ public sealed class OutputWriterTests : ContextBaseTests
                 recommendation: new InfoString("Recommendation for rule 001\r\nover two lines.")
             ),
             field: new Hashtable(),
-            level: SeverityLevel.Error,
+            @default: new RuleProperties
+            {
+                Level = SeverityLevel.Error
+            },
             extent: null,
             outcome: RuleOutcome.Pass,
             reason: RuleOutcomeReason.Processed
@@ -423,7 +471,7 @@ public sealed class OutputWriterTests : ContextBaseTests
         };
     }
 
-    private static RuleRecord GetFail(string ruleRef = "rid-002", SeverityLevel level = SeverityLevel.Error, string synopsis = "This is rule 002.", string ruleId = "TestModule\\rule-002")
+    private static RuleRecord GetFail(string ruleRef = "rid-002", SeverityLevel level = SeverityLevel.Error, SeverityLevel? overrideLevel = null, string synopsis = "This is rule 002.", string ruleId = "TestModule\\rule-002")
     {
         var info = new RuleHelpInfo(
             "rule-002",
@@ -432,10 +480,17 @@ public sealed class OutputWriterTests : ContextBaseTests
             synopsis: new InfoString(synopsis),
             recommendation: new InfoString("Recommendation for rule 002")
         );
+
         info.Annotations = new Hashtable
         {
             ["annotation-data"] = "Custom annotation"
         };
+
+        var ruleOverride = overrideLevel == null ? null : new RuleOverride
+        {
+            Level = overrideLevel,
+        };
+
         return new RuleRecord(
             runId: "run-001",
             ruleId: ResourceId.Parse(ruleId),
@@ -449,7 +504,11 @@ public sealed class OutputWriterTests : ContextBaseTests
             {
                 ["field-data"] = "Custom field data"
             },
-            level: level,
+            @default: new RuleProperties
+            {
+                Level = level
+            },
+            @override: ruleOverride,
             extent: null,
             outcome: RuleOutcome.Fail,
             reason: RuleOutcomeReason.Processed

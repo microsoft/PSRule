@@ -76,6 +76,16 @@ internal sealed class MockLanguageScope : ILanguageScope
         throw new NotImplementedException();
     }
 
+    public bool TryGetOverride(ResourceId id, out RuleOverride propertyOverride)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool TryGetScope(object o, out string[] scope)
+    {
+        throw new NotImplementedException();
+    }
+
     public bool TryGetType(object o, out string type, out string path)
     {
         throw new NotImplementedException();

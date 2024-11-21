@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Definitions;
+using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
 using PSRule.Runtime.Binding;
 
@@ -67,6 +68,11 @@ internal interface ILanguageScope : IDisposable
     /// Try to bind the name of the object.
     /// </summary>
     bool TryGetName(object o, out string? name, out string? path);
+
+    /// <summary>
+    /// Try to get a rule override by resource ID.
+    /// </summary>
+    bool TryGetOverride(ResourceId id, out RuleOverride? propertyOverride);
 }
 
 #nullable restore

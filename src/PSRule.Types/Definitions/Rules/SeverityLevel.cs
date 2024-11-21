@@ -1,11 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace PSRule.Definitions.Rules;
 
 /// <summary>
 /// If the rule fails, how serious is the result.
 /// </summary>
+[JsonConverter(typeof(StringEnumConverter))]
 public enum SeverityLevel
 {
     /// <summary>

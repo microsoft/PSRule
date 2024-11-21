@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Definitions.Rules;
-
-namespace PSRule;
+namespace PSRule.Definitions.Rules;
 
 internal static class SeverityLevelExtensions
 {

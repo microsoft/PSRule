@@ -14,6 +14,8 @@ using YamlDotNet.Serialization;
 
 namespace PSRule.Rules;
 
+#nullable enable
+
 /// <summary>
 /// A detailed format for rule results.
 /// </summary>
@@ -25,7 +27,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
 
     internal readonly ResultDetail _Detail;
 
-    internal RuleRecord(string runId, ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, IResourceTags tag, RuleHelpInfo info, Hashtable field, SeverityLevel level, ISourceExtent extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None)
+    internal RuleRecord(string runId, ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, IResourceTags tag, RuleHelpInfo info, Hashtable field, RuleProperties @default, ISourceExtent extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, RuleOverride? @override = null)
     {
         _TargetObject = targetObject;
         RunId = runId;
@@ -39,8 +41,11 @@ public sealed class RuleRecord : IDetailedRuleResultV2
         OutcomeReason = reason;
         Info = info;
         Source = targetObject.Source.GetSourceInfo();
-        Level = level;
         Extent = extent;
+        Default = @default;
+        Override = @override;
+        Level = Override?.Level ?? Default.Level;
+
         _Detail = new ResultDetail();
         if (tag != null)
             Tag = tag.ToHashtable();
@@ -59,7 +64,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
     /// A unique identifier for the rule.
     /// </summary>
     /// <remarks>
-    /// An additional opaque identifer may also be provided by by <see cref="Ref"/>.
+    /// An additional opaque identifier may also be provided by by <see cref="Ref"/>.
     /// </remarks>
     [JsonIgnore]
     [YamlIgnore]
@@ -106,14 +111,14 @@ public sealed class RuleRecord : IDetailedRuleResultV2
     /// </summary>
     [JsonIgnore]
     [YamlIgnore]
-    public string Recommendation => Info.Recommendation?.Text ?? Info.Synopsis?.Text;
+    public string? Recommendation => Info.Recommendation?.Text ?? Info.Synopsis?.Text;
 
     /// <summary>
     /// The reason for the failed condition.
     /// </summary>
     [DefaultValue(null)]
     [JsonProperty(PropertyName = "reason")]
-    public string[] Reason => _Detail.Count > 0 ? _Detail.GetReasonStrings() : null;
+    public string[]? Reason => _Detail.Count > 0 ? _Detail.GetReasonStrings() : null;
 
     /// <summary>
     /// A name to identify the target object.
@@ -190,6 +195,20 @@ public sealed class RuleRecord : IDetailedRuleResultV2
     public IResultDetailV2 Detail => _Detail;
 
     /// <summary>
+    /// Any default properties for the rule.
+    /// </summary>
+    [JsonIgnore]
+    [YamlIgnore]
+    public RuleProperties Default { get; set; }
+
+    /// <summary>
+    /// Any overrides for the rule.
+    /// </summary>
+    [JsonIgnore]
+    [YamlIgnore]
+    public RuleOverride? Override { get; }
+
+    /// <summary>
     /// Determine if the rule is successful or skipped.
     /// </summary>
     public bool IsSuccess()
@@ -221,3 +240,5 @@ public sealed class RuleRecord : IDetailedRuleResultV2
         return Source != null && Source.Length > 0;
     }
 }
+
+#nullable restore

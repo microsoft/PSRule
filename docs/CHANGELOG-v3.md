@@ -27,6 +27,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+- New features:
+  - Added support for overriding rule severity level by @BernieWhite.
+    [#1180](https://github.com/microsoft/PSRule/issues/1180)
+    - Baselines now accept a new `spec.overrides.level` property which configures severity level overrides.
+    - Options now accept a new `overrides.level` properties which configures severity level overrides.
+    - For example, a rule that generates an `Error` can be overridden to `Warning`.
 - General improvements:
   - Automatically restore missing modules when running CLI by @BernieWhite.
     [#2552](https://github.com/microsoft/PSRule/issues/2552)

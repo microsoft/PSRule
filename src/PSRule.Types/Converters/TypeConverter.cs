@@ -265,6 +265,20 @@ internal static class TypeConverter
         return false;
     }
 
+    /// <summary>
+    /// Try to get the environment variable as a enum of type <typeparamref name="T"/>.
+    /// </summary>
+    public static bool TryEnum<T>(object o, bool convert, out T? value) where T : struct, Enum
+    {
+        if (o is T t || convert && o is string s && Enum.TryParse(s, ignoreCase: true, out t))
+        {
+            value = t;
+            return true;
+        }
+        value = null;
+        return false;
+    }
+
     private static bool TryGetValue(object o, string propertyName, out object? value)
     {
         value = null;

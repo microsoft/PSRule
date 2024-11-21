@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Management.Automation;
 using PSRule.Configuration;
+using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
 
 namespace PSRule;
@@ -87,6 +88,28 @@ public sealed class PSRuleOptionTests : ContextBaseTests
         Assert.Equal(new string[] { ".\\TestBaseline1" }, latest);
     }
 
+    [Fact]
+    public void FromFile_WhenOverrideIsDefined_ShouldDeserializeLevel()
+    {
+        var option = GetOption();
+        var actual = option.Override.Level;
+        Assert.True(actual.TryGetValue("rule1", out var level));
+        Assert.Equal(SeverityLevel.Information, level);
+
+        Assert.True(actual.TryGetValue("Group.*", out level));
+        Assert.Equal(SeverityLevel.Error, level);
+    }
+
+    [Theory]
+    [InlineData("PSRule.Tests2.yml")]
+    [InlineData("PSRule.Tests17.yml")]
+    public void FromFile_WhenOverrideIsPartiallyDefined_ShouldDeserializeWithoutError(string path)
+    {
+        var option = GetOption(GetSourcePath(path));
+        var actual = option.Override.Level;
+        Assert.Null(actual);
+    }
+
     #region Helper methods
 
     private Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
@@ -108,7 +131,7 @@ public sealed class PSRuleOptionTests : ContextBaseTests
 
     protected sealed override PSRuleOption GetOption()
     {
-        return PSRuleOption.FromFile(GetSourcePath("PSRule.Tests.yml"));
+        return GetOption(GetSourcePath("PSRule.Tests.yml"));
     }
 
     #endregion Helper methods

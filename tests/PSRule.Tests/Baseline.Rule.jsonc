@@ -79,6 +79,11 @@
             "low"
           ]
         }
+      },
+      "override": {
+        "level": {
+          "rule1": "Warning"
+        }
       }
     }
   },
