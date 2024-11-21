@@ -27,6 +27,10 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v3.0.0-B0315 (pre-release)
+
+What's changed since pre-release v3.0.0-B0275:
+
 - New features:
   - Added support for overriding rule severity level by @BernieWhite.
     [#1180](https://github.com/microsoft/PSRule/issues/1180)
