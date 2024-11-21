@@ -3671,8 +3671,8 @@
                 "trim": {
                   "type": "object",
                   "title": "Trim",
-                  "description": "Trim a string value by removing leading and trailings whitespace.",
-                  "markdownDescription": "Trim a string value by removing leading and trailings whitespace.",
+                  "description": "Trim a string value by removing leading and trailing whitespace.",
+                  "markdownDescription": "Trim a string value by removing leading and trailing whitespace.",
                   "$ref": "#/definitions/fn/definitions/function"
                 }
               },
@@ -3746,13 +3746,13 @@
                   "oneOf": [
                     {
                       "type": "string",
-                      "description": "The split function converts a string into an array by spliting based on a delimiter.",
-                      "markdownDescription": "The `split` function converts a string into an array by spliting based on a delimiter."
+                      "description": "The split function converts a string into an array by splitting based on a delimiter.",
+                      "markdownDescription": "The `split` function converts a string into an array by splitting based on a delimiter."
                     },
                     {
                       "type": "object",
-                      "description": "The split function converts a string into an array by spliting based on a delimiter.",
-                      "markdownDescription": "The `split` function converts a string into an array by spliting based on a delimiter.",
+                      "description": "The split function converts a string into an array by splitting based on a delimiter.",
+                      "markdownDescription": "The `split` function converts a string into an array by splitting based on a delimiter.",
                       "$ref": "#/definitions/fn/definitions/function"
                     }
                   ],
