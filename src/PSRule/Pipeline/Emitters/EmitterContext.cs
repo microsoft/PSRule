@@ -9,6 +9,8 @@ using PSRule.Options;
 
 namespace PSRule.Pipeline.Emitters;
 
+#nullable enable
+
 /// <summary>
 /// The internal implementation of a <see cref="IEmitterContext"/>.
 /// </summary>
@@ -20,7 +22,7 @@ internal sealed class EmitterContext : BaseEmitterContext
     /// <summary>
     /// Create an instance containing context for an <see cref="IEmitter"/>.
     /// </summary>
-    internal EmitterContext(ConcurrentQueue<ITargetObject> queue, PathFilter inputFilter, PSRuleOption option)
+    internal EmitterContext(ConcurrentQueue<ITargetObject> queue, PathFilter inputFilter, PSRuleOption? option)
         : base(option?.Input?.Format ?? InputFormat.None, option?.Input?.ObjectPath, option?.Input?.FileObjects ?? false)
     {
         _Queue = queue;
@@ -55,3 +57,5 @@ internal sealed class EmitterContext : BaseEmitterContext
         return _InputFilter == null || _InputFilter.Match(path);
     }
 }
+
+#nullable restore

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections.Immutable;
 using System.Management.Automation;
 using PSRule.Data;
 using PSRule.Emitters;
@@ -13,15 +14,25 @@ namespace PSRule.Pipeline.Emitters;
 /// </summary>
 internal sealed class MarkdownEmitter : FileEmitter
 {
-    private const string EXTENSION_MARKDOWN = ".markdown";
-    private const string EXTENSION_MD = ".md";
+    private const string FORMAT = "markdown";
+
+    private static readonly string[] _DefaultTypes = [".md", ".markdown"];
+
+    private readonly ImmutableHashSet<string> _Types;
+
+    public MarkdownEmitter(IEmitterConfiguration emitterConfiguration)
+    {
+        if (emitterConfiguration == null) throw new ArgumentNullException(nameof(emitterConfiguration));
+
+        _Types = emitterConfiguration.GetFormatTypes(FORMAT, _DefaultTypes).ToImmutableHashSet();
+    }
 
     /// <summary>
     /// Accept the file if it is a markdown file.
     /// </summary>
     protected override bool AcceptsFilePath(IEmitterContext context, IFileInfo info)
     {
-        return info != null && (info.Extension == EXTENSION_MD || info.Extension == EXTENSION_MARKDOWN);
+        return info != null && _Types.Contains(info.Extension);
     }
 
     /// <inheritdoc/>

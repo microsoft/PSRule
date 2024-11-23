@@ -6,6 +6,7 @@ using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Pipeline.Emitters;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
@@ -21,12 +22,12 @@ internal sealed class PipelineInputStream : IPipelineReader
     private readonly ConcurrentQueue<ITargetObject> _Queue;
     private readonly EmitterCollection _EmitterCollection;
 
-    public PipelineInputStream(InputPathBuilder inputPath, PathFilter inputFilter, PSRuleOption option)
+    public PipelineInputStream(ILanguageScopeSet? languageScopeSet, InputPathBuilder inputPath, PathFilter inputFilter, PSRuleOption? option)
     {
         _InputPath = inputPath;
         _InputFilter = inputFilter;
         _Queue = new ConcurrentQueue<ITargetObject>();
-        _EmitterCollection = new EmitterBuilder().Build(new EmitterContext(_Queue, inputFilter, option));
+        _EmitterCollection = new EmitterBuilder(languageScopeSet, option?.Format).Build(new EmitterContext(_Queue, inputFilter, option));
     }
 
     public int Count => _Queue.Count;

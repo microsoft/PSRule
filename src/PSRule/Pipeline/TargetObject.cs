@@ -101,6 +101,8 @@ public sealed class TargetObject : ITargetObject
 
     object ITargetObject.Value => Value;
 
+    ITargetSourceMap? ITargetObject.SourceMap => null;
+
 #nullable restore
 
     internal Hashtable GetData()

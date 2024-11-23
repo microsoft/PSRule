@@ -11,7 +11,7 @@ namespace PSRule;
 internal sealed class TestEmitterContext(InputFormat format = InputFormat.None, string objectPath = null)
     : BaseEmitterContext(format, objectPath, false)
 {
-    public List<ITargetObject> Items = new();
+    public List<ITargetObject> Items = [];
 
     protected override void Enqueue(ITargetObject value)
     {

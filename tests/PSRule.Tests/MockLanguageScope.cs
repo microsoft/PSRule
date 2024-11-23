@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
@@ -66,6 +67,11 @@ internal sealed class MockLanguageScope : ILanguageScope
         throw new NotImplementedException();
     }
 
+    public IConfiguration ToConfiguration()
+    {
+        return new InternalConfiguration(new Dictionary<string, object>());
+    }
+
     public bool TryConfigurationValue(string key, out object value)
     {
         throw new NotImplementedException();
@@ -77,11 +83,6 @@ internal sealed class MockLanguageScope : ILanguageScope
     }
 
     public bool TryGetOverride(ResourceId id, out RuleOverride propertyOverride)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool TryGetScope(object o, out string[] scope)
     {
         throw new NotImplementedException();
     }

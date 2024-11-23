@@ -73,6 +73,12 @@ internal interface ILanguageScope : IDisposable
     /// Try to get a rule override by resource ID.
     /// </summary>
     bool TryGetOverride(ResourceId id, out RuleOverride? propertyOverride);
+
+    /// <summary>
+    /// Get the current scope as a configuration object.
+    /// </summary>
+    /// <returns>Returns an <see cref="IConfiguration"/> instance.</returns>
+    IConfiguration ToConfiguration();
 }
 
 #nullable restore

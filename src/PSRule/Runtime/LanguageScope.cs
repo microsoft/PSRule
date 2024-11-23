@@ -32,6 +32,7 @@ internal sealed class LanguageScope : ILanguageScope
         Name = ResourceHelper.NormalizeScope(name);
         _Filter = [];
         _Service = [];
+        _Configuration = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
     }
 
     /// <inheritdoc/>
@@ -42,12 +43,12 @@ internal sealed class LanguageScope : ILanguageScope
 
     public StringComparer GetBindingComparer() => _BindingComparer ?? StringComparer.OrdinalIgnoreCase;
 
-    /// <inheritdoc/>
-    public void Configure(Dictionary<string, object> configuration)
-    {
-        _Configuration ??= new Dictionary<string, object>();
-        _Configuration.AddUnique(configuration);
-    }
+    ///// <inheritdoc/>
+    //public void Configure(Dictionary<string, object> configuration)
+    //{
+    //    _Configuration ??= new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+    //    _Configuration.AddUnique(configuration);
+    //}
 
     /// <inheritdoc/>
     public void Configure(OptionContext context)
@@ -55,7 +56,7 @@ internal sealed class LanguageScope : ILanguageScope
         if (context == null) throw new ArgumentNullException(nameof(context));
 
         _Configuration = context.Configuration;
-        _Configuration ??= new Dictionary<string, object>();
+        _Configuration ??= new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         WithFilter(context.RuleFilter);
         WithFilter(context.ConventionFilter);
         _BindingComparer = context.Binding.GetComparer();
@@ -160,6 +161,11 @@ internal sealed class LanguageScope : ILanguageScope
         name = default;
         path = default;
         return false;
+    }
+
+    public IConfiguration ToConfiguration()
+    {
+        return new InternalConfiguration(_Configuration ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase));
     }
 
     private void Dispose(bool disposing)

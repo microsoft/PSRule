@@ -11,7 +11,7 @@ namespace PSRule.Runtime;
 /// <summary>
 /// A set of rule configuration values that are exposed at runtime and automatically fallback to defaults when not set in configuration.
 /// </summary>
-public sealed class Configuration : DynamicObject, IConfiguration
+public sealed class Configuration : DynamicObject, IScriptRuntimeConfiguration
 {
     private readonly RunspaceContext _Context;
 
@@ -28,19 +28,19 @@ public sealed class Configuration : DynamicObject, IConfiguration
             return false;
 
         // Get from configuration
-        return TryGetValue(binder.Name, out result);
+        return TryConfigurationValue(binder.Name, out result);
     }
 
     /// <inheritdoc/>
     public object? GetValueOrDefault(string configurationKey, object? defaultValue = default)
     {
-        return TryGetValue(configurationKey, out var value) && value != null ? value : defaultValue;
+        return TryConfigurationValue(configurationKey, out var value) && value != null ? value : defaultValue;
     }
 
     /// <inheritdoc/>
     public string? GetStringOrDefault(string configurationKey, string? defaultValue = default)
     {
-        return TryGetValue(configurationKey, out var value) &&
+        return TryConfigurationValue(configurationKey, out var value) &&
             value != null &&
             TryString(value, out var result) &&
             result != null ? result : defaultValue;
@@ -49,7 +49,7 @@ public sealed class Configuration : DynamicObject, IConfiguration
     /// <inheritdoc/>
     public bool? GetBoolOrDefault(string configurationKey, bool? defaultValue = default)
     {
-        return TryGetValue(configurationKey, out var value) &&
+        return TryConfigurationValue(configurationKey, out var value) &&
             value != null &&
             TryBool(value, out var result) &&
             result != null ? result : defaultValue;
@@ -58,7 +58,7 @@ public sealed class Configuration : DynamicObject, IConfiguration
     /// <inheritdoc/>
     public int? GetIntegerOrDefault(string configurationKey, int? defaultValue = default)
     {
-        return TryGetValue(configurationKey, out var value) &&
+        return TryConfigurationValue(configurationKey, out var value) &&
             value != null &&
             TryInt(value, out var result) &&
             result != null ? result : defaultValue;
@@ -67,7 +67,7 @@ public sealed class Configuration : DynamicObject, IConfiguration
     /// <inheritdoc/>
     public string[] GetStringValues(string configurationKey)
     {
-        if (!TryGetValue(configurationKey, out var value) || value == null)
+        if (!TryConfigurationValue(configurationKey, out var value) || value == null)
             return [];
 
         if (value is string valueT)
@@ -92,13 +92,14 @@ public sealed class Configuration : DynamicObject, IConfiguration
     /// <inheritdoc/>
     public bool IsEnabled(string configurationKey)
     {
-        return TryGetValue(configurationKey, out var value) &&
+        return TryConfigurationValue(configurationKey, out var value) &&
             value != null &&
             TryBool(value, out var result) &&
             result == true;
     }
 
-    private bool TryGetValue(string name, out object? value)
+    /// <inheritdoc/>
+    public bool TryConfigurationValue(string name, out object? value)
     {
         value = default;
         return _Context != null && _Context.TryGetConfigurationValue(name, out value);

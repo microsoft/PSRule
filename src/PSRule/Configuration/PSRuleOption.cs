@@ -37,6 +37,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         Binding = BindingOption.Default,
         Convention = ConventionOption.Default,
         Execution = ExecutionOption.Default,
+        Format = FormatOption.Default,
         Include = IncludeOption.Default,
         Input = InputOption.Default,
         Logging = LoggingOption.Default,
@@ -56,6 +57,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         Configuration = new ConfigurationOption();
         Convention = new ConventionOption();
         Execution = new ExecutionOption();
+        Format = new FormatOption();
         Include = new IncludeOption();
         Input = new InputOption();
         Logging = new LoggingOption();
@@ -77,6 +79,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         Configuration = new ConfigurationOption(option?.Configuration);
         Convention = new ConventionOption(option?.Convention);
         Execution = new ExecutionOption(option?.Execution);
+        Format = new FormatOption(option?.Format);
         Include = new IncludeOption(option?.Include);
         Input = new InputOption(option?.Input);
         Logging = new LoggingOption(option?.Logging);
@@ -112,6 +115,11 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     /// Options that configure the execution sandbox.
     /// </summary>
     public ExecutionOption Execution { get; set; }
+
+    /// <summary>
+    /// Options that configure format types.
+    /// </summary>
+    public FormatOption Format { get; set; }
 
     /// <summary>
     /// Options that affect source locations imported for execution.
@@ -209,14 +217,15 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     private static PSRuleOption Combine(PSRuleOption o1, PSRuleOption o2)
     {
         var result = new PSRuleOption(o1?._SourcePath ?? o2?._SourcePath, o1);
-        result.Baseline = Options.BaselineOption.Combine(result?.Baseline, o2?.Baseline);
-        result.Binding = BindingOption.Combine(result?.Binding, o2?.Binding);
-        result.Configuration = ConfigurationOption.Combine(result?.Configuration, o2?.Configuration);
-        result.Convention = ConventionOption.Combine(result?.Convention, o2?.Convention);
-        result.Execution = ExecutionOption.Combine(result?.Execution, o2?.Execution);
-        result.Include = IncludeOption.Combine(result?.Include, o2?.Include);
-        result.Input = InputOption.Combine(result?.Input, o2?.Input);
-        result.Logging = LoggingOption.Combine(result?.Logging, o2?.Logging);
+        result.Baseline = Options.BaselineOption.Combine(result.Baseline, o2?.Baseline);
+        result.Binding = BindingOption.Combine(result.Binding, o2?.Binding);
+        result.Configuration = ConfigurationOption.Combine(result.Configuration, o2?.Configuration);
+        result.Convention = ConventionOption.Combine(result.Convention, o2?.Convention);
+        result.Execution = ExecutionOption.Combine(result.Execution, o2?.Execution);
+        result.Format = FormatOption.Combine(result.Format, o2?.Format);
+        result.Include = IncludeOption.Combine(result.Include, o2?.Include);
+        result.Input = InputOption.Combine(result.Input, o2?.Input);
+        result.Logging = LoggingOption.Combine(result.Logging, o2?.Logging);
         result.Output = OutputOption.Combine(result?.Output, o2?.Output);
         result.Override = OverrideOption.Combine(result?.Override, o2?.Override);
         result.Repository = RepositoryOption.Combine(result?.Repository, o2?.Repository);
@@ -311,6 +320,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new FieldMapYamlTypeConverter())
                 .WithTypeConverter(new EnumMapYamlTypeConverter<SeverityLevel>())
+                .WithTypeConverter(new StringArrayConverter())
                 .WithTypeConverter(new StringArrayMapConverter())
                 .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
@@ -344,6 +354,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         option.Binding.Load();
         option.Convention.Load();
         option.Execution.Load();
+        option.Format.Load();
         option.Include.Load();
         option.Input.Load();
         option.Logging.Load();
@@ -375,6 +386,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         option.Binding.Import(index);
         option.Convention.Load(index);
         option.Execution.Import(index);
+        option.Format.Import(index);
         option.Include.Load(index);
         option.Input.Load(index);
         option.Logging.Load(index);
@@ -441,6 +453,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
             Configuration == other.Configuration &&
             Convention == other.Convention &&
             Execution == other.Execution &&
+            Format == other.Format &&
             Include == other.Include &&
             Input == other.Input &&
             Logging == other.Logging &&
@@ -462,6 +475,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
             hash = hash * 23 + (Configuration != null ? Configuration.GetHashCode() : 0);
             hash = hash * 23 + (Convention != null ? Convention.GetHashCode() : 0);
             hash = hash * 23 + (Execution != null ? Execution.GetHashCode() : 0);
+            hash = hash * 23 + (Format != null ? Format.GetHashCode() : 0);
             hash = hash * 23 + (Include != null ? Include.GetHashCode() : 0);
             hash = hash * 23 + (Input != null ? Input.GetHashCode() : 0);
             hash = hash * 23 + (Logging != null ? Logging.GetHashCode() : 0);

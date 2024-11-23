@@ -14,6 +14,14 @@ public interface ITargetObject
     IEnumerable<TargetSourceInfo> Source { get; }
 
     /// <summary>
+    /// A source may for the target object.
+    /// </summary>
+    /// <remarks>
+    /// This is a placeholder for future implementation and should currently be null.
+    /// </remarks>
+    ITargetSourceMap? SourceMap { get; }
+
+    /// <summary>
     /// The target name of the object.
     /// </summary>
     string? Name { get; }

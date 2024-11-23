@@ -8,18 +8,27 @@ baseline:
   group:
     latest: .\TestBaseline1
 
-emitter:
+format:
+  abc:
+    type:
+      - .yaml
+  def:
+    type: .yaml
+  ghi:
+    type:
+      - .yaml
+      - .yml
   json:
-    include:
+    type:
       - .json
       - .jsonc
       - .sarif
   yaml:
-    include:
+    type:
       - .yaml
       - .yml
   xml:
-    include:
+    type:
       - .csproj
 
 override:

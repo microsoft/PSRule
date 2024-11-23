@@ -188,7 +188,7 @@ public sealed class PipelineTests : ContextBaseTests
         var writer = GetTestWriter(option);
         Environment.UseCurrentCulture(CultureInfo.InvariantCulture);
         var context = GetPipelineContext(option: option, sources: sources, writer: writer);
-        var pipeline = new GetRulePipeline(context, sources, new PipelineInputStream(null, null, null), writer, false);
+        var pipeline = new GetRulePipeline(context, sources, new PipelineInputStream(null, null, null, null), writer, false);
         try
         {
             pipeline.Begin();
@@ -210,7 +210,7 @@ public sealed class PipelineTests : ContextBaseTests
         option.Execution.InvariantCulture = ExecutionActionPreference.Ignore;
         var context = GetPipelineContext(option: option);
         var writer = GetTestWriter(option);
-        var pipeline = new GetRulePipeline(context, GetSource(), new PipelineInputStream(null, null, null), writer, false);
+        var pipeline = new GetRulePipeline(context, GetSource(), new PipelineInputStream(null, null, null, null), writer, false);
         try
         {
             pipeline.Begin();

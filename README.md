@@ -302,6 +302,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Execution.RuleInconclusive](https://aka.ms/ps-rule/options#executionruleinconclusive)
   - [Execution.SuppressionGroupExpired](https://aka.ms/ps-rule/options#executionsuppressiongroupexpired)
   - [Execution.UnprocessedObject](https://aka.ms/ps-rule/options#executionunprocessedobject)
+  - [Format](https://aka.ms/ps-rule/options#format)
   - [Include.Module](https://aka.ms/ps-rule/options#includemodule)
   - [Include.Path](https://aka.ms/ps-rule/options#includepath)
   - [Input.FileObjects](https://aka.ms/ps-rule/options#inputfileobjects)

@@ -1617,6 +1617,52 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Format' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Format | Should -Be $Null;
+        }
+
+        It 'from Hashtable' {
+            # With single item
+            $option = New-PSRuleOption -Option @{ 'Format.abc.type' = '.yml' };
+            $option.Format['abc'].Type | Should -BeExactly '.yml';
+
+            # With array
+            $option = New-PSRuleOption -Option @{ 'Format.ABC.Type' = '.yaml', '.yml' };
+            $option.Format['abc'].Type | Should -BeExactly '.yaml', '.yml';
+        }
+
+        It 'from YAML' {
+            # With single item
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Format['abc'].Type | Should -BeExactly '.yaml';
+
+            # With array
+            $option.Format['def'].Type | Should -BeExactly '.yaml';
+
+            # With flat single item
+            $option.Format['ghi'].Type | Should -BeExactly '.yaml', '.yml';
+        }
+
+        It 'from Environment' {
+            try {
+                # With single item
+                $Env:PSRULE_FORMAT_ABC_TYPE = '.yaml';
+                $option = New-PSRuleOption;
+                $option.Format['abc'].Type | Should -BeExactly '.yaml';
+
+                # With array
+                $Env:PSRULE_FORMAT_ABC_TYPE = '.yaml;.yml';
+                $option = New-PSRuleOption;
+                $option.Format['abc'].Type | Should -BeExactly '.yaml', '.yml';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_FORMAT_ABC_TYPE' -Force;
+            }
+        }
+    }
+
     Context 'Read Logging.LimitDebug' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

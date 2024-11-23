@@ -33,6 +33,7 @@ The following workspace options are available for use:
 - [Execution.RuleInconclusive](#executionruleinconclusive)
 - [Execution.SuppressionGroupExpired](#executionsuppressiongroupexpired)
 - [Execution.UnprocessedObject](#executionunprocessedobject)
+- [Format](#format)
 - [Include.Module](#includemodule)
 - [Include.Path](#includepath)
 - [Input.FileObjects](#inputfileobjects)
@@ -1468,6 +1469,64 @@ env:
 variables:
 - name: PSRULE_EXECUTION_UNPROCESSEDOBJECT
   value: Ignore
+```
+
+### Format
+
+:octicons-milestone-24: v3.0.0
+
+Configures each format by setting mapped types.
+The following built-in types can be configured:
+
+- `yaml`
+- `json`
+- `markdown`
+- `powershell_data`
+
+The following is the default configuration for each format:
+
+```yaml
+format:
+  yaml:
+    types:
+      - .yaml
+      - .yml
+  json:
+    types:
+      - .json
+      - .jsonc
+      - .sarif
+  markdown:
+    types:
+      - .md
+      - .markdown
+  powershell_data:
+    types:
+      - .psd1
+```
+
+The configuration for each built-in or custom format a hashtable key by using the name:
+
+```powershell
+$option = New-PSRuleOption -Option @{ 'Format.<FORMAT>.Type' = value };
+```
+
+For example:
+
+```powershell
+$option = New-PSRuleOption -Option @{ 'Format.Yaml.Type' = @('.yaml', '.yml') };
+```
+
+The configuration for each built-in or custom format can be set by environment variable by using the name:
+
+```text
+PSRULE_FORMAT_<FORMAT>_TYPE='<value>'
+```
+
+For example:
+
+```bash
+export PSRULE_FORMAT_YAML_TYPES='.yaml;.yml'
 ```
 
 ### Include.Module
@@ -3587,6 +3646,25 @@ execution:
   ruleSuppressed: Warn
   suppressionGroupExpired: Warn
   unprocessedObject: Warn
+
+# Configure formats
+format:
+  yaml:
+    types:
+      - .yaml
+      - .yml
+  json:
+    types:
+      - .json
+      - .jsonc
+      - .sarif
+  markdown:
+    types:
+      - .md
+      - .markdown
+  powershell_data:
+    types:
+      - .psd1
 
 # Configure include options
 include:
