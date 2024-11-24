@@ -13,16 +13,24 @@ output:
   culture:
     - en-US
 
-format:
-  powershell_data:
-    type: []
-
 input:
-  fileObjects: true
   pathIgnore:
-    - '**'
-    - '!**/*.cs'
-    - '!**/*.ps1'
-    - '!**/*.psd1'
-    - '!**/*.psm1'
+    - .vscode/
+    - .github/
+    - docs/
+    - overrides/
+    - '*.md'
     - '*.Designer.cs'
+    - '*.resx'
+    - '*.sln'
+    - '*.txt'
+    - '**/.editorconfig'
+    - '**/launchSettings.json'
+    - '**/Resources/*.json'
+    - '**/tests/**/*.json'
+    - ps-rule.yaml
+    - mkdocs.yml
+    - .markdownlint.json
+
+include:
+  path: []

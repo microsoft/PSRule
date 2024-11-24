@@ -1,0 +1,28 @@
+#
+# PSRule configuration for CI of PSRule repo.
+#
+
+# Please see the documentation for all configuration options:
+# https://microsoft.github.io/PSRule/
+
+repository:
+  url: https://github.com/microsoft/PSRule
+  baseRef: main
+
+output:
+  culture:
+    - en-US
+
+format:
+  powershell_data:
+    type: []
+
+input:
+  fileObjects: true
+  pathIgnore:
+    - '**'
+    - '!**/*.cs'
+    - '!**/*.ps1'
+    - '!**/*.psd1'
+    - '!**/*.psm1'
+    - '*.Designer.cs'
