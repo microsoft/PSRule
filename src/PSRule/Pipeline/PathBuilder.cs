@@ -42,8 +42,8 @@ internal abstract class PathBuilder
     protected PathBuilder(IPipelineWriter logger, string basePath, string searchPattern, PathFilter filter, PathFilter required)
     {
         _Logger = logger;
-        _Files = new List<InputFileInfo>();
-        _Paths = new HashSet<string>();
+        _Files = [];
+        _Paths = [];
         _BasePath = NormalizePath(Environment.GetRootedBasePath(basePath));
         _DefaultSearchPattern = searchPattern;
         _GlobalFilter = filter;

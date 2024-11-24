@@ -5,87 +5,20 @@ using System.Diagnostics;
 
 namespace PSRule.Pipeline;
 
-internal sealed class PathFilterBuilder
-{
-    private const string GitIgnoreFileName = ".gitignore";
-
-    private static readonly string[] CommonFiles = new string[]
-    {
-        "README.md",
-        ".DS_Store",
-        ".gitignore",
-        ".gitattributes",
-        ".gitmodules",
-        "LICENSE",
-        "LICENSE.txt",
-        "CODE_OF_CONDUCT.md",
-        "CONTRIBUTING.md",
-        "SECURITY.md",
-        "SUPPORT.md",
-        ".vscode/*.json",
-        ".vscode/*.code-snippets",
-        ".github/**/*.md",
-        ".github/CODEOWNERS",
-        ".pipelines/**/*.yml",
-        ".pipelines/**/*.yaml",
-        ".azure-pipelines/**/*.yml",
-        ".azure-pipelines/**/*.yaml",
-        ".azuredevops/*.md"
-    };
-
-    private readonly string _BasePath;
-    private readonly List<string> _Expressions;
-    private readonly bool _MatchResult;
-
-    private PathFilterBuilder(string basePath, string[] expressions, bool matchResult, bool ignoreGitPath, bool ignoreRepositoryCommon)
-    {
-        _BasePath = basePath;
-        _Expressions = expressions == null || expressions.Length == 0 ? new List<string>() : new List<string>(expressions);
-        _MatchResult = matchResult;
-        if (ignoreRepositoryCommon)
-            _Expressions.InsertRange(0, CommonFiles);
-
-        if (ignoreGitPath)
-            _Expressions.Add(".git/");
-    }
-
-    internal static PathFilterBuilder Create(string basePath, string[] expressions, bool ignoreGitPath, bool ignoreRepositoryCommon)
-    {
-        return new PathFilterBuilder(basePath, expressions, false, ignoreGitPath, ignoreRepositoryCommon);
-    }
-
-    internal void UseGitIgnore(string basePath = null)
-    {
-        _Expressions.Add("!.git/HEAD");
-        ReadFile(Path.Combine(basePath ?? _BasePath, GitIgnoreFileName));
-    }
-
-    internal PathFilter Build()
-    {
-        return PathFilter.Create(_BasePath, _Expressions.ToArray(), _MatchResult);
-    }
-
-    private void ReadFile(string filePath)
-    {
-        if (File.Exists(filePath))
-            _Expressions.AddRange(File.ReadAllLines(filePath));
-    }
-}
-
 /// <summary>
 /// Filters paths based on predefined rules.
 /// </summary>
 internal sealed class PathFilter
 {
     // Path separators
-    private const char Slash = '/';
-    private const char BackSlash = '\\';
+    private const char SLASH = '/';
+    private const char BACKSLASH = '\\';
 
     // Operators
-    private const char Asterix = '*'; // Match multiple characters except '/'
-    private const char Question = '?'; // Match any character except '/'
-    private const char Hash = '#'; // Comment
-    private const char Exclamation = '!'; // Include a previously excluded path
+    private const char STAR = '*'; // Match multiple characters except '/'
+    private const char QUESTION = '?'; // Match any character except '/'
+    private const char HASH = '#'; // Comment
+    private const char EXCLAMATION = '!'; // Include a previously excluded path
 
     private readonly string _BasePath;
     private readonly PathFilterExpression[] _Expression;
@@ -94,18 +27,19 @@ internal sealed class PathFilter
     private PathFilter(string basePath, PathFilterExpression[] expression, bool matchResult)
     {
         _BasePath = NormalDirectoryPath(basePath);
-        _Expression = expression ?? Array.Empty<PathFilterExpression>();
+        _Expression = expression ?? [];
         _MatchResult = matchResult;
     }
 
     #region PathStream
 
-    [DebuggerDisplay("Path = '{_Path}', Position = {_Position}, Current = '{_Current}'")]
+    [DebuggerDisplay("Path = {_Path}, Position = {_Position}, Current = {_Current}")]
     private sealed class PathStream
     {
         private readonly string _Path;
         private int _Position;
         private char _Current;
+        private char _Last;
 
         public PathStream(string path)
         {
@@ -120,7 +54,8 @@ internal sealed class PathFilter
         {
             _Position = -1;
             _Current = char.MinValue;
-            if (_Path[0] == Exclamation)
+            _Last = char.MinValue;
+            if (_Path[0] == EXCLAMATION)
                 Next();
         }
 
@@ -132,9 +67,11 @@ internal sealed class PathFilter
             _Position++;
             if (_Position >= _Path.Length)
             {
+                _Last = _Path.Length == 0 ? char.MinValue : _Path[_Path.Length - 1];
                 _Current = char.MinValue;
                 return false;
             }
+            _Last = _Position <= 0 ? char.MinValue : _Path[_Position - 1];
             _Current = _Path[_Position];
             return true;
         }
@@ -146,14 +83,14 @@ internal sealed class PathFilter
 
         public bool IsUnmatchedSingle(PathStream other, int offset)
         {
-            return other.Peak(offset, out var c) && IsWilcardQ(c) && other.Peak(offset + 1, out var cnext) && IsMatch(cnext);
+            return other.Peak(offset, out var c) && IsWildcardQ(c) && other.Peak(offset + 1, out var cnext) && IsMatch(cnext);
         }
 
         private bool IsMatch(char c)
         {
             return _Current == c ||
                 (IsSeparator(_Current) && IsSeparator(c)) ||
-                (!IsSeparator(_Current) && IsWilcardQ(c));
+                (!IsSeparator(_Current) && IsWildcardQ(c));
         }
 
         /// <summary>
@@ -187,18 +124,32 @@ internal sealed class PathFilter
 
         public bool SkipMatchA()
         {
-            if (!IsWildardA())
+            if (!IsWildcardA())
                 return false;
 
             Skip(1);
             return true;
         }
 
+        /// <summary>
+        /// Determines if the last character was a separator.
+        /// </summary>
+        private bool LastIsSeparator()
+        {
+            return IsSeparator(_Last);
+        }
+
+        /// <summary>
+        /// Skip a number of characters from the current position.
+        /// </summary>
+        /// <param name="count">The amount of character to skip from the current position.</param>
+        /// <returns>Returns <c>true</c> if there is more characters to match.</returns>
         private bool Skip(int count)
         {
             if (count > 1)
+            {
                 _Position += count - 1;
-
+            }
             return Next();
         }
 
@@ -216,26 +167,26 @@ internal sealed class PathFilter
         private bool IsWildcardAA(int offset = 0)
         {
             var pos = _Position + offset;
-            return pos + 1 < _Path.Length && _Path[pos] == Asterix && _Path[pos + 1] == Asterix;
+            return pos + 1 < _Path.Length && _Path[pos] == STAR && _Path[pos + 1] == STAR;
         }
 
         [DebuggerStepThrough]
-        private bool IsWildardA(int offset = 0)
+        private bool IsWildcardA(int offset = 0)
         {
             var pos = _Position + offset;
-            return pos < _Path.Length && _Path[pos] == Asterix;
+            return pos < _Path.Length && _Path[pos] == STAR;
         }
 
         [DebuggerStepThrough]
-        private static bool IsWilcardQ(char c)
+        private static bool IsWildcardQ(char c)
         {
-            return c == Question;
+            return c == QUESTION;
         }
 
         [DebuggerStepThrough]
         private static bool IsSeparator(char c)
         {
-            return c == Slash || c == BackSlash;
+            return c == SLASH || c == BACKSLASH;
         }
 
         /// <summary>
@@ -255,16 +206,11 @@ internal sealed class PathFilter
                     other.Skip(offset);
                     return true;
                 }
-                else if (other.IsWildardA(offset) && TryMatchA(other, offset + 1))
+                else if (other.IsWildcardA(offset) && TryMatchA(other, offset + 1))
                 {
                     return true;
                 }
 
-                //(IsSingleWildcard(c) && other.Peak(offset + 1, out char cnext) && IsMatch(cnext))
-                //if (TryMatchCharacter(other, offset))
-                //{
-
-                //}
                 // Try to match the remaining
                 if (TryMatch(other, offset))
                 {
@@ -277,8 +223,9 @@ internal sealed class PathFilter
 
                 if (offset + other._Position >= other._Path.Length)
                 {
-                    other.Skip(offset);
-                    return true;
+                    Next();
+                    var endOfMatch = !other.Skip(offset);
+                    return _Position == _Path.Length || endOfMatch && other.LastIsSeparator();
                 }
             } while (Next());
             return false;
@@ -298,7 +245,6 @@ internal sealed class PathFilter
                     other.Skip(offset);
                     return true;
                 }
-                //if (other.IsCharacterMatch(offset))
 
                 // Try to match the remaining
                 if (TryMatch(other, offset))
@@ -314,7 +260,7 @@ internal sealed class PathFilter
                 {
                     Next();
                     other.Skip(offset);
-                    return true;
+                    return _Position == _Path.Length;
                 }
             } while (Next());
             return false;
@@ -354,7 +300,7 @@ internal sealed class PathFilter
                 throw new ArgumentNullException(nameof(expression));
 
             var actualInclude = true;
-            if (expression[0] == Exclamation)
+            if (expression[0] == EXCLAMATION)
                 actualInclude = false;
 
             return new PathFilterExpression(expression, actualInclude);
@@ -417,16 +363,38 @@ internal sealed class PathFilter
 
     #region Public methods
 
+    /// <summary>
+    /// Create a path filter from a base path.
+    /// </summary>
+    /// <param name="basePath">The base path for comparing relative paths.</param>
+    /// <param name="expression">An expression to match.</param>
+    /// <param name="matchResult">
+    /// Determine if the expressions should match or ignore paths.
+    /// When <paramref name="matchResult"/> is <c>true</c> only paths that match the expressions return <c>true</c>.
+    /// When <paramref name="matchResult"/> is <c>false</c> only paths that do not match the expressions return <c>true</c>.
+    /// </param>
+    /// <returns>Returns a <see cref="PathFilter"/>.</returns>
     public static PathFilter Create(string basePath, string expression, bool matchResult = true)
     {
         return !ShouldSkipExpression(expression)
             ? new PathFilter(
                 basePath,
-                new PathFilterExpression[] { PathFilterExpression.Create(expression) },
+                [PathFilterExpression.Create(expression)],
                 matchResult)
             : new PathFilter(basePath, null, matchResult);
     }
 
+    /// <summary>
+    /// Create a path filter from a base path.
+    /// </summary>
+    /// <param name="basePath">The base path for comparing relative paths.</param>
+    /// <param name="expression">One or more expressions to match.</param>
+    /// <param name="matchResult">
+    /// Determine if the expressions should match or ignore paths.
+    /// When <paramref name="matchResult"/> is <c>true</c> only paths that match the expressions return <c>true</c>.
+    /// When <paramref name="matchResult"/> is <c>false</c> only paths that do not match the expressions return <c>true</c>.
+    /// </param>
+    /// <returns>Returns a <see cref="PathFilter"/>.</returns>
     public static PathFilter Create(string basePath, string[] expression, bool matchResult = true)
     {
         var result = new List<PathFilterExpression>(expression.Length);
@@ -436,7 +404,7 @@ internal sealed class PathFilter
 
         return result.Count == 0
             ? new PathFilter(basePath, null, matchResult)
-            : new PathFilter(basePath, result.ToArray(), matchResult);
+            : new PathFilter(basePath, [.. result], matchResult);
     }
 
     /// <summary>
@@ -472,7 +440,7 @@ internal sealed class PathFilter
 
     private static bool ShouldSkipExpression(string expression)
     {
-        return string.IsNullOrEmpty(expression) || expression[0] == Hash;
+        return string.IsNullOrEmpty(expression) || expression[0] == HASH;
     }
 
     private static string NormalDirectoryPath(string path)
