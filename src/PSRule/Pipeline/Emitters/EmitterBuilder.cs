@@ -2,22 +2,30 @@
 // Licensed under the MIT License.
 
 using Microsoft.Extensions.DependencyInjection;
+using PSRule.Definitions;
 using PSRule.Emitters;
+using PSRule.Options;
 using PSRule.Runtime;
 
 namespace PSRule.Pipeline.Emitters;
+
+#nullable enable
 
 /// <summary>
 /// A helper to build an <see cref="EmitterCollection"/>.
 /// </summary>
 internal sealed class EmitterBuilder
 {
-    private readonly List<Type> _EmitterTypes;
+    private readonly ILanguageScopeSet? _LanguageScopeSet;
+    private readonly IFormatOption _FormatOption;
+    private readonly List<KeyValuePair<string, Type>> _EmitterTypes;
     private readonly ServiceCollection _Services;
 
-    public EmitterBuilder()
+    public EmitterBuilder(ILanguageScopeSet? languageScopeSet = default, IFormatOption? formatOption = default)
     {
-        _EmitterTypes = new List<Type>(4);
+        _LanguageScopeSet = languageScopeSet;
+        _FormatOption = formatOption ?? new FormatOption();
+        _EmitterTypes = new List<KeyValuePair<string, Type>>(4);
         _Services = new ServiceCollection();
         AddInternalServices();
         AddInternalEmitters();
@@ -26,11 +34,34 @@ internal sealed class EmitterBuilder
     /// <summary>
     /// Add an <see cref="IEmitter"/> implementation class.
     /// </summary>
+    /// <param name="scope">The scope of the emitter.</param>
     /// <typeparam name="T">An emitter type that implements <see cref="IEmitter"/>.</typeparam>
-    public void AddEmitter<T>() where T : class, IEmitter
+    /// <exception cref="ArgumentNullException">The <paramref name="scope"/> parameter must not be a null or empty string.</exception>
+    public void AddEmitter<T>(string scope) where T : class, IEmitter
     {
-        _EmitterTypes.Add(typeof(T));
-        _Services.AddTransient(typeof(T));
+        if (string.IsNullOrEmpty(scope)) throw new ArgumentNullException(nameof(scope));
+
+        _EmitterTypes.Add(new KeyValuePair<string, Type>(scope, typeof(T)));
+        _Services.AddScoped(typeof(T));
+    }
+
+    /// <summary>
+    /// Add an existing emitter instance that is already configured.
+    /// </summary>
+    /// <typeparam name="T">An emitter type that implements <see cref="IEmitter"/>.</typeparam>
+    /// <param name="scope">The scope of the emitter.</param>
+    /// <param name="instance">The specific instance.</param>
+    /// <exception cref="ArgumentNullException">Both the <paramref name="scope"/> and <paramref name="instance"/> parameters must not be null or empty string.</exception>
+    public void AddEmitter<T>(string scope, T instance) where T : class, IEmitter
+    {
+        if (string.IsNullOrEmpty(scope)) throw new ArgumentNullException(nameof(scope));
+        if (instance == null) throw new ArgumentNullException(nameof(instance));
+
+        _EmitterTypes.Add(new KeyValuePair<string, Type>(scope, typeof(T)));
+        _Services.AddScoped(services =>
+        {
+            return instance;
+        });
     }
 
     /// <summary>
@@ -40,15 +71,28 @@ internal sealed class EmitterBuilder
     /// <returns>An instance of <see cref="EmitterCollection"/>.</returns>
     public EmitterCollection Build(IEmitterContext context)
     {
+        var currentScopeName = string.Empty;
+
+        _Services.AddScoped(provider => GetScopedConfiguration(currentScopeName, provider));
+
         var serviceProvider = _Services.BuildServiceProvider();
         var emitters = new List<IEmitter>(_EmitterTypes.Count);
+        var scopes = new List<IServiceScope>();
 
-        foreach (var type in _EmitterTypes)
+        foreach (var group in _EmitterTypes.GroupBy(kv => kv.Key))
         {
-            if (serviceProvider.GetRequiredService(type) is IEmitter emitter)
+            currentScopeName = group.Key;
+            var scope = serviceProvider.CreateScope();
+
+            foreach (var type in group)
             {
-                emitters.Add(emitter);
+                if (scope.ServiceProvider.GetRequiredService(type.Value) is IEmitter emitter)
+                {
+                    emitters.Add(emitter);
+                }
             }
+
+            scopes.Add(scope);
         }
 
         return new EmitterCollection(serviceProvider, [.. emitters], context);
@@ -68,9 +112,25 @@ internal sealed class EmitterBuilder
     /// </summary>
     private void AddInternalEmitters()
     {
-        AddEmitter<YamlEmitter>();
-        AddEmitter<JsonEmitter>();
-        AddEmitter<MarkdownEmitter>();
-        AddEmitter<PowerShellDataEmitter>();
+        AddEmitter<YamlEmitter>(ResourceHelper.STANDALONE_SCOPE_NAME);
+        AddEmitter<JsonEmitter>(ResourceHelper.STANDALONE_SCOPE_NAME);
+        AddEmitter<MarkdownEmitter>(ResourceHelper.STANDALONE_SCOPE_NAME);
+        AddEmitter<PowerShellDataEmitter>(ResourceHelper.STANDALONE_SCOPE_NAME);
+    }
+
+    /// <summary>
+    /// Create a configuration for the emitter based on it's scope.
+    /// </summary>
+    private IEmitterConfiguration GetScopedConfiguration(string scope, IServiceProvider serviceProvider)
+    {
+        if (_LanguageScopeSet == null ||
+            !_LanguageScopeSet.TryScope(scope, out var languageScope) ||
+            languageScope == null)
+            return EmptyEmitterConfiguration.Instance;
+
+        var configuration = languageScope.ToConfiguration();
+        return new InternalEmitterConfiguration(configuration, _FormatOption);
     }
 }
+
+#nullable restore

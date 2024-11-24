@@ -14,7 +14,7 @@ public sealed class PowerShellDataTests : BaseTests
     public void Accepts_WhenValidType_ShouldReturnTrue()
     {
         var context = new TestEmitterContext();
-        var emitter = new PowerShellDataEmitter();
+        var emitter = new PowerShellDataEmitter(EmptyEmitterConfiguration.Instance);
 
         Assert.True(emitter.Accepts(context, typeof(InternalFileInfo)));
         Assert.True(emitter.Accepts(context, typeof(string)));
@@ -23,10 +23,10 @@ public sealed class PowerShellDataTests : BaseTests
     }
 
     [Fact]
-    public void Visit_WhenValidFile_ShouldEmitItems()
+    public void Visit_WhenValidFile_ShouldVisitDefaultTypes()
     {
         var context = new TestEmitterContext();
-        var emitter = new PowerShellDataEmitter();
+        var emitter = new PowerShellDataEmitter(EmptyEmitterConfiguration.Instance);
 
         Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFile.psd1")));
         Assert.False(emitter.Visit(context, GetFileInfo("ObjectFromFile.yaml")));
@@ -40,7 +40,7 @@ public sealed class PowerShellDataTests : BaseTests
     public void Visit_WhenEmptyFile_ShouldNotEmitItems()
     {
         var context = new TestEmitterContext();
-        var emitter = new PowerShellDataEmitter();
+        var emitter = new PowerShellDataEmitter(EmptyEmitterConfiguration.Instance);
 
         Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFileEmpty.psd1")));
         Assert.Empty(context.Items);
@@ -50,7 +50,7 @@ public sealed class PowerShellDataTests : BaseTests
     public void Visit_WhenString_ShouldEmitItems()
     {
         var context = new TestEmitterContext(format: Options.InputFormat.PowerShellData);
-        var emitter = new PowerShellDataEmitter();
+        var emitter = new PowerShellDataEmitter(EmptyEmitterConfiguration.Instance);
 
         // With format.
         Assert.True(emitter.Visit(context, ReadFileAsString("ObjectFromFile.psd1")));

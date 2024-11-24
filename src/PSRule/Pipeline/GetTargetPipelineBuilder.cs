@@ -62,6 +62,6 @@ internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTarget
     /// <inheritdoc/>
     protected override PipelineInputStream PrepareReader()
     {
-        return new PipelineInputStream(_InputPath, GetInputObjectSourceFilter(), Option);
+        return new PipelineInputStream(GetLanguageScopeSet(), _InputPath, GetInputObjectSourceFilter(), Option);
     }
 }

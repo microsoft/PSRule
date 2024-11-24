@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections.Immutable;
 using System.Management.Automation;
 using PSRule.Data;
 using PSRule.Emitters;
@@ -12,14 +13,25 @@ namespace PSRule.Pipeline.Emitters;
 /// </summary>
 internal sealed class PowerShellDataEmitter : FileEmitter
 {
-    private const string EXTENSION_PSD1 = ".psd1";
+    private const string FORMAT = "powershell_data";
+
+    private static readonly string[] _DefaultTypes = [".psd1"];
+
+    private readonly ImmutableHashSet<string> _Types;
+
+    public PowerShellDataEmitter(IEmitterConfiguration emitterConfiguration)
+    {
+        if (emitterConfiguration == null) throw new ArgumentNullException(nameof(emitterConfiguration));
+
+        _Types = emitterConfiguration.GetFormatTypes(FORMAT, _DefaultTypes).ToImmutableHashSet();
+    }
 
     /// <summary>
     /// Accept the file if it is a PowerShell Data file.
     /// </summary>
     protected override bool AcceptsFilePath(IEmitterContext context, IFileInfo info)
     {
-        return info != null && info.Extension == EXTENSION_PSD1;
+        return info != null && _Types.Contains(info.Extension);
     }
 
     /// <inheritdoc/>
@@ -44,10 +56,10 @@ internal sealed class PowerShellDataEmitter : FileEmitter
         if (string.IsNullOrEmpty(content)) return false;
 
         var ast = System.Management.Automation.Language.Parser.ParseInput(content, out _, out _);
-        var hashtables = ast.FindAll(item => item is System.Management.Automation.Language.HashtableAst, false);
+        var hashtableAst = ast.FindAll(item => item is System.Management.Automation.Language.HashtableAst, false);
 
         var result = new List<PSObject>();
-        foreach (var hashtable in hashtables)
+        foreach (var hashtable in hashtableAst)
         {
             if (hashtable?.Parent?.Parent?.Parent?.Parent == ast)
                 result.Add(PSObject.AsPSObject(hashtable.SafeGetValue()));

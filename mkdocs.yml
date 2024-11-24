@@ -65,6 +65,7 @@ nav:
           - Using PSRule from a Container: scenarios/containers/container-execution.md
       - Concepts:
           - Baselines: concepts/baselines.md
+          - Emitters: concepts/emitters.md
           - Functions: expressions/functions.md
           - Grouping rules: concepts/grouping-rules.md
           - Sub-selectors: expressions/sub-selectors.md

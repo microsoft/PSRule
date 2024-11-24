@@ -23,7 +23,7 @@
     "line_length": 120,
     "code_blocks": false,
     "tables": false,
-    "headers": true
+    "headings": true
   },
   "commands-show-output": true,
   "no-missing-space-atx": true,
@@ -64,5 +64,6 @@
     "code_blocks": false
   },
   "no-alt-text": true,
-  "code-block-style": false
+  "code-block-style": false,
+  "MD025": false
 }

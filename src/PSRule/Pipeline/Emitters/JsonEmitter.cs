@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections.Immutable;
 using System.Management.Automation;
 using Newtonsoft.Json;
 using PSRule.Data;
@@ -14,25 +15,27 @@ namespace PSRule.Pipeline.Emitters;
 /// </summary>
 internal sealed class JsonEmitter : FileEmitter
 {
-    private const string EXTENSION_JSON = ".json";
-    private const string EXTENSION_JSONC = ".jsonc";
-    private const string EXTENSION_SARIF = ".sarif";
+    private const string FORMAT = "json";
+
+    private static readonly string[] _DefaultTypes = [".json", ".jsonc", ".sarif"];
 
     private readonly ILogger<JsonEmitter> _Logger;
     private readonly JsonSerializerSettings _Settings;
     private readonly JsonSerializer _Deserializer;
-    private readonly HashSet<string> _Extensions;
+    private readonly ImmutableHashSet<string> _Types;
 
-    public JsonEmitter(ILogger<JsonEmitter> logger)
+    public JsonEmitter(ILogger<JsonEmitter> logger, IEmitterConfiguration emitterConfiguration)
     {
-        _Logger = logger;
+        if (emitterConfiguration == null) throw new ArgumentNullException(nameof(emitterConfiguration));
+
+        _Logger = logger ?? throw new NullReferenceException(nameof(logger));
         _Settings = new JsonSerializerSettings
         {
 
         };
         _Deserializer = JsonSerializer.CreateDefault(_Settings); // Think about caching this.
         _Deserializer.Converters.Add(new PSObjectArrayJsonConverter(null));
-        _Extensions = new HashSet<string>();
+        _Types = emitterConfiguration.GetFormatTypes(FORMAT, _DefaultTypes).ToImmutableHashSet();
     }
 
     /// <summary>
@@ -40,10 +43,7 @@ internal sealed class JsonEmitter : FileEmitter
     /// </summary>
     protected override bool AcceptsFilePath(IEmitterContext context, IFileInfo info)
     {
-        return info != null && (info.Extension == EXTENSION_JSON ||
-            info.Extension == EXTENSION_JSONC ||
-            info.Extension == EXTENSION_SARIF ||
-            (_Extensions != null && _Extensions.Contains(info.Extension)));
+        return info != null && _Types.Contains(info.Extension);
     }
 
     /// <inheritdoc/>
@@ -55,8 +55,6 @@ internal sealed class JsonEmitter : FileEmitter
         using var jsonReader = new JsonEmitterParser(reader, stream.Info);
         try
         {
-            //var d = new JsonSerializer(); // Think about caching this.
-            //d.Converters.Add(new PSObjectArrayJsonConverter(stream.Info));
             var value = _Deserializer.Deserialize<PSObject[]>(jsonReader);
             VisitItems(context, value, stream.Info);
             return true;

@@ -213,9 +213,11 @@
           "type": "object",
           "title": "Baseline group",
           "description": "Configure baseline group names.",
+          "markdownDescription": "Configure baseline group names.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/baselines/#baseline-groups)",
           "additionalProperties": {
             "title": "Group mapping",
             "description": "Maps a group name to a baseline.",
+            "markdownDescription": "Maps a group name to a baseline.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/baselines/#baseline-groups)",
             "type": "string"
           },
           "defaultSnippets": [
@@ -301,20 +303,29 @@
       },
       "additionalProperties": false
     },
-    "emitter-option": {
+    "format-option": {
       "type": "object",
-      "title": "Emitter options",
+      "title": "Format options",
+      "description": "Define and configure format options.",
+      "markdownDescription": "Define and configure format options.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)",
       "properties": {
         "yaml": {
           "type": "object",
           "title": "YAML",
           "description": "Support for the YAML format.",
           "properties": {
-            "include": {
+            "type": {
               "type": "array",
-              "title": "Include",
-              "description": "Additional file types to process as YAML.",
-              "default": []
+              "title": "Type",
+              "description": "Configures the types to process as YAML.",
+              "markdownDescription": "Configures the types to process as YAML.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                ".yaml",
+                ".yml"
+              ]
             }
           },
           "additionalProperties": false
@@ -322,13 +333,21 @@
         "json": {
           "type": "object",
           "title": "JSON",
-          "description": "Support for the JSON format including support for comments.",
+          "description": "Support for the JSON format including support for JSON with comments.",
           "properties": {
-            "include": {
+            "type": {
               "type": "array",
-              "title": "Include",
-              "description": "Additional file types to process as JSON.",
-              "default": []
+              "title": "Type",
+              "description": "Configures the types to process as JSON.",
+              "markdownDescription": "Configures the types to process as JSON.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                ".json",
+                ".jsonc",
+                ".sarif"
+              ]
             }
           },
           "additionalProperties": false
@@ -338,17 +357,86 @@
           "title": "Markdown",
           "description": "Support for the Markdown format.",
           "properties": {
-            "include": {
+            "type": {
               "type": "array",
-              "title": "Include",
-              "description": "Additional file types to process as Markdown.",
-              "default": []
+              "title": "Type",
+              "description": "Configures the types to process as Markdown.",
+              "markdownDescription": "Configures the types to process as Markdown.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                ".md",
+                ".markdown"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "powershell_data": {
+          "type": "object",
+          "title": "PowerShell Data",
+          "description": "Support for the PowerShell Data format.",
+          "properties": {
+            "type": {
+              "type": "array",
+              "title": "Type",
+              "description": "Configures the types to process as PowerShell Data.",
+              "markdownDescription": "Configures the types to process as PowerShell Data.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                ".psd1"
+              ]
             }
           },
           "additionalProperties": false
         }
       },
-      "additionalProperties": false
+      "additionalProperties": {
+        "type": "object",
+        "title": "Custom format",
+        "description": "Define a custom emitter format.",
+        "properties": {
+          "type": {
+            "oneOf": [
+              {
+                "type": "array",
+                "title": "Type",
+                "description": "The types to process as this emitter format. This is usually the file extension such as .xml.",
+                "markdownDescription": "The types to process as this emitter format. This is usually the file extension such as `.xml`.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)",
+                "items": {
+                  "type": "string"
+                }
+              },
+              {
+                "type": "string",
+                "title": "Type",
+                "description": "The type to process as this emitter format. This is usually the file extension such as .xml.",
+                "markdownDescription": "The type to process as this emitter format. This is usually the file extension such as `.xml`.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)",
+                "minLength": 1
+              }
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "defaultSnippets": [
+        {
+          "label": "Custom format",
+          "description": "Define a custom format by name.",
+          "body": {
+            "${1:format_name}": {
+              "type": [
+                "${2:mapped_type}"
+              ]
+            }
+          }
+        }
+      ]
     },
     "execution-option": {
       "type": "object",
@@ -987,9 +1075,9 @@
           "type": "object",
           "$ref": "#/definitions/convention-option"
         },
-        "emitter": {
+        "format": {
           "type": "object",
-          "$ref": "#/definitions/emitter-option"
+          "$ref": "#/definitions/format-option"
         },
         "execution": {
           "type": "object",

@@ -39,6 +39,7 @@ jobs:
           prerelease: true
           outputFormat: Sarif
           outputPath: reports/ps-rule-results.sarif
+          option: ps-rule-ci.yaml
         env:
           PSRULE_INPUT_FILEOBJECTS: true
 

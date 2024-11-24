@@ -133,6 +133,6 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
 
     protected override PipelineInputStream PrepareReader()
     {
-        return new PipelineInputStream(_InputPath, GetInputObjectSourceFilter(), Option);
+        return new PipelineInputStream(GetLanguageScopeSet(), _InputPath, GetInputObjectSourceFilter(), Option);
     }
 }

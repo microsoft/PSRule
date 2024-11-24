@@ -20,7 +20,6 @@ internal delegate IEnumerable<TargetObject> VisitTargetObjectAction(TargetObject
 
 internal static class PipelineReceiverActions
 {
-    private const string InputFileInfo_GitHead = ".git/HEAD";
     private const string JSON = ".json";
     private const string JSONC = ".jsonc";
     private const string YAML = ".yaml";

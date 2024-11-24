@@ -14,7 +14,7 @@ public sealed class MarkdownEmitterTests : BaseTests
     public void Accepts_WhenValidType_ShouldReturnTrue()
     {
         var context = new TestEmitterContext();
-        var emitter = new MarkdownEmitter();
+        var emitter = new MarkdownEmitter(EmptyEmitterConfiguration.Instance);
 
         Assert.True(emitter.Accepts(context, typeof(InternalFileInfo)));
         Assert.True(emitter.Accepts(context, typeof(string)));
@@ -23,10 +23,10 @@ public sealed class MarkdownEmitterTests : BaseTests
     }
 
     [Fact]
-    public void Visit_WhenValidFile_ShouldEmitItems()
+    public void Visit_WhenValidFile_ShouldVisitDefaultTypes()
     {
         var context = new TestEmitterContext();
-        var emitter = new MarkdownEmitter();
+        var emitter = new MarkdownEmitter(EmptyEmitterConfiguration.Instance);
 
         Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFile.md")));
         Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFile.markdown")));
@@ -41,7 +41,7 @@ public sealed class MarkdownEmitterTests : BaseTests
     public void Visit_WhenEmptyFile_ShouldNotEmitItems()
     {
         var context = new TestEmitterContext();
-        var emitter = new MarkdownEmitter();
+        var emitter = new MarkdownEmitter(EmptyEmitterConfiguration.Instance);
 
         Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFileEmpty.md")));
         Assert.Empty(context.Items);
@@ -51,7 +51,7 @@ public sealed class MarkdownEmitterTests : BaseTests
     public void Visit_WhenString_ShouldEmitItems()
     {
         var context = new TestEmitterContext(format: Options.InputFormat.Markdown);
-        var emitter = new MarkdownEmitter();
+        var emitter = new MarkdownEmitter(EmptyEmitterConfiguration.Instance);
 
         // With format.
         Assert.True(emitter.Visit(context, ReadFileAsString("ObjectFromFile.md")));

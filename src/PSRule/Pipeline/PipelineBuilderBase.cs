@@ -31,6 +31,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     private string[] _Convention;
     private PathFilter _InputFilter;
     private PipelineWriter _Writer;
+    private ILanguageScopeSet _LanguageScopeSet;
 
     private readonly HostPipelineWriter _Output;
 
@@ -87,6 +88,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         Option.Binding = new BindingOption(option.Binding);
         Option.Convention = new ConventionOption(option.Convention);
         Option.Execution = GetExecutionOption(option.Execution);
+        Option.Format = new FormatOption(option.Format);
         Option.Input = new InputOption(option.Input);
         Option.Input.Format ??= InputOption.Default.Format;
         Option.Output = new OutputOption(option.Output);
@@ -186,11 +188,14 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         );
     }
 
-    private ILanguageScopeSet GetLanguageScopeSet()
+    protected ILanguageScopeSet GetLanguageScopeSet()
     {
+        if (_LanguageScopeSet != null)
+            return _LanguageScopeSet;
+
         var builder = new LanguageScopeSetBuilder();
         builder.Init(Option, Source);
-        return builder.Build();
+        return _LanguageScopeSet = builder.Build();
     }
 
     protected string[] ResolveBaselineGroup(string[] name)
@@ -219,7 +224,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
 
     protected virtual PipelineInputStream PrepareReader()
     {
-        return new PipelineInputStream(null, GetInputObjectSourceFilter(), Option);
+        return new PipelineInputStream(GetLanguageScopeSet(), null, GetInputObjectSourceFilter(), Option);
     }
 
     protected virtual PipelineWriter PrepareWriter()

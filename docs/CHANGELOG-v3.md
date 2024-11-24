@@ -27,6 +27,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0315:
+
+- General improvements:
+  - Expose format options to emitters by @BernieWhite.
+    [#1838](https://github.com/microsoft/PSRule/issues/1838)
+
 ## v3.0.0-B0315 (pre-release)
 
 What's changed since pre-release v3.0.0-B0275:

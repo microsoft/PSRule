@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections.Immutable;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Emitters;
@@ -17,18 +18,23 @@ namespace PSRule.Pipeline.Emitters;
 /// </summary>
 internal sealed class YamlEmitter : FileEmitter
 {
-    private const string EXTENSION_YAML = ".yaml";
-    private const string EXTENSION_YML = ".yml";
+    private const string FORMAT = "yaml";
+
+    private static readonly string[] _DefaultTypes = [".yaml", ".yml"];
 
     private readonly ILogger<YamlEmitter> _Logger;
     private readonly PSObjectYamlTypeConverter _TypeConverter;
     private readonly IDeserializer _Deserializer;
+    private readonly ImmutableHashSet<string> _Types;
 
-    public YamlEmitter(ILogger<YamlEmitter> logger)
+    public YamlEmitter(ILogger<YamlEmitter> logger, IEmitterConfiguration emitterConfiguration)
     {
-        _Logger = logger;
+        if (emitterConfiguration == null) throw new ArgumentNullException(nameof(emitterConfiguration));
+
+        _Logger = logger ?? throw new NullReferenceException(nameof(logger));
         _TypeConverter = new PSObjectYamlTypeConverter();
         _Deserializer = GetDeserializer();
+        _Types = emitterConfiguration.GetFormatTypes(FORMAT, _DefaultTypes).ToImmutableHashSet();
     }
 
     /// <summary>
@@ -36,7 +42,7 @@ internal sealed class YamlEmitter : FileEmitter
     /// </summary>
     protected override bool AcceptsFilePath(IEmitterContext context, IFileInfo info)
     {
-        return info != null && (info.Extension == EXTENSION_YAML || info.Extension == EXTENSION_YML);
+        return info != null && _Types.Contains(info.Extension);
     }
 
     /// <inheritdoc/>
