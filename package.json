@@ -490,7 +490,7 @@
     "build": "npm run build:dotnet && npm run build:esbuild && npm run build:pack",
     "build:dotnet": "dotnet build ./src/PSRule.EditorServices/ --output server/",
     "build:pack": "vsce package --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/",
-    "build:esbuild": "esbuild ./src/code/main.ts --bundle --outfile=out/dist/main.js --external:vscode --format=cjs --platform=node",
+    "build:esbuild": "node esbuild.mjs",
     "package": "npm run package:dotnet && npm run package:esbuild && npm run package:pack",
     "package:dotnet": "dotnet build ./src/PSRule.EditorServices/ --output server/",
     "package:pack": "vsce package --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/",

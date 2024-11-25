@@ -298,6 +298,17 @@
         "/consoleloggerparameters:NoSummary"
       ],
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Build vscode",
+      "detail": "Build the Visual Studio Code extension locally.",
+      "command": "npm",
+      "type": "shell",
+      "args": [
+        "run",
+        "build"
+      ],
+      "problemMatcher": "$tsc"
     }
   ],
   "inputs": [

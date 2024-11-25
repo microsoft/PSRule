@@ -4,6 +4,7 @@
 // Build script for extension
 
 import * as esbuild from 'esbuild';
+import * as fs from 'fs';
 
 const channel = process.env['PSRULE_BUILD_CHANNEL'] || 'stable';
 const version = process.env['PSRULE_BUILD_VERSION'] || 'latest';
@@ -25,6 +26,7 @@ async function main() {
     external: ['vscode'],
     plugins: [
       /* add to the end of plugins array */
+      createDir,
       esbuildProblemMatcherPlugin
     ]
   });
@@ -52,6 +54,23 @@ const esbuildProblemMatcherPlugin = {
         console.error(`    ${location.file}:${location.line}:${location.column}:`);
       });
       console.log('[watch] build finished');
+    });
+  }
+};
+
+/**
+ * @type {import('esbuild').Plugin}
+ */
+const createDir = {
+  name: 'create-dir',
+
+  setup(build) {
+    build.onStart(() => {
+      fs.mkdir('out/package', { recursive: true }, err => {
+        if (err) {
+          console.error(`✘ [ERROR] ${err.message}`);
+        }
+      });
     });
   }
 };
