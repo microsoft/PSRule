@@ -3,8 +3,8 @@
     "name": "01_requiresModules",
     "snippet": [
       "requires:",
-      "  PSRule: '>=2.8.1'",
-      "  PSRule.Rules.Azure: '>=1.26.1'"
+      "  PSRule: '>=2.9.0'",
+      "  PSRule.Rules.Azure: '>=1.39.3'"
     ]
   },
   {
