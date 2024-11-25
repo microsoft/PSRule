@@ -147,7 +147,6 @@ jobs:
         timeout-minutes: 30
         run: Invoke-Build TestModule -Configuration Release -AssertStyle GitHubActions
 
-
   build_extension:
     name: Build extension
     runs-on: ubuntu-latest
@@ -233,6 +232,34 @@ jobs:
         env:
           DISPLAY: ':99.0'
 
+  build_docs:
+    name: Build docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          architecture: 'x64'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install wheel
+          python3 -m pip install -r requirements-docs.txt
+
+      - name: Build site
+        run: mkdocs build
+        env:
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
 
   # ------------------
   # Run analysis tools
