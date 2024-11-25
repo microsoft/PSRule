@@ -1,0 +1,43 @@
+name: Sample proposal
+description: Make a proposal for the community to add a new sample
+title: '[Sample]: '
+type: Feature
+labels: ['sample', 'Needs: Triage :mag:']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill out this form below to suggest a new sample to be added by the community.
+  - type: dropdown
+    id: exiting-sample-check
+    attributes:
+      label: |
+        Have you checked this sample does not already exist in the repository?
+        Samples are stored in `samples/` in the root of the repository.
+      options:
+        - 'Yes'
+        - 'No'
+    validations:
+      required: true
+  - type: textarea
+    id: why-the-sample
+    attributes:
+      label: Why is the sample needed?
+      description: Explain why the sample is needed. If there is a existing sample, explain why it cannot be updated to meet your needs and why a new one must be created.
+    validations:
+      required: true
+  - type: input
+    id: sample-path
+    attributes:
+      label: Sample path
+      description: The path to the new sample.
+      placeholder: samples/rules/name
+    validations:
+      required: true
+  - type: textarea
+    id: sample-description
+    attributes:
+      label: Describe the sample
+      description: A clear and concise description of the sample.
+    validations:
+      required: true
