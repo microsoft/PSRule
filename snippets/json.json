@@ -1,0 +1,121 @@
+{
+  "Baseline Json": {
+    "prefix": "baseline-json",
+    "description": "PSRule Baseline JSON resource",
+    "body": [
+      "{",
+      "    // Synopsis: ${2}",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"kind\": \"Baseline\",",
+      "    \"metadata\": {",
+      "        \"name\": \"${1}\"",
+      "    },",
+      "    \"spec\": {",
+      "        ${3}",
+      "    }",
+      "}"
+    ]
+  },
+  "ModuleConfig Json": {
+    "prefix": "moduleConfig-json",
+    "description": "PSRule Module Config JSON resource",
+    "body": [
+      "{",
+      "    // Synopsis: ${2}",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"kind\": \"ModuleConfig\",",
+      "    \"metadata\": {",
+      "        \"name\": \"${1}\"",
+      "    },",
+      "    \"spec\": {",
+      "        ${3}",
+      "    }",
+      "}"
+    ]
+  },
+  "Selector Json": {
+    "prefix": "selector-json",
+    "description": "PSRule Selector JSON resource",
+    "body": [
+      "{",
+      "    // Synopsis: ${2}",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"kind\": \"Selector\",",
+      "    \"metadata\": {",
+      "        \"name\": \"${1}\"",
+      "    },",
+      "    \"spec\": {",
+      "        \"if\": {",
+      "            ${3}",
+      "        }",
+      "    }",
+      "}"
+    ]
+  },
+  "Rule with Type Json": {
+    "prefix": "rule-with-type-json",
+    "description": "PSRule Rule JSON resource with Type pre-condition",
+    "body": [
+      "{",
+      "    // Synopsis: ${2}",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"kind\": \"Rule\",",
+      "    \"metadata\": {",
+      "        \"name\": \"${1}\"",
+      "    },",
+      "    \"spec\": {",
+      "        \"type\": [",
+      "            \"${3}\"",
+      "        ],",
+      "        \"condition\": {",
+      "            ${4}",
+      "        }",
+      "    }",
+      "}"
+    ]
+  },
+  "Rule with Selector Json": {
+    "prefix": "rule-with-selector-json",
+    "description": "PSRule Rule JSON resource with Selector pre-condition",
+    "body": [
+      "{",
+      "    // Synopsis: ${2}",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"kind\": \"Rule\",",
+      "    \"metadata\": {",
+      "        \"name\": \"${1}\"",
+      "    },",
+      "    \"spec\": {",
+      "        \"with\": [",
+      "            \"${3}\"",
+      "        ],",
+      "        \"condition\": {",
+      "            ${4}",
+      "        }",
+      "    }",
+      "}"
+    ]
+  },
+  "Suppression Group Json": {
+    "prefix": "suppression-group-json",
+    "description": "PSRule Suppression Group JSON resource",
+    "body": [
+      "{",
+      "    // Synopsis: ${2}",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"kind\": \"SuppressionGroup\",",
+      "    \"metadata\": {",
+      "        \"name\": \"${1}\"",
+      "    },",
+      "    \"spec\": {",
+      "        \"rule\": [",
+      "            \"${3}\"",
+      "        ],",
+      "        \"if\": {",
+      "            ${4}",
+      "        }",
+      "    }",
+      "}"
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "Rule Doc": {
+    "prefix": "rule",
+    "description": "Rule documentation",
+    "body": [
+      "# ${1:Name of rule}",
+      "",
+      "## SYNOPSIS",
+      "",
+      "{{ A brief summary of the rule }}",
+      "",
+      "## DESCRIPTION",
+      "",
+      "{{ A detailed description of the rule }}",
+      "",
+      "## RECOMMENDATION",
+      "",
+      "{{ A detailed explanation of the steps required to pass the rule }}",
+      ""
+    ]
+  },
+  "Rule Doc Extended": {
+    "prefix": "rule",
+    "description": "Extended rule documentation",
+    "body": [
+      "---",
+      "online version:",
+      "---",
+      "",
+      "# ${1:Name of rule}",
+      "",
+      "## SYNOPSIS",
+      "",
+      "{{ A brief summary of the rule }}",
+      "",
+      "## DESCRIPTION",
+      "",
+      "{{ A detailed description of the rule }}",
+      "",
+      "## RECOMMENDATION",
+      "",
+      "{{ A detailed explanation of the steps required to pass the rule }}",
+      "",
+      "## NOTES",
+      "",
+      "{{ Additional information or configuration options }}",
+      "",
+      "## LINKS",
+      "",
+      "{{ Links to external references }}",
+      ""
+    ]
+  }
+}

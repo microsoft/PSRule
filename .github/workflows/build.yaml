@@ -3,7 +3,12 @@
 #
 
 # NOTES:
-# This workflow builds and tests module updates.
+# This workflow builds and tests PSRule components.
+# During this process linting and analysis tools are used to ensure code quality.
+# You can read more about these linting tools and configuration options here:
+#   PSRule - https://aka.ms/ps-rule and https://github.com/Microsoft/PSRule.Rules.MSFT.OSS
+#   CodeQL - https://codeql.github.com/docs/codeql-overview/about-codeql/
+#   DevSkim - https://github.com/microsoft/DevSkim-Action and https://github.com/Microsoft/DevSkim
 
 name: Build
 on:
@@ -11,7 +16,9 @@ on:
     branches: [main, 'release/*']
   pull_request:
     branches: [main, 'release/*']
-  workflow_dispatch:
+  schedule:
+    - cron: '24 22 * * 0' # At 10:24 PM, on Sunday each week
+  workflow_dispatch: {}
 
 env:
   DOTNET_NOLOGO: true
@@ -60,15 +67,6 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
-      # - name: Upload Test Results
-      #   uses: actions/upload-artifact@v3
-      #   if: always()
-      #   with:
-      #     name: Module.DotNet.TestResults
-      #     path: ./reports/*.trx
-      #     retention-days: 3
-      #     if-no-files-found: error
-
       - name: Upload PSRule Results
         uses: actions/upload-artifact@v4
         if: always()
@@ -79,7 +77,7 @@ jobs:
           if-no-files-found: error
 
   test:
-    name: Test (${{ matrix.rid }}-${{ matrix.shell }})
+    name: 🧪 Test (${{ matrix.rid }}-${{ matrix.shell }})
     runs-on: ${{ matrix.os }}
     needs: build
     permissions:
@@ -148,3 +146,191 @@ jobs:
         shell: powershell
         timeout-minutes: 30
         run: Invoke-Build TestModule -Configuration Release -AssertStyle GitHubActions
+
+
+  build_extension:
+    name: Build extension
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+
+      - name: Install dependencies
+        timeout-minutes: 3
+        run: |
+          npm install --global @vscode/vsce --force
+          npm install
+
+          dotnet restore
+
+      - name: Build extension
+        timeout-minutes: 3
+        run: |
+          mkdir -p out/package/
+          npm run package -- 0.0.1
+
+      - name: Upload extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: Extension
+          path: out/package/code-*.vsix
+          retention-days: 3
+          if-no-files-found: error
+
+  test_extension:
+    name: 🧪 Test extension (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: build_extension
+    permissions:
+      contents: read
+    strategy:
+      # Get full test results from all platforms.
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        timeout-minutes: 3
+        run: |
+          npm install
+
+      - name: Configure environment
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          echo ">>> Started xvfb"
+
+      - name: Run tests
+        timeout-minutes: 5
+        run: |
+          npm test
+        env:
+          DISPLAY: ':99.0'
+
+
+  # ------------------
+  # Run analysis tools
+  # ------------------
+  oss:
+    name: 🔍 Analyze with PSRule
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run PSRule analysis
+        uses: microsoft/ps-rule@v2.9.0
+        with:
+          modules: PSRule.Rules.MSFT.OSS
+          prerelease: true
+          outputFormat: Sarif
+          outputPath: reports/ps-rule-results.sarif
+          option: ps-rule-ci.yaml
+
+      - name: Upload results to security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: reports/ps-rule-results.sarif
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PSRule-Sarif
+          path: reports/ps-rule-results.sarif
+          retention-days: 1
+          if-no-files-found: error
+
+  devskim:
+    name: 🔍 Analyze with DevSkim
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run DevSkim scanner
+        uses: microsoft/DevSkim-Action@v1
+        with:
+          directory-to-scan: .
+
+      - name: Upload results to security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: devskim-results.sarif
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: DevSkim-Sarif
+          path: devskim-results.sarif
+          retention-days: 1
+          if-no-files-found: error
+
+  codeql:
+    name: 🔍 Analyze with CodeQL
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: 'csharp'
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        id: codeql-analyze
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: CodeQL-Sarif
+          path: ${{ steps.codeql-analyze.outputs.sarif-output }}
+          retention-days: 1
+          if-no-files-found: error
+      

@@ -1,0 +1,525 @@
+{
+  "name": "code",
+  "displayName": "PSRule",
+  "version": "0.0.1",
+  "publisher": "ps-rule",
+  "description": "Validate infrastructure as code (IaC) and DevOps repositories using PSRule.",
+  "author": {
+    "name": "Microsoft"
+  },
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "channel": "stable",
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://github.com/microsoft/PSRule/blob/main/README.md",
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "keywords": [
+    "PowerShell",
+    "json",
+    "yaml"
+  ],
+  "galleryBanner": {
+    "color": "#0072c6",
+    "theme": "dark"
+  },
+  "icon": "media/icon256.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/PSRule.git"
+  },
+  "bugs": {
+    "url": "https://github.com/microsoft/PSRule/issues"
+  },
+  "private": true,
+  "preview": true,
+  "activationEvents": [
+    "onLanguage:powershell",
+    "onLanguage:yaml",
+    "workspaceContains:/ps-rule.yaml",
+    "workspaceContains:**/ps-rule.yaml",
+    "workspaceContains:**/*.Rule.yaml",
+    "workspaceContains:**/*.Rule.yml",
+    "workspaceContains:**/*.Rule.json",
+    "workspaceContains:**/*.Rule.jsonc",
+    "workspaceContains:**/*.Rule.ps1",
+    "onCommand:workbench.action.tasks.runTask"
+  ],
+  "main": "./out/dist/main.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "PSRule in untrusted mode."
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "PSRule.createOrEditDocumentation",
+        "title": "Create or edit documentation",
+        "shortTitle": "Edit documentation",
+        "category": "PSRule"
+      },
+      {
+        "command": "PSRule.openOptionsFile",
+        "title": "Open options file",
+        "category": "PSRule"
+      },
+      {
+        "command": "PSRule.createOptionsFile",
+        "title": "Create options file",
+        "category": "PSRule"
+      },
+      {
+        "command": "PSRule.configureSettings",
+        "title": "Configure settings",
+        "category": "PSRule"
+      },
+      {
+        "$comment": "Only used by walkthrough.",
+        "command": "PSRule.walkthroughCopySnippet",
+        "title": "Copy walkthrough snippet",
+        "enablement": "false",
+        "category": "PSRule"
+      },
+      {
+        "command": "PSRule.runAnalysisTask",
+        "title": "Run analysis",
+        "category": "PSRule"
+      },
+      {
+        "command": "PSRule.showTasks",
+        "title": "Show tasks",
+        "enablement": "false",
+        "category": "PSRule"
+      },
+      {
+        "command": "PSRule.restore",
+        "title": "Restore modules",
+        "category": "PSRule"
+      }
+    ],
+    "configuration": [
+      {
+        "title": "PSRule",
+        "properties": {
+          "PSRule.codeLens.ruleDocumentationLinks": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enables Code Lens that displays links to rule documentation.",
+            "scope": "application"
+          },
+          "PSRule.documentation.path": {
+            "type": "string",
+            "default": null,
+            "description": "The path to look for rule documentation. When not set, the path containing rules will be used.",
+            "scope": "window"
+          },
+          "PSRule.documentation.localePath": {
+            "type": "string",
+            "default": null,
+            "description": "The locale path to use for locating rule documentation. The VS Code locale will be used by default.",
+            "scope": "window"
+          },
+          "PSRule.documentation.customSnippetPath": {
+            "type": "string",
+            "default": null,
+            "description": "The path to a file containing a rule documentation snippet. When not set, built-in PSRule snippets will be used.",
+            "scope": "window"
+          },
+          "PSRule.documentation.snippet": {
+            "type": "string",
+            "default": "Rule Doc",
+            "markdownDescription": "The name of a snippet to use when creating new rule documentation. By default, the built-in `Rule Doc` snippet will be used.",
+            "scope": "window"
+          },
+          "PSRule.execution.ruleExcluded": {
+            "type": "string",
+            "default": "None",
+            "markdownDescription": "Determines how to handle [excluded rules](https://aka.ms/ps-rule/options#executionruleexcluded). When set to `None`, PSRule will use the default (`Ignore`), unless set by [PSRule options](https://aka.ms/ps-rule/options#executionruleexcluded).",
+            "markdownEnumDescriptions": [
+              "Excluded rules will not generate any notifications unless overridden.",
+              "Excluded rules will not generate any notifications.",
+              "Excluded rules will generate a warning.",
+              "Excluded rules will generate an error."
+            ],
+            "enum": [
+              "None",
+              "Ignore",
+              "Warn",
+              "Error"
+            ],
+            "scope": "application"
+          },
+          "PSRule.execution.ruleSuppressed": {
+            "type": "string",
+            "default": "None",
+            "markdownDescription": "Determines how to handle [suppressed rules](https://aka.ms/ps-rule/options#executionrulesuppressed). When set to `None`, PSRule will use the default (`Warn`), unless set by [PSRule options](https://aka.ms/ps-rule/options#executionrulesuppressed).",
+            "markdownEnumDescriptions": [
+              "Suppressed rules will generate a warning unless overridden.",
+              "Suppressed rules will not generate any notifications.",
+              "Suppressed rules will generate a warning.",
+              "Suppressed rules will generate an error."
+            ],
+            "enum": [
+              "None",
+              "Ignore",
+              "Warn",
+              "Error"
+            ],
+            "scope": "application"
+          },
+          "PSRule.execution.unprocessedObject": {
+            "type": "string",
+            "default": "None",
+            "markdownDescription": "Determines how to report objects that are [not processed by any rule](https://aka.ms/ps-rule/options#executionunprocessedobject). When set to `None`, PSRule will use the default (`Warn`), unless set by [PSRule options](https://aka.ms/ps-rule/options#executionunprocessedobject).",
+            "markdownEnumDescriptions": [
+              "Suppressed rules will generate a warning unless overridden.",
+              "Suppressed rules will not generate any notifications.",
+              "Suppressed rules will generate a warning.",
+              "Suppressed rules will generate an error."
+            ],
+            "enum": [
+              "None",
+              "Ignore",
+              "Warn",
+              "Error"
+            ],
+            "scope": "application"
+          },
+          "PSRule.experimental.enabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enables experimental features in the PSRule extension.",
+            "scope": "application"
+          },
+          "PSRule.notifications.showChannelUpgrade": {
+            "type": "boolean",
+            "default": true,
+            "description": "Determines if a notification to switch to the stable channel is shown on start up.",
+            "scope": "application"
+          },
+          "PSRule.notifications.showPowerShellExtension": {
+            "type": "boolean",
+            "default": true,
+            "description": "Determines if a notification to install the PowerShell extension is shown on start up.",
+            "scope": "application"
+          },
+          "PSRule.output.as": {
+            "type": "string",
+            "default": "Summary",
+            "description": "Configures the output of analysis tasks, either summary or detailed.",
+            "enum": [
+              "Detail",
+              "Summary"
+            ],
+            "scope": "window"
+          },
+          "PSRule.rule.baseline": {
+            "type": "string",
+            "default": null,
+            "description": "The name of the default baseline to use for executing rules. This setting can be overridden on individual PSRule tasks.",
+            "scope": "window"
+          },
+          "PSRule.trace.task": {
+            "type": "string",
+            "default": "Off",
+            "description": "Determines if verbose logging is enabled for task output.",
+            "enum": [
+              "Off",
+              "Verbose"
+            ],
+            "scope": "application"
+          }
+        }
+      }
+    ],
+    "taskDefinitions": [
+      {
+        "type": "PSRule",
+        "required": [],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The path containing rules.",
+            "default": "./.ps-rule/"
+          },
+          "inputPath": {
+            "type": "string",
+            "description": "The path PSRule will look for input files. Defaults to workspace root.",
+            "default": "."
+          },
+          "baseline": {
+            "type": "string",
+            "description": "The name of a PSRule baseline to use. Baselines can be used from modules or specified in a separate file. This option overrides the default baseline setting set for a workspace or user."
+          },
+          "modules": {
+            "type": "array",
+            "description": "The name of one or more modules to use."
+          },
+          "outcome": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "Pass",
+                "Fail",
+                "Error"
+              ]
+            },
+            "default": [
+              "Fail",
+              "Error"
+            ]
+          }
+        }
+      }
+    ],
+    "snippets": [
+      {
+        "language": "powershell",
+        "path": "./snippets/powershell.json"
+      },
+      {
+        "language": "markdown",
+        "path": "./snippets/markdown.json"
+      },
+      {
+        "language": "yaml",
+        "path": "./snippets/yaml.json"
+      },
+      {
+        "language": "yaml",
+        "path": "./snippets/github-snippets.json"
+      },
+      {
+        "language": "yaml",
+        "path": "./snippets/pipelines-snippets.json"
+      },
+      {
+        "language": "json",
+        "path": "./snippets/json.json"
+      },
+      {
+        "language": "jsonc",
+        "path": "./snippets/json.json"
+      }
+    ],
+    "grammars": [
+      {
+        "path": "./syntaxes/comments.json",
+        "scopeName": "PSRule-powershell-comments",
+        "injectTo": [
+          "source.powershell"
+        ]
+      },
+      {
+        "path": "./syntaxes/keywords.json",
+        "scopeName": "PSRule-powershell-keywords",
+        "injectTo": [
+          "source.powershell"
+        ]
+      },
+      {
+        "path": "./syntaxes/rule.json",
+        "scopeName": "PSRule-powershell-rule",
+        "injectTo": [
+          "source.powershell"
+        ]
+      },
+      {
+        "path": "./syntaxes/yaml-comments.json",
+        "scopeName": "PSRule-yaml-comments",
+        "injectTo": [
+          "source.yaml"
+        ]
+      }
+    ],
+    "yamlValidation": [
+      {
+        "fileMatch": "ps-rule.yaml",
+        "url": "./schemas/PSRule-options.schema.json"
+      },
+      {
+        "fileMatch": "ps-rule.yml",
+        "url": "./schemas/PSRule-options.schema.json"
+      },
+      {
+        "fileMatch": "psrule.yaml",
+        "url": "./schemas/PSRule-options.schema.json"
+      },
+      {
+        "fileMatch": "psrule.yml",
+        "url": "./schemas/PSRule-options.schema.json"
+      },
+      {
+        "fileMatch": "**/*.Rule.yaml",
+        "url": "./schemas/PSRule-language.schema.json"
+      },
+      {
+        "fileMatch": "**/*.Rule.yml",
+        "url": "./schemas/PSRule-language.schema.json"
+      }
+    ],
+    "jsonValidation": [
+      {
+        "fileMatch": [
+          "*.Rule.json",
+          "*.Rule.jsonc"
+        ],
+        "url": "./schemas/PSRule-resources.schema.json"
+      },
+      {
+        "fileMatch": "ps-rule.lock.json",
+        "url": "./schemas/PSRule-lock.schema.json"
+      }
+    ],
+    "problemMatchers": [
+      {
+        "name": "PSRule",
+        "label": "PSRule",
+        "owner": "PSRule",
+        "source": "PSRule",
+        "severity": "error",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
+        "pattern": [
+          {
+            "regexp": "^\\s+(FAIL)\\s+(.*)$",
+            "code": 2
+          },
+          {
+            "regexp": "^$"
+          },
+          {
+            "regexp": "^\\s+(.*)$",
+            "message": 1
+          },
+          {
+            "regexp": "^$"
+          },
+          {
+            "regexp": "^\\s+(.*): (.*):(\\d+):(\\d+)$",
+            "file": 2,
+            "line": 3,
+            "column": 4,
+            "loop": true
+          }
+        ]
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "PSRule.getStarted",
+        "title": "Get Started with PSRule",
+        "description": "Learn about and start using PSRule with Visual Studio Code.",
+        "steps": [
+          {
+            "id": "configureOptions",
+            "title": "Configure an options file",
+            "description": "The options file **ps-rule.yaml** is used to initialize a workspace and configure features of PSRule.\n[Open an options file](command:PSRule.openOptionsFile)\n[Create an options file](command:PSRule.createOptionsFile)\nTip: [Close the side bar for more space](command:workbench.action.closeSidebar)",
+            "media": {
+              "markdown": "media/walkthroughs/getStarted/01_configureOptions.md"
+            },
+            "completionEvents": [
+              "onCommand:PSRule.openOptionsFile",
+              "onCommand:PSRule.createOptionsFile"
+            ]
+          },
+          {
+            "id": "configureSettings",
+            "title": "Configure settings",
+            "description": "In addition to **ps-rule.yaml**, some settings that affect how PSRule runs within Visual Studio Code can be configured per user or per workspace.\n[Configure settings](command:PSRule.configureSettings)\nTip: __You can sync some of these settings across devices.__",
+            "media": {
+              "markdown": "media/walkthroughs/getStarted/02_configureSettings.md"
+            },
+            "completionEvents": [
+              "onCommand:PSRule.configureSettings"
+            ]
+          },
+          {
+            "id": "runTasks",
+            "title": "Run analysis",
+            "description": "Tasks can be used to run analysis on files within your current Visual Studio Code workspace.\n[Show tasks](command:PSRule.showTasks)\nOr you can run the [analysis](command:PSRule.runAnalysisTask) task directly from the command palette.",
+            "media": {
+              "markdown": "media/walkthroughs/getStarted/03_runTasks.md"
+            },
+            "completionEvents": [
+              "command:PSRule.runAnalysisTask",
+              "command:PSRule.showTasks"
+            ]
+          },
+          {
+            "id": "learnMore",
+            "title": "Learn more",
+            "description": "Check out our [PSRule documentation](https://aka.ms/ps-rule) to learn more about features and customization.",
+            "media": {
+              "markdown": "media/walkthroughs/getStarted/04_learnMore.md"
+            }
+          }
+        ],
+        "featuredFor": [
+          "**/ps-rule.yaml",
+          "**/*.Rule.yaml",
+          "**/*.Rule.ps1",
+          "**/*.Rule.jsonc"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "zzz_compile": "tsc -p ./ && dotnet build",
+    "zzz_watch": "tsc -watch -p ./",
+    "zzz_package": "vsce package --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/",
+    "zzz_package:stable": "vsce package --dependencies --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/",
+    "zzz_publish": "vsce publish --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --packagePath out/package/",
+    "zzz_publish:stable": "vsce publish --dependencies --no-git-tag-version --no-update-package-json --githubBranch main --packagePath out/package/",
+    "zzz_lint": "eslint . --ext .ts,.tsx",
+    "zzz_pretest": "npm run compile",
+    "zzz_vscode:prepublish": "npm run -S esbuild-base -- --minify && dotnet publish ./src/PSRule.EditorServices/ --output server/",
+    "zzz_esbuild-base": "esbuild ./src/code/main.ts --bundle --outfile=out/dist/main.js --external:vscode --format=cjs --platform=node",
+    "zzz_esbuild": "npm run -S esbuild-base -- --sourcemap",
+    "zzz_esbuild-watch": "npm run -S esbuild-base -- --sourcemap --watch",
+    "zzz_build": "tsc -p ./ && dotnet build && node build.mjs",
+    "zzz_check-types": "tsc --noEmit",
+    "zzz_pack": "npm run vscode:prepublish && npm run publish",
+    "build": "npm run build:dotnet && npm run build:esbuild && npm run build:pack",
+    "build:dotnet": "dotnet build ./src/PSRule.EditorServices/ --output server/",
+    "build:pack": "vsce package --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/",
+    "build:esbuild": "esbuild ./src/code/main.ts --bundle --outfile=out/dist/main.js --external:vscode --format=cjs --platform=node",
+    "package": "npm run package:dotnet && npm run package:esbuild && npm run package:pack",
+    "package:dotnet": "dotnet build ./src/PSRule.EditorServices/ --output server/",
+    "package:pack": "vsce package --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/",
+    "package:esbuild": "esbuild ./src/code/main.ts --bundle --outfile=out/dist/main.js --external:vscode --format=cjs --platform=node --minify",
+    "test": "npm run build:dotnet && npm run build:esbuild && vscode-test"
+  },
+  "dependencies": {
+    "fs-extra": "^11.2.0",
+    "vscode-languageclient": "^9.0.1"
+  },
+  "extensionDependencies": [
+    "vscode.powershell",
+    "redhat.vscode-yaml",
+    "ms-dotnettools.vscode-dotnet-runtime"
+  ],
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.9.1",
+    "@types/vscode": "1.95.0",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^3.2.1",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.15.0",
+    "glob": "^11.0.0",
+    "mocha": "^10.8.2",
+    "typescript": "^5.7.2"
+  }
+}

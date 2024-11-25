@@ -1,0 +1,15 @@
+{
+  "scopeName": "PSRule-yaml-comments",
+  "injectionSelector": "L:comment.line.number-sign.yaml",
+  "patterns": [
+    {
+      "include": "#synopsis-comment"
+    }
+  ],
+  "repository": {
+    "synopsis-comment": {
+      "match": "Synopsis:",
+      "name": "keyword.operator.documentation.powershell"
+    }
+  }
+}

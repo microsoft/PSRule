@@ -1,0 +1,95 @@
+{
+  "rule": {
+    "prefix": "rule",
+    "description": "Rule definition",
+    "body": [
+      "# Synopsis: ${2}",
+      "Rule '${1}' {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "ruleIf": {
+    "prefix": "rule-if",
+    "description": "Rule definition with script precondition",
+    "body": [
+      "# Synopsis: ${2}",
+      "Rule '${1}' -If { ${3} } {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "ruleType": {
+    "prefix": "rule-type",
+    "description": "Rule definition with type precondition",
+    "body": [
+      "# Synopsis: ${2}",
+      "Rule '${1}' -Type '${3}' {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "ruleExtended": {
+    "prefix": "rule-extended",
+    "description": "Rule definition with script precondition and tags",
+    "body": [
+      "# Synopsis: ${2}",
+      "Rule '${1}' -If { ${3} } -Tag @{ ${4} } {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "anyOf": {
+    "prefix": "anyOf",
+    "description": "AnyOf condition block",
+    "body": [
+      "AnyOf {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "allOf": {
+    "prefix": "allOf",
+    "description": "AllOf condition block",
+    "body": [
+      "AllOf {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "exists": {
+    "prefix": "exists",
+    "description": "Exists condition",
+    "body": [
+      "Exists '$0'"
+    ]
+  },
+  "within": {
+    "prefix": "within",
+    "description": "Within condition",
+    "body": [
+      "Within '$1' '$0'"
+    ]
+  },
+  "typeOf": {
+    "prefix": "typeOf",
+    "description": "TypeOf condition",
+    "body": [
+      "TypeOf '$0'"
+    ]
+  },
+  "recommend": {
+    "prefix": "recommend",
+    "description": "Recommend message",
+    "body": [
+      "Recommend '$0'"
+    ]
+  },
+  "reason": {
+    "prefix": "reason",
+    "description": "Reason message",
+    "body": [
+      "Reason '$0'"
+    ]
+  }
+}
