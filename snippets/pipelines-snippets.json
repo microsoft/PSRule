@@ -1,0 +1,43 @@
+{
+  "PSRule in Azure Pipelines": {
+    "prefix": "ps-rule-az-pipeline",
+    "description": "PSRule snippet for Azure Pipelines.",
+    "body": [
+      "#",
+      "# Analyze repository with PSRule",
+      "#",
+      "",
+      "# For PSRule documentation see:",
+      "# https://aka.ms/ps-rule",
+      "",
+      "# For pipeline task details see:",
+      "# https://aka.ms/ps-rule-pipelines",
+      "",
+      "# Run for main or PRs against main",
+      "trigger:",
+      "  branches:",
+      "    include:",
+      "    - main",
+      "",
+      "pr:",
+      "  branches:",
+      "    include:",
+      "    - main",
+      "",
+      "stages:",
+      "- stage: Test",
+      "  jobs:",
+      "  - job: analyze",
+      "    displayName: Analyze repository",
+      "    pool:",
+      "      vmImage: ubuntu-latest",
+      "    steps:",
+      "",
+      "    - task: ps-rule-assert@2",
+      "      displayName: Run PSRule analysis",
+      "      inputs:",
+      "        modules: ${1}",
+      ""
+    ]
+  }
+}

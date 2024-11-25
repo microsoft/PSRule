@@ -1,0 +1,15 @@
+{
+  "scopeName": "PSRule-powershell-rule",
+  "injectionSelector": "L:source.powershell",
+  "patterns": [
+    {
+      "include": "#rule-keyword"
+    }
+  ],
+  "repository": {
+    "rule-keyword": {
+      "match": "(?<=^)(?i)(rule)(?=\\s+)",
+      "name": "storage.type.powershell"
+    }
+  }
+}

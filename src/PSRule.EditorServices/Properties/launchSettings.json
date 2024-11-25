@@ -1,0 +1,19 @@
+{
+  "profiles": {
+    "ps-rule restore": {
+      "commandName": "Project",
+      "commandLineArgs": "restore",
+      "workingDirectory": "../../"
+    },
+    "ps-rule module add": {
+      "commandName": "Project",
+      "commandLineArgs": "module add abc --version 1.0.0",
+      "workingDirectory": "../../"
+    },
+    "ps-rule run": {
+      "commandName": "Project",
+      "commandLineArgs": "run -m PSRule.Rules.Azure",
+      "workingDirectory": "../../"
+    }
+  }
+}

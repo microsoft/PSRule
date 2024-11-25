@@ -45,6 +45,28 @@ updates:
     reviewers:
       - microsoft/psrule
 
+  # Maintain dependencies for npm.
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: daily
+    labels:
+      - 'dependencies'
+    reviewers:
+      - 'microsoft/psrule'
+    groups:
+      # Group linting dependencies
+      dev-linting:
+        patterns:
+          - esbuild
+          - eslint
+          - '@typescript-eslint/*'
+      dev-types:
+        patterns:
+          - '@types/*'
+        exclude-patterns:
+          - '@types/vscode'
+
   # Maintain dependencies for Dev Containers
   - package-ecosystem: devcontainers
     directory: '/'

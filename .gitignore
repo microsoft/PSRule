@@ -7,6 +7,10 @@ build/
 reports/
 out/
 site/
+server/
+node_modules/
+.vscode-test/
+*.vsix
 *.user
 src/**/*-help.xml
 src/**/*.help.txt

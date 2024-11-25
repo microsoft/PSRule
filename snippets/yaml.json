@@ -1,0 +1,96 @@
+{
+  "Baseline Yaml": {
+    "prefix": "baseline-yaml",
+    "description": "PSRule Baseline YAML resource",
+    "body": [
+      "---",
+      "# Synopsis: ${2}",
+      "apiVersion: github.com/microsoft/PSRule/v1",
+      "kind: Baseline",
+      "metadata:",
+      "  name: ${1}",
+      "spec:",
+      "  ${3}"
+    ]
+  },
+  "ModuleConfig Yaml": {
+    "prefix": "moduleConfig-yaml",
+    "description": "PSRule Module Config YAML resource",
+    "body": [
+      "---",
+      "# Synopsis: ${2}",
+      "apiVersion: github.com/microsoft/PSRule/v1",
+      "kind: ModuleConfig",
+      "metadata:",
+      "  name: ${1}",
+      "spec:",
+      "  ${3}"
+    ]
+  },
+  "Selector Yaml": {
+    "prefix": "selector-yaml",
+    "description": "PSRule Selector YAML resource",
+    "body": [
+      "---",
+      "# Synopsis: ${2}",
+      "apiVersion: github.com/microsoft/PSRule/v1",
+      "kind: Selector",
+      "metadata:",
+      "  name: ${1}",
+      "spec:",
+      "  if:",
+      "    ${3}"
+    ]
+  },
+  "Rule with Type Yaml": {
+    "prefix": "rule-with-type-yaml",
+    "description": "PSRule Rule YAML resource with Type pre-condition",
+    "body": [
+      "---",
+      "# Synopsis: ${2}",
+      "apiVersion: github.com/microsoft/PSRule/v1",
+      "kind: Rule",
+      "metadata:",
+      "  name: ${1}",
+      "spec:",
+      "  type:",
+      "  - ${3}",
+      "  condition:",
+      "    ${4}"
+    ]
+  },
+  "Rule with Selector Yaml": {
+    "prefix": "rule-with-selector-yaml",
+    "description": "PSRule Rule YAML resource with Selector pre-condition",
+    "body": [
+      "---",
+      "# Synopsis: ${2}",
+      "apiVersion: github.com/microsoft/PSRule/v1",
+      "kind: Rule",
+      "metadata:",
+      "  name: ${1}",
+      "spec:",
+      "  with:",
+      "  - ${3}",
+      "  condition:",
+      "    ${4}"
+    ]
+  },
+  "Suppression Group Yaml": {
+    "prefix": "suppression-group-yaml",
+    "description": "PSRule Suppression Group YAML resource",
+    "body": [
+      "---",
+      "# Synopsis: ${2}",
+      "apiVersion: github.com/microsoft/PSRule/v1",
+      "kind: SuppressionGroup",
+      "metadata:",
+      "  name: ${1}",
+      "spec:",
+      "  rule: ",
+      "  - ${3}",
+      "  if:",
+      "    ${4}"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "PSRule options": {
+    "prefix": "ps-rule-options",
+    "description": "Default PSRule options file",
+    "body": [
+      "#",
+      "# PSRule configuration",
+      "#",
+      "",
+      "# Please see the documentation for all configuration options:",
+      "# https://aka.ms/ps-rule/options",
+      "",
+      "requires:",
+      "  PSRule: '@pre >=2.9.0'",
+      "",
+      "output:",
+      "  culture:",
+      "  - en-US",
+      "",
+      "input:",
+      "  pathIgnore:",
+      "  - '*.md'",
+      "  - '.vscode/'",
+      "  - 'docs/'",
+      ""
+    ]
+  }
+}
