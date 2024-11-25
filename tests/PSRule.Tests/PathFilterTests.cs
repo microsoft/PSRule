@@ -42,7 +42,7 @@ public sealed class PathFilterTests
             "**/ObjectFromFile*.json",
             "!**/ObjectFromFile.json"
         };
-        filter = PathFilter.Create(GetWorkingPath(), expressions, true);
+        filter = PathFilter.Create(GetWorkingPath(), expressions, matchResult: true);
         Assert.True(filter.Match("out/example.parameters.json"));
         Assert.False(filter.Match("outer/example.parameters.json"));
         Assert.False(filter.Match("reports/out/example.parameters.json"));
@@ -53,7 +53,7 @@ public sealed class PathFilterTests
         Assert.True(filter.Match("ObjectFromFileSingle.json"));
 
         // Exclude
-        filter = PathFilter.Create(GetWorkingPath(), expressions, false);
+        filter = PathFilter.Create(GetWorkingPath(), expressions, matchResult: false);
         Assert.False(filter.Match("out/example.parameters.json"));
         Assert.True(filter.Match("outer/example.parameters.json"));
         Assert.True(filter.Match("reports/out/example.parameters.json"));
@@ -62,10 +62,59 @@ public sealed class PathFilterTests
         Assert.True(filter.Match("reports/bin/other.json"));
     }
 
+    [Theory]
+    [InlineData("out/file.cs")]
+    [InlineData("out/otherfile.cs")]
+    [InlineData("otherpath/file.cs")]
+    public void Match_WhenPathMatchesExclusionCompletely_ShouldMatch(string path)
+    {
+        var expressions = new string[]
+        {
+            "**",
+            "!*.cs",
+            "!**/*.cs"
+        };
+
+        var filter = PathFilter.Create(GetWorkingPath(), expressions, matchResult: false);
+        Assert.True(filter.Match(path));
+    }
+
+    [Theory]
+    [InlineData("out/file.csproj")]
+    [InlineData("out/file.c")]
+    public void Match_WhenPathMatchesPrefixOnlyExclusion_ShouldNotMatch(string path)
+    {
+        var expressions = new string[]
+        {
+            "**",
+            "!*.cs",
+            "!**/*.cs"
+        };
+
+        var filter = PathFilter.Create(GetWorkingPath(), expressions, matchResult: false);
+        Assert.False(filter.Match(path));
+    }
+
+    [Theory]
+    [InlineData("src/bin/pwsh.exe")]
+    [InlineData("out/bin/pwsh.exe")]
+    [InlineData("src/bin/debug/pwsh.exe")]
+    public void Match_WhenPathMatchesParentDirectoryExclusion_ShouldMatch(string path)
+    {
+        var expressions = new string[]
+        {
+            "**",
+            "!**/bin/",
+        };
+
+        var filter = PathFilter.Create(GetWorkingPath(), expressions, matchResult: false);
+        Assert.True(filter.Match(path));
+    }
+
     [Fact]
     public void Builder()
     {
-        var builder = PathFilterBuilder.Create(GetWorkingPath(), new string[] { "out/" }, false, false);
+        var builder = PathFilterBuilder.Create(GetWorkingPath(), ["out/"], false, false);
         var actual1 = builder.Build();
         Assert.False(actual1.Match("out/not.file"));
         Assert.True(actual1.Match(".git/HEAD"));
@@ -73,7 +122,7 @@ public sealed class PathFilterTests
         Assert.True(actual1.Match(".github/CODEOWNERS"));
         Assert.True(actual1.Match(".github/dependabot.yml"));
 
-        builder = PathFilterBuilder.Create(GetWorkingPath(), new string[] { "out/" }, true, false);
+        builder = PathFilterBuilder.Create(GetWorkingPath(), ["out/"], true, false);
         var actual2 = builder.Build();
         Assert.False(actual2.Match("out/not.file"));
         Assert.False(actual2.Match(".git/HEAD"));
@@ -81,7 +130,7 @@ public sealed class PathFilterTests
         Assert.True(actual2.Match(".github/CODEOWNERS"));
         Assert.True(actual2.Match(".github/dependabot.yml"));
 
-        builder = PathFilterBuilder.Create(GetWorkingPath(), new string[] { "out/" }, true, true);
+        builder = PathFilterBuilder.Create(GetWorkingPath(), ["out/"], true, true);
         var actual3 = builder.Build();
         Assert.False(actual3.Match("out/not.file"));
         Assert.False(actual3.Match(".git/HEAD"));

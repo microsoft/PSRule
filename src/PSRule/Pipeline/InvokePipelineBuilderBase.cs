@@ -31,7 +31,7 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
         PathFilter required = null;
         if (TryChangedFiles(out var files))
         {
-            required = PathFilter.Create(Environment.GetWorkingPath(), path);
+            required = PathFilter.Create(Environment.GetWorkingPath(), path, matchResult: true);
             path = files;
         }
 
