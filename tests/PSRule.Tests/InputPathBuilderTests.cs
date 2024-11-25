@@ -40,7 +40,7 @@ public sealed class InputPathBuilderTests
 
         builder.Add("./.github/**/*.yaml");
         actual = builder.Build();
-        Assert.Equal(5, actual.Length);
+        Assert.Equal(9, actual.Length);
 
         builder.Add("./.github/");
         actual = builder.Build();

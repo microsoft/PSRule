@@ -1,0 +1,32 @@
+name: Documentation update
+description: Report an improvement or correction required to documentation
+title: '[DOCS] <title>'
+type: Task
+labels: ['documentation', 'Needs: Triage :mag:']
+body:
+  - type: input
+    id: url
+    attributes:
+      label: URL
+      description: |
+        The path or URL of the documentation page that requires an update.
+        Leave blank if this is a request for new documentation.
+    validations:
+      required: false
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: How could the documentation be improved?
+      description: |
+        A clear and concise description of what you would like to see changed or added.
+        Please provide as much detail as possible and examples where possible.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: |
+        Any additional context relating to the issue.
+    validations:
+      required: false
