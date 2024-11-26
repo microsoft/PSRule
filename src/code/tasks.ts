@@ -222,6 +222,7 @@ export class PSRuleTaskProvider implements vscode.TaskProvider {
         const executionRuleExcluded = configuration.get().executionRuleExcluded;
         const executionRuleSuppressed = configuration.get().executionRuleSuppressed;
         const executionUnprocessedObject = configuration.get().executionUnprocessedObject;
+        const optionsPath = configuration.get().optionsPath;
         const outputAs = configuration.get().outputAs;
         const ruleBaseline = configuration.get().ruleBaseline;
         const traceTask = configuration.get().traceTask;
@@ -237,6 +238,12 @@ export class PSRuleTaskProvider implements vscode.TaskProvider {
             if (path !== undefined && path !== '') {
                 params.push('--path');
                 params.push(`'${path}'`);
+            }
+
+            // Options Path
+            if (optionsPath !== undefined && optionsPath !== '') {
+                params.push('--option');
+                params.push(`'${optionsPath}'`);
             }
 
             // Input Path

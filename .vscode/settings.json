@@ -44,6 +44,9 @@
       "url": "./schemas/PSRule-lock.schema.json"
     }
   ],
+  "[typescript]": {
+    "editor.tabSize": 4
+  },
   "[json]": {
     "editor.tabCompletion": "on",
     "editor.quickSuggestions": {
@@ -130,5 +133,6 @@
     "main",
     "release/*"
   ],
-  "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true
+  "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
+  "PSRule.options.path": "ps-rule-ci.yaml"
 }

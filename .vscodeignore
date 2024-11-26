@@ -16,6 +16,7 @@ bin/
 obj/
 out/
 !out/dist/
+!docs/CHANGELOG-v3.md
 
 .eslintignore
 .gitignore
@@ -23,11 +24,11 @@ out/
 .platyps.yml
 .vscode-test.mjs
 CHANGELOG.md
+README.md
 GitVersion.yml
 NuGet.config
 PSRule.sln
 SECURITY.md
-SUPPORT.md
 build.ps1
 esbuild.mjs
 global.json
