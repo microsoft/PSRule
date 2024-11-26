@@ -14,11 +14,6 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <EnableNuget>false</EnableNuget>
     <IsPackable>false</IsPackable>
