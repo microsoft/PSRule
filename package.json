@@ -208,6 +208,13 @@
             "description": "Determines if a notification to install the PowerShell extension is shown on start up.",
             "scope": "application"
           },
+          "PSRule.options.path": {
+            "type": "string",
+            "default": null,
+            "description": "The path specifying a PSRule option file. When not set, the default ps-rule.yaml will be used from the current workspace.",
+            "markdownDescription": "The path specifying a PSRule option file. When not set, the default `ps-rule.yaml` will be used from the current workspace.",
+            "scope": "window"
+          },
           "PSRule.output.as": {
             "type": "string",
             "default": "Summary",
@@ -493,7 +500,7 @@
     "build:esbuild": "node esbuild.mjs",
     "package": "npm run package:dotnet && npm run package:esbuild && npm run package:pack",
     "package:dotnet": "dotnet build ./src/PSRule.EditorServices/ --output server/",
-    "package:pack": "vsce package --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/",
+    "package:pack": "vsce package --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/ --readme-path src/code/README.md --changelog-path docs/CHANGELOG-v3.md --baseImagesUrl https://raw.githubusercontent.com/microsoft/PSRule/refs/heads/main/",
     "package:esbuild": "node esbuild.mjs",
     "test": "npm run build:dotnet && npm run build:esbuild && vscode-test"
   },

@@ -81,6 +81,12 @@ export interface ISetting {
      */
     experimentalEnabled: boolean;
 
+    /**
+     * The path specifying a PSRule option file.
+     * When not set, the default ps-rule.yaml will be used from the current workspace.
+     */
+    optionsPath: string | undefined;
+
     outputAs: OutputAs;
     notificationsShowChannelUpgrade: boolean;
     notificationsShowPowerShellExtension: boolean;
@@ -114,6 +120,7 @@ const globalDefaults: ISetting = {
     executionRuleSuppressed: ExecutionActionPreference.None,
     executionUnprocessedObject: ExecutionActionPreference.None,
     experimentalEnabled: false,
+    optionsPath: undefined,
     outputAs: OutputAs.Summary,
     notificationsShowChannelUpgrade: true,
     notificationsShowPowerShellExtension: true,
@@ -198,6 +205,8 @@ export class ConfigurationManager {
         this.current.executionRuleExcluded = config.get<ExecutionActionPreference>('execution.ruleExcluded', this.default.executionRuleExcluded);
         this.current.executionRuleSuppressed = config.get<ExecutionActionPreference>('execution.ruleSuppressed', this.default.executionRuleSuppressed);
         this.current.executionUnprocessedObject = config.get<ExecutionActionPreference>('execution.unprocessedObject', this.default.executionUnprocessedObject);
+
+        this.current.optionsPath = config.get<string>('options.path') ?? this.default.optionsPath;
 
         this.current.outputAs = config.get<OutputAs>('output.as', this.default.outputAs);
 
