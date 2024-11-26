@@ -20,6 +20,8 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <EnableNuget>false</EnableNuget>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
