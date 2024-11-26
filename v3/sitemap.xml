@@ -348,4 +348,8 @@
          <loc>https://microsoft.github.io/PSRule/v3/specs/option-spec/</loc>
          <lastmod>2024-11-26</lastmod>
     </url>
+    <url>
+         <loc>https://microsoft.github.io/PSRule/v3/updates/v3_0/</loc>
+         <lastmod>2024-11-26</lastmod>
+    </url>
 </urlset>
