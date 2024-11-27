@@ -29,9 +29,18 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v3.0.0-B0315:
 
+- New features:
+  - VSCode extension set to use Microsoft verified name by @BernieWhite.
+    [#2636](https://github.com/microsoft/PSRule/issues/2636)
 - General improvements:
   - Expose format options to emitters by @BernieWhite.
     [#1838](https://github.com/microsoft/PSRule/issues/1838)
+  - Added support for overriding options path from the default in VSCode by @BernieWhite.
+    [#2635](https://github.com/microsoft/PSRule/issues/2635)
+- Engineering:
+  - Migrated VSCode extension into PSRule repository by @BernieWhite.
+    [#2615](https://github.com/microsoft/PSRule/issues/2615)
+    - VSCode extension will now sit side-by-side with the other core PSRule components.
 - Bug fixes:
   - Fixes path filtering of ignored files includes prefixed files by @BernieWhite.
     [#2624](https://github.com/microsoft/PSRule/issues/2624)

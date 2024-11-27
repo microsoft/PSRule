@@ -315,9 +315,14 @@ internal sealed class ClientBuilder
 
     private ClientContext GetClientContext(InvocationContext invocation)
     {
-        var option = invocation.ParseResult.GetValueForOption(_Global_Option);
+        var option = invocation.ParseResult.GetValueForOption(_Global_Option).TrimQuotes();
         var verbose = invocation.ParseResult.GetValueForOption(_Global_Verbose);
         var debug = invocation.ParseResult.GetValueForOption(_Global_Debug);
+
+        if (!string.IsNullOrEmpty(option))
+        {
+            option = Environment.GetRootedPath(option);
+        }
 
         option ??= Path.Combine(Environment.GetWorkingPath(), "ps-rule.yaml");
 

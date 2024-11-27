@@ -106,7 +106,7 @@ public static class Environment
     /// <param name="normalize">When set to <c>true</c> the returned path uses forward slashes instead of backslashes.</param>
     /// <param name="basePath">The base path to use. When <c>null</c> of unspecified, the current working path will be used.</param>
     /// <returns>A absolute path.</returns>
-    internal static string GetRootedPath(string? path, bool normalize = false, string? basePath = null)
+    public static string GetRootedPath(string? path, bool normalize = false, string? basePath = null)
     {
         basePath ??= GetWorkingPath();
         if (string.IsNullOrEmpty(path))

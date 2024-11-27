@@ -13,6 +13,10 @@ output:
   culture:
     - en-US
 
+include:
+  module:
+    - PSRule.Rules.MSFT.OSS
+
 format:
   powershell_data:
     type: []
