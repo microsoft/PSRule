@@ -5,6 +5,7 @@ import * as fse from 'fs-extra';
 import { RelativePattern, TextDocument, Uri, window, workspace, WorkspaceFolder } from 'vscode';
 import { logger } from '../logger';
 import { getActiveOrFirstWorkspace } from '../utils';
+import { configuration } from '../configuration';
 
 /**
  * Open an existing options file.
@@ -13,9 +14,10 @@ import { getActiveOrFirstWorkspace } from '../utils';
  */
 export async function openOptionsFile(path: string | undefined): Promise<void> {
     const optionFilePath = await getOptionFile(path);
-    if (optionFilePath === '' || optionFilePath === undefined) return;
+    const active: WorkspaceFolder | undefined = getActiveOrFirstWorkspace();
+    if (optionFilePath === '' || optionFilePath === undefined || !active) return;
 
-    const uri = Uri.file(optionFilePath);
+    const uri = Uri.joinPath(active.uri, optionFilePath);
     logger.verbose(`Using options path ${uri.fsPath}`);
     const exists = await fse.pathExists(uri.fsPath);
     if (!exists)
@@ -29,22 +31,31 @@ async function getOptionFile(path: string | undefined): Promise<string | undefin
     // Require an active workspace.
     const active: WorkspaceFolder | undefined = getActiveOrFirstWorkspace();
     if (!active) return Promise.resolve(undefined);
-    if (!(path === '' || path === undefined)) return Promise.resolve(path);
+    if (!(path === '' || path === undefined)) return path;
 
     const workspaceUri: Uri = active.uri;
-    const searchPattern = new RelativePattern(workspaceUri, '**/ps-rule.yaml');
-    return new Promise<string | undefined>((resolve) => {
-        workspace.findFiles(searchPattern).then(files => {
-            if (files === undefined || files.length === 0)
-                resolve(undefined);
 
-            const names: string[] = [];
-            files.forEach(item => {
-                names.push(item.path);
-            });
-            window.showQuickPick(names, { title: 'Options file' }).then(item => {
-                return resolve(item);
-            });
+    // Check if options file is overridden in settings.
+    const optionsPath = configuration.get().optionsPath;
+    let optionsPathUri: Uri | undefined = undefined;
+    if (optionsPath !== undefined && optionsPath !== '' && workspaceUri !== undefined) {
+        optionsPathUri = Uri.joinPath(workspaceUri, optionsPath);
+    }
+
+    const names: string[] = [];
+
+    if (optionsPathUri !== undefined && fse.existsSync(optionsPathUri.fsPath)) {
+        names.push(workspace.asRelativePath(optionsPathUri.fsPath));
+    }
+
+    // Search for any options files in the workspace.
+    const searchPattern = new RelativePattern(workspaceUri, '**/ps-rule.yaml');
+    var files = await workspace.findFiles(searchPattern);
+    if (files !== undefined && files.length > 0) {
+        files.forEach(item => {
+            names.push(workspace.asRelativePath(item.path));
         });
-    });
+    }
+
+    return await window.showQuickPick(names, { title: 'Options file', placeHolder: 'Select an options file' });
 }
