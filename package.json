@@ -1,5 +1,5 @@
 {
-  "name": "code",
+  "name": "vscode-ps-rule",
   "displayName": "PSRule",
   "version": "0.0.1",
   "publisher": "ps-rule",
@@ -488,7 +488,7 @@
     "zzz_lint": "eslint . --ext .ts,.tsx",
     "zzz_pretest": "npm run compile",
     "zzz_vscode:prepublish": "npm run -S esbuild-base -- --minify && dotnet publish ./src/PSRule.EditorServices/ --output server/",
-    "zzz_esbuild-base": "esbuild ./src/code/main.ts --bundle --outfile=out/dist/main.js --external:vscode --format=cjs --platform=node",
+    "zzz_esbuild-base": "esbuild ./src/vscode-ps-rule/main.ts --bundle --outfile=out/dist/main.js --external:vscode --format=cjs --platform=node",
     "zzz_esbuild": "npm run -S esbuild-base -- --sourcemap",
     "zzz_esbuild-watch": "npm run -S esbuild-base -- --sourcemap --watch",
     "zzz_build": "tsc -p ./ && dotnet build && node build.mjs",
@@ -500,7 +500,7 @@
     "build:esbuild": "node esbuild.mjs",
     "package": "npm run package:dotnet && npm run package:esbuild && npm run package:pack",
     "package:dotnet": "dotnet build ./src/PSRule.EditorServices/ --output server/",
-    "package:pack": "vsce package --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/ --readme-path src/code/README.md --changelog-path docs/CHANGELOG-v3.md --baseImagesUrl https://raw.githubusercontent.com/microsoft/PSRule/refs/heads/main/",
+    "package:pack": "vsce package --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/ --readme-path src/vscode-ps-rule/README.md --changelog-path docs/CHANGELOG-v3.md --baseImagesUrl https://raw.githubusercontent.com/microsoft/PSRule/refs/heads/main/",
     "package:esbuild": "node esbuild.mjs",
     "test": "npm run build:dotnet && npm run build:esbuild && vscode-test"
   },

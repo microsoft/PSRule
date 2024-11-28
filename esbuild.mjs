@@ -15,7 +15,7 @@ console.warn("build extension");
 
 async function main() {
   const ctx = await esbuild.context({
-    entryPoints: ['src/code/main.ts'],
+    entryPoints: ['src/vscode-ps-rule/main.ts'],
     bundle: true,
     format: 'cjs',
     minify: production,

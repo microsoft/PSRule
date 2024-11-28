@@ -186,7 +186,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Extension
-          path: out/package/code-*.vsix
+          path: out/package/vscode-ps-rule-*.vsix
           retention-days: 3
           if-no-files-found: error
 
