@@ -30,7 +30,7 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 What's changed since pre-release v3.0.0-B0315:
 
 - New features:
-  - VSCode extension set to use Microsoft verified name by @BernieWhite.
+  - VSCode extension set to use Microsoft verified publisher name by @BernieWhite.
     [#2636](https://github.com/microsoft/PSRule/issues/2636)
 - General improvements:
   - Expose format options to emitters by @BernieWhite.
