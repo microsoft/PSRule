@@ -38,6 +38,7 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
 
     public IEnumerable<ResourceRef> Unresolved => _Unresolved;
 
+    /// <inheritdoc/>
     public bool Import(IResource resource)
     {
         if (resource == null) throw new ArgumentNullException(nameof(resource));

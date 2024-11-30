@@ -10,5 +10,10 @@ namespace PSRule.Pipeline;
 /// </summary>
 internal interface IResourceCache : IEnumerable<IResource>
 {
+    /// <summary>
+    /// Import a resource into the cache.
+    /// </summary>
+    /// <param name="resource">The <see cref="IResource"/> to import.</param>
+    /// <returns>Returns <c>true</c> if the resource was imported without issue.</returns>
     bool Import(IResource resource);
 }
