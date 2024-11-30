@@ -12,7 +12,7 @@
   },
   "channel": "stable",
   "license": "SEE LICENSE IN LICENSE",
-  "homepage": "https://github.com/microsoft/PSRule/blob/main/README.md",
+  "homepage": "https://aka.ms/ps-rule",
   "categories": [
     "Programming Languages",
     "Snippets"
