@@ -22,9 +22,9 @@ public sealed class OptionContextTests : BaseTests
         var builder = new OptionContextBuilder(GetOption());
 
         // Check empty scope
-        var testScope = new LanguageScope("Empty");
-        testScope.Configure(builder.Build(testScope.Name));
-        Assert.Equal(new string[] { "en-ZZ" }, testScope.Culture);
+        var languageScope = new LanguageScope(".");
+        languageScope.Configure(builder.Build(languageScope.Name));
+        Assert.Equal(new string[] { "en-ZZ" }, languageScope.Culture);
     }
 
     [Fact]
@@ -33,31 +33,31 @@ public sealed class OptionContextTests : BaseTests
         // Create option context
         var builder = new OptionContextBuilder(GetOption());
 
-        var localScope = new LanguageScope(null);
-        localScope.Configure(builder.Build(null));
+        var languageScope = new LanguageScope(".");
+        languageScope.Configure(builder.Build(null));
 
-        var ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
+        var ruleFilter = languageScope.GetFilter(ResourceKind.Rule) as RuleFilter;
         Assert.NotNull(ruleFilter);
         Assert.True(ruleFilter.IncludeLocal);
 
         // With explicit baseline
         builder = new OptionContextBuilder(GetOption());
         builder.Baseline(ScopeType.Explicit, "BaselineExplicit", null, GetBaseline(ruleInclude: ["abc"]), false);
-        localScope.Configure(builder.Build(localScope.Name));
-        ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
+        languageScope.Configure(builder.Build(languageScope.Name));
+        ruleFilter = languageScope.GetFilter(ResourceKind.Rule) as RuleFilter;
         Assert.NotNull(ruleFilter);
         Assert.False(ruleFilter.IncludeLocal);
 
         // With include from parameters
         builder = new OptionContextBuilder(GetOption(), include: ["abc"]);
-        localScope.Configure(builder.Build(localScope.Name));
-        ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
+        languageScope.Configure(builder.Build(languageScope.Name));
+        ruleFilter = languageScope.GetFilter(ResourceKind.Rule) as RuleFilter;
         Assert.NotNull(ruleFilter);
         Assert.False(ruleFilter.IncludeLocal);
 
         builder = new OptionContextBuilder(GetOption(ruleInclude: ["abc"]));
-        localScope.Configure(builder.Build(localScope.Name));
-        ruleFilter = localScope.GetFilter(ResourceKind.Rule) as RuleFilter;
+        languageScope.Configure(builder.Build(languageScope.Name));
+        ruleFilter = languageScope.GetFilter(ResourceKind.Rule) as RuleFilter;
         Assert.NotNull(ruleFilter);
         Assert.True(ruleFilter.IncludeLocal);
     }

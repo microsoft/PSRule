@@ -420,7 +420,7 @@ public sealed class OutputWriterTests : ContextBaseTests
         var option = GetOption();
         var output = new TestWriter(option);
         var result = new InvokeResult();
-        var context = GetPipelineContext(option: option, writer: output);
+        var context = GetPipelineContext(option: option, writer: output, resourceCache: GetResourceCache());
         result.Add(GetPass());
         result.Add(GetFail());
         result.Add(GetFail("rid-003", SeverityLevel.Warning, ruleId: "TestModule\\Rule-003"));

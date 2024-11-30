@@ -48,9 +48,9 @@ public sealed class SuppressionFilterTests : ContextBaseTests
         return builder.Build();
     }
 
-    private static PSRuleOption GetOption(string path = "PSRule.Tests14.yml")
+    protected override PSRuleOption GetOption()
     {
-        return PSRuleOption.FromFileOrEmpty(path);
+        return PSRuleOption.FromFileOrEmpty("PSRule.Tests14.yml");
     }
 
     #endregion Helper methods

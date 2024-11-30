@@ -93,9 +93,9 @@ public sealed class ConventionTests : BaseTests
         return builder.Build();
     }
 
-    private static PSRuleOption GetOption(string path = null)
+    protected override PSRuleOption GetOption()
     {
-        var option = path == null ? new PSRuleOption() : PSRuleOption.FromFile(path);
+        var option = new PSRuleOption();
         option.Output.Culture = ["en-US"];
         return option;
     }
