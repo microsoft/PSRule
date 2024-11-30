@@ -10,7 +10,7 @@
         "terminal.integrated.defaultProfile.linux": "pwsh",
         "terminal.integrated.profiles.linux": {
           "pwsh": {
-            "path": "/usr/local/bin/pwsh"
+            "path": "/usr/bin/pwsh"
           }
         }
       },
@@ -31,14 +31,11 @@
     "ghcr.io/devcontainers/features/github-cli:1": {
       "version": "latest"
     },
-    "ghcr.io/devcontainers/features/powershell:1": {
-      "version": "latest"
-    },
     "ghcr.io/devcontainers/features/python:1": {
       "version": "latest"
     }
   },
-  "onCreateCommand": "sudo chown -R vscode:vscode /opt/microsoft/powershell/7/pwsh && sudo chmod u+x /opt/microsoft/powershell/7/pwsh && wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && sudo dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb && sudo apt-get update && sudo apt-get install dotnet-sdk-8.0 -y && sudo apt-get install python3-pip -y",
-  "updateContentCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-build.ps1",
-  "postStartCommand": "/opt/microsoft/powershell/7/pwsh -f .devcontainer/container-start.ps1"
+  "onCreateCommand": "dotnet tool install --global PowerShell --version 7.4.6 && sudo chown -R vscode:vscode /usr/bin/pwsh && sudo apt-get update -y && sudo apt-get upgrade -y && dotnet restore && pip install -r requirements-docs.txt && ln /usr/bin/pwsh /home/vscode/.dotnet/tools/pwsh --force",
+  "updateContentCommand": "/usr/bin/pwsh -f .devcontainer/container-build.ps1",
+  "postStartCommand": "/usr/bin/pwsh -f .devcontainer/container-start.ps1"
 }
