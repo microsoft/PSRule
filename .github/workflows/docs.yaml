@@ -45,6 +45,8 @@ jobs:
 
       - name: Generate site
         run: mike deploy --push --update-aliases v3 latest --title 'v3'
+        env:
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     name: Deploy pages
