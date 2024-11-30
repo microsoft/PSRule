@@ -36,10 +36,6 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
         _Outcome = outcome;
         _IsSummary = context.Option.Output.As.Value == ResultFormat.Summary;
         _Summary = _IsSummary ? [] : null;
-
-
-
-
         _Completed = [];
     }
 

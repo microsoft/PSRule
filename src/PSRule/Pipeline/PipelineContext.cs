@@ -86,7 +86,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         HostContext = hostContext;
         Reader = reader;
         Writer = writer;
-        _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode.Value;
+        _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode!.Value;
         _PathExpressionCache = [];
         LocalizedDataCache = [];
         ExpressionCache = [];
@@ -94,7 +94,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         Selector = new Dictionary<string, SelectorVisitor>(StringComparer.OrdinalIgnoreCase);
         SuppressionGroup = [];
 
-        ObjectHashAlgorithm = option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm.Value).GetHashAlgorithm();
+        ObjectHashAlgorithm = option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm!.Value).GetHashAlgorithm();
         RunId = Environment.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
         RunTime = Stopwatch.StartNew();
         _DefaultOptionContext = _OptionBuilder?.Build(null);
@@ -130,7 +130,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     {
         if (_Runspace == null)
         {
-            var initialSessionState = Option.Execution.InitialSessionState.GetValueOrDefault(ExecutionOption.Default.InitialSessionState.Value);
+            var initialSessionState = Option.Execution.InitialSessionState.GetValueOrDefault(ExecutionOption.Default.InitialSessionState!.Value);
             var state = HostState.CreateSessionState(initialSessionState);
             state.LanguageMode = _LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
 
