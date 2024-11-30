@@ -135,7 +135,7 @@ public sealed class RulesTests : ContextBaseTests
         var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
         context.Init(sources);
         context.Begin();
-        ImportSelectors(context);
+
         var yamlTrue = GetRuleVisitor(context, "RuleYamlTrue");
         var yamlFalse = GetRuleVisitor(context, "RuleYamlFalse");
         var customType = GetRuleVisitor(context, "RuleYamlWithCustomType");
@@ -199,7 +199,7 @@ public sealed class RulesTests : ContextBaseTests
         var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
         context.Init(sources);
         context.Begin();
-        ImportSelectors(context);
+
         var yamlObjectPath = GetRuleVisitor(context, "YamlObjectPath");
         context.EnterLanguageScope(yamlObjectPath.Source);
 
@@ -229,7 +229,7 @@ public sealed class RulesTests : ContextBaseTests
     public void ReadJsonRule()
     {
         var sources = GetSource();
-        var context = new RunspaceContext(GetPipelineContext(sources: [.. sources, .. GetSource("FromFile.Rule.jsonc"), .. GetSource("../../../FromFile.Rule.jsonc")]));
+        var context = new RunspaceContext(GetPipelineContext());
         context.Init(sources);
         context.Begin();
 
@@ -374,8 +374,9 @@ public sealed class RulesTests : ContextBaseTests
     private static void ImportSelectors(RunspaceContext context, Source[] source = null)
     {
         var selectors = HostHelper.GetSelectorForTests(source ?? GetSource(), context).ToArray();
+        var cache = context.Pipeline.ResourceCache;
         foreach (var selector in selectors)
-            context.Pipeline.Import(context, selector);
+            cache.Import(selector);
     }
 
     #endregion Helper methods

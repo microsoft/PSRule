@@ -7,6 +7,7 @@ using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
+using PSRule.Definitions.ModuleConfigs;
 using PSRule.Options;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;
@@ -177,14 +178,17 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         if (_Baseline is Configuration.BaselineOption.BaselineRef baselineRef)
             unresolved.Add(new BaselineRef(ResolveBaselineGroup(baselineRef.Name), ScopeType.Explicit));
 
+        var languageScopeSet = GetLanguageScopeSet();
+        var resourceCache = GetResourceCache(unresolved, languageScopeSet);
+
         return PipelineContext.New(
             option: Option,
             hostContext: HostContext,
             reader: PrepareReader(),
             writer: writer,
-            languageScope: GetLanguageScopeSet(),
-            optionBuilder: GetOptionBuilder(binding),
-            unresolved: unresolved
+            languageScope: languageScopeSet,
+            optionBuilder: GetOptionBuilder(resourceCache, binding),
+            resourceCache: resourceCache
         );
     }
 
@@ -341,13 +345,29 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         return _InputFilter;
     }
 
+    private ResourceCache GetResourceCache(List<ResourceRef> unresolved, ILanguageScopeSet languageScopeSet)
+    {
+        return new ResourceCacheBuilder(_Writer, languageScopeSet).Import(Source).Build(unresolved);
+    }
+
     protected void ConfigureBinding(PSRuleOption option)
     {
     }
 
-    private OptionContextBuilder GetOptionBuilder((BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) binding)
+    private OptionContextBuilder GetOptionBuilder(ResourceCache resourceCache, (BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) binding)
     {
         var builder = new OptionContextBuilder(Option, _Include, _Tag, _Convention, binding.bindTargetName, binding.bindTargetType, binding.bindField);
+
+        foreach (var moduleConfig in resourceCache.OfType<ModuleConfigV1>())
+        {
+            builder.ModuleConfig(moduleConfig.Source.Module, moduleConfig.Spec);
+        }
+
+        foreach (var kv in resourceCache.Baselines)
+        {
+            builder.Baseline(kv.Value.baselineRef.Type, kv.Value.baseline.BaselineId, kv.Value.baseline.Source.Module, kv.Value.baseline.Spec, kv.Value.baseline.Obsolete);
+        }
+
         return builder;
     }
 

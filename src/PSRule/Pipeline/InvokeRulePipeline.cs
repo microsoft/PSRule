@@ -18,8 +18,8 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     private readonly Dictionary<string, RuleSummaryRecord> _Summary;
 
     private readonly bool _IsSummary;
-    private readonly SuppressionFilter _SuppressionFilter;
-    private readonly SuppressionFilter _SuppressionGroupFilter;
+    private SuppressionFilter _SuppressionFilter;
+    private SuppressionFilter _SuppressionGroupFilter;
     private readonly List<InvokeResult> _Completed;
 
     // Track whether Dispose has been called.
@@ -36,15 +36,28 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
         _Outcome = outcome;
         _IsSummary = context.Option.Output.As.Value == ResultFormat.Summary;
         _Summary = _IsSummary ? [] : null;
-        var allRuleBlocks = _RuleGraph.GetAll();
-        var resourceIndex = new ResourceIndex(allRuleBlocks);
-        _SuppressionFilter = new SuppressionFilter(Context, context.Option.Suppression, resourceIndex);
-        _SuppressionGroupFilter = new SuppressionFilter(Pipeline.SuppressionGroup, resourceIndex);
+        
+        
+        
 
         _Completed = [];
     }
 
     public int RuleCount { get; private set; }
+
+    /// <inheritdoc/>
+    public override void Begin()
+    {
+        Writer.Begin();
+        Context.Begin();
+        Reader.Open();
+
+        var allRuleBlocks = _RuleGraph.GetAll();
+        var resourceIndex = new ResourceIndex(allRuleBlocks);
+
+        _SuppressionFilter = new SuppressionFilter(Context, Pipeline.Option.Suppression, resourceIndex);
+        _SuppressionGroupFilter = new SuppressionFilter(Pipeline.SuppressionGroup, resourceIndex);
+    }
 
     /// <inheritdoc/>
     public override void Process(PSObject sourceObject)

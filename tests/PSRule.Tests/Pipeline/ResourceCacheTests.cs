@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Linq;
 using PSRule.Definitions;
 using PSRule.Definitions.Selectors;
 
@@ -27,6 +28,6 @@ public sealed class ResourceCacheTests
         var selector = new SelectorV1("", new SourceFile("", default, SourceType.Yaml, ""), new ResourceMetadata { Name = "test" }, default, default, new SelectorV1Spec());
 
         Assert.True(cache.Import(selector));
-        Assert.Single(cache.Selectors);
+        Assert.Single(cache.OfType<SelectorV1>());
     }
 }

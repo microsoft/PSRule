@@ -601,7 +601,7 @@ public sealed class FunctionTests : ContextBaseTests
         return Functions.Builtin.Single(f => f.Name == name).Fn;
     }
 
-    protected override PSRuleOption GetOption()
+    protected sealed override PSRuleOption GetOption()
     {
         var option = new PSRuleOption();
         option.Configuration["config1"] = "123";
@@ -620,7 +620,7 @@ public sealed class FunctionTests : ContextBaseTests
         var targetObject = new PSObject();
         targetObject.Properties.Add(new PSNoteProperty("name", "TestObject1"));
         var sources = GetSource();
-        var context = new Runtime.RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: new OptionContextBuilder(GetOption(), null, null, null)));
+        var context = new Runtime.RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: new OptionContextBuilder(GetOption(), null, null, null), resourceCache: GetResourceCache()));
         var result = new ExpressionContext(context, sources[0].File[0], Definitions.ResourceKind.Rule, targetObject);
         context.Init(sources);
         context.Begin();

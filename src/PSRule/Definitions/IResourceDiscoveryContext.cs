@@ -38,6 +38,8 @@ internal interface IResourceDiscoveryContext
     void PushScope(RunspaceScope scope);
 
     void PopScope(RunspaceScope scope);
+
+    string? GetLocalizedPath(string file, out string? culture);
 }
 
 #nullable restore

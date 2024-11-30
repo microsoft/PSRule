@@ -6,6 +6,7 @@ using PSRule.Definitions.Baselines;
 using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Selectors;
 using PSRule.Definitions.SuppressionGroups;
+using System.Collections;
 
 namespace PSRule.Pipeline;
 
@@ -18,18 +19,14 @@ internal sealed class ResourceCache : IResourceCache
 {
     private readonly List<ResourceIssue> _TrackedIssues;
     private readonly IList<ResourceRef> _Unresolved;
+    private readonly List<IResource> _Resources;
 
-    internal readonly Dictionary<string, ModuleConfigV1> ModuleConfigs;
     internal readonly Dictionary<string, (Baseline baseline, BaselineRef baselineRef)> Baselines;
-    internal readonly List<SelectorV1> Selectors;
-    internal readonly List<SuppressionGroupV1> SuppressionGroups;
 
     public ResourceCache(IList<ResourceRef>? unresolved)
     {
         _TrackedIssues = [];
-        Selectors = [];
-        SuppressionGroups = [];
-        ModuleConfigs = new Dictionary<string, ModuleConfigV1>(StringComparer.OrdinalIgnoreCase);
+        _Resources = [];
         Baselines = new Dictionary<string, (Baseline baseline, BaselineRef baselineRef)>(StringComparer.OrdinalIgnoreCase);
         _Unresolved = unresolved ?? [];
     }
@@ -49,13 +46,13 @@ internal sealed class ResourceCache : IResourceCache
         else if (TryBaseline(resource, out var baseline) && TryBaselineRef(resource.Id, out var baselineRef))
         {
             RemoveBaselineRef(resource.Id);
-            //_OptionBuilder.Baseline(baselineRef.Type, baseline.BaselineId, resource.Source.Module, baseline.Spec, baseline.Obsolete);
+            _Resources.Add(baseline!);
             Baselines.Add(resource.Id.Value, (baseline!, baselineRef!));
             return true;
         }
         else if (TrySelector(resource, out var selector))
         {
-            Selectors.Add(selector!);
+            _Resources.Add(selector!);
             return true;
         }
         else if (TryModuleConfig(resource, out var moduleConfig))
@@ -66,17 +63,13 @@ internal sealed class ResourceCache : IResourceCache
                 if (!Baselines.ContainsKey(baselineId))
                     _Unresolved.Add(new BaselineRef(baselineId, ScopeType.Baseline));
             }
-            // _OptionBuilder.ModuleConfig(resource.Source.Module, moduleConfig?.Spec);
-            ModuleConfigs.Add(resource.Source.Module, moduleConfig);
+            _Resources.Add(moduleConfig);
             return true;
         }
         else if (TrySuppressionGroup(resource, out var suppressionGroup))
         {
-            if (!suppressionGroup!.Spec.ExpiresOn.HasValue || suppressionGroup.Spec.ExpiresOn.Value > DateTime.UtcNow)
-            {
-                SuppressionGroups.Add(suppressionGroup);
-                return true;
-            }
+            _Resources.Add(suppressionGroup!);
+            return true;
         }
         return false;
     }
@@ -91,7 +84,7 @@ internal sealed class ResourceCache : IResourceCache
         {
             if (suppressionGroup!.Spec.ExpiresOn.HasValue && suppressionGroup.Spec.ExpiresOn.Value <= DateTime.UtcNow)
             {
-                _TrackedIssues.Add(new ResourceIssue(resource.Kind, resource.Id, ResourceIssueType.SuppressionGroupExpired));
+                _TrackedIssues.Add(new ResourceIssue(resource, ResourceIssueType.SuppressionGroupExpired));
                 return true;
             }
         }
@@ -164,6 +157,20 @@ internal sealed class ResourceCache : IResourceCache
         }
         return false;
     }
+
+    #region IEnumerable<IResource>
+
+    public IEnumerator<IResource> GetEnumerator()
+    {
+        return _Resources.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    #endregion IEnumerable<IResource>
 }
 
 #nullable restore

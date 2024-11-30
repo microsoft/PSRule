@@ -7,16 +7,13 @@ namespace PSRule.Pipeline;
 
 internal sealed class ResourceIssue
 {
-    public ResourceIssue(ResourceKind resourceKind, ResourceId resourceId, ResourceIssueType issue)
+    public ResourceIssue(IResource resource, ResourceIssueType issue)
     {
-        ResourceKind = resourceKind;
-        ResourceId = resourceId;
+        Resource = resource;
         Issue = issue;
     }
 
-    public ResourceKind ResourceKind { get; }
-
-    public ResourceId ResourceId { get; }
+    public IResource Resource { get; }
 
     public ResourceIssueType Issue { get; }
 }

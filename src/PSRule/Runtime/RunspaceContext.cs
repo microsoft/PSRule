@@ -64,8 +64,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
     private readonly List<ResultReason> _Reason;
     private readonly List<IConvention> _Conventions;
 
-    private ILanguageScope? _CurrentLanguageScope;
-
     // Track whether Dispose has been called.
     private bool _Disposed;
 
@@ -99,6 +97,10 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
     internal TargetObject? TargetObject { get; private set; }
 
     public ISourceFile? Source { get; private set; }
+
+    internal ITargetBinder? TargetBinder { get; private set; }
+
+    private ILanguageScope? _CurrentLanguageScope;
 
     internal ILanguageScope? LanguageScope
     {
@@ -719,16 +721,10 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     public void Init(Source[] source)
     {
-        var resources = Host.HostHelper.GetMetaResources<IResource>(source, this);
-
-        // Process module configurations first
-        foreach (var resource in resources.Where(r => r.Kind == ResourceKind.ModuleConfig).ToArray())
-            Pipeline.Import(this, resource);
-
         foreach (var languageScope in Pipeline.LanguageScope.Get())
             Pipeline.UpdateLanguageScope(languageScope);
 
-        foreach (var resource in resources)
+        foreach (var resource in Pipeline.ResourceCache)
         {
             if (resource == null)
                 continue;
@@ -743,10 +739,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
                 ExitLanguageScope(resource.Source);
             }
         }
-
-        // Process other resources
-        foreach (var resource in resources.Where(r => r.Kind != ResourceKind.ModuleConfig).ToArray())
-            Pipeline.Import(this, resource);
 
         foreach (var languageScope in Pipeline.LanguageScope.Get())
             Pipeline.UpdateLanguageScope(languageScope);

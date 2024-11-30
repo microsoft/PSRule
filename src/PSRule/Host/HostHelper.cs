@@ -14,7 +14,6 @@ using PSRule.Definitions.Conventions;
 using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Rules;
 using PSRule.Definitions.Selectors;
-using PSRule.Definitions.SuppressionGroups;
 using PSRule.Help;
 using PSRule.Pipeline;
 using PSRule.Rules;
@@ -90,14 +89,6 @@ internal static class HostHelper
     internal static IEnumerable<SelectorV1> GetSelectorForTests(Source[] source, RunspaceContext context)
     {
         return ToSelectorV1(GetMetaResources<ILanguageBlock>(source, context), context);
-    }
-
-    /// <summary>
-    /// Read YAML/JSON objects and return suppression groups.
-    /// </summary>
-    internal static IEnumerable<SuppressionGroupV1> GetSuppressionGroupForTests(Source[] source, RunspaceContext context)
-    {
-        return ToSuppressionGroupV1(GetMetaResources<ILanguageBlock>(source, context), context);
     }
 
     /// <summary>
@@ -666,34 +657,6 @@ internal static class HostHelper
                 context.ExitLanguageScope(block.Source);
             }
         }
-        return results.Values.ToArray();
-    }
-
-    private static SuppressionGroupV1[] ToSuppressionGroupV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
-    {
-        if (blocks == null) return [];
-
-        // Index suppression groups by Id.
-        var results = new Dictionary<string, SuppressionGroupV1>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var block in blocks.OfType<SuppressionGroupV1>().ToArray())
-        {
-            context.EnterLanguageScope(block.Source);
-            try
-            {
-                // Ignore suppression groups that don't match.
-                if (!Match(context, block))
-                    continue;
-
-                UpdateHelpInfo(context, block);
-                if (!results.ContainsKey(block.Id.Value))
-                    results[block.Id.Value] = block;
-            }
-            finally
-            {
-                context.ExitLanguageScope(block.Source);
-            }
-        }
         return [.. results.Values];
     }
 
@@ -845,20 +808,6 @@ internal static class HostHelper
         }
     }
 
-    private static bool Match(RunspaceContext context, SuppressionGroupV1 suppressionGroup)
-    {
-        try
-        {
-            context.EnterLanguageScope(suppressionGroup.Source);
-            var filter = context.LanguageScope.GetFilter(ResourceKind.SuppressionGroup);
-            return filter == null || filter.Match(suppressionGroup);
-        }
-        finally
-        {
-            //context.ExitLanguageScope(suppressionGroup.Source);
-        }
-    }
-
     private static IConvention[] Sort(RunspaceContext context, IConvention[] conventions)
     {
         Array.Sort(conventions, new ConventionComparer(context));
@@ -896,7 +845,7 @@ internal static class HostHelper
         return GetRuleHelpInfo(context, rule.Name, rule.Synopsis, rule.Info.DisplayName, rule.Info.Description, rule.Recommendation);
     }
 
-    internal static void UpdateHelpInfo(RunspaceContext context, IResource resource)
+    internal static void UpdateHelpInfo(IResourceDiscoveryContext context, IResource resource)
     {
         if (context == null || resource == null || !TryHelpPath(context, resource.Name, out var path, out var culture) || !TryHelpInfo(path, culture, out var info))
             return;
@@ -904,7 +853,7 @@ internal static class HostHelper
         resource.Info.Update(info);
     }
 
-    private static bool TryHelpPath(RunspaceContext context, string name, out string path, out string culture)
+    private static bool TryHelpPath(IResourceDiscoveryContext context, string name, out string path, out string culture)
     {
         path = null;
         culture = null;
