@@ -15,21 +15,24 @@ namespace PSRule.Pipeline;
 /// <summary>
 /// Define a cache for resources.
 /// </summary>
-internal sealed class ResourceCache : IResourceCache
+internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceCache
 {
-    private readonly List<ResourceIssue> _TrackedIssues;
-    private readonly IList<ResourceRef> _Unresolved;
-    private readonly List<IResource> _Resources;
+    /// <summary>
+    /// Track a list of resource references that should be resolved once all resources are imported.
+    /// </summary>
+    private readonly IList<ResourceRef> _Unresolved = unresolved ?? [];
 
-    internal readonly Dictionary<string, (Baseline baseline, BaselineRef baselineRef)> Baselines;
+    /// <summary>
+    /// Track a list of issues that should be reported once all resources are imported.
+    /// </summary>
+    private readonly List<ResourceIssue> _TrackedIssues = [];
 
-    public ResourceCache(IList<ResourceRef>? unresolved)
-    {
-        _TrackedIssues = [];
-        _Resources = [];
-        Baselines = new Dictionary<string, (Baseline baseline, BaselineRef baselineRef)>(StringComparer.OrdinalIgnoreCase);
-        _Unresolved = unresolved ?? [];
-    }
+    /// <summary>
+    /// A list of resources.
+    /// </summary>
+    private readonly List<IResource> _Resources = [];
+
+    internal readonly Dictionary<string, (Baseline baseline, BaselineRef baselineRef)> Baselines = new(StringComparer.OrdinalIgnoreCase);
 
     public IEnumerable<ResourceIssue> Issues => _TrackedIssues;
 

@@ -845,7 +845,7 @@ internal static class HostHelper
         return GetRuleHelpInfo(context, rule.Name, rule.Synopsis, rule.Info.DisplayName, rule.Info.Description, rule.Recommendation);
     }
 
-    internal static void UpdateHelpInfo(IResourceDiscoveryContext context, IResource resource)
+    internal static void UpdateHelpInfo(IGetLocalizedPathContext context, IResource resource)
     {
         if (context == null || resource == null || !TryHelpPath(context, resource.Name, out var path, out var culture) || !TryHelpInfo(path, culture, out var info))
             return;
@@ -853,7 +853,7 @@ internal static class HostHelper
         resource.Info.Update(info);
     }
 
-    private static bool TryHelpPath(IResourceDiscoveryContext context, string name, out string path, out string culture)
+    private static bool TryHelpPath(IGetLocalizedPathContext context, string name, out string path, out string culture)
     {
         path = null;
         culture = null;

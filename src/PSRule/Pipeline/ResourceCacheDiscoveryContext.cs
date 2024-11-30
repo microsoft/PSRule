@@ -3,7 +3,6 @@
 
 using System.Diagnostics;
 using PSRule.Definitions;
-using PSRule.Options;
 using PSRule.Resources;
 using PSRule.Runtime;
 
@@ -16,10 +15,7 @@ namespace PSRule.Pipeline;
 /// </summary>
 internal sealed class ResourceCacheDiscoveryContext(IPipelineWriter writer, ILanguageScopeSet languageScopeSet) : IResourceDiscoveryContext
 {
-    private readonly ExecutionActionPreference _InvariantCulture; // TODO set
     private readonly ILanguageScopeSet _LanguageScopeSet = languageScopeSet;
-
-    private bool _RaisedUsingInvariantCulture = false;
 
     private ILanguageScope? _CurrentLanguageScope;
 
@@ -62,47 +58,6 @@ internal sealed class ResourceCacheDiscoveryContext(IPipelineWriter writer, ILan
     public void PushScope(RunspaceScope scope)
     {
 
-    }
-
-    public string? GetLocalizedPath(string file, out string? culture)
-    {
-        culture = null;
-        if (string.IsNullOrEmpty(Source?.HelpPath))
-            return null;
-
-        var cultures = LanguageScope?.Culture;
-        if (!_RaisedUsingInvariantCulture && (cultures == null || cultures.Length == 0))
-        {
-            Throw(_InvariantCulture, PSRuleResources.UsingInvariantCulture);
-            _RaisedUsingInvariantCulture = true;
-            return null;
-        }
-
-        for (var i = 0; cultures != null && i < cultures.Length; i++)
-        {
-            var path = Path.Combine(Source?.HelpPath, cultures[i], file);
-            if (File.Exists(path))
-            {
-                culture = cultures[i];
-                return path;
-            }
-        }
-        return null;
-    }
-
-    private void Throw(ExecutionActionPreference action, string message, params object[] args)
-    {
-        if (action == ExecutionActionPreference.Ignore)
-            return;
-
-        if (action == ExecutionActionPreference.Error)
-            throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
-
-        else if (action == ExecutionActionPreference.Warn && Writer != null && Writer.ShouldWriteWarning())
-            Writer.WriteWarning(message, args);
-
-        else if (action == ExecutionActionPreference.Debug && Writer != null && Writer.ShouldWriteDebug())
-            Writer.WriteDebug(message, args);
     }
 }
 
