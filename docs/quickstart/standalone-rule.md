@@ -38,8 +38,8 @@ Install-Module -Name 'PSRule' -Repository PSGallery -Scope CurrentUser
 !!! Tip
     To make you editing experience even better, consider installing the Visual Studio Code extension.
 
-  [2]: ../install-instructions.md#installing-powershell
-  [3]: ../install-instructions.md#getting-the-modules
+  [2]: ../setup/index.md#with-powershell
+  [3]: ../setup/index.md#getting-the-modules
 
 ## Scenario - Test for image files
 

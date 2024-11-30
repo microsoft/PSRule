@@ -44,20 +44,21 @@ nav:
       - Overview:
           - About: about.md
           - Features: features.md
-          - FAQ: faq.md
-      - Install: install.md
+      - Setup:
+          - Index: setup/index.md
+          - Visual Studio Code: setup/vscode.md
       - Quickstarts:
           - Create a standalone rule: quickstart/standalone-rule.md
-      - Authoring rules:
+      - User guide:
+          - Creating your pipeline: creating-your-pipeline.md
+          - Validating locally: validating-locally.md
+          - Analysis output: analysis-output.md
+      - Developer guide:
           - Testing infrastructure: authoring/testing-infrastructure.md
           - Using expressions: authoring/using-expressions.md
           - Storing and naming rules: authoring/storing-rules.md
           - Packaging rules in a module: authoring/packaging-rules.md
           - Writing rule help: authoring/writing-rule-help.md
-      - Running rules:
-          - Creating your pipeline: creating-your-pipeline.md
-          - Validating locally: validating-locally.md
-          - Analysis output: analysis-output.md
       - Tutorials:
           - Validate Azure resource configuration: scenarios/azure-resources/azure-resources.md
           - Azure resource tagging example: scenarios/azure-tags/azure-tags.md
@@ -81,6 +82,7 @@ nav:
     #   - Configuring rule defaults: setup/configuring-rules.md
     #   - Configuring expansion: setup/configuring-expansion.md
   - Updates:
+      # - December 2024: updates/v3.0.md
       - Change log:
           - v3: 'CHANGELOG-v3.md'
           - v2: https://microsoft.github.io/PSRule/stable/CHANGELOG-v2/
@@ -119,6 +121,7 @@ nav:
       - Selectors: concepts/PSRule/en-US/about_PSRule_Selectors.md
       - Suppression Groups: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
       - Variables: concepts/PSRule/en-US/about_PSRule_Variables.md
+  - FAQ: faq.md
   - Addons:
       - Additional modules: addon-modules.md
 
@@ -153,16 +156,23 @@ plugins:
       enable_creation_date: true
       fallback_to_build_date: true
   - git-committers:
+      enabled: !ENV [GITHUB_ACTIONS, false]
       repository: microsoft/PSRule
       branch: main
   - mkdocs-simple-hooks:
       hooks:
         on_page_markdown: 'docs.hooks:replace_maml'
   - search
+  - tags:
+      tags: false
   - redirects:
       redirect_maps:
         'authoring/writing-rules.md': 'authoring/testing-infrastructure.md'
-        'install-instructions.md': 'install.md'
+        'install-instructions.md': 'setup/index.md'
+        'install.md': 'setup/index.md'
+
+exclude_docs: |
+  specs/
 
 extra:
   version:

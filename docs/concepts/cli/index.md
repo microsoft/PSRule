@@ -4,7 +4,7 @@
     PSRule provides a command-line interface (CLI) to run rules and analyze results.
     This article describes the commands available in the CLI.
 
-    For details on installing the PSRule CLI, see [Install PSRule](../../install.md#with-cli).
+    For details on installing the PSRule CLI, see [Install PSRule](../../setup/index.md#with-cli).
 
 ## Commands
 
