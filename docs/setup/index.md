@@ -3,7 +3,7 @@ reviewed: 2024-02-16
 author: BernieWhite
 ---
 
-# Install PSRule
+# Setting up PSRule
 
 PSRule supports running within continuous integration (CI) systems or locally.
 It is shipped as a PowerShell module which makes it easy to install and distribute updates.
@@ -22,7 +22,7 @@ Create custom tests for your organization | With [Visual Studio Code][11] _and_ 
   [8]: #with-github-actions
   [9]: #with-azure-pipelines
   [10]: #with-powershell
-  [11]: #with-visual-studio-code
+  [11]: vscode.md
   [13]: #with-cli
 
 ## With GitHub Actions
@@ -100,19 +100,6 @@ Install the extension from the marketplace, then use the `ps-rule-assert` task i
 This will automatically install compatible versions of all dependencies.
 
   [2]: https://marketplace.visualstudio.com/items?itemName=bewhite.ps-rule
-
-## With Visual Studio Code
-
-[:octicons-download-24: Extension][12]
-
-An extension for Visual Studio Code is available for an integrated experience using PSRule.
-The Visual Studio Code extension includes a built-in tasks and configuration schemas for working with PSRule.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/microsoft/PSRule-vscode/main/docs/images/tasks-provider.png" alt="Built-in tasks shown in task list" />
-</p>
-
-  [12]: https://marketplace.visualstudio.com/items?itemName=bewhite.psrule-vscode
 
 ## With CLI
 
