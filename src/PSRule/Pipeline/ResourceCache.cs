@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Selectors;
 using PSRule.Definitions.SuppressionGroups;
-using System.Collections;
 
 namespace PSRule.Pipeline;
 

@@ -36,9 +36,9 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
         _Outcome = outcome;
         _IsSummary = context.Option.Output.As.Value == ResultFormat.Summary;
         _Summary = _IsSummary ? [] : null;
-        
-        
-        
+
+
+
 
         _Completed = [];
     }
@@ -48,9 +48,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     /// <inheritdoc/>
     public override void Begin()
     {
-        Writer.Begin();
-        Context.Begin();
-        Reader.Open();
+        base.Begin();
 
         var allRuleBlocks = _RuleGraph.GetAll();
         var resourceIndex = new ResourceIndex(allRuleBlocks);
