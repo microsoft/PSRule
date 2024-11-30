@@ -75,20 +75,20 @@ nav:
       - Troubleshooting: troubleshooting.md
       - License and contributing: license-contributing.md
       - Related projects: related-projects.md
-      - Releases:
-          - Change log:
-              - v3: 'CHANGELOG-v3.md'
-              - v2: https://microsoft.github.io/PSRule/stable/CHANGELOG-v2/
-              - v1: https://microsoft.github.io/PSRule/stable/CHANGELOG-v1/
-              - v0: https://microsoft.github.io/PSRule/stable/CHANGELOG-v0/
-          - Upgrade notes: upgrade-notes.md
-          - Deprecations: deprecations.md
-          - Changes and versioning: versioning.md
       - Support: support.md
     # - Setup:
     #   - Configuring options: setup/configuring-options.md
     #   - Configuring rule defaults: setup/configuring-rules.md
     #   - Configuring expansion: setup/configuring-expansion.md
+  - Updates:
+      - Change log:
+          - v3: 'CHANGELOG-v3.md'
+          - v2: https://microsoft.github.io/PSRule/stable/CHANGELOG-v2/
+          - v1: https://microsoft.github.io/PSRule/stable/CHANGELOG-v1/
+          - v0: https://microsoft.github.io/PSRule/stable/CHANGELOG-v0/
+      - Upgrade notes: upgrade-notes.md
+      - Deprecations: deprecations.md
+      - Changes and versioning: versioning.md
   - Reference:
       - PowerShell cmdlets:
           - Assert-PSRule: commands/PSRule/en-US/Assert-PSRule.md
