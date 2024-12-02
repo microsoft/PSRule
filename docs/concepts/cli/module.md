@@ -80,7 +80,7 @@ ps-rule module add PSRule.Rules.Azure
 For example, a specific version of the module is added:
 
 ```bash title="PSRule CLI command-line"
-ps-rule module add PSRule.Rules.Azure --version 1.32.1
+ps-rule module add PSRule.Rules.Azure --version 1.39.3
 ```
 
 For example, include pre-release versions added:
