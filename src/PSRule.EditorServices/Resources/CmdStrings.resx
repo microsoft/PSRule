@@ -192,4 +192,7 @@
   <data name="Run_OutputPath_Description" xml:space="preserve">
     <value>Specifies a path to write results to.</value>
   </data>
+  <data name="Run_NoRestore_Description" xml:space="preserve">
+    <value>Do not restore modules before running rules.</value>
+  </data>
 </root>

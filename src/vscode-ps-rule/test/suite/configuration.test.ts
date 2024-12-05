@@ -17,8 +17,10 @@ suite('ConfigurationManager tests', () => {
         assert.equal(config.get().executionRuleSuppressed, ExecutionActionPreference.None);
         assert.equal(config.get().executionUnprocessedObject, ExecutionActionPreference.None);
         assert.equal(config.get().experimentalEnabled, false);
+        assert.equal(config.get().lockRestore, false);
         assert.equal(config.get().outputAs, OutputAs.Summary);
         assert.equal(config.get().notificationsShowChannelUpgrade, true);
+        assert.equal(config.get().notificationsShowModuleRestore, true);
         assert.equal(config.get().notificationsShowPowerShellExtension, true);
         assert.equal(config.get().ruleBaseline, undefined);
         //assert.equal(config.get().languageServerPath, false);

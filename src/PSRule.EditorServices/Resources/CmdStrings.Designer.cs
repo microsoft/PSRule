@@ -259,6 +259,15 @@ namespace PSRule.EditorServices.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do not restore modules before running rules..
+        /// </summary>
+        internal static string Run_NoRestore_Description {
+            get {
+                return ResourceManager.GetString("Run_NoRestore_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specifies the rule results to show in output. By default, Pass/ Fail/ Error results are shown..
         /// </summary>
         internal static string Run_Outcome_Description {

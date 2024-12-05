@@ -8,9 +8,9 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { defaultOptionsFile } from './consts';
 import { ILogger, logger } from './logger';
-import { configuration, ExecutionActionPreference, TraceLevelPreference } from './configuration';
-import { getActiveOrFirstWorkspace } from './utils';
+import { configuration } from './configuration';
 import { ext } from './extension';
+import { getAnalysisRunner } from './runner';
 
 const emptyTasks: vscode.Task[] = [];
 
@@ -219,74 +219,8 @@ export class PSRuleTaskProvider implements vscode.TaskProvider {
             };
         }
 
-        const executionRuleExcluded = configuration.get().executionRuleExcluded;
-        const executionRuleSuppressed = configuration.get().executionRuleSuppressed;
-        const executionUnprocessedObject = configuration.get().executionUnprocessedObject;
-        const optionsPath = configuration.get().optionsPath;
-        const outputAs = configuration.get().outputAs;
-        const ruleBaseline = configuration.get().ruleBaseline;
-        const traceTask = configuration.get().traceTask;
-
         function getTaskName() {
             return name;
-        }
-
-        function getCmdTooling(): string[] {
-            let params: string[] = [];
-
-            // Path
-            if (path !== undefined && path !== '') {
-                params.push('--path');
-                params.push(`'${path}'`);
-            }
-
-            // Options Path
-            if (optionsPath !== undefined && optionsPath !== '') {
-                params.push('--option');
-                params.push(`'${optionsPath}'`);
-            }
-
-            // Input Path
-            if (inputPath !== undefined && inputPath !== '') {
-                params.push('--input-path');
-                params.push(inputPath);
-            } else {
-                params.push('--input-path');
-                params.push('.');
-            }
-
-            // Baseline
-            if (baseline !== undefined && baseline !== '') {
-                params.push('--baseline');
-                params.push(`'${baseline}'`);
-            } else if (ruleBaseline !== undefined && ruleBaseline !== '') {
-                params.push('--baseline');
-                params.push(`'${ruleBaseline}'`);
-            }
-
-            // Modules
-            if (modules !== undefined && modules.length > 0) {
-                for (let i = 0; i < modules.length; i++) {
-                    params.push('--module');
-                    params.push(`'${modules[i]}'`);
-                }
-            }
-
-            // Outcome
-            if (outcome !== undefined && outcome.length > 0) {
-                for (let i = 0; i < outcome.length; i++) {
-                    params.push('--outcome');
-                    params.push(outcome[i]);
-                }
-            }
-            else {
-                params.push('--outcome');
-                params.push('Fail');
-                params.push('--outcome');
-                params.push('Error');
-            }
-
-            return params;
         }
 
         const taskName = getTaskName();
@@ -307,32 +241,7 @@ export class PSRuleTaskProvider implements vscode.TaskProvider {
             );
         }
 
-        // Set environment variables for the task.
-        let taskEnv: { [key: string]: string } = {
-            PSRULE_OUTPUT_STYLE: 'VisualStudioCode',
-            PSRULE_OUTPUT_AS: outputAs,
-            PSRULE_OUTPUT_CULTURE: vscode.env.language,
-            PSRULE_OUTPUT_BANNER: 'Minimal',
-        };
-
-        if (executionRuleExcluded !== undefined && executionRuleExcluded !== ExecutionActionPreference.None) {
-            taskEnv.PSRULE_EXECUTION_RULEEXCLUDED = executionRuleExcluded;
-        }
-
-        if (executionRuleSuppressed !== undefined && executionRuleSuppressed !== ExecutionActionPreference.None) {
-            taskEnv.PSRULE_EXECUTION_RULESUPPRESSED = executionRuleSuppressed;
-        }
-
-        if (executionUnprocessedObject !== undefined && executionUnprocessedObject !== ExecutionActionPreference.None) {
-            taskEnv.PSRULE_EXECUTION_UNPROCESSEDOBJECT = executionUnprocessedObject;
-        }
-
-        const cwd = folder?.uri.fsPath ?? getActiveOrFirstWorkspace()?.uri.fsPath;
-        const args = [languageServerPath, 'run'];
-        args.push(...getCmdTooling());
-        if (traceTask === TraceLevelPreference.Verbose) {
-            args.push('--verbose');
-        }
+        const runner = getAnalysisRunner(folder, configuration.get(), binPath, languageServerPath, path, inputPath, baseline, modules, outcome);
 
         // Return the task instance.
         const t = new vscode.Task(
@@ -340,11 +249,7 @@ export class PSRuleTaskProvider implements vscode.TaskProvider {
             folder ?? vscode.TaskScope.Workspace,
             taskName,
             PSRuleTaskProvider.taskType,
-            new vscode.ProcessExecution(
-                binPath,
-                args,
-                { cwd: cwd, env: taskEnv },
-            ),
+            runner,
             matcher,
         );
         t.detail = 'Run analysis for current workspace.';
@@ -352,7 +257,7 @@ export class PSRuleTaskProvider implements vscode.TaskProvider {
             echo: false,
         };
 
-        const parameterArgs = args.slice(1);
+        const parameterArgs = runner.args.slice(1);
         logger.verbose(`Preparing task '${taskName}' with arguments: ${parameterArgs.join(' ')}`);
         return t;
     }

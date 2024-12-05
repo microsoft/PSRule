@@ -5,6 +5,8 @@ using System.Management.Automation;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// A host context for handling input and output emitted from the pipeline.
 /// </summary>
@@ -76,4 +78,12 @@ public interface IHostContext
     /// Get the current working path.
     /// </summary>
     string GetWorkingPath();
+
+    /// <summary>
+    /// Configures the root path to use for caching artifacts including modules.
+    /// Each artifact is in a subdirectory of the root path.
+    /// </summary>
+    string? CachePath { get; }
 }
+
+#nullable restore

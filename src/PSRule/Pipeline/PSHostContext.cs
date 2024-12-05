@@ -5,6 +5,8 @@ using System.Management.Automation;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// The host context used for PowerShell-based pipelines.
 /// </summary>
@@ -98,4 +100,9 @@ public sealed class PSHostContext : IHostContext
     {
         return ExecutionContext.SessionState.Path.CurrentFileSystemLocation.Path;
     }
+
+    /// <inheritdoc/>
+    public string? CachePath { get; }
 }
+
+#nullable restore

@@ -6,6 +6,8 @@ using PSRule.Definitions;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// A base class for custom host context instances.
 /// </summary>
@@ -94,4 +96,9 @@ public abstract class HostContext : IHostContext
     {
         return Directory.GetCurrentDirectory();
     }
+
+    /// <inheritdoc/>
+    public virtual string? CachePath => null;
 }
+
+#nullable restore

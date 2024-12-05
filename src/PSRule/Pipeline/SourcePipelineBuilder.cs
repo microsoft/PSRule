@@ -30,18 +30,18 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     private readonly IHostContext _HostContext;
     private readonly HostPipelineWriter _Writer;
     private readonly bool _UseDefaultPath;
-    private readonly string _LocalPath;
+    private readonly string _CachePath;
     private readonly RestrictScriptSource _RestrictScriptSource;
     private readonly string _WorkspacePath;
 
-    internal SourcePipelineBuilder(IHostContext hostContext, PSRuleOption option, string localPath = null)
+    internal SourcePipelineBuilder(IHostContext hostContext, PSRuleOption option, string cachePath = null)
     {
         _Source = new Dictionary<string, Source>(StringComparer.OrdinalIgnoreCase);
         _HostContext = hostContext;
         _Writer = new HostPipelineWriter(hostContext, option, ShouldProcess);
         _Writer.EnterScope("[Discovery.Source]");
         _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
-        _LocalPath = localPath;
+        _CachePath = cachePath;
         _RestrictScriptSource = option?.Execution?.RestrictScriptSource ?? ExecutionOption.Default.RestrictScriptSource.Value;
         _WorkspacePath = Environment.GetRootedBasePath(null);
 
@@ -162,32 +162,29 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
 
     private string FindModule(string name, string version)
     {
-        return TryPackagedModule(name, version, out var path) ||
+        return TryPackagedModuleFromCache(name, version, out var path) ||
             TryInstalledModule(name, version, out path) ? path : null;
     }
 
     /// <summary>
     /// Try to find a packaged module found relative to the tool.
     /// </summary>
-    private bool TryPackagedModule(string name, string version, out string path)
+    private bool TryPackagedModuleFromCache(string name, string version, out string path)
     {
         path = null;
-        if (_LocalPath == null)
+        if (_CachePath == null)
             return false;
 
-        Log($"[PSRule][S] -- Searching for module in: {_LocalPath}");
+        Log($"[PSRule][S] -- Searching for module in: {_CachePath}");
         if (!string.IsNullOrEmpty(version))
         {
-            path = Environment.GetRootedBasePath(Path.Combine(_LocalPath, "Modules", name, version));
-            if (System.IO.Directory.Exists(path))
+            path = Environment.GetRootedBasePath(Path.Combine(_CachePath, "Modules", name, version));
+            if (File.Exists(Path.Combine(path, GetManifestName(name))))
                 return true;
         }
 
-        path = Environment.GetRootedBasePath(Path.Combine(_LocalPath, "Modules", name));
-        if (System.IO.Directory.Exists(path))
-            return true;
-
-        return System.IO.Directory.Exists(path);
+        path = Environment.GetRootedBasePath(Path.Combine(_CachePath, "Modules", name));
+        return File.Exists(Path.Combine(path, GetManifestName(name)));
     }
 
     /// <summary>
@@ -253,10 +250,10 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     private Source.ModuleInfo LoadManifest(string basePath, string name)
     {
         var path = Path.Combine(basePath, GetManifestName(name));
+        Log("[PSRule][S] -- Loading manifest from: {0}", path);
         if (!File.Exists(path))
             return null;
 
-        Log("[PSRule][S] -- Loading manifest for: {0}", basePath);
         using var reader = new StreamReader(path);
         var data = reader.ReadToEnd();
         var ast = System.Management.Automation.Language.Parser.ParseInput(data, out _, out _);
