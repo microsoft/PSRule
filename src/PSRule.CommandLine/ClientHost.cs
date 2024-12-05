@@ -135,4 +135,7 @@ public sealed class ClientHost : HostContext
 
         _Context.Invocation.Console.WriteLine(text);
     }
+
+    /// <inheritdoc/>
+    public override string? CachePath => _Context.CachePath;
 }

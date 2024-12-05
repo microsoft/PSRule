@@ -40,6 +40,7 @@
     "onLanguage:powershell",
     "onLanguage:yaml",
     "workspaceContains:/ps-rule.yaml",
+    "workspaceContains:/ps-rule.lock.json",
     "workspaceContains:**/ps-rule.yaml",
     "workspaceContains:**/*.Rule.yaml",
     "workspaceContains:**/*.Rule.yml",
@@ -196,16 +197,29 @@
             "description": "Enables experimental features in the PSRule extension.",
             "scope": "application"
           },
+          "PSRule.lock.restore": {
+            "type": "boolean",
+            "default": false,
+            "description": "Determines if workspace modules will automatically be restored during activation. Modules can be restored manually using the PSRule: Restore modules command.",
+            "markdownDescription": "Determines if workspace modules will automatically be restored during activation. Modules can be restored manually using the `PSRule: Restore modules` command.",
+            "scope": "window"
+          },
           "PSRule.notifications.showChannelUpgrade": {
             "type": "boolean",
             "default": true,
-            "description": "Determines if a notification to switch to the stable channel is shown on start up.",
+            "description": "Determines if a notification to switch to the stable channel is shown on activation.",
+            "scope": "application"
+          },
+          "PSRule.notifications.showModuleRestore": {
+            "type": "boolean",
+            "default": true,
+            "description": "Determines if a notification to restore modules is shown on activation.",
             "scope": "application"
           },
           "PSRule.notifications.showPowerShellExtension": {
             "type": "boolean",
             "default": true,
-            "description": "Determines if a notification to install the PowerShell extension is shown on start up.",
+            "description": "Determines if a notification to install the PowerShell extension is shown on activation.",
             "scope": "application"
           },
           "PSRule.options.path": {

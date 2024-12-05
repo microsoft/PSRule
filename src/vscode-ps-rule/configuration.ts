@@ -82,13 +82,31 @@ export interface ISetting {
     experimentalEnabled: boolean;
 
     /**
+     * Determines if PSRule will automatically restore modules.
+     */
+    lockRestore: boolean;
+
+    /**
      * The path specifying a PSRule option file.
      * When not set, the default ps-rule.yaml will be used from the current workspace.
      */
     optionsPath: string | undefined;
 
     outputAs: OutputAs;
+
+    /**
+     * Determines if a notification to switch to the stable channel is shown on activation.
+     */
     notificationsShowChannelUpgrade: boolean;
+
+    /**
+     * Determines if a notification to restore modules is shown on activation.
+     */
+    notificationsShowModuleRestore: boolean;
+
+    /**
+     * Determines if a notification to install the PowerShell extension is shown on activation.
+     */
     notificationsShowPowerShellExtension: boolean;
 
     /**
@@ -120,9 +138,11 @@ const globalDefaults: ISetting = {
     executionRuleSuppressed: ExecutionActionPreference.None,
     executionUnprocessedObject: ExecutionActionPreference.None,
     experimentalEnabled: false,
+    lockRestore: false,
     optionsPath: undefined,
     outputAs: OutputAs.Summary,
     notificationsShowChannelUpgrade: true,
+    notificationsShowModuleRestore: true,
     notificationsShowPowerShellExtension: true,
     ruleBaseline: undefined,
     // languageServerPath: undefined,
@@ -206,6 +226,8 @@ export class ConfigurationManager {
         this.current.executionRuleSuppressed = config.get<ExecutionActionPreference>('execution.ruleSuppressed', this.default.executionRuleSuppressed);
         this.current.executionUnprocessedObject = config.get<ExecutionActionPreference>('execution.unprocessedObject', this.default.executionUnprocessedObject);
 
+        this.current.lockRestore = config.get<boolean>('lock.restore') ?? this.default.lockRestore;
+
         this.current.optionsPath = config.get<string>('options.path') ?? this.default.optionsPath;
 
         this.current.outputAs = config.get<OutputAs>('output.as', this.default.outputAs);
@@ -213,6 +235,11 @@ export class ConfigurationManager {
         this.current.notificationsShowChannelUpgrade = config.get<boolean>(
             'notifications.showChannelUpgrade',
             this.default.notificationsShowChannelUpgrade
+        );
+
+        this.current.notificationsShowModuleRestore = config.get<boolean>(
+            'notifications.showModuleRestore',
+            this.default.notificationsShowModuleRestore
         );
 
         this.current.notificationsShowPowerShellExtension = config.get<boolean>(

@@ -27,6 +27,18 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0340:
+
+- New features:
+  - VSCode extension includes PSRule runtime by @BernieWhite.
+    [#1755](https://github.com/microsoft/PSRule/issues/1755)
+    - The PSRule runtime is bundled with the VSCode extension.
+    - Separate installation of the PSRule PowerShell module is no longer required.
+  - VSCode extension asks to automatically restore modules by @BernieWhite.
+    [#2642](https://github.com/microsoft/PSRule/issues/2642)
+    - When opening a workspace, the extension will ask to restore any modules from the lock file.
+    - Alternatively, running the `PSRule: Restore modules` command manually will restore modules.
+
 ## v3.0.0-B0340 (pre-release)
 
 What's changed since pre-release v3.0.0-B0315:

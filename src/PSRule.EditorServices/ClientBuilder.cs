@@ -37,6 +37,7 @@ internal sealed class ClientBuilder
     private readonly Option<string[]> _Run_Module;
     private readonly Option<string> _Run_Baseline;
     private readonly Option<string[]> _Run_Outcome;
+    private readonly Option<bool> _Run_NoRestore;
 
     private ClientBuilder(RootCommand cmd)
     {
@@ -87,6 +88,10 @@ internal sealed class ClientBuilder
             description: CmdStrings.Run_Outcome_Description
         ).FromAmong("Pass", "Fail", "Error", "Processed", "Problem");
         _Run_Outcome.Arity = ArgumentArity.ZeroOrMore;
+        _Run_NoRestore = new Option<bool>(
+            "--no-restore",
+            description: CmdStrings.Run_NoRestore_Description
+        );
 
         // Options for the module command.
         _Module_Init_Force = new Option<bool>(
@@ -144,6 +149,7 @@ internal sealed class ClientBuilder
         cmd.AddOption(_Run_Module);
         cmd.AddOption(_Run_Baseline);
         cmd.AddOption(_Run_Outcome);
+        cmd.AddOption(_Run_NoRestore);
         cmd.SetHandler(async (invocation) =>
         {
             var option = new RunOptions
@@ -153,6 +159,7 @@ internal sealed class ClientBuilder
                 Module = invocation.ParseResult.GetValueForOption(_Run_Module),
                 Baseline = invocation.ParseResult.GetValueForOption(_Run_Baseline),
                 Outcome = ParseOutcome(invocation.ParseResult.GetValueForOption(_Run_Outcome)),
+                NoRestore = invocation.ParseResult.GetValueForOption(_Run_NoRestore),
             };
             var client = GetClientContext(invocation);
 
@@ -164,6 +171,7 @@ internal sealed class ClientBuilder
                 invocation.Console.WriteLine($"VERBOSE: Using workspace: {Environment.GetWorkingPath()}");
                 invocation.Console.WriteLine($"VERBOSE: Using module search path: {sp}");
                 invocation.Console.WriteLine($"VERBOSE: Using language server: {client.Path}");
+                invocation.Console.WriteLine($"VERBOSE: Using cache path: {client.CachePath}");
             }
 
             invocation.ExitCode = await RunCommand.RunAsync(option, client);

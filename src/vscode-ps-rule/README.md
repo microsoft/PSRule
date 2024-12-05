@@ -77,8 +77,10 @@ Name                                            | Description
 `PSRule.execution.ruleSuppressed`               | Determines how to handle suppressed rules. When set to `None`, PSRule will use the default (`Warn`), unless set by PSRule options.
 `PSRule.execution.unprocessedObject`            | Determines how to report objects that are not processed by any rule. When set to `None`, PSRule will use the default (`Warn`), unless set by PSRule options.
 `PSRule.experimental.enabled`                   | Enables experimental features in the PSRule extension.
-`PSRule.notifications.showChannelUpgrade`       | Determines if a notification to switch to the stable channel is shown on start up.
-`PSRule.notifications.showPowerShellExtension`  | Determines if a notification to install the PowerShell extension is shown on start up.
+`PSRule.lock.restore`                           | Determines if workspace modules will automatically be restored during activation. Modules can be restored manually using the `PSRule: Restore modules` command.
+`PSRule.notifications.showChannelUpgrade`       | Determines if a notification to switch to the stable channel is shown on activation.
+`PSRule.notifications.showModuleRestore`        | Determines if a notification to restore modules is shown on activation.
+`PSRule.notifications.showPowerShellExtension`  | Determines if a notification to install the PowerShell extension is shown on activation.
 `PSRule.options.path`                           | The path specifying a PSRule option file. When not set, the default `ps-rule.yaml` will be used from the current workspace.
 `PSRule.output.as`                              | Configures the output of analysis tasks, either summary or detailed.
 `PSRule.rule.baseline`                          | The name of the default baseline to use for executing rules. This setting can be overridden on individual PSRule tasks.

@@ -61,7 +61,8 @@ public sealed class ClientContext
     public bool Debug { get; }
 
     /// <summary>
-    /// Configures the path to use for caching rules modules.
+    /// Configures the root path to use for caching artifacts including modules.
+    /// Each artifact is in a subdirectory of the root path.
     /// </summary>
     public string CachePath { get; }
 

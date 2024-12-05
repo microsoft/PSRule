@@ -26,7 +26,7 @@ public static class CommandLineBuilder
     /// <returns>A builder object to configure the pipeline.</returns>
     public static IInvokePipelineBuilder Invoke(string[] module, PSRuleOption option, IHostContext hostContext, LockFile? file = null)
     {
-        var sourcePipeline = new SourcePipelineBuilder(hostContext, option, GetLocalPath());
+        var sourcePipeline = new SourcePipelineBuilder(hostContext, option, hostContext.CachePath ?? GetLocalPath());
         LoadModules(sourcePipeline, module, option, file);
 
         var source = sourcePipeline.Build();

@@ -4,10 +4,11 @@
 'use strict';
 
 import * as path from 'path';
+import * as fse from 'fs-extra';
 import * as vscode from 'vscode';
 import { logger } from './logger';
 import { PSRuleTaskProvider } from './tasks';
-import { ConfigurationManager } from './configuration';
+import { configuration, ConfigurationManager } from './configuration';
 import { pwsh } from './powershell';
 import { DocumentationLensProvider } from './docLens';
 import { createOptionsFile } from './commands/createOptionsFile';
@@ -16,7 +17,7 @@ import { walkthroughCopySnippet } from './commands/walkthroughCopySnippet';
 import { configureSettings } from './commands/configureSettings';
 import { runAnalysisTask } from './commands/runAnalysisTask';
 import { showTasks } from './commands/showTasks';
-import { PSRuleLanguageServer, getLanguageServer } from './utils';
+import { PSRuleLanguageServer, getActiveOrFirstWorkspace, getLanguageServer } from './utils';
 import { restore } from './commands/restore';
 
 export let taskManager: PSRuleTaskProvider | undefined;
@@ -159,6 +160,8 @@ export class ExtensionManager implements vscode.Disposable {
 
         if (this.isTrusted) {
             this._server = await getLanguageServer(this._context);
+
+            await this.restoreOnActivation()
         }
     }
 
@@ -283,6 +286,62 @@ export class ExtensionManager implements vscode.Disposable {
             disable: disable,
         };
         return result;
+    }
+
+    private async restoreOnActivation(): Promise<void> {
+        const workspace = getActiveOrFirstWorkspace();
+        if (!workspace) {
+            return;
+        }
+
+        // Check if a lockfile exists.
+        const lockExists = await fse.exists(path.join(workspace.uri.fsPath, 'ps-rule.lock.json'));
+        if (!lockExists) {
+            return;
+        }
+
+        // Check if the user has disabled the notification.
+        const shouldPrompt = configuration.get().notificationsShowModuleRestore
+
+        // Check if restoring module is enabled.
+        let lockRestore = configuration.get().lockRestore
+
+        // If restore is not enabled then prompt the user to enable it.
+        if (!lockRestore && shouldPrompt) {
+            const always = 'Always';
+            const oneTime = 'One Time';
+            const alwaysIgnore = 'Always Ignore';
+
+            await vscode.window
+                .showInformationMessage(
+                    `Should PSRule automatically restore modules in your current workspace?`,
+                    always,
+                    oneTime,
+                    alwaysIgnore
+                )
+                .then((choice) => {
+                    if (choice === always) {
+                        vscode.workspace
+                            .getConfiguration('PSRule.lock')
+                            .update('restore', true, vscode.ConfigurationTarget.Global);
+
+                        lockRestore = true;
+                    }
+                    if (choice === oneTime) {
+                        lockRestore = true;
+                    }
+                    if (choice === alwaysIgnore) {
+                        vscode.workspace
+                            .getConfiguration('PSRule.notifications')
+                            .update('showModuleRestore', false, vscode.ConfigurationTarget.Global);
+                    }
+                });
+        }
+
+        // Restore modules.
+        if (lockRestore) {
+            await restore();
+        }
     }
 }
 
