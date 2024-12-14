@@ -27,7 +27,10 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     private const ExecutionActionPreference DEFAULT_UNPROCESSEDOBJECT = ExecutionActionPreference.Warn;
     private const HashAlgorithm DEFAULT_HASHALGORITHM = Options.HashAlgorithm.SHA512;
 
-    internal static readonly ExecutionOption Default = new()
+    /// <summary>
+    /// The default execution option.
+    /// </summary>
+    public static readonly ExecutionOption Default = new()
     {
         Break = DEFAULT_BREAK,
         DuplicateResourceId = DEFAULT_DUPLICATERESOURCEID,
