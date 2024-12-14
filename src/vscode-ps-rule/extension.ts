@@ -19,6 +19,7 @@ import { runAnalysisTask } from './commands/runAnalysisTask';
 import { showTasks } from './commands/showTasks';
 import { PSRuleLanguageServer, getActiveOrFirstWorkspace, getLanguageServer } from './utils';
 import { restore } from './commands/restore';
+import { initLock } from './commands/initLock';
 
 export let taskManager: PSRuleTaskProvider | undefined;
 export let docLensProvider: DocumentationLensProvider | undefined;
@@ -134,6 +135,12 @@ export class ExtensionManager implements vscode.Disposable {
                     restore();
                 })
             );
+            this._context.subscriptions.push(
+                vscode.commands.registerCommand('PSRule.initLock', () => {
+                    initLock();
+                })
+            );
+
         }
     }
 
