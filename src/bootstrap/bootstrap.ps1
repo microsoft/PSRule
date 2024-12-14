@@ -104,11 +104,11 @@ else {
 }
 
 # Set Source
-if ([String]::IsNullOrEmpty($Source)) {
-    $Source = Join-Path -Path $Path -ChildPath '.ps-rule/';
+if ([String]::IsNullOrWhiteSpace($Source)) {
+    $Source = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($Path, '.ps-rule/'))
 }
-else {
-    $Source = Join-Path -Path $Path -ChildPath $Source;
+elseif (![System.IO.Path]::IsPathFullyQualified($Source)) {
+    $Source = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($Path, $Source))
 }
 
 # Set conventions
