@@ -16,7 +16,7 @@ The below example will use the latest PowerShell image released and install the 
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-FROM mcr.microsoft.com/powershell:7.2-ubuntu-22.04
+FROM mcr.microsoft.com/powershell:7.4-ubuntu-22.04
 SHELL ["pwsh", "-command"]
 
 RUN Install-Module -Name 'PSRule','PSRule.Rules.Azure' -Force
