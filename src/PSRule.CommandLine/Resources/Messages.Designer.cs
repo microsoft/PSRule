@@ -88,11 +88,29 @@ namespace PSRule.CommandLine.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to verify module integrity: {0} -- v{1}.
+        /// </summary>
+        internal static string Error_504 {
+            get {
+                return ResourceManager.GetString("Error_504", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restoring module: {0} -- v{1}.
         /// </summary>
         internal static string RestoringModule {
             get {
                 return ResourceManager.GetString("RestoringModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using force command option..
+        /// </summary>
+        internal static string UsingForce {
+            get {
+                return ResourceManager.GetString("UsingForce", resourceCulture);
             }
         }
         

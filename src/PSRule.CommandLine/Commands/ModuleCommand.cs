@@ -72,7 +72,7 @@ public sealed class ModuleCommand
             var idealVersion = await FindVersionAsync(module, null, targetVersion, null, cancellationToken);
             if (idealVersion != null)
             {
-                installedVersion = await InstallVersionAsync(clientContext, module, idealVersion, cancellationToken);
+                installedVersion = await InstallVersionAsync(clientContext, module, idealVersion, kv.Value.Integrity, cancellationToken);
             }
 
             if (pwsh.HadErrors || idealVersion == null || installedVersion == null)
@@ -112,7 +112,7 @@ public sealed class ModuleCommand
                 var idealVersion = await FindVersionAsync(includeModule, moduleConstraint, null, null, cancellationToken);
                 if (idealVersion != null)
                 {
-                    await InstallVersionAsync(clientContext, includeModule, idealVersion, cancellationToken);
+                    await InstallVersionAsync(clientContext, includeModule, idealVersion, null, cancellationToken);
                 }
                 else if (idealVersion == null)
                 {
@@ -153,13 +153,18 @@ public sealed class ModuleCommand
         var file = !operationOptions.Force ? LockFile.Read(null) : new LockFile();
         using var pwsh = CreatePowerShell();
 
+        if (operationOptions.Force)
+        {
+            clientContext.LogVerbose(Messages.UsingForce);
+        }
+
         // Add for any included modules.
         if (clientContext.Option?.Include?.Module != null && clientContext.Option.Include.Module.Length > 0)
         {
             foreach (var includeModule in clientContext.Option.Include.Module)
             {
                 // Skip modules already in the lock unless force is used.
-                if (file.Modules.TryGetValue(includeModule, out var lockEntry))
+                if (file.Modules.TryGetValue(includeModule, out var lockEntry) && !operationOptions.Force)
                     continue;
 
                 // Get a constraint if set from options.
@@ -173,14 +178,18 @@ public sealed class ModuleCommand
                     return ERROR_MODULE_FAILED_TO_FIND;
                 }
 
-                if (lockEntry?.Version == idealVersion)
+                if (lockEntry?.Version == idealVersion && !operationOptions.Force)
                     continue;
 
-                // invocation.Log(Messages.UsingModule, includeModule, idealVersion.ToString());
-
-                file.Modules[includeModule] = new LockEntry
+                if (!IsInstalled(pwsh, includeModule, idealVersion, out _))
                 {
-                    Version = idealVersion
+                    await InstallVersionAsync(clientContext, includeModule, idealVersion, null, cancellationToken);
+                }
+
+                clientContext.LogVerbose(Messages.UsingModule, includeModule, idealVersion.ToString());
+                file.Modules[includeModule] = new LockEntry(idealVersion)
+                {
+                    Integrity = IntegrityBuilder.Build(clientContext.IntegrityAlgorithm, GetModulePath(clientContext, includeModule, idealVersion)),
                 };
             }
         }
@@ -224,6 +233,11 @@ public sealed class ModuleCommand
         var requires = clientContext.Option.Requires.ToDictionary();
         var file = LockFile.Read(null);
 
+        if (operationOptions.Force)
+        {
+            clientContext.LogVerbose(Messages.UsingForce);
+        }
+
         using var pwsh = CreatePowerShell();
         foreach (var module in operationOptions.Module)
         {
@@ -253,11 +267,16 @@ public sealed class ModuleCommand
                     return ERROR_MODULE_FAILED_TO_FIND;
                 }
 
-                clientContext.LogVerbose(Messages.UsingModule, module, idealVersion.ToString());
-                item = new LockEntry
+                if (!IsInstalled(pwsh, module, idealVersion, out _))
                 {
-                    Version = idealVersion,
+                    await InstallVersionAsync(clientContext, module, idealVersion, null, cancellationToken);
+                }
+
+                clientContext.LogVerbose(Messages.UsingModule, module, idealVersion.ToString());
+                item = new LockEntry(idealVersion)
+                {
                     IncludePrerelease = operationOptions.Prerelease && !idealVersion.Stable ? true : null,
+                    Integrity = IntegrityBuilder.Build(clientContext.IntegrityAlgorithm, GetModulePath(clientContext, module, idealVersion)),
                 };
                 file.Modules[module] = item;
             }
@@ -337,9 +356,15 @@ public sealed class ModuleCommand
             if (idealVersion == kv.Value.Version)
                 continue;
 
+            if (!IsInstalled(pwsh, kv.Key, idealVersion, out _))
+            {
+                await InstallVersionAsync(clientContext, kv.Key, idealVersion, null, cancellationToken);
+            }
+
             clientContext.LogVerbose(Messages.UsingModule, kv.Key, idealVersion.ToString());
 
             kv.Value.Version = idealVersion;
+            kv.Value.Integrity = IntegrityBuilder.Build(clientContext.IntegrityAlgorithm, GetModulePath(clientContext, kv.Key, idealVersion));
             kv.Value.IncludePrerelease = (kv.Value.IncludePrerelease.GetValueOrDefault(false) || operationOptions.Prerelease) && !idealVersion.Stable ? true : null;
             file.Modules[kv.Key] = kv.Value;
         }
@@ -470,7 +495,7 @@ public sealed class ModuleCommand
         return result;
     }
 
-    private static async Task<SemanticVersion.Version?> InstallVersionAsync([DisallowNull] ClientContext context, [DisallowNull] string name, [DisallowNull] SemanticVersion.Version version, CancellationToken cancellationToken)
+    private static async Task<SemanticVersion.Version?> InstallVersionAsync([DisallowNull] ClientContext context, [DisallowNull] string name, [DisallowNull] SemanticVersion.Version version, LockEntryIntegrity? integrity, CancellationToken cancellationToken)
     {
         context.LogVerbose(Messages.RestoringModule, name, version);
 
@@ -495,14 +520,23 @@ public sealed class ModuleCommand
         var nuspecReader = await packageReader.GetNuspecReaderAsync(cancellationToken);
 
         var modulePath = GetModulePath(context, name, version);
+        var tempPath = GetModuleTempPath(context, name, version);
 
         // Remove existing module.
         if (Directory.Exists(modulePath))
+        {
             Directory.Delete(modulePath, true);
+        }
+
+        // Remove existing temp module.
+        if (Directory.Exists(tempPath))
+        {
+            Directory.Delete(tempPath, true);
+        }
 
         var count = 0;
         var files = packageReader.GetFiles();
-        packageReader.CopyFiles(modulePath, files, (name, targetPath, s) =>
+        packageReader.CopyFiles(tempPath, files, (name, targetPath, s) =>
         {
             if (ShouldIgnorePackageFile(name))
                 return null;
@@ -515,6 +549,36 @@ public sealed class ModuleCommand
         }, logger, cancellationToken);
 
         // Check module path exists.
+        if (!Directory.Exists(tempPath))
+            return null;
+
+        if (integrity != null)
+        {
+            context.LogVerbose("Checking module integrity: {0} -- {1}", name, integrity.Hash);
+
+            var actualIntegrity = IntegrityBuilder.Build(integrity.Algorithm, tempPath);
+            if (!string.Equals(actualIntegrity.Hash, integrity.Hash))
+            {
+                context.LogVerbose("Module integrity check failed: {0} -- {1}", name, actualIntegrity.Hash);
+
+                // Clean up the temp path.
+                if (Directory.Exists(tempPath))
+                {
+                    Directory.Delete(tempPath, true);
+                }
+
+                context.LogError(Messages.Error_504, name, version);
+                return null;
+            }
+        }
+
+        var parentDirectory = Directory.GetParent(modulePath)?.FullName;
+        if (!Directory.Exists(parentDirectory) && parentDirectory != null)
+            Directory.CreateDirectory(parentDirectory);
+
+        // Move the module to the final path.
+        Directory.Move(tempPath, modulePath);
+
         if (!Directory.Exists(modulePath))
             return null;
 
@@ -534,10 +598,17 @@ public sealed class ModuleCommand
         return Path.Combine(context.CachePath, MODULES_PATH, name, version.ToShortString());
     }
 
+    private static string GetModuleTempPath(ClientContext context, string name, [DisallowNull] SemanticVersion.Version version)
+    {
+        return Path.Combine(context.CachePath, MODULES_PATH, string.Concat("temp-", name, "-", version.ToShortString()));
+    }
+
     private static bool ShouldIgnorePackageFile(string name)
     {
         return string.Equals(name, "[Content_Types].xml", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(name, "_rels/.rels", StringComparison.OrdinalIgnoreCase);
+            string.Equals(name, "_rels/.rels", StringComparison.OrdinalIgnoreCase) ||
+            Path.GetExtension(name) == ".nuspec" ||
+            name.StartsWith("package/services/metadata/core-properties/", StringComparison.OrdinalIgnoreCase);
     }
 
     private static PowerShell CreatePowerShell()

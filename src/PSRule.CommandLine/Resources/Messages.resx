@@ -126,10 +126,16 @@
   <data name="Error_503" xml:space="preserve">
     <value>The specified verison v{0} does not meet the required constraint.</value>
   </data>
+  <data name="UsingForce" xml:space="preserve">
+    <value>Using force command option.</value>
+  </data>
   <data name="RestoringModule" xml:space="preserve">
     <value>Restoring module: {0} -- v{1}</value>
   </data>
   <data name="UsingModule" xml:space="preserve">
     <value>Using module: {0} -- v{1}</value>
+  </data>
+  <data name="Error_504" xml:space="preserve">
+    <value>Failed to verify module integrity: {0} -- v{1}</value>
   </data>
 </root>

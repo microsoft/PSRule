@@ -3,6 +3,8 @@
 
 using System.CommandLine.Invocation;
 using PSRule.Configuration;
+using PSRule.Options;
+using PSRule.Pipeline.Dependencies;
 
 namespace PSRule.CommandLine;
 
@@ -28,6 +30,7 @@ public sealed class ClientContext
         Host = new ClientHost(this, verbose, debug);
         Option = GetOption(Host, option);
         CachePath = Path;
+        IntegrityAlgorithm = Option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm!.Value).ToIntegrityAlgorithm();
     }
 
     /// <summary>
@@ -65,6 +68,11 @@ public sealed class ClientContext
     /// Each artifact is in a subdirectory of the root path.
     /// </summary>
     public string CachePath { get; }
+
+    /// <summary>
+    /// The default integrity algorithm to use.
+    /// </summary>
+    public IntegrityAlgorithm IntegrityAlgorithm { get; }
 
     private static PSRuleOption GetOption(ClientHost host, string? path)
     {

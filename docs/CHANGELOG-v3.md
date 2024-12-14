@@ -27,6 +27,13 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0342:
+
+- General improvements:
+  - Added an integrity hash to lock file by @BernieWhite.
+    [#2664](https://github.com/microsoft/PSRule/issues/2664)
+    - The lock file now includes an integrity hash to ensures the restored module matches originally added module.
+
 ## v3.0.0-B0342 (pre-release)
 
 What's changed since pre-release v3.0.0-B0340:

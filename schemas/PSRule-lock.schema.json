@@ -24,6 +24,11 @@
             "title": "Module version",
             "description": "The version of the module to use."
           },
+          "integrity": {
+            "type": "string",
+            "title": "Module integrity",
+            "description": "The integrity hash of the module to use."
+          },
           "includePrerelease": {
             "type": "boolean",
             "title": "Include prerelease",

@@ -197,8 +197,7 @@ internal sealed class ClientBuilder
             var option = new ModuleOptions
             {
                 Path = invocation.ParseResult.GetValueForOption(_Global_Path),
-                Version = invocation.ParseResult.GetValueForOption(_Module_Add_Version),
-                Force = invocation.ParseResult.GetValueForOption(_Module_Add_Force),
+                Force = invocation.ParseResult.GetValueForOption(_Module_Init_Force),
                 SkipVerification = invocation.ParseResult.GetValueForOption(_Module_Add_SkipVerification),
             };
 

@@ -1,8 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Newtonsoft.Json;
+using PSRule.Converters.Json;
 
 namespace PSRule.Pipeline.Dependencies;
 
@@ -19,6 +21,7 @@ public sealed class LockFile
     /// <summary>
     /// The version of the lock file schema.
     /// </summary>
+    [Required]
     [JsonProperty("version")]
     public int Version { get; set; }
 
@@ -45,7 +48,8 @@ public sealed class LockFile
             {
                 Converters =
                 [
-                    new SemanticVersionConverter()
+                    new SemanticVersionJsonConverter(),
+                    new LockEntryIntegrityJsonConverter(),
                 ],
             });
             return result ?? new LockFile();
@@ -69,7 +73,8 @@ public sealed class LockFile
         {
             Converters =
             [
-                new SemanticVersionConverter()
+                new SemanticVersionJsonConverter(),
+                new LockEntryIntegrityJsonConverter(),
             ]
         });
         File.WriteAllText(path, json, Encoding.UTF8);

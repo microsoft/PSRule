@@ -40,7 +40,8 @@
     },
     {
       "fileMatch": [
-        "/**/ps-rule.lock.json"
+        "/**/ps-rule.lock.json",
+        "/**/test.lock.json"
       ],
       "url": "./schemas/PSRule-lock.schema.json"
     }
@@ -135,5 +136,6 @@
     "release/*"
   ],
   "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
-  "PSRule.options.path": "ps-rule-ci.yaml"
+  "PSRule.options.path": "ps-rule-ci.yaml",
+  "PSRule.lock.restore": true
 }
