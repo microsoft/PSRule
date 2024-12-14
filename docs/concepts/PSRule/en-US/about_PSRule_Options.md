@@ -2368,17 +2368,23 @@ output:
 export PSRULE_OUTPUT_AS=Summary
 ```
 
-```yaml
+```yaml title="GitHub Actions"
 # GitHub Actions: Using environment variable
 env:
   PSRULE_OUTPUT_AS: Summary
 ```
 
-```yaml
+```yaml title="Azure Pipelines"
 # Azure Pipelines: Using environment variable
 variables:
 - name: PSRULE_OUTPUT_AS
   value: Summary
+```
+
+```json title="Visual Studio Code settings.json"
+{
+  "PSRule.output.as": "Summary"
+}
 ```
 
 ### Output.Banner

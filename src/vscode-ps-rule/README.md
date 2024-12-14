@@ -72,7 +72,6 @@ Name                                            | Description
 `PSRule.documentation.localePath`               | The locale path to use for locating rule documentation. The VS Code locale will be used by default.
 `PSRule.documentation.customSnippetPath`        | The path to a file containing a rule documentation snippet. When not set, built-in PSRule snippets will be used.
 `PSRule.documentation.snippet`                  | The name of a snippet to use when creating new rule documentation. By default, the built-in `Rule Doc` snippet will be used.
-`PSRule.execution.notProcessedWarning`          | Warn when objects are not processed by any rule. This option is deprecated and replaced by `PSRule.execution.unprocessedObject`.
 `PSRule.execution.ruleExcluded`                 | Determines how to handle excluded rules. When set to `None`, PSRule will use the default (`Ignore`), unless set by PSRule options.
 `PSRule.execution.ruleSuppressed`               | Determines how to handle suppressed rules. When set to `None`, PSRule will use the default (`Warn`), unless set by PSRule options.
 `PSRule.execution.unprocessedObject`            | Determines how to report objects that are not processed by any rule. When set to `None`, PSRule will use the default (`Warn`), unless set by PSRule options.

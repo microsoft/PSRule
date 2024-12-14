@@ -159,9 +159,6 @@ plugins:
       enabled: !ENV [GITHUB_ACTIONS, false]
       repository: microsoft/PSRule
       branch: main
-  - mkdocs-simple-hooks:
-      hooks:
-        on_page_markdown: 'docs.hooks:replace_maml'
   - search
   - tags:
       tags: false
@@ -170,6 +167,12 @@ plugins:
         'authoring/writing-rules.md': 'authoring/testing-infrastructure.md'
         'install-instructions.md': 'setup/index.md'
         'install.md': 'setup/index.md'
+
+hooks:
+  - docs/hooks/old_hooks.py
+
+# watch:
+#   - includes
 
 exclude_docs: |
   specs/

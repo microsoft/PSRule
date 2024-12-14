@@ -63,7 +63,7 @@ public sealed class ModuleCommand
                 continue;
 
             // clientContext.LogVerbose(Messages.UsingModule, module, targetVersion.ToString());
-            if (IsInstalled(pwsh, module, targetVersion, out var installedVersion) && !operationOptions.Force)
+            if (IsInstalled(pwsh, module, targetVersion, out var installedVersion, out _) && !operationOptions.Force)
             {
                 clientContext.LogVerbose($"[PSRule][M] -- The module {module} is already installed.");
                 continue;
@@ -99,7 +99,7 @@ public sealed class ModuleCommand
                 var moduleConstraint = requires.TryGetValue(includeModule, out var c) ? c : null;
 
                 // Check if the installed version matches the constraint.
-                if (IsInstalled(pwsh, includeModule, null, out var installedVersion) &&
+                if (IsInstalled(pwsh, includeModule, null, out var installedVersion, out _) &&
                     !operationOptions.Force &&
                     (moduleConstraint == null || moduleConstraint.Accepts(installedVersion)))
                 {
@@ -150,7 +150,8 @@ public sealed class ModuleCommand
     {
         var exitCode = 0;
         var requires = clientContext.Option.Requires.ToDictionary();
-        var file = !operationOptions.Force ? LockFile.Read(null) : new LockFile();
+        var existingFile = LockFile.Read(null);
+        var file = !operationOptions.Force ? existingFile : new LockFile();
         using var pwsh = CreatePowerShell();
 
         if (operationOptions.Force)
@@ -164,14 +165,17 @@ public sealed class ModuleCommand
             foreach (var includeModule in clientContext.Option.Include.Module)
             {
                 // Skip modules already in the lock unless force is used.
-                if (file.Modules.TryGetValue(includeModule, out var lockEntry) && !operationOptions.Force)
+                if (existingFile.Modules.TryGetValue(includeModule, out var lockEntry) && !operationOptions.Force)
                     continue;
 
                 // Get a constraint if set from options.
                 var moduleConstraint = requires.TryGetValue(includeModule, out var c) ? c : null;
 
                 // Find the ideal version.
-                var idealVersion = await FindVersionAsync(includeModule, moduleConstraint, null, null, cancellationToken);
+                var idealVersion = lockEntry != null && (moduleConstraint == null || moduleConstraint.Accepts(lockEntry.Version)) ?
+                    lockEntry.Version :
+                    await FindVersionAsync(includeModule, moduleConstraint, null, null, cancellationToken);
+
                 if (idealVersion == null)
                 {
                     clientContext.LogError(Messages.Error_502, includeModule);
@@ -181,7 +185,7 @@ public sealed class ModuleCommand
                 if (lockEntry?.Version == idealVersion && !operationOptions.Force)
                     continue;
 
-                if (!IsInstalled(pwsh, includeModule, idealVersion, out _))
+                if (!IsInstalled(pwsh, includeModule, idealVersion, out _, out var modulePath))
                 {
                     await InstallVersionAsync(clientContext, includeModule, idealVersion, null, cancellationToken);
                 }
@@ -189,7 +193,7 @@ public sealed class ModuleCommand
                 clientContext.LogVerbose(Messages.UsingModule, includeModule, idealVersion.ToString());
                 file.Modules[includeModule] = new LockEntry(idealVersion)
                 {
-                    Integrity = IntegrityBuilder.Build(clientContext.IntegrityAlgorithm, GetModulePath(clientContext, includeModule, idealVersion)),
+                    Integrity = IntegrityBuilder.Build(clientContext.IntegrityAlgorithm, modulePath ?? GetModulePath(clientContext, includeModule, idealVersion)),
                 };
             }
         }
@@ -267,7 +271,7 @@ public sealed class ModuleCommand
                     return ERROR_MODULE_FAILED_TO_FIND;
                 }
 
-                if (!IsInstalled(pwsh, module, idealVersion, out _))
+                if (!IsInstalled(pwsh, module, idealVersion, out _, out _))
                 {
                     await InstallVersionAsync(clientContext, module, idealVersion, null, cancellationToken);
                 }
@@ -356,7 +360,7 @@ public sealed class ModuleCommand
             if (idealVersion == kv.Value.Version)
                 continue;
 
-            if (!IsInstalled(pwsh, kv.Key, idealVersion, out _))
+            if (!IsInstalled(pwsh, kv.Key, idealVersion, out _, out _))
             {
                 await InstallVersionAsync(clientContext, kv.Key, idealVersion, null, cancellationToken);
             }
@@ -387,7 +391,7 @@ public sealed class ModuleCommand
         // Process modules in the lock file.
         foreach (var kv in file.Modules)
         {
-            var installed = IsInstalled(pwsh, kv.Key, kv.Value.Version, out var installedVersion);
+            var installed = IsInstalled(pwsh, kv.Key, kv.Value.Version, out _, out _);
             results.Add(new ModuleRecord(
                 Name: kv.Key,
                 Version: kv.Value.Version.ToString(),
@@ -405,7 +409,7 @@ public sealed class ModuleCommand
                 if (file.Modules.ContainsKey(includeModule))
                     continue;
 
-                var installed = IsInstalled(pwsh, includeModule, null, out var installedVersion);
+                var installed = IsInstalled(pwsh, includeModule, null, out var installedVersion, out _);
                 results.Add(new ModuleRecord(
                     Name: includeModule,
                     Version: installedVersion?.ToString() ?? "latest",
@@ -426,7 +430,7 @@ public sealed class ModuleCommand
         }));
     }
 
-    private static bool IsInstalled(PowerShell pwsh, string module, SemanticVersion.Version? targetVersion, [NotNullWhen(true)] out SemanticVersion.Version? installedVersion)
+    private static bool IsInstalled(PowerShell pwsh, string module, SemanticVersion.Version? targetVersion, [NotNullWhen(true)] out SemanticVersion.Version? installedVersion, [NotNullWhen(true)] out string? path)
     {
         pwsh.Commands.Clear();
         pwsh.Streams.ClearStreams();
@@ -436,25 +440,31 @@ public sealed class ModuleCommand
 
         var versions = pwsh.Invoke();
         installedVersion = null;
+        path = null;
         foreach (var version in versions)
         {
-            if (TryModuleInfo(version, out var versionString) &&
+            if (TryModuleInfo(version, out var versionString, out var versionPath) &&
                 versionString != null &&
                 SemanticVersion.TryParseVersion(versionString, out var v) &&
                 v != null &&
                 (targetVersion == null || targetVersion.CompareTo(v) == 0) &&
                 v.CompareTo(installedVersion) > 0)
+            {
                 installedVersion = v;
+                path = versionPath;
+            }
         }
         return installedVersion != null;
     }
 
-    private static bool TryModuleInfo(PSObject value, out string? version)
+    private static bool TryModuleInfo(PSObject value, [NotNullWhen(true)] out string? version, [NotNullWhen(true)] out string? path)
     {
         version = null;
+        path = null;
         if (value?.BaseObject is not PSModuleInfo info)
             return false;
 
+        path = info.ModuleBase;
         version = info.Version?.ToString();
         if (TryPrivateData(info, FIELD_PSDATA, out var psData) && psData != null && psData.ContainsKey(FIELD_PRERELEASE))
             version = string.Concat(version, PRERELEASE_SEPARATOR, psData[FIELD_PRERELEASE]?.ToString());

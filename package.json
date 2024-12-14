@@ -101,6 +101,11 @@
         "command": "PSRule.restore",
         "title": "Restore modules",
         "category": "PSRule"
+      },
+      {
+        "command": "PSRule.initLock",
+        "title": "Initialize lock file",
+        "category": "PSRule"
       }
     ],
     "configuration": [
