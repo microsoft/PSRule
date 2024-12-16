@@ -82,12 +82,8 @@ nav:
     #   - Configuring rule defaults: setup/configuring-rules.md
     #   - Configuring expansion: setup/configuring-expansion.md
   - Updates:
-      # - December 2024: updates/v3.0.md
-      - Change log:
-          - v3: 'CHANGELOG-v3.md'
-          - v2: https://microsoft.github.io/PSRule/stable/CHANGELOG-v2/
-          - v1: https://microsoft.github.io/PSRule/stable/CHANGELOG-v1/
-          - v0: https://microsoft.github.io/PSRule/stable/CHANGELOG-v0/
+      # - January 2025: updates/v3.0.md
+      - Change log: 'CHANGELOG-v3.md'
       - Upgrade notes: upgrade-notes.md
       - Deprecations: deprecations.md
       - Changes and versioning: versioning.md
@@ -167,6 +163,7 @@ plugins:
         'authoring/writing-rules.md': 'authoring/testing-infrastructure.md'
         'install-instructions.md': 'setup/index.md'
         'install.md': 'setup/index.md'
+        'changelog.md': 'CHANGELOG-v3.md'
 
 hooks:
   - docs/hooks/old_hooks.py
