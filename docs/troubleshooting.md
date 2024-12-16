@@ -78,7 +78,9 @@ For more details see [#1723][5].
 
   [5]: https://github.com/microsoft/PSRule/issues/1723
 
-## PSR0001 - Unable to read options file
+## Engine error messages
+
+### PSR0001 - Unable to read options file
 
 When running PSRule you may encounter an error similar to the following:
 
@@ -91,7 +93,7 @@ Double check the file for incorrect indentation or missing punctuation such as `
 
 If you still have an issue, try re-saving the file as UTF-8 in an editor such as Visual Studio Code.
 
-## PSR0002 - Summary results are not supported with Job Summaries
+### PSR0002 - Summary results are not supported with Job Summaries
 
 !!! Error
 
@@ -104,7 +106,7 @@ If you have a specific use case your would like to enable, please start a [discu
 
   [3]: https://github.com/microsoft/PSRule/discussions
 
-## PSR0003 - The specified baseline group is not known
+### PSR0003 - The specified baseline group is not known
 
 !!! Error
 
@@ -115,10 +117,31 @@ To define a baseline group, see [Baseline.Group][4] option.
 
   [4]: https://aka.ms/ps-rule/options#baselinegroup
 
-## PSR0004 - The specified resource is not known
+### PSR0004 - The specified resource is not known
 
 !!! Error
 
     PSR0004: The specified Baseline resource 'TestModule4\Module4' is not known.
 
 This error is caused when you attempt to reference a resource such as a baseline, rule, or selector which has not been defined.
+
+## CLI exit codes
+
+The following table lists exit codes that may be returned by the PSRule CLI.
+
+Exit code | Description | Notes
+--------- | ----------- | -----
+0         | Success | The CLI completed the operation successfully. This may occur during normal operation.
+1         | Generic error. | An unexpected error occurred. Please report this issue.
+100       | Break because one or more rules failed. | This may occur during normal operation when one or more rules fail. Use the `Execution.Break` option to control this behavior.
+501       | Unable to manage or restore a module. | This may occur when attempting to restoring a module that is not available.
+502       | Failed to find a module. | A specified module could not be found in PowerShell Gallery.
+503       | The module version does not meet configured version constraint requirements. | The module version that was specified on the command line does not meet the configured `Requires` option.
+
+## Language server exit codes
+
+The following table lists exit codes that may be returned by the PSRule language server.
+
+Exit code | Description | Notes
+--------- | ----------- | -----
+0         | Success | The language server exited during normal operation.
