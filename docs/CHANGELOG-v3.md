@@ -27,6 +27,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v3.0.0-B0351 (pre-release)
+
 What's changed since pre-release v3.0.0-B0342:
 
 - General improvements:
@@ -35,6 +37,8 @@ What's changed since pre-release v3.0.0-B0342:
     - The lock file now includes an integrity hash to ensures the restored module matches originally added module.
 
 ## v3.0.0-B0342 (pre-release)
+
+<!-- vscode:version 2024.12.2 -->
 
 What's changed since pre-release v3.0.0-B0340:
 
