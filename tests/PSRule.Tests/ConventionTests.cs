@@ -4,7 +4,6 @@
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Pipeline;
-using static PSRule.PipelineTests;
 
 namespace PSRule;
 

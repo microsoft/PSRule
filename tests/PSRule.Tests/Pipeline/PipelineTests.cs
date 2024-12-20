@@ -10,27 +10,13 @@ using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
 using PSRule.Definitions.Rules;
 using PSRule.Options;
-using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Rules;
 
-namespace PSRule;
+namespace PSRule.Pipeline;
 
-public sealed class PipelineTests : ContextBaseTests
+public sealed partial class PipelineTests : ContextBaseTests
 {
-    internal class TestObject
-    {
-        public string Name { get; set; }
-    }
-
-    [Fact]
-    public void BuildInvokePipeline()
-    {
-        var option = GetOption();
-        var builder = PipelineBuilder.Invoke(GetSource(), option, null);
-        Assert.NotNull(builder.Build());
-    }
-
     [Fact]
     public void InvokePipeline()
     {
@@ -49,7 +35,7 @@ public sealed class PipelineTests : ContextBaseTests
     }
 
     [Fact]
-    public void InvokePipelineWithJObject()
+    public void InvokePipeline_WithJObject_ShouldRunSuccessfully()
     {
         var parent = new JObject
         {
@@ -94,7 +80,7 @@ public sealed class PipelineTests : ContextBaseTests
     }
 
     [Fact]
-    public void InvokePipelineWithPathPrefix()
+    public void InvokePipeline_WithPathPrefix_ShouldRunSuccessfully()
     {
         var parent = new JObject
         {
@@ -132,7 +118,7 @@ public sealed class PipelineTests : ContextBaseTests
     }
 
     [Fact]
-    public void InvokePipelineWithExclude()
+    public void InvokePipeline_WithExclude()
     {
         var option = GetOption(ruleExcludedAction: ExecutionActionPreference.Warn);
         option.Rule.Include = ["FromFile1"];
@@ -146,13 +132,6 @@ public sealed class PipelineTests : ContextBaseTests
         pipeline.End();
 
         Assert.Contains(writer.Warnings, (string s) => { return s == string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.RuleExcluded, ".\\FromFile2"); });
-    }
-
-    [Fact]
-    public void BuildGetPipeline()
-    {
-        var builder = PipelineBuilder.Get(GetSource(), GetOption(), null);
-        Assert.NotNull(builder.Build());
     }
 
     [Fact]

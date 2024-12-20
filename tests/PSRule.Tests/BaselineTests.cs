@@ -50,7 +50,8 @@ public sealed class BaselineTests : ContextBaseTests
         // TestBaseline4
         Assert.Equal("TestBaseline4", baseline[3].Name);
         Assert.Null(baseline[3].Info.Synopsis.Text);
-        Assert.Equal(SeverityLevel.Warning, baseline[3].Spec.Override.Level["rule1"]);
+        Assert.NotNull(baseline[3].Spec);
+        Assert.Equal(SeverityLevel.Warning, baseline[3].Spec.Override?.Level?["rule1"]);
 
         // TestBaseline5
         Assert.Equal("TestBaseline5", baseline[4].Name);
@@ -92,7 +93,9 @@ public sealed class BaselineTests : ContextBaseTests
         // TestBaseline4
         Assert.Equal("TestBaseline4", baseline[3].Name);
         Assert.Null(baseline[3].Info.Synopsis.Text);
-        Assert.Equal(SeverityLevel.Warning, baseline[3].Spec.Override.Level["rule1"]);
+        Assert.NotNull(baseline[3].Spec.Override.Level);
+        Assert.True(baseline[3].Spec.Override.Level!.TryGetValue("rule1", out var level));
+        Assert.Equal(SeverityLevel.Warning, level);
 
         // TestBaseline5
         Assert.Equal("TestBaseline5", baseline[4].Name);
@@ -136,6 +139,7 @@ public sealed class BaselineTests : ContextBaseTests
         var filter = new BaselineFilter(["TestBaseline5"]);
         var actual = baseline.FirstOrDefault(b => filter.Match(b));
 
+        Assert.NotNull(actual);
         Assert.Equal("TestBaseline5", actual.Name);
     }
 
@@ -170,7 +174,9 @@ public sealed class BaselineTests : ContextBaseTests
     {
         var expected = new object[] { GetBaselines(GetSource(BaselineJsonFileName)) };
         var json = JsonOutputWriter.ToJson(expected, null);
-        var actual = (JArray)JsonConvert.DeserializeObject<dynamic>(json);
+
+        Assert.NotNull(json);
+        var actual = (JArray)JsonConvert.DeserializeObject<dynamic>(json)!;
 
         // TestBaseline1
         Assert.Equal("github.com/microsoft/PSRule/v1", actual?[0]["apiVersion"]);
