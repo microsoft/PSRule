@@ -18,7 +18,7 @@ public sealed class SuppressionFilterTests : ContextBaseTests
         var option = GetOption();
         var sources = GetSource();
         var context = new RunspaceContext(GetPipelineContext(option: option, sources: sources));
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
         var rules = HostHelper.GetRule(sources, context, includeDependencies: false);
         var resourceIndex = new ResourceIndex(rules);

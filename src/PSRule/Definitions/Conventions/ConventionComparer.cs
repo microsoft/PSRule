@@ -8,7 +8,7 @@ namespace PSRule.Definitions.Conventions;
 /// <summary>
 /// Orders conventions by the order they are specified.
 /// </summary>
-internal sealed class ConventionComparer : IComparer<IConvention>
+internal sealed class ConventionComparer : IComparer<IConventionV1>
 {
     private readonly RunspaceContext _Context;
 
@@ -17,7 +17,7 @@ internal sealed class ConventionComparer : IComparer<IConvention>
         _Context = context;
     }
 
-    public int Compare(IConvention x, IConvention y)
+    public int Compare(IConventionV1 x, IConventionV1 y)
     {
         return _Context.Pipeline.GetConventionOrder(x) - _Context.Pipeline.GetConventionOrder(y);
     }

@@ -175,7 +175,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         languageScope.Configure(context);
     }
 
-    internal int GetConventionOrder(IConvention x)
+    internal int GetConventionOrder(IConventionV1 x)
     {
         return _DefaultOptionContext.GetConventionOrder(x);
     }

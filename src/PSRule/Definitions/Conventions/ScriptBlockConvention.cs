@@ -9,7 +9,7 @@ namespace PSRule.Definitions.Conventions;
 
 #nullable enable
 
-internal sealed class ScriptBlockConvention : BaseConvention, IDisposable, IResource
+internal sealed class ScriptBlockConvention : BaseConvention, IConventionV1, IDisposable
 {
     private readonly LanguageScriptBlock? _Initialize;
     private readonly LanguageScriptBlock? _Begin;

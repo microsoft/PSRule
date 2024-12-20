@@ -14,7 +14,7 @@ public sealed class LocalizedData : DynamicObject
 {
     private const string DATA_FILENAME = "PSRule-rules.psd1";
 
-    private static readonly Hashtable Empty = new();
+    private static readonly Hashtable Empty = [];
 
     /// <inheritdoc/>
     public override bool TryGetMember(GetMemberBinder binder, out object result)

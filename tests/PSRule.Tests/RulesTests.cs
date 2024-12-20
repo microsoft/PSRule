@@ -23,7 +23,7 @@ public sealed class RulesTests : ContextBaseTests
     public void ReadYamlRule()
     {
         var context = new RunspaceContext(GetPipelineContext(sources: GetSource()));
-        context.Init(GetSource());
+        context.Initialize(GetSource());
         context.Begin();
 
         // From current path
@@ -60,7 +60,7 @@ public sealed class RulesTests : ContextBaseTests
     {
         var sources = GetSource("FromFileSubSelector.Rule.yaml");
         var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
 
         // From current path
@@ -71,7 +71,7 @@ public sealed class RulesTests : ContextBaseTests
         Assert.Equal("YamlRuleWithSubselectorReordered", rule[2].Name);
         Assert.Equal("YamlRuleWithQuantifier", rule[3].Name);
 
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
         var subselector1 = GetRuleVisitor(context, "YamlRuleWithPrecondition", sources);
         var subselector2 = GetRuleVisitor(context, "YamlRuleWithSubselector", sources);
@@ -133,7 +133,7 @@ public sealed class RulesTests : ContextBaseTests
     {
         var sources = GetSource();
         var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
 
         var yamlTrue = GetRuleVisitor(context, "RuleYamlTrue");
@@ -197,7 +197,7 @@ public sealed class RulesTests : ContextBaseTests
     {
         var sources = GetSource();
         var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
 
         var yamlObjectPath = GetRuleVisitor(context, "YamlObjectPath");
@@ -230,7 +230,7 @@ public sealed class RulesTests : ContextBaseTests
     {
         var sources = GetSource();
         var context = new RunspaceContext(GetPipelineContext());
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
 
         // From current path
@@ -267,7 +267,7 @@ public sealed class RulesTests : ContextBaseTests
     {
         var sources = GetSource("FromFileSubSelector.Rule.jsonc");
         var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
 
         // From current path
@@ -278,7 +278,7 @@ public sealed class RulesTests : ContextBaseTests
         Assert.Equal("JsonRuleWithSubselectorReordered", rule[2].Name);
         Assert.Equal("JsonRuleWithQuantifier", rule[3].Name);
 
-        context.Init(GetSource("FromFileSubSelector.Rule.yaml"));
+        context.Initialize(GetSource("FromFileSubSelector.Rule.yaml"));
         context.Begin();
         var subselector1 = GetRuleVisitor(context, "JsonRuleWithPrecondition", sources);
         var subselector2 = GetRuleVisitor(context, "JsonRuleWithSubselector", sources);

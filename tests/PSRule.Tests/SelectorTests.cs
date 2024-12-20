@@ -28,7 +28,7 @@ public sealed class SelectorTests : ContextBaseTests
         var testObject = GetObject((name: "value", value: 3));
         var sources = GetSource(path);
         var context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources));
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
         var selector = HostHelper.GetSelectorForTests(sources, context).ToArray();
         Assert.NotNull(selector);
@@ -1871,7 +1871,7 @@ public sealed class SelectorTests : ContextBaseTests
     {
         var optionBuilder = new OptionContextBuilder(option: GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
         context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: optionBuilder));
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
         var selector = HostHelper.GetSelectorForTests(sources, context).ToArray().FirstOrDefault(s => s.Name == name);
         context.EnterLanguageScope(selector.Source);

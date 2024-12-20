@@ -677,11 +677,11 @@ internal static class HostHelper
     /// <summary>
     /// Get conventions.
     /// </summary>
-    private static IConvention[] GetConventions(ILanguageBlock[] blocks, RunspaceContext context)
+    private static IConventionV1[] GetConventions(ILanguageBlock[] blocks, RunspaceContext context)
     {
         // Index by Id.
         var index = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var results = new List<IConvention>(blocks.Length);
+        var results = new List<IConventionV1>(blocks.Length);
 
         foreach (var block in blocks.OfType<ScriptBlockConvention>().ToArray())
         {
@@ -701,7 +701,7 @@ internal static class HostHelper
                 context.ExitLanguageScope(block.Source);
             }
         }
-        return Sort(context, results.ToArray());
+        return Sort(context, [.. results]);
     }
 
     private static SelectorV1[] ToSelectorV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
@@ -729,10 +729,10 @@ internal static class HostHelper
                 context.ExitLanguageScope(block.Source);
             }
         }
-        return results.Values.ToArray();
+        return [.. results.Values];
     }
 
-    private static void Import(IConvention[] blocks, RunspaceContext context)
+    private static void Import(IConventionV1[] blocks, RunspaceContext context)
     {
         foreach (var resource in blocks)
             context.Import(resource);
@@ -808,7 +808,7 @@ internal static class HostHelper
         }
     }
 
-    private static IConvention[] Sort(RunspaceContext context, IConvention[] conventions)
+    private static IConventionV1[] Sort(RunspaceContext context, IConventionV1[] conventions)
     {
         Array.Sort(conventions, new ConventionComparer(context));
         return conventions;

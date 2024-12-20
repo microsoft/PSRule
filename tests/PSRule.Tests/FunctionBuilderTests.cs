@@ -32,7 +32,7 @@ public sealed class FunctionBuilderTests : ContextBaseTests
     private SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
     {
         context = new RunspaceContext(GetPipelineContext());
-        context.Init(source);
+        context.Initialize(source);
         context.Begin();
         var selector = HostHelper.GetSelectorForTests(source, context).ToArray().FirstOrDefault(s => s.Name == name);
         return new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
