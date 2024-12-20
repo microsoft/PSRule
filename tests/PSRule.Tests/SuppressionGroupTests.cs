@@ -20,7 +20,7 @@ public sealed class SuppressionGroupTests : ContextBaseTests
         var sources = GetSource(path);
         var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
         var context = new RunspaceContext(GetPipelineContext(option: GetOption(), optionBuilder: GetOptionContext(), sources: sources, resourceCache: resourcesCache));
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
 
         var suppressionGroup = resourcesCache.OfType<SuppressionGroupV1>().ToArray();
@@ -62,7 +62,7 @@ public sealed class SuppressionGroupTests : ContextBaseTests
         var sources = GetSource(path);
         var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
         var context = new RunspaceContext(GetPipelineContext(option: GetOption(), optionBuilder: GetOptionContext(), sources: sources, resourceCache: resourcesCache));
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
 
         var suppressionGroup = resourcesCache.OfType<SuppressionGroupV1>().Where(g => g.Id.Equals(".\\SuppressWithExpiry"));

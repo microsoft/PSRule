@@ -71,7 +71,7 @@ internal sealed class OptionContext
 
     public string[] InputTargetType { get; }
 
-    internal int GetConventionOrder(IConvention convention)
+    internal int GetConventionOrder(IConventionV1 convention)
     {
         if (Convention?.Include == null || Convention.Include.Length == 0)
             return -1;

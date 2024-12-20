@@ -201,7 +201,7 @@ public sealed class BaselineTests : ContextBaseTests
     private Baseline[] GetBaselines(Source[] sources)
     {
         var context = new RunspaceContext(GetPipelineContext(sources: sources));
-        context.Init(sources);
+        context.Initialize(sources);
         context.Begin();
         var baseline = HostHelper.GetBaseline(sources, context).ToArray();
         return baseline;

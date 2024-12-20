@@ -8,7 +8,7 @@ using PSRule.Runtime;
 namespace PSRule.Definitions.Conventions;
 
 [DebuggerDisplay("{Id}")]
-internal abstract class BaseConvention : IConvention
+internal abstract class BaseConvention
 {
     protected BaseConvention(ISourceFile source, string name)
     {

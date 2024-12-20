@@ -6,10 +6,8 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions;
 
-internal interface IConvention : ILanguageBlock
+internal interface IConventionV1 : IResource
 {
-    string Name { get; }
-
     void Initialize(RunspaceContext context, IEnumerable input);
 
     void Begin(RunspaceContext context, IEnumerable input);

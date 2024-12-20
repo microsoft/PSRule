@@ -28,7 +28,7 @@ internal abstract class RulePipeline : IPipeline
         Writer = writer;
 
         // Initialize contexts
-        Context.Init(source);
+        Context.Initialize(source);
     }
 
     #region IPipeline

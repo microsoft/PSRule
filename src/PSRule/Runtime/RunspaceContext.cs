@@ -62,7 +62,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     private readonly Stopwatch _RuleTimer;
     private readonly List<ResultReason> _Reason;
-    private readonly List<IConvention> _Conventions;
+    private readonly List<IConventionV1> _Conventions;
 
     // Track whether Dispose has been called.
     private bool _Disposed;
@@ -640,14 +640,14 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         ExitLanguageScope(ruleBlock.Source);
     }
 
-    internal void Import(IConvention resource)
+    internal void Import(IConventionV1 resource)
     {
         _Conventions.Add(resource);
     }
 
     internal void AddService(string id, object service)
     {
-        if (LanguageScope == null) throw new Exception("Can not call out of scope.");
+        if (LanguageScope == null) throw new InvalidOperationException("Can not call out of scope.");
 
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
         if (!StringComparer.OrdinalIgnoreCase.Equals(LanguageScope.Name, scopeName) || string.IsNullOrEmpty(name))
@@ -658,7 +658,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     internal object? GetService(string id)
     {
-        if (LanguageScope == null) throw new Exception("Can not call out of scope.");
+        if (LanguageScope == null) throw new InvalidOperationException("Can not call out of scope.");
 
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
         return !Pipeline.LanguageScope.TryScope(scopeName, out var scope) || string.IsNullOrEmpty(name) ? null : scope.GetService(name);
@@ -719,7 +719,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         _Reason.Add(reason);
     }
 
-    public void Init(Source[] source)
+    public void Initialize(Source[] source)
     {
         foreach (var languageScope in Pipeline.LanguageScope.Get())
             Pipeline.UpdateLanguageScope(languageScope);

@@ -116,7 +116,7 @@ public sealed class PSRuleOptionTests : ContextBaseTests
     {
         var optionBuilder = new OptionContextBuilder(option);
         var context = new Runtime.RunspaceContext(GetPipelineContext(option: option, optionBuilder: optionBuilder));
-        context.Init(null);
+        context.Initialize(null);
         context.Begin();
         context.EnterLanguageScope(GetSource()[0].File[0]);
         return new Runtime.Configuration(context);

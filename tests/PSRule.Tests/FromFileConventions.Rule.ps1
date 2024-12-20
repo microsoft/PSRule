@@ -81,7 +81,7 @@ Export-PSRuleConvention 'Convention.WithLocalizedData' -Initialize {
     Write-Information -MessageData ($LocalizedData.WithLocalizedDataMessage -f 'End')
 }
 
-# Syopsis: Test localized data in pre-condition.
+# Synopsis: Test localized data in pre-condition.
 Rule 'WithLocalizedDataPrecondition' -If { Write-Information -MessageData ($LocalizedData.WithLocalizedDataMessage -f 'Precondition'); $True; } {
     $Assert.Pass();
 }

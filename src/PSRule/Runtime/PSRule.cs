@@ -9,16 +9,18 @@ using PSRule.Pipeline;
 
 namespace PSRule.Runtime;
 
+#nullable enable
+
 /// <summary>
 /// A set of context properties that are exposed at runtime through the $PSRule variable.
 /// </summary>
 public sealed class PSRule : ScopedItem
 {
-    private ITargetSourceCollection _Source;
-    private IInputCollection _Input;
-    private ITargetIssueCollection _Issue;
-    private IBadgeBuilder _BadgeBuilder;
-    private IRepositoryRuntimeInfo _Repository;
+    private ITargetSourceCollection? _Source;
+    private IInputCollection? _Input;
+    private ITargetIssueCollection? _Issue;
+    private IBadgeBuilder? _BadgeBuilder;
+    private IRepositoryRuntimeInfo? _Repository;
 
     /// <summary>
     /// Create an empty instance.
@@ -33,7 +35,7 @@ public sealed class PSRule : ScopedItem
         internal PSRuleSource(RunspaceContext context)
             : base(context) { }
 
-        public TargetSourceInfo this[string type]
+        public TargetSourceInfo? this[string type]
         {
             get
             {
@@ -47,14 +49,14 @@ public sealed class PSRule : ScopedItem
         internal PSRuleIssue(RunspaceContext context)
             : base(context) { }
 
-        public TargetIssueInfo[] Get(string type = null)
+        public TargetIssueInfo[]? Get(string? type = null)
         {
-            return GetContext().TargetObject.Issue.Get(type);
+            return GetContext().TargetObject?.Issue?.Get(type);
         }
 
-        public bool Any(string type = null)
+        public bool Any(string? type = null)
         {
-            return GetContext().TargetObject.Issue.Any(type);
+            return GetContext().TargetObject?.Issue?.Any(type) ?? false;
         }
     }
 
@@ -74,7 +76,7 @@ public sealed class PSRule : ScopedItem
 
     private sealed class PSRuleRepository : ScopedItem, IRepositoryRuntimeInfo
     {
-        private InputFileInfoCollection _ChangedFiles;
+        private InputFileInfoCollection? _ChangedFiles;
 
         internal PSRuleRepository(RunspaceContext context)
             : base(context)
@@ -113,12 +115,12 @@ public sealed class PSRule : ScopedItem
     /// <summary>
     /// Custom data set by the rule for this target object.
     /// </summary>
-    public Hashtable Data
+    public Hashtable? Data
     {
         get
         {
             RequireScope(RunspaceScope.Rule | RunspaceScope.Precondition | RunspaceScope.ConventionBegin | RunspaceScope.ConventionProcess);
-            return GetContext().TargetObject.RequireData();
+            return GetContext()?.TargetObject?.RequireData();
         }
     }
 
@@ -131,12 +133,12 @@ public sealed class PSRule : ScopedItem
     /// <exception cref="RuntimeScopeException">
     /// Thrown when accessing this property outside of a rule or pre-condition.
     /// </exception>
-    public Hashtable Field
+    public Hashtable? Field
     {
         get
         {
             RequireScope(RunspaceScope.Rule | RunspaceScope.Precondition);
-            return GetContext().RuleRecord.Field;
+            return GetContext().RuleRecord?.Field;
         }
     }
 
@@ -165,7 +167,7 @@ public sealed class PSRule : ScopedItem
     /// <exception cref="RuntimeScopeException">
     /// Thrown when accessing this property outside of an end convention block.
     /// </exception>
-    public IEnumerable<InvokeResult> Output
+    public IEnumerable<InvokeResult>? Output
     {
         get
         {
@@ -187,22 +189,22 @@ public sealed class PSRule : ScopedItem
     /// <summary>
     /// The current target object.
     /// </summary>
-    public PSObject TargetObject => GetContext().TargetObject.Value;
+    public PSObject? TargetObject => GetContext().TargetObject?.Value;
 
     /// <summary>
     /// The bound name of the target object.
     /// </summary>
-    public string TargetName => GetContext().RuleRecord.TargetName;
+    public string? TargetName => GetContext().RuleRecord?.TargetName;
 
     /// <summary>
     /// The bound type of the target object.
     /// </summary>
-    public string TargetType => GetContext().RuleRecord.TargetType;
+    public string? TargetType => GetContext().RuleRecord?.TargetType;
 
     /// <summary>
     /// The bound scope of the target object.
     /// </summary>
-    public string[] Scope => GetContext().TargetObject.Scope;
+    public string[]? Scope => GetContext().TargetObject?.Scope;
 
     /// <summary>
     /// Attempts to read content from disk.
@@ -210,7 +212,7 @@ public sealed class PSRule : ScopedItem
     public PSObject[] GetContent(PSObject sourceObject)
     {
         if (sourceObject == null)
-            return Array.Empty<PSObject>();
+            return [];
 
         if (!(sourceObject.BaseObject is InputFileInfo || sourceObject.BaseObject is FileInfo || sourceObject.BaseObject is Uri))
             return [sourceObject];
@@ -242,23 +244,25 @@ public sealed class PSRule : ScopedItem
         {
             if (ObjectHelper.GetPath(null, content[i], field, false, out object value) && value != null)
             {
-                if (value is IEnumerable evalue)
+                if (value is IEnumerable e)
                 {
-                    foreach (var item in evalue)
+                    foreach (var item in e)
+                    {
                         result.Add(PSObject.AsPSObject(item));
+                    }
                 }
                 else
                     result.Add(PSObject.AsPSObject(value));
             }
 
         }
-        return result.ToArray();
+        return [.. result];
     }
 
     /// <summary>
     /// Attempts to read content from disk and return the first object or null.
     /// </summary>
-    public PSObject GetContentFirstOrDefault(PSObject sourceObject)
+    public PSObject? GetContentFirstOrDefault(PSObject sourceObject)
     {
         var content = GetContent(sourceObject);
         return IsEmptyContent(content) ? null : content[0];
@@ -270,7 +274,7 @@ public sealed class PSRule : ScopedItem
     }
 
     /// <summary>
-    /// Evalute an object path expression and returns the resulting objects.
+    /// Evaluate an object path expression and returns the resulting objects.
     /// </summary>
     public object[] GetPath(object sourceObject, string path)
     {
@@ -308,7 +312,7 @@ public sealed class PSRule : ScopedItem
     /// <exception cref="RuntimeScopeException">
     /// Thrown when accessing this method outside of a convention initialize or begin block.
     /// </exception>
-    public void ImportWithType(string type, PSObject[] sourceObject)
+    public void ImportWithType(string? type, PSObject[] sourceObject)
     {
         if (sourceObject == null || sourceObject.Length == 0)
             return;
@@ -319,7 +323,7 @@ public sealed class PSRule : ScopedItem
             if (sourceObject[i] == null)
                 continue;
 
-            GetContext().Pipeline.Reader.Enqueue(sourceObject[i], type, skipExpansion: true);
+            GetContext().Pipeline.Reader.Enqueue(sourceObject[i], targetType: type, skipExpansion: true);
         }
     }
 
@@ -352,7 +356,7 @@ public sealed class PSRule : ScopedItem
     /// <exception cref="RuntimeScopeException">
     /// Thrown when accessing this method outside of PSRule.
     /// </exception>
-    public object GetService(string id)
+    public object? GetService(string id)
     {
         if (string.IsNullOrEmpty(id))
             return null;
@@ -392,3 +396,5 @@ public sealed class PSRule : ScopedItem
 
     #endregion Helper methods
 }
+
+#nullable restore
