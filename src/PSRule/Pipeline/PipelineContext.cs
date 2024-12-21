@@ -8,6 +8,8 @@ using System.Management.Automation.Runspaces;
 using System.Text;
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Conventions;
+using PSRule.Definitions.Rules;
 using PSRule.Definitions.Selectors;
 using PSRule.Definitions.SuppressionGroups;
 using PSRule.Host;
@@ -153,8 +155,16 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         return _Runspace;
     }
 
-    internal void Begin(RunspaceContext runspaceContext)
+    internal void Initialize(RunspaceContext runspaceContext, Source[] sources)
     {
+        // Import PS Language Blocks.
+        var blocks = HostHelper.GetPSResources<ILanguageBlock>(sources, runspaceContext);
+        var conventions = blocks.ToConventionsV1(runspaceContext);
+        var rules = blocks.ToRuleV1(runspaceContext);
+
+        ResourceCache.Import(conventions);
+        ResourceCache.Import(rules);
+
         ReportUnresolved(runspaceContext);
         ReportIssue(runspaceContext);
 

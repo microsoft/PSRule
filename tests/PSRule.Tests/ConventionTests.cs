@@ -1,8 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Linq;
 using System.Management.Automation;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Pipeline;
 
 namespace PSRule;
@@ -10,23 +12,29 @@ namespace PSRule;
 public sealed class ConventionTests : BaseTests
 {
     [Fact]
-    public void WithConventions()
+    public void Invoke_WithConventions_CallsConventions()
     {
         var testObject1 = new TestObject { Name = "TestObject1" };
         var option = GetOption();
         option.Rule.Include = ["ConventionTest"];
         option.Convention.Include = ["Convention1"];
+
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
-        var pipeline = builder.Build();
+        var pipeline = builder.Build() as InvokeRulePipeline;
 
         Assert.NotNull(pipeline);
+
+        // Check conventions have been imported.
+        var conventions = pipeline.Context.Pipeline.ResourceCache.OfType<IConventionV1>();
+        Assert.NotEmpty(conventions);
+
         pipeline.Begin();
         pipeline.Process(PSObject.AsPSObject(testObject1));
         pipeline.End();
     }
 
     [Fact]
-    public void ConventionOrder()
+    public void Invoke_WithConventions_CallConventionsInOrder()
     {
         var testObject1 = new TestObject { Name = "TestObject1" };
         var option = GetOption();

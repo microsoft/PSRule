@@ -28,7 +28,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     internal InvokeRulePipeline(PipelineContext context, Source[] source, IPipelineWriter writer, RuleOutcome outcome)
         : base(context, source, context.Reader, writer)
     {
-        _RuleGraph = HostHelper.GetRuleBlockGraph(Source, Context);
+        _RuleGraph = HostHelper.GetRuleBlockGraph(Context);
         RuleCount = _RuleGraph.Count;
         if (RuleCount == 0)
             Context.WarnRuleNotFound();

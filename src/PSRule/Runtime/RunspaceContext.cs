@@ -6,6 +6,7 @@ using System.Management.Automation;
 using System.Management.Automation.Language;
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Conventions;
 using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -62,7 +63,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     private readonly Stopwatch _RuleTimer;
     private readonly List<ResultReason> _Reason;
-    private readonly List<IConventionV1> _Conventions;
+    private IConventionV1[]? _Conventions;
 
     // Track whether Dispose has been called.
     private bool _Disposed;
@@ -84,7 +85,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         _ObjectNumber = -1;
         _RuleTimer = new Stopwatch();
         _Reason = [];
-        _Conventions = [];
         _Scope = new Stack<RunspaceScope>();
     }
 
@@ -640,11 +640,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         ExitLanguageScope(ruleBlock.Source);
     }
 
-    internal void Import(IConventionV1 resource)
-    {
-        _Conventions.Add(resource);
-    }
-
     internal void AddService(string id, object service)
     {
         if (LanguageScope == null) throw new InvalidOperationException("Can not call out of scope.");
@@ -666,43 +661,26 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     private void RunConventionInitialize()
     {
-        if (IsEmptyConventions())
-            return;
-
-        for (var i = 0; i < _Conventions.Count; i++)
+        for (var i = 0; _Conventions != null && i < _Conventions.Length; i++)
             _Conventions[i].Initialize(this, null);
     }
 
     private void RunConventionBegin()
     {
-        if (IsEmptyConventions())
-            return;
-
-        for (var i = 0; i < _Conventions.Count; i++)
+        for (var i = 0; _Conventions != null && i < _Conventions.Length; i++)
             _Conventions[i].Begin(this, null);
     }
 
     private void RunConventionProcess()
     {
-        if (IsEmptyConventions())
-            return;
-
-        for (var i = 0; i < _Conventions.Count; i++)
+        for (var i = 0; _Conventions != null && i < _Conventions.Length; i++)
             _Conventions[i].Process(this, null);
     }
 
     private void RunConventionEnd()
     {
-        if (IsEmptyConventions())
-            return;
-
-        for (var i = 0; i < _Conventions.Count; i++)
+        for (var i = 0; _Conventions != null && i < _Conventions.Length; i++)
             _Conventions[i].End(this, null);
-    }
-
-    private bool IsEmptyConventions()
-    {
-        return _Conventions == null || _Conventions.Count == 0;
     }
 
     internal void WriteReason(ResultReason[] reason)
@@ -742,13 +720,18 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
         foreach (var languageScope in Pipeline.LanguageScope.Get())
             Pipeline.UpdateLanguageScope(languageScope);
+
+        Pipeline.Initialize(this, source);
+
+        _Conventions = Pipeline.ResourceCache.OfType<IConventionV1>().ToArray();
+        Array.Sort(_Conventions, new ConventionComparer(Pipeline.GetConventionOrder));
+
+        RunConventionInitialize();
     }
 
     public void Begin()
     {
-        Pipeline.Begin(this);
-
-        RunConventionInitialize();
+        // Do nothing.
     }
 
     public void End(IEnumerable<InvokeResult> output)
@@ -891,7 +874,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
             {
                 _RuleTimer.Stop();
                 _Reason.Clear();
-                for (var i = 0; _Conventions != null && i < _Conventions.Count; i++)
+                for (var i = 0; _Conventions != null && i < _Conventions.Length; i++)
                 {
                     if (_Conventions[i] is IDisposable d)
                         d.Dispose();

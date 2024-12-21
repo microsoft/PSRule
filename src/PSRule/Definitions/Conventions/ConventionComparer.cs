@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Runtime;
-
 namespace PSRule.Definitions.Conventions;
 
 /// <summary>
@@ -10,15 +8,15 @@ namespace PSRule.Definitions.Conventions;
 /// </summary>
 internal sealed class ConventionComparer : IComparer<IConventionV1>
 {
-    private readonly RunspaceContext _Context;
+    private readonly Func<IConventionV1, int> _GetOrder;
 
-    internal ConventionComparer(RunspaceContext context)
+    internal ConventionComparer(Func<IConventionV1, int> getOrder)
     {
-        _Context = context;
+        _GetOrder = getOrder;
     }
 
     public int Compare(IConventionV1 x, IConventionV1 y)
     {
-        return _Context.Pipeline.GetConventionOrder(x) - _Context.Pipeline.GetConventionOrder(y);
+        return _GetOrder(x) - _GetOrder(y);
     }
 }

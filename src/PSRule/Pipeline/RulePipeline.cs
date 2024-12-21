@@ -10,7 +10,7 @@ namespace PSRule.Pipeline;
 internal abstract class RulePipeline : IPipeline
 {
     protected readonly PipelineContext Pipeline;
-    protected readonly RunspaceContext Context;
+    internal readonly RunspaceContext Context;
     protected readonly Source[] Source;
     protected readonly IPipelineReader Reader;
     protected readonly IPipelineWriter Writer;

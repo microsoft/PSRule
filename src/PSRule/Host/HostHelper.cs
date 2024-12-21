@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Text;
@@ -10,7 +9,6 @@ using PSRule.Annotations;
 using PSRule.Converters.Yaml;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
-using PSRule.Definitions.Conventions;
 using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Rules;
 using PSRule.Definitions.Selectors;
@@ -23,34 +21,40 @@ using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization.NodeDeserializers;
-using Rule = PSRule.Rules.Rule;
 
 namespace PSRule.Host;
+
+#nullable enable
 
 internal static class HostHelper
 {
     private const string Markdown_Extension = ".md";
 
-    internal static IRuleV1[] GetRule(Source[] source, RunspaceContext runspaceContext, bool includeDependencies)
+    internal static IRuleV1[] GetRule(RunspaceContext context, bool includeDependencies)
     {
-        var rules = ToRuleV1(GetLanguageBlock(runspaceContext, source), runspaceContext);
-        var builder = new DependencyGraphBuilder<IRuleV1>(runspaceContext, includeDependencies, includeDisabled: true);
-        builder.Include(rules, filter: (b) => Match(runspaceContext, b));
+        var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
+        var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: false);
+
+        var builder = new DependencyGraphBuilder<RuleBlock>(context, includeDependencies, includeDisabled: true);
+        builder.Include(blocks, filter: (b) => Match(context, b));
         return builder.GetItems();
     }
 
-    internal static RuleHelpInfo[] GetRuleHelp(Source[] source, RunspaceContext context)
+    internal static RuleHelpInfo[] GetRuleHelp(RunspaceContext context)
     {
-        return ToRuleHelp(ToRuleBlockV1(GetLanguageBlock(context, source), context, skipDuplicateName: true).GetAll(), context);
+        var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
+        var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: true);
+
+        return blocks.GetAll().ToRuleHelp(context);
     }
 
-    internal static DependencyGraph<RuleBlock> GetRuleBlockGraph(Source[] source, RunspaceContext context)
+    internal static DependencyGraph<RuleBlock> GetRuleBlockGraph(RunspaceContext context)
     {
-        var blocks = GetLanguageBlock(context, source);
-        var rules = ToRuleBlockV1(blocks, context, skipDuplicateName: false);
-        Import(GetConventions(blocks, context), context);
+        var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
+        var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: false);
+
         var builder = new DependencyGraphBuilder<RuleBlock>(context, includeDependencies: true, includeDisabled: false);
-        builder.Include(rules, filter: (b) => Match(context, b));
+        builder.Include(blocks, filter: (b) => Match(context, b));
         return builder.Build();
     }
 
@@ -68,11 +72,23 @@ internal static class HostHelper
     }
 
     /// <summary>
+    /// Get PS resources which are resource defined in PowerShell.
+    /// </summary>
+    internal static IEnumerable<T> GetPSResources<T>(Source[] source, RunspaceContext context) where T : ILanguageBlock
+    {
+        if (source == null || source.Length == 0) return [];
+
+        var results = new List<T>();
+        results.AddRange(GetPSLanguageBlocks(context, source).OfType<T>());
+        return results;
+    }
+
+    /// <summary>
     /// Read YAML/JSON objects and return baselines.
     /// </summary>
     internal static IEnumerable<Baseline> GetBaseline(Source[] source, RunspaceContext context)
     {
-        return ToBaselineV1(GetMetaResources<ILanguageBlock>(source, context), context);
+        return GetMetaResources<ILanguageBlock>(source, context).ToBaselineV1(context);
     }
 
     /// <summary>
@@ -80,7 +96,7 @@ internal static class HostHelper
     /// </summary>
     internal static IEnumerable<ModuleConfigV1> GetModuleConfigForTests(Source[] source, RunspaceContext context)
     {
-        return ToModuleConfigV1(GetMetaResources<ILanguageBlock>(source, context), context);
+        return GetMetaResources<ILanguageBlock>(source, context).ToModuleConfigV1(context);
     }
 
     /// <summary>
@@ -88,7 +104,7 @@ internal static class HostHelper
     /// </summary>
     internal static IEnumerable<SelectorV1> GetSelectorForTests(Source[] source, RunspaceContext context)
     {
-        return ToSelectorV1(GetMetaResources<ILanguageBlock>(source, context), context);
+        return GetMetaResources<ILanguageBlock>(source, context).ToSelectorV1(context);
     }
 
     /// <summary>
@@ -143,17 +159,6 @@ internal static class HostHelper
             ps.Runspace = null;
             ps.Dispose();
         }
-    }
-
-    /// <summary>
-    /// Get all the language elements.
-    /// </summary>
-    private static ILanguageBlock[] GetLanguageBlock(RunspaceContext context, Source[] sources)
-    {
-        var results = new List<ILanguageBlock>();
-        results.AddRange(GetPSLanguageBlocks(context, sources));
-        results.AddRange(GetMetaResources<ILanguageBlock>(sources, context));
-        return [.. results];
     }
 
     /// <summary>
@@ -420,429 +425,18 @@ internal static class HostHelper
         //}
     }
 
-    /// <summary>
-    /// Convert matching language blocks to rules.
-    /// </summary>
-    private static DependencyTargetCollection<IRuleV1> ToRuleV1(ILanguageBlock[] blocks, RunspaceContext runspaceContext)
-    {
-        // Index rules by RuleId
-        var results = new DependencyTargetCollection<IRuleV1>();
-
-        // Keep track of rule names and ids that have been added
-        var knownRuleNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var knownRuleIds = new HashSet<ResourceId>(ResourceIdEqualityComparer.Default);
-
-
-        foreach (var block in blocks.OfType<RuleBlock>())
-        {
-            if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
-            {
-                runspaceContext.DuplicateResourceId(block.Id, duplicateId.Value);
-                continue;
-            }
-
-            if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
-                runspaceContext.WarnDuplicateRuleName(duplicateName);
-
-            results.TryAdd(new Rule
-            {
-                Id = block.Id,
-                Ref = block.Ref,
-                Alias = block.Alias,
-                Source = block.Source,
-                Tag = block.Tag,
-                Level = block.Level,
-                Info = block.Info,
-                DependsOn = block.DependsOn,
-                Flags = block.Flags,
-                Extent = block.Extent,
-                Labels = block.Labels,
-            });
-            knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
-            knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
-        }
-
-        foreach (var block in blocks.OfType<RuleV1>())
-        {
-            if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
-            {
-                runspaceContext.DuplicateResourceId(block.Id, duplicateId.Value);
-                continue;
-            }
-
-            if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
-                runspaceContext.WarnDuplicateRuleName(duplicateName);
-
-            runspaceContext.EnterLanguageScope(block.Source);
-            try
-            {
-                var info = GetRuleHelpInfo(runspaceContext, block);
-                results.TryAdd(new Rule
-                {
-                    Id = block.Id,
-                    Ref = block.Ref,
-                    Alias = block.Alias,
-                    Source = block.Source,
-                    Tag = block.Metadata.Tags,
-                    Level = block.Level,
-                    Info = info,
-                    DependsOn = null, // TODO: No support for DependsOn yet
-                    Flags = block.Flags,
-                    Extent = block.Extent,
-                    Labels = block.Metadata.Labels,
-                });
-                knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
-                knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
-            }
-            finally
-            {
-                runspaceContext.ExitLanguageScope(block.Source);
-            }
-        }
-        return results;
-    }
-
-    private static DependencyTargetCollection<RuleBlock> ToRuleBlockV1(ILanguageBlock[] blocks, RunspaceContext context, bool skipDuplicateName)
-    {
-        // Index rules by RuleId
-        var results = new DependencyTargetCollection<RuleBlock>();
-
-        // Keep track of rule names and ids that have been added
-        var knownRuleNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var knownRuleIds = new HashSet<ResourceId>(ResourceIdEqualityComparer.Default);
-
-        // Process from PowerShell
-        foreach (var block in blocks.OfType<RuleBlock>())
-        {
-            if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
-            {
-                context.DuplicateResourceId(block.Id, duplicateId.Value);
-                continue;
-            }
-            if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
-            {
-                context.WarnDuplicateRuleName(duplicateName);
-                if (skipDuplicateName)
-                    continue;
-            }
-
-            results.TryAdd(block);
-            knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
-            knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
-        }
-
-        // Process from YAML/ JSON
-        foreach (var block in blocks.OfType<RuleV1>())
-        {
-            var ruleName = block.Name;
-            if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
-            {
-                context.DuplicateResourceId(block.Id, duplicateId.Value);
-                continue;
-            }
-            if (knownRuleNames.ContainsNames(block.Id, block.Ref, block.Alias, out var duplicateName))
-            {
-                context.WarnDuplicateRuleName(duplicateName);
-                if (skipDuplicateName)
-                    continue;
-            }
-
-            context.EnterLanguageScope(block.Source);
-            context.LanguageScope.TryGetOverride(block.Id, out var propertyOverride);
-            try
-            {
-                var info = GetRuleHelpInfo(context, block) ?? new RuleHelpInfo(
-                    ruleName,
-                    ruleName,
-                    block.Source.Module,
-                    synopsis: new InfoString(block.Synopsis)
-                );
-                MergeAnnotations(info, block.Metadata);
-
-                results.TryAdd(new RuleBlock
-                (
-                    source: block.Source,
-                    id: block.Id,
-                    @ref: block.Ref,
-                    @default: new RuleProperties
-                    {
-                        Level = block.Level
-                    },
-                    @override: propertyOverride,
-                    info: info,
-                    condition: new RuleVisitor(context, block.Id, block.Source, block.Spec),
-                    alias: block.Alias,
-                    tag: block.Metadata.Tags,
-                    dependsOn: null,  // No support for DependsOn yet
-                    configuration: null, // No support for rule configuration use module or workspace config
-                    extent: null,
-                    flags: block.Flags,
-                    labels: block.Metadata.Labels
-                ));
-                knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
-                knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
-            }
-            finally
-            {
-                context.ExitLanguageScope(block.Source);
-            }
-        }
-        return results;
-    }
-
-    private static void MergeAnnotations(RuleHelpInfo info, ResourceMetadata metadata)
-    {
-        if (info == null || metadata == null || metadata.Annotations == null || metadata.Annotations.Count == 0)
-            return;
-
-        info.Annotations ??= new Hashtable(StringComparer.OrdinalIgnoreCase);
-        foreach (var kv in metadata.Annotations)
-        {
-            if (!info.Annotations.ContainsKey(kv.Key))
-                info.Annotations[kv.Key] = kv.Value;
-        }
-        if (!info.HasOnlineHelp())
-            info.SetOnlineHelpUrl(metadata.Link);
-    }
-
-    private static RuleHelpInfo[] ToRuleHelp(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
-    {
-        // Index rules by RuleId
-        var results = new Dictionary<string, RuleHelpInfo>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var block in blocks.OfType<RuleBlock>())
-        {
-            context.EnterLanguageScope(block.Source);
-            try
-            {
-                // Ignore rule blocks that don't match
-                if (!Match(context, block))
-                    continue;
-
-                if (!results.ContainsKey(block.Id.Value))
-                    results[block.Id.Value] = block.Info;
-            }
-            finally
-            {
-                context.ExitLanguageScope(block.Source);
-            }
-
-        }
-        return [.. results.Values];
-    }
-
-    private static Baseline[] ToBaselineV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
-    {
-        if (blocks == null)
-            return [];
-
-        // Index baselines by BaselineId
-        var results = new Dictionary<string, Baseline>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var block in blocks.OfType<Baseline>().ToArray())
-        {
-            context.EnterLanguageScope(block.Source);
-            try
-            {
-                // Ignore baselines that don't match
-                if (!Match(context, block))
-                    continue;
-
-                if (!results.ContainsKey(block.BaselineId))
-                    results[block.BaselineId] = block;
-
-            }
-            finally
-            {
-                context.ExitLanguageScope(block.Source);
-            }
-        }
-        return [.. results.Values];
-    }
-
-    private static ModuleConfigV1[] ToModuleConfigV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
-    {
-        if (blocks == null) return [];
-
-        // Index configurations by Name.
-        var results = new Dictionary<string, ModuleConfigV1>(StringComparer.OrdinalIgnoreCase);
-        foreach (var block in blocks.OfType<ModuleConfigV1>().ToArray())
-        {
-            if (!results.ContainsKey(block.Name))
-                results[block.Name] = block;
-        }
-        return [.. results.Values];
-    }
-
-    /// <summary>
-    /// Get conventions.
-    /// </summary>
-    private static IConventionV1[] GetConventions(ILanguageBlock[] blocks, RunspaceContext context)
-    {
-        // Index by Id.
-        var index = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var results = new List<IConventionV1>(blocks.Length);
-
-        foreach (var block in blocks.OfType<ScriptBlockConvention>().ToArray())
-        {
-            context.EnterLanguageScope(block.Source);
-            try
-            {
-                // Ignore blocks that don't match.
-                if (!Match(context, block))
-                    continue;
-
-                if (!index.Contains(block.Id.Value))
-                    results.Add(block);
-
-            }
-            finally
-            {
-                context.ExitLanguageScope(block.Source);
-            }
-        }
-        return Sort(context, [.. results]);
-    }
-
-    private static SelectorV1[] ToSelectorV1(IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
-    {
-        if (blocks == null)
-            return Array.Empty<SelectorV1>();
-
-        // Index selectors by Id.
-        var results = new Dictionary<string, SelectorV1>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var block in blocks.OfType<SelectorV1>().ToArray())
-        {
-            context.EnterLanguageScope(block.Source);
-            try
-            {
-                // Ignore selectors that don't match.
-                if (!Match(context, block))
-                    continue;
-
-                if (!results.ContainsKey(block.Id.Value))
-                    results[block.Id.Value] = block;
-            }
-            finally
-            {
-                context.ExitLanguageScope(block.Source);
-            }
-        }
-        return [.. results.Values];
-    }
-
-    private static void Import(IConventionV1[] blocks, RunspaceContext context)
-    {
-        foreach (var resource in blocks)
-            context.Import(resource);
-    }
-
     private static bool Match(RunspaceContext context, RuleBlock resource)
     {
         try
         {
             context.EnterLanguageScope(resource.Source);
-            var filter = context.LanguageScope.GetFilter(ResourceKind.Rule);
+            var filter = context.LanguageScope!.GetFilter(ResourceKind.Rule);
             return filter == null || filter.Match(resource);
         }
         finally
         {
             context.ExitLanguageScope(resource.Source);
         }
-    }
-
-    private static bool Match(RunspaceContext context, IRuleV1 resource)
-    {
-        try
-        {
-            context.EnterLanguageScope(resource.Source);
-            var filter = context.LanguageScope.GetFilter(ResourceKind.Rule);
-            return filter == null || filter.Match(resource);
-        }
-        finally
-        {
-            context.ExitLanguageScope(resource.Source);
-        }
-    }
-
-    private static bool Match(RunspaceContext context, Baseline resource)
-    {
-        try
-        {
-            context.EnterLanguageScope(resource.Source);
-            var filter = context.LanguageScope.GetFilter(ResourceKind.Baseline);
-            return filter == null || filter.Match(resource);
-        }
-        finally
-        {
-            context.ExitLanguageScope(resource.Source);
-        }
-    }
-
-    private static bool Match(RunspaceContext context, ScriptBlockConvention block)
-    {
-        try
-        {
-            context.EnterLanguageScope(block.Source);
-            var filter = context.LanguageScope.GetFilter(ResourceKind.Convention);
-            return filter == null || filter.Match(block);
-        }
-        finally
-        {
-            context.ExitLanguageScope(block.Source);
-        }
-    }
-
-    private static bool Match(RunspaceContext context, SelectorV1 resource)
-    {
-        try
-        {
-            context.EnterLanguageScope(resource.Source);
-            var filter = context.LanguageScope.GetFilter(ResourceKind.Selector);
-            return filter == null || filter.Match(resource);
-        }
-        finally
-        {
-            context.ExitLanguageScope(resource.Source);
-        }
-    }
-
-    private static IConventionV1[] Sort(RunspaceContext context, IConventionV1[] conventions)
-    {
-        Array.Sort(conventions, new ConventionComparer(context));
-        return conventions;
-    }
-
-    internal static RuleHelpInfo GetRuleHelpInfo(RunspaceContext context, string name, string defaultSynopsis, string defaultDisplayName, InfoString defaultDescription, InfoString defaultRecommendation)
-    {
-        return !TryHelpPath(context, name, out var path, out var culture) || !TryDocument(path, culture, out var document)
-            ? new RuleHelpInfo(
-                name: name,
-                displayName: defaultDisplayName ?? name,
-                moduleName: context.Source.Module,
-                synopsis: InfoString.Create(defaultSynopsis),
-                description: defaultDescription,
-                recommendation: defaultRecommendation
-            )
-            : new RuleHelpInfo(
-                name: name,
-                displayName: document.Name ?? defaultDisplayName ?? name,
-                moduleName: context.Source.Module,
-                synopsis: document.Synopsis ?? new InfoString(defaultSynopsis),
-                description: document.Description ?? defaultDescription,
-                recommendation: document.Recommendation ?? defaultRecommendation ?? document.Synopsis ?? InfoString.Create(defaultSynopsis)
-            )
-            {
-                Notes = document.Notes?.Text,
-                Links = GetLinks(document.Links),
-                Annotations = document.Annotations?.ToHashtable()
-            };
-    }
-
-    private static RuleHelpInfo GetRuleHelpInfo(RunspaceContext context, IRuleV1 rule)
-    {
-        return GetRuleHelpInfo(context, rule.Name, rule.Synopsis, rule.Info.DisplayName, rule.Info.Description, rule.Recommendation);
     }
 
     internal static void UpdateHelpInfo(IGetLocalizedPathContext context, IResource resource)
@@ -853,35 +447,24 @@ internal static class HostHelper
         resource.Info.Update(info);
     }
 
-    private static bool TryHelpPath(IGetLocalizedPathContext context, string name, out string path, out string culture)
+    internal static bool TryHelpPath(IGetLocalizedPathContext context, string name, out string? path, out string? culture)
     {
         path = null;
         culture = null;
-        if (string.IsNullOrEmpty(context.Source.HelpPath))
+        if (string.IsNullOrEmpty(context?.Source?.HelpPath))
             return false;
 
         var helpFileName = string.Concat(name, Markdown_Extension);
-        path = context.GetLocalizedPath(helpFileName, out culture);
+        path = context?.GetLocalizedPath(helpFileName, out culture);
         return path != null;
     }
 
-    private static bool TryDocument(string path, string culture, out RuleDocument document)
-    {
-        document = null;
-        var markdown = File.ReadAllText(path);
-        if (string.IsNullOrEmpty(markdown))
-            return false;
-
-        var reader = new MarkdownReader(yamlHeaderOnly: false);
-        var stream = reader.Read(markdown, path);
-        var lexer = new RuleHelpLexer(culture);
-        document = lexer.Process(stream);
-        return document != null;
-    }
-
-    private static bool TryHelpInfo(string path, string culture, out IResourceHelpInfo info)
+    private static bool TryHelpInfo(string? path, string? culture, out IResourceHelpInfo? info)
     {
         info = null;
+        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(culture))
+            return false;
+
         var markdown = File.ReadAllText(path);
         if (string.IsNullOrEmpty(markdown))
             return false;
@@ -893,7 +476,50 @@ internal static class HostHelper
         return info != null;
     }
 
-    private static Rules.Link[] GetLinks(Help.Link[] links)
+    internal static RuleHelpInfo GetRuleHelpInfo(RunspaceContext context, string name, string defaultSynopsis, string defaultDisplayName, InfoString defaultDescription, InfoString defaultRecommendation)
+    {
+        return !TryHelpPath(context, name, out var path, out var culture) || !TryDocument(path, culture, out var document)
+            ? new RuleHelpInfo(
+                name: name,
+                displayName: defaultDisplayName ?? name,
+                moduleName: context.Source!.Module,
+                synopsis: InfoString.Create(defaultSynopsis),
+                description: defaultDescription,
+                recommendation: defaultRecommendation
+            )
+            : new RuleHelpInfo(
+                name: name,
+                displayName: document!.Name ?? defaultDisplayName ?? name,
+                moduleName: context.Source!.Module,
+                synopsis: document.Synopsis ?? new InfoString(defaultSynopsis),
+                description: document.Description ?? defaultDescription,
+                recommendation: document.Recommendation ?? defaultRecommendation ?? document.Synopsis ?? InfoString.Create(defaultSynopsis)
+            )
+            {
+                Notes = document.Notes?.Text,
+                Links = GetLinks(document.Links),
+                Annotations = document.Annotations?.ToHashtable()
+            };
+    }
+
+    private static bool TryDocument(string? path, string? culture, out RuleDocument? document)
+    {
+        document = null;
+        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(culture))
+            return false;
+
+        var markdown = File.ReadAllText(path);
+        if (string.IsNullOrEmpty(markdown))
+            return false;
+
+        var reader = new MarkdownReader(yamlHeaderOnly: false);
+        var stream = reader.Read(markdown, path);
+        var lexer = new RuleHelpLexer(culture);
+        document = lexer.Process(stream);
+        return document != null;
+    }
+
+    private static Rules.Link[]? GetLinks(Help.Link[] links)
     {
         if (links == null || links.Length == 0)
             return null;
@@ -905,3 +531,5 @@ internal static class HostHelper
         return result;
     }
 }
+
+#nullable restore
