@@ -7,18 +7,7 @@ using PSRule.Data;
 
 namespace PSRule.Pipeline;
 
-//public interface IPathBuilder
-//{
-//    void Add(string path);
-
-//    void Add(FileInfo[] fileInfo);
-
-//    void Add(PathInfo[] pathInfo);
-
-//    InputFileInfo[] Build();
-//}
-
-internal abstract class PathBuilder
+internal abstract class PathBuilder(IPipelineWriter logger, string basePath, string searchPattern, PathFilter filter, PathFilter required)
 {
     // Path separators
     private const char Slash = '/';
@@ -28,27 +17,16 @@ internal abstract class PathBuilder
     private const string CurrentPath = ".";
     private const string RecursiveSearchOperator = "**";
 
-    private static readonly char[] PathLiteralStopCharacters = new char[] { '*', '[', '?' };
-    private static readonly char[] PathSeparatorCharacters = new char[] { '\\', '/' };
+    private static readonly char[] PathLiteralStopCharacters = ['*', '[', '?'];
+    private static readonly char[] PathSeparatorCharacters = ['\\', '/'];
 
-    private readonly IPipelineWriter _Logger;
-    private readonly List<InputFileInfo> _Files;
-    private readonly HashSet<string> _Paths;
-    private readonly string _BasePath;
-    private readonly string _DefaultSearchPattern;
-    private readonly PathFilter _GlobalFilter;
-    private readonly PathFilter _Required;
-
-    protected PathBuilder(IPipelineWriter logger, string basePath, string searchPattern, PathFilter filter, PathFilter required)
-    {
-        _Logger = logger;
-        _Files = [];
-        _Paths = [];
-        _BasePath = NormalizePath(Environment.GetRootedBasePath(basePath));
-        _DefaultSearchPattern = searchPattern;
-        _GlobalFilter = filter;
-        _Required = required;
-    }
+    private readonly IPipelineWriter _Logger = logger;
+    private readonly List<InputFileInfo> _Files = [];
+    private readonly HashSet<string> _Paths = [];
+    private readonly string _BasePath = NormalizePath(Environment.GetRootedBasePath(basePath));
+    private readonly string _DefaultSearchPattern = searchPattern;
+    private readonly PathFilter _GlobalFilter = filter;
+    private readonly PathFilter _Required = required;
 
     /// <summary>
     /// The number of files found.
@@ -89,7 +67,7 @@ internal abstract class PathBuilder
     {
         try
         {
-            return _Files.ToArray();
+            return [.. _Files];
         }
         finally
         {
@@ -105,9 +83,14 @@ internal abstract class PathBuilder
 
         var pathLiteral = GetSearchParameters(path, out var searchPattern, out var searchOption, out var filter);
         var files = Directory.EnumerateFiles(pathLiteral, searchPattern, searchOption);
+
         foreach (var file in files)
+        {
             if (ShouldInclude(file, filter))
+            {
                 AddFile(file);
+            }
+        }
     }
 
     private bool TryUrl(string path)
@@ -128,9 +111,7 @@ internal abstract class PathBuilder
         var rootedPath = GetRootedPath(path);
         if (Directory.Exists(rootedPath) || path == CurrentPath)
         {
-            if (IsBasePath(rootedPath))
-                normalPath = CurrentPath;
-
+            normalPath = IsBasePath(rootedPath) ? CurrentPath : NormalizeDirectoryPath(path);
             return false;
         }
         if (!File.Exists(rootedPath))
@@ -144,8 +125,7 @@ internal abstract class PathBuilder
 
     private bool IsBasePath(string path)
     {
-        path = IsSeparator(path[path.Length - 1]) ? path : string.Concat(path, Path.DirectorySeparatorChar);
-        return NormalizePath(path) == _BasePath;
+        return NormalizeDirectoryPath(path) == _BasePath;
     }
 
     private void ErrorNotFound(string path)
@@ -251,12 +231,20 @@ internal abstract class PathBuilder
     [DebuggerStepThrough]
     private static bool UseSimpleSearch(string s)
     {
-        return s.IndexOf(RecursiveSearchOperator, System.StringComparison.OrdinalIgnoreCase) == -1;
+        return s.IndexOf(RecursiveSearchOperator, StringComparison.OrdinalIgnoreCase) == -1;
     }
 
     [DebuggerStepThrough]
     private static string NormalizePath(string path)
     {
         return path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+    }
+
+    [DebuggerStepThrough]
+    private static string NormalizeDirectoryPath(string path)
+    {
+        return NormalizePath(
+            IsSeparator(path[path.Length - 1]) ? path : string.Concat(path, Path.DirectorySeparatorChar)
+        );
     }
 }
