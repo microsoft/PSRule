@@ -19,6 +19,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization.TypeInspectors;
 using YamlDotNet.Serialization.TypeResolvers;
+using IEmitter = YamlDotNet.Core.IEmitter;
 
 namespace PSRule;
 
