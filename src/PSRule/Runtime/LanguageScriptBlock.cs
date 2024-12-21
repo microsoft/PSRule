@@ -1,24 +1,40 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Diagnostics;
 using System.Management.Automation;
 
 namespace PSRule.Runtime;
 
-internal sealed class LanguageScriptBlock : IDisposable
+internal sealed class LanguageScriptBlock(PowerShell block) : IDisposable
 {
-    private readonly PowerShell _Block;
+    private readonly PowerShell _Block = block;
+    private readonly Stopwatch _Stopwatch = new();
 
     private bool _Disposed;
 
-    public LanguageScriptBlock(PowerShell block)
-    {
-        _Block = block;
-    }
+    /// <summary>
+    /// The number of times the block was invoked.
+    /// </summary>
+    public int Count { get; private set; } = 0;
+
+    /// <summary>
+    /// The total number of milliseconds elapsed while invoking the block.
+    /// </summary>
+    public long Time => _Stopwatch.ElapsedMilliseconds;
 
     public void Invoke()
     {
-        _Block.Invoke();
+        Count++;
+        _Stopwatch.Start();
+        try
+        {
+            _Block.Invoke();
+        }
+        finally
+        {
+            _Stopwatch.Stop();
+        }
     }
 
     #region IDisposable

@@ -160,6 +160,6 @@ internal sealed class GetRuleHelpPipeline : RulePipeline, IPipeline
 
     public override void End()
     {
-        Writer.WriteObject(HostHelper.GetRuleHelp(Source, Context), true);
+        Writer.WriteObject(HostHelper.GetRuleHelp(Context), true);
     }
 }

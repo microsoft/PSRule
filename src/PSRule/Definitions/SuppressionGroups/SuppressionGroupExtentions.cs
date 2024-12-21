@@ -1,18 +1,16 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Definitions.Selectors;
-using PSRule.Definitions.SuppressionGroups;
 using PSRule.Runtime;
 
-namespace PSRule.Definitions;
+namespace PSRule.Definitions.SuppressionGroups;
 
 #nullable enable
 
 /// <summary>
-/// Extensions for resource types.
+/// Extensions methods for suppression groups.
 /// </summary>
-internal static class IResourceExtensions
+internal static class SuppressionGroupExtensions
 {
     /// <summary>
     /// Convert a suppression group into a suppression group visitor.
@@ -28,22 +26,6 @@ internal static class IResourceExtensions
             source: resource.Source,
             spec: resource.Spec,
             info: resource.Info
-        );
-    }
-
-    /// <summary>
-    /// Converts a selector into a selector visitor.
-    /// </summary>
-    /// <param name="resource">The selector resource.</param>
-    /// <param name="runspaceContext">A valid runspace context.</param>
-    /// <returns>An instance of a <see cref="SelectorVisitor"/>.</returns>
-    public static SelectorVisitor ToSelectorVisitor(this SelectorV1 resource, RunspaceContext runspaceContext)
-    {
-        return new SelectorVisitor(
-            runspaceContext,
-            resource.Id,
-            resource.Source,
-            resource.Spec.If
         );
     }
 }

@@ -75,6 +75,17 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
             _Resources.Add(suppressionGroup!);
             return true;
         }
+        else if (resource.Kind == ResourceKind.Rule)
+        {
+            _Resources.Add(resource);
+            return true;
+        }
+        else if (resource.Kind == ResourceKind.Convention)
+        {
+            _Resources.Add(resource);
+            return true;
+        }
+
         return false;
     }
 

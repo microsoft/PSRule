@@ -10,27 +10,31 @@ namespace PSRule;
 
 public sealed class ResourceValidatorTests : ContextBaseTests
 {
-    [Fact]
-    public void ResourceName()
+    [Theory]
+    [InlineData("FromFile.Rule.yaml")]
+    public void GetRule_WithValidResourceName_ShouldNotReturnError(string path)
     {
         var writer = GetTestWriter();
-        var sources = GetSource();
+        var sources = GetSource(path);
         var context = new RunspaceContext(GetPipelineContext(writer: writer, sources: sources));
 
         // Get good rules
-        var rule = HostHelper.GetRule(sources, context, includeDependencies: false);
+        var rule = HostHelper.GetRule(context, includeDependencies: false);
         Assert.NotNull(rule);
         Assert.Empty(writer.Errors);
+    }
 
-        // Get invalid rule names YAML
-        rule = HostHelper.GetRule(GetSource("FromFileName.Rule.yaml"), context, includeDependencies: false);
-        Assert.NotNull(rule);
-        Assert.NotEmpty(writer.Errors);
-        Assert.Equal("PSRule.Parse.InvalidResourceName", writer.Errors[0].FullyQualifiedErrorId);
+    [Theory]
+    [InlineData("FromFileName.Rule.yaml")]
+    [InlineData("FromFileName.Rule.jsonc")]
+    public void GetRule_WithInvalidResourceName_ShouldReturnError(string path)
+    {
+        var writer = GetTestWriter();
+        var sources = GetSource(path);
+        var context = new RunspaceContext(GetPipelineContext(writer: writer, sources: sources));
 
-        // Get invalid rule names JSON
-        writer.Errors.Clear();
-        rule = HostHelper.GetRule(GetSource("FromFileName.Rule.jsonc"), context, includeDependencies: false);
+        // Get invalid rule names.
+        var rule = HostHelper.GetRule(context, includeDependencies: false);
         Assert.NotNull(rule);
         Assert.NotEmpty(writer.Errors);
         Assert.Equal("PSRule.Parse.InvalidResourceName", writer.Errors[0].FullyQualifiedErrorId);
@@ -64,7 +68,7 @@ public sealed class ResourceValidatorTests : ContextBaseTests
 
     #region Helper methods
 
-    private static new Source[] GetSource(string path = "FromFile.Rule.yaml")
+    private static new Source[] GetSource(string path)
     {
         var builder = new SourcePipelineBuilder(null, null);
         builder.Directory(GetSourcePath(path));
