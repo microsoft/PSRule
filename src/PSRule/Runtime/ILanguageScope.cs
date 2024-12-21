@@ -51,9 +51,20 @@ internal interface ILanguageScope : IDisposable
     void AddService(string name, object service);
 
     /// <summary>
+    /// Configure a service in the scope.
+    /// </summary>
+    /// <param name="configure">A delegate action to call to configure services.</param>
+    void ConfigureServices(Action<IRuntimeServiceCollection>? configure);
+
+    /// <summary>
     /// Get a previously added service.
     /// </summary>
     object? GetService(string name);
+
+    /// <summary>
+    /// Get any emitters added to the scope.
+    /// </summary>
+    IEnumerable<Type> GetEmitters();
 
     ITargetBindingResult? Bind(TargetObject targetObject);
 

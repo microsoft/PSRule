@@ -4,7 +4,7 @@
 using System.Text;
 using PSRule.Data;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 internal sealed class InternalFileStream : IFileStream
 {

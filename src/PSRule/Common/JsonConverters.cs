@@ -11,8 +11,8 @@ using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Definitions.Expressions;
+using PSRule.Emitters;
 using PSRule.Pipeline;
-using PSRule.Pipeline.Emitters;
 using PSRule.Resources;
 using PSRule.Runtime;
 

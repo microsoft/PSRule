@@ -4,22 +4,23 @@
 using System.Collections.Immutable;
 using System.Management.Automation;
 using PSRule.Data;
-using PSRule.Emitters;
+using PSRule.Help;
+using PSRule.Pipeline;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 /// <summary>
-/// An <seealso cref="IEmitter"/> for processing PowerShell Data.
+/// An <seealso cref="IEmitter"/> for processing Markdown.
 /// </summary>
-internal sealed class PowerShellDataEmitter : FileEmitter
+internal sealed class MarkdownEmitter : FileEmitter
 {
-    private const string FORMAT = "powershell_data";
+    private const string FORMAT = "markdown";
 
-    private static readonly string[] _DefaultTypes = [".psd1"];
+    private static readonly string[] _DefaultTypes = [".md", ".markdown"];
 
     private readonly ImmutableHashSet<string> _Types;
 
-    public PowerShellDataEmitter(IEmitterConfiguration emitterConfiguration)
+    public MarkdownEmitter(IEmitterConfiguration emitterConfiguration)
     {
         if (emitterConfiguration == null) throw new ArgumentNullException(nameof(emitterConfiguration));
 
@@ -27,7 +28,7 @@ internal sealed class PowerShellDataEmitter : FileEmitter
     }
 
     /// <summary>
-    /// Accept the file if it is a PowerShell Data file.
+    /// Accept the file if it is a markdown file.
     /// </summary>
     protected override bool AcceptsFilePath(IEmitterContext context, IFileInfo info)
     {
@@ -47,7 +48,7 @@ internal sealed class PowerShellDataEmitter : FileEmitter
     /// <inheritdoc/>
     protected override bool AcceptsString(IEmitterContext context)
     {
-        return context.Format == Options.InputFormat.PowerShellData;
+        return context.Format == Options.InputFormat.Markdown;
     }
 
     /// <inheritdoc/>
@@ -55,16 +56,7 @@ internal sealed class PowerShellDataEmitter : FileEmitter
     {
         if (string.IsNullOrEmpty(content)) return false;
 
-        var ast = System.Management.Automation.Language.Parser.ParseInput(content, out _, out _);
-        var hashtableAst = ast.FindAll(item => item is System.Management.Automation.Language.HashtableAst, false);
-
-        var result = new List<PSObject>();
-        foreach (var hashtable in hashtableAst)
-        {
-            if (hashtable?.Parent?.Parent?.Parent?.Parent == ast)
-                result.Add(PSObject.AsPSObject(hashtable.SafeGetValue()));
-        }
-        var value = result.ToArray();
+        var value = MarkdownConvert.DeserializeObject(content);
         VisitItems(context, value, null);
         return true;
     }

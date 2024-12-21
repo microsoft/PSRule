@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Definitions;
-using PSRule.Pipeline.Emitters;
 
 namespace PSRule.Emitters;
 

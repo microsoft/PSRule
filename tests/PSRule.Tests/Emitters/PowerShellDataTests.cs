@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline.Emitters;
-
 namespace PSRule.Emitters;
 
 /// <summary>

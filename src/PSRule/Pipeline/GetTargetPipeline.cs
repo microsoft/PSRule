@@ -10,19 +10,19 @@ namespace PSRule.Pipeline;
 /// </summary>
 internal sealed class GetTargetPipeline : RulePipeline
 {
-    internal GetTargetPipeline(PipelineContext context, PipelineInputStream reader, IPipelineWriter writer)
-        : base(context, null, reader, writer) { }
+    internal GetTargetPipeline(PipelineContext context)
+        : base(context, null) { }
 
     public override void Process(PSObject sourceObject)
     {
         try
         {
-            Reader.Enqueue(sourceObject);
-            while (Reader.TryDequeue(out var next))
+            Pipeline.Reader.Enqueue(sourceObject);
+            while (Pipeline.Reader.TryDequeue(out var next))
             {
                 // TODO: Temporary workaround to cast interface
                 if (next is TargetObject to)
-                    Writer.WriteObject(to.Value, false);
+                    Pipeline.Writer.WriteObject(to.Value, false);
             }
         }
         catch (Exception)

@@ -12,21 +12,16 @@ internal abstract class RulePipeline : IPipeline
     protected readonly PipelineContext Pipeline;
     internal readonly RunspaceContext Context;
     protected readonly Source[] Source;
-    protected readonly IPipelineReader Reader;
-    protected readonly IPipelineWriter Writer;
 
     // Track whether Dispose has been called.
     private bool _Disposed;
 
-    protected RulePipeline(PipelineContext pipelineContext, Source[] source, IPipelineReader reader, IPipelineWriter writer)
+    protected RulePipeline(PipelineContext pipelineContext, Source[] source)
     {
-        Result = new DefaultPipelineResult(writer, pipelineContext.Option.Execution.Break.GetValueOrDefault(ExecutionOption.Default.Break.Value));
+        Result = new DefaultPipelineResult(pipelineContext.Writer, pipelineContext.Option.Execution.Break.GetValueOrDefault(ExecutionOption.Default.Break.Value));
         Pipeline = pipelineContext;
         Context = new RunspaceContext(Pipeline);
         Source = source;
-        Reader = reader;
-        Writer = writer;
-
         // Initialize contexts
         Context.Initialize(source);
     }
@@ -42,9 +37,9 @@ internal abstract class RulePipeline : IPipeline
     /// <inheritdoc/>
     public virtual void Begin()
     {
-        Writer.Begin();
+        Pipeline.Writer.Begin();
         Context.Begin();
-        Reader.Open();
+        Pipeline.Reader.Open();
     }
 
     /// <inheritdoc/>
@@ -56,7 +51,7 @@ internal abstract class RulePipeline : IPipeline
     /// <inheritdoc/>
     public virtual void End()
     {
-        Writer.End(Result);
+        Pipeline.Writer.End(Result);
     }
 
     #endregion IPipeline
@@ -75,7 +70,6 @@ internal abstract class RulePipeline : IPipeline
         {
             if (disposing)
             {
-                Writer.Dispose();
                 Context.Dispose();
                 Pipeline.Dispose();
             }

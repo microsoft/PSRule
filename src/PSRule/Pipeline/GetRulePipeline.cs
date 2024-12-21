@@ -12,18 +12,16 @@ internal sealed class GetRulePipeline : RulePipeline, IPipeline
     internal GetRulePipeline(
         PipelineContext pipeline,
         Source[] source,
-        PipelineInputStream reader,
-        IPipelineWriter writer,
         bool includeDependencies
     )
-        : base(pipeline, source, reader, writer)
+        : base(pipeline, source)
     {
         _IncludeDependencies = includeDependencies;
     }
 
     public override void End()
     {
-        Writer.WriteObject(HostHelper.GetRule(Context, _IncludeDependencies), true);
-        Writer.End(Result);
+        Pipeline.Writer.WriteObject(HostHelper.GetRule(Context, _IncludeDependencies), true);
+        Pipeline.Writer.End(Result);
     }
 }

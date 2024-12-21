@@ -4,17 +4,17 @@
 using System.Collections.Immutable;
 using PSRule.Data;
 using PSRule.Definitions;
-using PSRule.Emitters;
+using PSRule.Pipeline;
 using PSRule.Runtime;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NodeDeserializers;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 /// <summary>
-/// An <seealso cref="PSRule.Emitters.IEmitter"/> for processing YAML.
+/// An <seealso cref="IEmitter"/> for processing YAML.
 /// </summary>
 internal sealed class YamlEmitter : FileEmitter
 {

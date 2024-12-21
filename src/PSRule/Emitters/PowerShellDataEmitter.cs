@@ -4,23 +4,22 @@
 using System.Collections.Immutable;
 using System.Management.Automation;
 using PSRule.Data;
-using PSRule.Emitters;
-using PSRule.Help;
+using PSRule.Pipeline;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 /// <summary>
-/// An <seealso cref="IEmitter"/> for processing Markdown.
+/// An <seealso cref="IEmitter"/> for processing PowerShell Data.
 /// </summary>
-internal sealed class MarkdownEmitter : FileEmitter
+internal sealed class PowerShellDataEmitter : FileEmitter
 {
-    private const string FORMAT = "markdown";
+    private const string FORMAT = "powershell_data";
 
-    private static readonly string[] _DefaultTypes = [".md", ".markdown"];
+    private static readonly string[] _DefaultTypes = [".psd1"];
 
     private readonly ImmutableHashSet<string> _Types;
 
-    public MarkdownEmitter(IEmitterConfiguration emitterConfiguration)
+    public PowerShellDataEmitter(IEmitterConfiguration emitterConfiguration)
     {
         if (emitterConfiguration == null) throw new ArgumentNullException(nameof(emitterConfiguration));
 
@@ -28,7 +27,7 @@ internal sealed class MarkdownEmitter : FileEmitter
     }
 
     /// <summary>
-    /// Accept the file if it is a markdown file.
+    /// Accept the file if it is a PowerShell Data file.
     /// </summary>
     protected override bool AcceptsFilePath(IEmitterContext context, IFileInfo info)
     {
@@ -48,7 +47,7 @@ internal sealed class MarkdownEmitter : FileEmitter
     /// <inheritdoc/>
     protected override bool AcceptsString(IEmitterContext context)
     {
-        return context.Format == Options.InputFormat.Markdown;
+        return context.Format == Options.InputFormat.PowerShellData;
     }
 
     /// <inheritdoc/>
@@ -56,7 +55,16 @@ internal sealed class MarkdownEmitter : FileEmitter
     {
         if (string.IsNullOrEmpty(content)) return false;
 
-        var value = MarkdownConvert.DeserializeObject(content);
+        var ast = System.Management.Automation.Language.Parser.ParseInput(content, out _, out _);
+        var hashtableAst = ast.FindAll(item => item is System.Management.Automation.Language.HashtableAst, false);
+
+        var result = new List<PSObject>();
+        foreach (var hashtable in hashtableAst)
+        {
+            if (hashtable?.Parent?.Parent?.Parent?.Parent == ast)
+                result.Add(PSObject.AsPSObject(hashtable.SafeGetValue()));
+        }
+        var value = result.ToArray();
         VisitItems(context, value, null);
         return true;
     }

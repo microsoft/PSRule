@@ -50,10 +50,9 @@ internal sealed class GetRuleHelpPipelineBuilder : PipelineBuilderBase, IHelpPip
     public override IPipeline Build(IPipelineWriter writer = null)
     {
         return new GetRuleHelpPipeline(
-            pipeline: PrepareContext(PipelineHookActions.Empty),
-            source: Source,
-            reader: PrepareReader(),
-            writer: writer ?? PrepareWriter());
+            pipeline: PrepareContext(PipelineHookActions.Empty, writer: writer ?? PrepareWriter()),
+            source: Source
+        );
     }
 
     private sealed class HelpWriter : PipelineWriter
@@ -152,14 +151,14 @@ internal sealed class GetRuleHelpPipelineBuilder : PipelineBuilderBase, IHelpPip
 
 internal sealed class GetRuleHelpPipeline : RulePipeline, IPipeline
 {
-    internal GetRuleHelpPipeline(PipelineContext pipeline, Source[] source, PipelineInputStream reader, IPipelineWriter writer)
-        : base(pipeline, source, reader, writer)
+    internal GetRuleHelpPipeline(PipelineContext pipeline, Source[] source)
+        : base(pipeline, source)
     {
         // Do nothing
     }
 
     public override void End()
     {
-        Writer.WriteObject(HostHelper.GetRuleHelp(Context), true);
+        Pipeline.Writer.WriteObject(HostHelper.GetRuleHelp(Context), true);
     }
 }

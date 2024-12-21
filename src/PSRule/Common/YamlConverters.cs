@@ -10,15 +10,16 @@ using PSRule.Converters;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Expressions;
+using PSRule.Emitters;
 using PSRule.Host;
 using PSRule.Pipeline;
-using PSRule.Pipeline.Emitters;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization.TypeInspectors;
 using YamlDotNet.Serialization.TypeResolvers;
+using IEmitter = YamlDotNet.Core.IEmitter;
 
 namespace PSRule;
 

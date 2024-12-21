@@ -4,9 +4,9 @@
 using System.Management.Automation;
 using Microsoft.Extensions.DependencyInjection;
 using PSRule.Data;
-using PSRule.Emitters;
+using PSRule.Pipeline;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 #nullable enable
 

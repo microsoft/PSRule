@@ -25,8 +25,8 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     // Track whether Dispose has been called.
     private bool _Disposed;
 
-    internal InvokeRulePipeline(PipelineContext context, Source[] source, IPipelineWriter writer, RuleOutcome outcome)
-        : base(context, source, context.Reader, writer)
+    internal InvokeRulePipeline(PipelineContext context, Source[] source, RuleOutcome outcome)
+        : base(context, source)
     {
         _RuleGraph = HostHelper.GetRuleBlockGraph(Context);
         RuleCount = _RuleGraph.Count;
@@ -58,8 +58,8 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     {
         try
         {
-            Reader.Enqueue(sourceObject);
-            while (Reader.TryDequeue(out var next))
+            Pipeline.Reader.Enqueue(sourceObject);
+            while (Pipeline.Reader.TryDequeue(out var next))
             {
                 // TODO: Temporary workaround to cast interface
                 if (next is TargetObject to)
@@ -67,7 +67,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
 
                     var result = ProcessTargetObject(to);
                     _Completed.Add(result);
-                    Writer.WriteObject(result, false);
+                    Pipeline.Writer.WriteObject(result, false);
                 }
             }
         }
@@ -89,9 +89,11 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
         }
 
         if (_IsSummary)
-            Writer.WriteObject(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0).ToArray(), true);
+        {
+            Pipeline.Writer.WriteObject(_Summary.Values.Where(r => _Outcome == RuleOutcome.All || (r.Outcome & _Outcome) > 0).ToArray(), true);
+        }
 
-        Writer.End(Result);
+        Pipeline.Writer.End(Result);
     }
 
     private InvokeResult ProcessTargetObject(TargetObject targetObject)

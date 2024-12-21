@@ -47,12 +47,22 @@ internal sealed class MockLanguageScope : ILanguageScope
         throw new NotImplementedException();
     }
 
+    public void ConfigureServices(Action<IRuntimeServiceCollection> configure)
+    {
+        throw new NotImplementedException();
+    }
+
     public void Dispose()
     {
 
     }
 
     public StringComparer GetBindingComparer()
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<Type> GetEmitters()
     {
         throw new NotImplementedException();
     }

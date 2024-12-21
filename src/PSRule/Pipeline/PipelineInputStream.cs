@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Data;
-using PSRule.Pipeline.Emitters;
+using PSRule.Emitters;
 using PSRule.Runtime;
 
 namespace PSRule.Pipeline;

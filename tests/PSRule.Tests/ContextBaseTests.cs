@@ -15,11 +15,11 @@ public abstract class ContextBaseTests : BaseTests
     {
         option ??= GetOption();
         writer ??= GetTestWriter(option);
-        languageScope ??= GetLanguageScopeSet(option, sources);
+        languageScope ??= GetLanguageScopeSet(sources);
         return PipelineContext.New(
             option: option,
             hostContext: null,
-            reader: null,
+            reader: () => new PipelineInputStream(null, null, null, null),
             writer: writer,
             languageScope: languageScope,
             optionBuilder: optionBuilder ?? new OptionContextBuilder(),
@@ -27,9 +27,9 @@ public abstract class ContextBaseTests : BaseTests
         );
     }
 
-    internal OptionContextBuilder GetOptionBuilder()
+    internal OptionContextBuilder GetOptionBuilder(PSRuleOption? option = default)
     {
-        return new OptionContextBuilder(option: GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
+        return new OptionContextBuilder(option: option ?? GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
     }
 
     internal ResourceCache GetResourceCache(PSRuleOption? option = default, ILanguageScopeSet? languageScope = default, Source[]? sources = default, IPipelineWriter? writer = default)
@@ -37,16 +37,25 @@ public abstract class ContextBaseTests : BaseTests
         return new ResourceCacheBuilder
         (
             writer: writer ?? GetTestWriter(option),
-            languageScopeSet: languageScope ?? GetLanguageScopeSet(option, sources)
+            languageScopeSet: languageScope ?? GetLanguageScopeSet(sources)
         ).Import(sources).Build(unresolved: null);
     }
 
-    internal static ILanguageScopeSet GetLanguageScopeSet(PSRuleOption? option = default, Source[]? sources = default)
+    internal static ILanguageScopeSet GetLanguageScopeSet(Source[]? sources = default, OptionContextBuilder? optionContextBuilder = default)
     {
         var builder = new LanguageScopeSetBuilder();
-        builder.Init(option, sources);
+        builder.Init(sources);
+        var languageScopeSet = builder.Build();
 
-        return builder.Build();
+        if (optionContextBuilder != null)
+        {
+            foreach (var scope in languageScopeSet.Get())
+            {
+                scope.Configure(optionContextBuilder.Build(scope.Name));
+            }
+        }
+
+        return languageScopeSet;
     }
 }
 

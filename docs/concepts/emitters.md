@@ -28,7 +28,11 @@ Name              | Default file extensions      | Configurable
 
 ## Custom emitters
 
-Custom emitters are a planned feature in PSRule v3.
+Custom emitters can be created by implementing the `PSRule.Emitters.IEmitter` interface available in `Microsoft.PSRule.Types`.
+This custom type implementation will be loaded by PSRule and used to process the input object.
+
+To use a custom emitter, it must be registered with PSRule as a service.
+This can be done by a convention within the `-Initialize` script block.
 
 ## Configuring formats
 

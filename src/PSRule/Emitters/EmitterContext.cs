@@ -4,10 +4,10 @@
 using System.Collections.Concurrent;
 using PSRule.Configuration;
 using PSRule.Data;
-using PSRule.Emitters;
 using PSRule.Options;
+using PSRule.Pipeline;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 #nullable enable
 

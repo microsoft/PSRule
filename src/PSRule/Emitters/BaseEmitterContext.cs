@@ -4,11 +4,11 @@
 using System.Collections;
 using System.Management.Automation;
 using PSRule.Data;
-using PSRule.Emitters;
 using PSRule.Options;
+using PSRule.Pipeline;
 using PSRule.Runtime;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 /// <summary>
 /// 
@@ -45,7 +45,7 @@ internal abstract class BaseEmitterContext(InputFormat format, string objectPath
 
     protected abstract void Enqueue(ITargetObject value);
 
-    private static IEnumerable<ITargetObject> ReadObjectPath(ITargetObject targetObject, string objectPath, bool caseSensitive)
+    private static ITargetObject[] ReadObjectPath(ITargetObject targetObject, string objectPath, bool caseSensitive)
     {
         if (!ObjectHelper.GetPath(
             bindingContext: null,
@@ -59,10 +59,10 @@ internal abstract class BaseEmitterContext(InputFormat format, string objectPath
         if (typeof(IEnumerable).IsAssignableFrom(nestedType))
         {
             var result = new List<TargetObject>();
-            foreach (var item in (nestedObject as IEnumerable))
+            foreach (var item in nestedObject as IEnumerable)
                 result.Add(new TargetObject(PSObject.AsPSObject(item)));
 
-            return result.ToArray();
+            return [.. result];
         }
         else
         {

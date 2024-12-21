@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Pipeline;
 
@@ -24,13 +23,10 @@ internal sealed class LanguageScopeSetBuilder
     /// <summary>
     /// Perform initialization of the builder from the environment.
     /// </summary>
-    public void Init(PSRuleOption? option, Source[]? sources)
+    public void Init(Source[]? sources)
     {
         // Create all the module scopes from known sources.
         Import(sources);
-
-        // Use options to configure the root scope.
-        Configure(option);
     }
 
     /// <summary>
@@ -52,16 +48,6 @@ internal sealed class LanguageScopeSetBuilder
     public ILanguageScopeSet Build()
     {
         return new LanguageScopeSet(_Scopes);
-    }
-
-    /// <summary>
-    /// Configure the root scope with options.
-    /// </summary>
-    /// <param name="option"></param>
-    /// <exception cref="NotImplementedException"></exception>
-    private void Configure(PSRuleOption? option)
-    {
-        // Do nothing currently.
     }
 
     /// <summary>
