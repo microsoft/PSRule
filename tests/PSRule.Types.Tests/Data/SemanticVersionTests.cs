@@ -12,7 +12,7 @@ public sealed class SemanticVersionTests
     /// Test parsing of versions.
     /// </summary>
     [Fact]
-    public void Version()
+    public void SemanticVersion_WithTryParseVersion_ShouldParseSuccessfully()
     {
         Assert.True(SemanticVersion.TryParseVersion("1.2.3-alpha.3+7223b39", out var actual1));
         Assert.Equal(1, actual1!.Major);
@@ -38,7 +38,7 @@ public sealed class SemanticVersionTests
     /// Test ordering of versions by comparison.
     /// </summary>
     [Fact]
-    public void VersionOrder()
+    public void SemanticVersion_WithCompareTo_ShouldCrossCompare()
     {
         Assert.True(SemanticVersion.TryParseVersion("1.0.0", out var actual1));
         Assert.True(SemanticVersion.TryParseVersion("1.2.0", out var actual2));
@@ -59,7 +59,7 @@ public sealed class SemanticVersionTests
     /// Test parsing of constraints.
     /// </summary>
     [Fact]
-    public void Constraint()
+    public void SemanticVersion_WithTryParseConstraint_ShouldAcceptMatchingVersions()
     {
         // Versions
         Assert.True(SemanticVersion.TryParseVersion("1.2.3", out var version1));
@@ -191,7 +191,7 @@ public sealed class SemanticVersionTests
     /// Test parsing and order of pre-releases.
     /// </summary>
     [Fact]
-    public void Prerelease()
+    public void SemanticVersion_WithPrerelease_ShouldCrossCompare()
     {
         var actual1 = new SemanticVersion.PR(null);
         var actual2 = new SemanticVersion.PR("alpha");
@@ -220,10 +220,25 @@ public sealed class SemanticVersionTests
     [InlineData("1.2.3-alpha.3+7223b39")]
     [InlineData("3.4.5-alpha.9")]
     [InlineData("3.4.5+7223b39")]
-    public void ToString_WhenValid_ShouldReturnString(string version)
+    public void SemanticVersion_WithToString_ShouldReturnString(string version)
     {
         Assert.True(SemanticVersion.TryParseVersion(version, out var actual));
         Assert.Equal(version, actual!.ToString());
+    }
+
+    /// <summary>
+    /// Test <see cref="SemanticVersion"/> represented as a string with <c>ToString()</c> formats the string correctly.
+    /// </summary>
+    [Theory]
+    [InlineData("1", "1.0.0")]
+    [InlineData("1.2", "1.2.0")]
+    [InlineData("v1", "1.0.0")]
+    [InlineData("v1.2", "1.2.0")]
+    [InlineData("v1.2.3", "1.2.3")]
+    public void SemanticVersion_WithPartialVersion_ShouldReturnCompletedString(string version, string expected)
+    {
+        Assert.True(SemanticVersion.TryParseVersion(version, out var actual));
+        Assert.Equal(expected, actual!.ToString());
     }
 
     [Theory]
@@ -231,9 +246,20 @@ public sealed class SemanticVersionTests
     [InlineData("1.2.3-alpha.3+7223b39")]
     [InlineData("3.4.5-alpha.9")]
     [InlineData("3.4.5+7223b39")]
-    public void ToShortString_WhenValid_ShouldReturnString(string version)
+    public void SemanticVersion_WithToShortString_ShouldReturnString(string version)
     {
         Assert.True(SemanticVersion.TryParseVersion(version, out var actual));
         Assert.Equal(string.Join(".", actual!.Major, actual.Minor, actual.Patch), actual!.ToShortString());
+    }
+
+    [Theory]
+    [InlineData("1.2.3", "=1.2.3")]
+    [InlineData("=1.2.3", "=1.2.3")]
+    [InlineData(">=1.2.3", ">=1.2.3")]
+    [InlineData("1.2.3 ||>=3.4.5-0 || 3.4.5", "=1.2.3 || >=3.4.5-0 || =3.4.5")]
+    public void SemanticVersion_WithTryParseConstraint_ShouldReturnString(string constraint, string expected)
+    {
+        Assert.True(SemanticVersion.TryParseConstraint(constraint, out var actual));
+        Assert.Equal(expected, actual!.ToString());
     }
 }

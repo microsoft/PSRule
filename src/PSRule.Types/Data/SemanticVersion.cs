@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
+using System.Text;
 
 namespace PSRule.Data;
 
@@ -13,8 +14,8 @@ public static class SemanticVersion
     private const char MINOR = '^';
     private const char PATCH = '~';
     private const char EQUAL = '=';
-    private const char VUPPER = 'V';
-    private const char VLOWER = 'v';
+    private const char V_UPPER = 'V';
+    private const char V_LOWER = 'v';
     private const char GREATER = '>';
     private const char LESS = '<';
     private const char DOT = '.';
@@ -77,22 +78,22 @@ public static class SemanticVersion
     public sealed class VersionConstraint : ISemanticVersionConstraint
     {
         private List<ConstraintExpression>? _Constraints;
-        private readonly string _Value;
+        private string? _ConstraintString;
+
         private readonly bool _IncludePrerelease;
 
         /// <summary>
         /// A version constraint that accepts any version including pre-releases.
         /// </summary>
-        public static readonly VersionConstraint Any = new(string.Empty, includePrerelease: true);
+        public static readonly VersionConstraint Any = new(includePrerelease: true);
 
         /// <summary>
         /// A version constraint that accepts any stable version.
         /// </summary>
-        public static readonly VersionConstraint AnyStable = new(string.Empty, includePrerelease: false);
+        public static readonly VersionConstraint AnyStable = new(includePrerelease: false);
 
-        internal VersionConstraint(string value, bool includePrerelease)
+        internal VersionConstraint(bool includePrerelease)
         {
-            _Value = value;
             _IncludePrerelease = includePrerelease;
         }
 
@@ -138,17 +139,18 @@ public static class SemanticVersion
         /// <inheritdoc/>
         public override string ToString()
         {
-            return _Value;
+            return _ConstraintString ??= GetConstraintString();
         }
 
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return _Value.GetHashCode();
+            return ToString().GetHashCode();
         }
 
         internal void Join(int major, int minor, int patch, PR prid, ComparisonOperator flag, JoinOperator join, bool includePrerelease)
         {
+            _ConstraintString = null;
             _Constraints ??= [];
             _Constraints.Add(new ConstraintExpression(
                 major,
@@ -159,6 +161,36 @@ public static class SemanticVersion
                 join == JoinOperator.None ? JoinOperator.Or : join,
                 includePrerelease
             ));
+        }
+
+        private string GetConstraintString()
+        {
+            if (_Constraints == null || _Constraints.Count == 0)
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            for (var i = 0; i < _Constraints.Count; i++)
+            {
+                if (i > 0)
+                {
+                    sb.Append(SPACE);
+
+                    if (_Constraints[i].Join == JoinOperator.Or)
+                    {
+                        sb.Append(PIPE);
+                        sb.Append(PIPE);
+                    }
+                    else if (_Constraints[i].Join == JoinOperator.And)
+                    {
+                        sb.Append(SPACE);
+                    }
+
+                    sb.Append(SPACE);
+                }
+
+                sb.Append(_Constraints[i].ToString());
+            }
+            return sb.ToString();
         }
     }
 
@@ -171,6 +203,8 @@ public static class SemanticVersion
         private readonly int _Patch;
         private readonly PR _PRID;
         private readonly bool _IncludePrerelease;
+
+        private string? _ExpressionString;
 
         internal ConstraintExpression(int major, int minor, int patch, PR prid, ComparisonOperator flag, JoinOperator join, bool includePrerelease)
         {
@@ -186,6 +220,16 @@ public static class SemanticVersion
         public bool Stable => IsStable(_PRID);
 
         public JoinOperator Join { get; }
+
+        public override string ToString()
+        {
+            return _ExpressionString ??= GetExpressionString();
+        }
+
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
+        }
 
         public static bool TryParse(string value, out ISemanticVersionConstraint constraint)
         {
@@ -233,7 +277,7 @@ public static class SemanticVersion
                 return false;
 
             // Fail when not less
-            if (GaurdLess(major, minor, patch, prid))
+            if (GuardLess(major, minor, patch, prid))
                 return false;
 
             // Fail with not less or equal to
@@ -245,7 +289,7 @@ public static class SemanticVersion
             return _Flag == (ComparisonOperator.LessThan | ComparisonOperator.Equals) && !(LT(major, minor, patch, prid) || EQ(major, minor, patch, prid));
         }
 
-        private bool GaurdLess(int major, int minor, int patch, PR? prid)
+        private bool GuardLess(int major, int minor, int patch, PR? prid)
         {
             return _Flag == ComparisonOperator.LessThan && !LT(major, minor, patch, prid);
         }
@@ -338,6 +382,56 @@ public static class SemanticVersion
         {
             return prid == null || prid.Stable;
         }
+
+        private string GetExpressionString()
+        {
+            var sb = new StringBuilder();
+            switch (_Flag)
+            {
+                case ComparisonOperator.Equals:
+                    sb.Append(EQUAL);
+                    break;
+
+                case ComparisonOperator.PatchUplift:
+                    sb.Append(PATCH);
+                    break;
+
+                case ComparisonOperator.MinorUplift:
+                    sb.Append(MINOR);
+                    break;
+
+                case ComparisonOperator.GreaterThan:
+                    sb.Append(GREATER);
+                    break;
+
+                case ComparisonOperator.LessThan:
+                    sb.Append(LESS);
+                    break;
+
+                case ComparisonOperator.GreaterThan | ComparisonOperator.Equals:
+                    sb.Append(GREATER);
+                    sb.Append(EQUAL);
+                    break;
+
+                case ComparisonOperator.LessThan | ComparisonOperator.Equals:
+                    sb.Append(LESS);
+                    sb.Append(EQUAL);
+                    break;
+            }
+
+            sb.Append(_Major);
+            sb.Append(DOT);
+            sb.Append(_Minor);
+            sb.Append(DOT);
+            sb.Append(_Patch);
+            if (_PRID != null && !string.IsNullOrEmpty(_PRID.Value))
+            {
+                sb.Append(DASH);
+                sb.Append(_PRID.Value);
+            }
+
+            return sb.ToString();
+        }
     }
 
     /// <summary>
@@ -376,9 +470,9 @@ public static class SemanticVersion
 
         internal Version(int major, int minor, int patch, PR prerelease, string build)
         {
-            Major = major;
-            Minor = minor;
-            Patch = patch;
+            Major = major >= 0 ? major : 0;
+            Minor = minor >= 0 ? minor : 0;
+            Patch = patch >= 0 ? patch : 0;
             Prerelease = prerelease;
             Build = build;
         }
@@ -557,7 +651,7 @@ public static class SemanticVersion
         public bool Stable => _Identifiers == null;
 
         /// <summary>
-        /// Compare the pre-release identifer to another pre-release identifier.
+        /// Compare the pre-release identifier to another pre-release identifier.
         /// </summary>
         public int CompareTo(PR? other)
         {
@@ -714,7 +808,7 @@ public static class SemanticVersion
 
         private void SkipLeading()
         {
-            if (!EOF && (_Current == VUPPER || _Current == VLOWER))
+            if (!EOF && (_Current == V_UPPER || _Current == V_LOWER))
                 Next();
         }
 
@@ -900,7 +994,7 @@ public static class SemanticVersion
     /// </summary>
     public static bool TryParseConstraint(string value, out ISemanticVersionConstraint constraint, bool includePrerelease = false)
     {
-        var c = new VersionConstraint(value, includePrerelease);
+        var c = new VersionConstraint(includePrerelease);
         constraint = c;
         if (string.IsNullOrEmpty(value))
             return true;
