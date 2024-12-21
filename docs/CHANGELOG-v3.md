@@ -35,6 +35,9 @@ What's changed since pre-release v3.0.0-B0351:
 - Engineering:
   - Migrate samples into PSRule repository by @BernieWhite.
     [#2614](https://github.com/microsoft/PSRule/issues/2614)
+- Bug fixes:
+  - Fixed string formatting of semantic version and constraints by @BernieWhite.
+    [#1828](https://github.com/microsoft/PSRule/issues/1828)
 
 ## v3.0.0-B0351 (pre-release)
 
