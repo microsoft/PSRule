@@ -38,6 +38,8 @@ What's changed since pre-release v3.0.0-B0351:
 - Bug fixes:
   - Fixed string formatting of semantic version and constraints by @BernieWhite.
     [#1828](https://github.com/microsoft/PSRule/issues/1828)
+  - Fixed directory handling of input paths without trailing slash by @BernieWhite.
+    [#1842](https://github.com/microsoft/PSRule/issues/1842)
 
 ## v3.0.0-B0351 (pre-release)
 
