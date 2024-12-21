@@ -31,7 +31,7 @@ body:
     attributes:
       label: Sample path
       description: The path to the new sample.
-      placeholder: samples/rules/name
+      placeholder: samples/name
     validations:
       required: true
   - type: textarea
