@@ -3,8 +3,8 @@
 
 using System.Collections.Generic;
 using PSRule.Data;
+using PSRule.Emitters;
 using PSRule.Options;
-using PSRule.Pipeline.Emitters;
 
 namespace PSRule;
 

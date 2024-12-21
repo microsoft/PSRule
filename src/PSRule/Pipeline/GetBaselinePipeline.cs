@@ -14,19 +14,17 @@ internal sealed class GetBaselinePipeline : RulePipeline
     internal GetBaselinePipeline(
         PipelineContext pipeline,
         Source[] source,
-        PipelineInputStream reader,
-        IPipelineWriter writer,
         IResourceFilter filter
     )
-        : base(pipeline, source, reader, writer)
+        : base(pipeline, source)
     {
         _Filter = filter;
     }
 
     public override void End()
     {
-        Writer.WriteObject(HostHelper.GetBaseline(Source, Context).Where(Match), true);
-        Writer.End(Result);
+        Pipeline.Writer.WriteObject(HostHelper.GetBaseline(Source, Context).Where(Match), true);
+        Pipeline.Writer.End(Result);
     }
 
     private bool Match(Baseline baseline)

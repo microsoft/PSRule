@@ -5,8 +5,8 @@ using System;
 using System.IO;
 using System.Management.Automation;
 using PSRule.Configuration;
+using PSRule.Emitters;
 using PSRule.Pipeline;
-using PSRule.Pipeline.Emitters;
 
 namespace PSRule;
 

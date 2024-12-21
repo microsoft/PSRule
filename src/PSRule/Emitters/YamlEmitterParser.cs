@@ -4,7 +4,7 @@
 using PSRule.Data;
 using YamlDotNet.Core;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 /// <summary>
 /// A custom parser that implements source mapping.

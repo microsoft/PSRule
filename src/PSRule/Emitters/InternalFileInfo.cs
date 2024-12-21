@@ -4,7 +4,7 @@
 using System.Diagnostics;
 using PSRule.Data;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 [DebuggerDisplay("{Path}")]
 internal sealed class InternalFileInfo : IFileInfo, IDisposable

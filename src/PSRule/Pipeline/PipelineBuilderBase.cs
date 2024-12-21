@@ -180,14 +180,20 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
 
         var languageScopeSet = GetLanguageScopeSet();
         var resourceCache = GetResourceCache(unresolved, languageScopeSet);
+        var options = GetOptionBuilder(resourceCache, binding);
+
+        foreach (var scope in languageScopeSet.Get())
+        {
+            scope.Configure(options.Build(scope.Name));
+        }
 
         return PipelineContext.New(
             option: Option,
             hostContext: HostContext,
-            reader: PrepareReader(),
+            reader: PrepareReader,
             writer: writer,
             languageScope: languageScopeSet,
-            optionBuilder: GetOptionBuilder(resourceCache, binding),
+            optionBuilder: options,
             resourceCache: resourceCache
         );
     }
@@ -198,7 +204,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             return _LanguageScopeSet;
 
         var builder = new LanguageScopeSetBuilder();
-        builder.Init(Option, Source);
+        builder.Init(Source);
         return _LanguageScopeSet = builder.Build();
     }
 

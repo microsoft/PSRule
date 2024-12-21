@@ -5,10 +5,10 @@ using System.Collections.Immutable;
 using System.Management.Automation;
 using Newtonsoft.Json;
 using PSRule.Data;
-using PSRule.Emitters;
+using PSRule.Pipeline;
 using PSRule.Runtime;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 /// <summary>
 /// An <seealso cref="IEmitter"/> for processing JSON.

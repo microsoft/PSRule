@@ -45,10 +45,8 @@ internal sealed class GetRulePipelineBuilder : PipelineBuilderBase, IGetPipeline
         return !RequireModules() || !RequireSources()
             ? null
             : (IPipeline)new GetRulePipeline(
-                pipeline: PrepareContext(PipelineHookActions.Empty),
+                pipeline: PrepareContext(PipelineHookActions.Empty, writer: writer ?? PrepareWriter()),
                 source: Source,
-                reader: PrepareReader(),
-                writer: writer ?? PrepareWriter(),
                 includeDependencies: _IncludeDependencies
             );
     }

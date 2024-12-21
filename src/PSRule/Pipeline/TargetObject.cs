@@ -6,34 +6,8 @@ using System.Diagnostics;
 using System.Management.Automation;
 using Newtonsoft.Json.Linq;
 using PSRule.Data;
-using PSRule.Definitions.Selectors;
 
 namespace PSRule.Pipeline;
-
-internal abstract class TargetObjectAnnotation
-{
-
-}
-
-internal sealed class SelectorTargetAnnotation : TargetObjectAnnotation
-{
-    private readonly Dictionary<Guid, bool> _Results;
-
-    public SelectorTargetAnnotation()
-    {
-        _Results = new Dictionary<Guid, bool>();
-    }
-
-    public bool TryGetSelectorResult(SelectorVisitor selector, out bool result)
-    {
-        return _Results.TryGetValue(selector.InstanceId, out result);
-    }
-
-    public void SetSelectorResult(SelectorVisitor selector, bool result)
-    {
-        _Results[selector.InstanceId] = result;
-    }
-}
 
 /// <summary>
 /// An object processed by PSRule.

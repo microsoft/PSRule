@@ -6,6 +6,7 @@ using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
+using PSRule.Emitters;
 using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Runtime.Binding;
@@ -15,11 +16,12 @@ namespace PSRule.Runtime;
 #nullable enable
 
 [DebuggerDisplay("{Name}")]
-internal sealed class LanguageScope : ILanguageScope
+internal sealed class LanguageScope : ILanguageScope, IRuntimeServiceCollection
 {
     private IDictionary<string, object>? _Configuration;
     private WildcardMap<RuleOverride>? _Override;
     private readonly Dictionary<string, object> _Service;
+    private readonly List<Type> _Emitters;
     private readonly Dictionary<ResourceKind, IResourceFilter> _Filter;
     private ITargetBinder? _TargetBinder;
     private StringComparer? _BindingComparer;
@@ -32,7 +34,7 @@ internal sealed class LanguageScope : ILanguageScope
         Name = ResourceHelper.NormalizeScope(name);
         _Filter = [];
         _Service = [];
-        _Configuration = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+        _Emitters = [];
     }
 
     /// <inheritdoc/>
@@ -42,13 +44,6 @@ internal sealed class LanguageScope : ILanguageScope
     public string[]? Culture { [DebuggerStepThrough] get; [DebuggerStepThrough] private set; }
 
     public StringComparer GetBindingComparer() => _BindingComparer ?? StringComparer.OrdinalIgnoreCase;
-
-    ///// <inheritdoc/>
-    //public void Configure(Dictionary<string, object> configuration)
-    //{
-    //    _Configuration ??= new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-    //    _Configuration.AddUnique(configuration);
-    //}
 
     /// <inheritdoc/>
     public void Configure(OptionContext context)
@@ -75,6 +70,7 @@ internal sealed class LanguageScope : ILanguageScope
         var overrides = option.Level
             .Where(l => l.Value != SeverityLevel.None)
             .Select(l => new KeyValuePair<string, RuleOverride>(l.Key, new RuleOverride { Level = l.Value }));
+
         return new WildcardMap<RuleOverride>(overrides);
     }
 
@@ -89,8 +85,7 @@ internal sealed class LanguageScope : ILanguageScope
     public bool TryGetOverride(ResourceId id, out RuleOverride? value)
     {
         value = default;
-        if (_Override == null)
-            return false;
+        if (_Override == null) return false;
 
         return _Override.TryGetValue(id.Value, out value) ||
             _Override.TryGetValue(id.Name, out value);
@@ -111,16 +106,35 @@ internal sealed class LanguageScope : ILanguageScope
     /// <inheritdoc/>
     public void AddService(string name, object service)
     {
-        if (_Service.ContainsKey(name))
+        if (string.IsNullOrEmpty(name) || service == null || _Service.ContainsKey(name))
             return;
 
         _Service.Add(name, service);
+    }
+
+    /// <summary>
+    /// Configure services to the scope.
+    /// </summary>
+    /// <param name="configure">An delegate that configures zero or many services in the current scope.</param>
+    public void ConfigureServices(Action<IRuntimeServiceCollection>? configure)
+    {
+        if (configure == null)
+            return;
+
+        // Configure services
+        configure(this);
     }
 
     /// <inheritdoc/>
     public object? GetService(string name)
     {
         return _Service.TryGetValue(name, out var service) ? service : null;
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<Type> GetEmitters()
+    {
+        return _Emitters;
     }
 
     public ITargetBindingResult? Bind(TargetObject targetObject)
@@ -168,6 +182,8 @@ internal sealed class LanguageScope : ILanguageScope
         return new InternalConfiguration(_Configuration ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase));
     }
 
+    #region IDisposable
+
     private void Dispose(bool disposing)
     {
         if (!_Disposed)
@@ -195,6 +211,26 @@ internal sealed class LanguageScope : ILanguageScope
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
+
+    #endregion IDisposable
+
+    #region IRuntimeServiceCollection
+
+    /// <inheritdoc/>
+    string IRuntimeServiceCollection.ScopeName => Name;
+
+    /// <inheritdoc/>
+    IConfiguration IRuntimeServiceCollection.Configuration => ToConfiguration();
+
+    /// <inheritdoc/>
+    void IRuntimeServiceCollection.AddService<TInterface, TService>()
+    {
+        // Add any emitter.
+        if (typeof(TInterface) == typeof(IEmitter))
+            _Emitters.Add(typeof(TService));
+    }
+
+    #endregion IRuntimeServiceCollection
 }
 
 #nullable restore

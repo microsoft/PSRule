@@ -164,10 +164,10 @@ public sealed partial class PipelineTests : ContextBaseTests
     {
         var option = GetOption();
         var sources = GetSource();
-        var writer = GetTestWriter(option);
         Environment.UseCurrentCulture(CultureInfo.InvariantCulture);
+        var writer = GetTestWriter(option);
         var context = GetPipelineContext(option: option, sources: sources, writer: writer);
-        var pipeline = new GetRulePipeline(context, sources, new PipelineInputStream(null, null, null, null), writer, false);
+        var pipeline = new GetRulePipeline(context, sources, false);
         try
         {
             pipeline.Begin();
@@ -187,9 +187,9 @@ public sealed partial class PipelineTests : ContextBaseTests
         Environment.UseCurrentCulture(CultureInfo.InvariantCulture);
         var option = GetOption();
         option.Execution.InvariantCulture = ExecutionActionPreference.Ignore;
-        var context = GetPipelineContext(option: option);
         var writer = GetTestWriter(option);
-        var pipeline = new GetRulePipeline(context, GetSource(), new PipelineInputStream(null, null, null, null), writer, false);
+        var context = GetPipelineContext(option: option, writer: writer);
+        var pipeline = new GetRulePipeline(context, GetSource(), false);
         try
         {
             pipeline.Begin();

@@ -29,6 +29,9 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v3.0.0-B0351:
 
+- General improvements:
+  - Added support for registering custom emitters by @BernieWhite.
+    [#2681](https://github.com/microsoft/PSRule/issues/2681)
 - Engineering:
   - Migrate samples into PSRule repository by @BernieWhite.
     [#2614](https://github.com/microsoft/PSRule/issues/2614)

@@ -1,11 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Emitters;
 using PSRule.Options;
 using PSRule.Runtime;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 #nullable enable
 

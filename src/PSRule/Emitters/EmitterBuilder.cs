@@ -3,11 +3,10 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using PSRule.Definitions;
-using PSRule.Emitters;
 using PSRule.Options;
 using PSRule.Runtime;
 
-namespace PSRule.Pipeline.Emitters;
+namespace PSRule.Emitters;
 
 #nullable enable
 
@@ -29,6 +28,7 @@ internal sealed class EmitterBuilder
         _Services = new ServiceCollection();
         AddInternalServices();
         AddInternalEmitters();
+        AddEmittersFromLanguageScope();
     }
 
     /// <summary>
@@ -43,6 +43,20 @@ internal sealed class EmitterBuilder
 
         _EmitterTypes.Add(new KeyValuePair<string, Type>(scope, typeof(T)));
         _Services.AddScoped(typeof(T));
+    }
+
+    /// <summary>
+    /// Add an <see cref="IEmitter"/> implementation class.
+    /// </summary>
+    /// <param name="scope">The scope of the emitter.</param>
+    /// <param name="type">An emitter type that implements <see cref="IEmitter"/>.</param>
+    /// <exception cref="ArgumentNullException">The <paramref name="scope"/> parameter must not be a null or empty string.</exception>
+    public void AddEmitter(string scope, Type type)
+    {
+        if (string.IsNullOrEmpty(scope)) throw new ArgumentNullException(nameof(scope));
+
+        _EmitterTypes.Add(new KeyValuePair<string, Type>(scope, type));
+        _Services.AddScoped(type);
     }
 
     /// <summary>
@@ -116,6 +130,22 @@ internal sealed class EmitterBuilder
         AddEmitter<JsonEmitter>(ResourceHelper.STANDALONE_SCOPE_NAME);
         AddEmitter<MarkdownEmitter>(ResourceHelper.STANDALONE_SCOPE_NAME);
         AddEmitter<PowerShellDataEmitter>(ResourceHelper.STANDALONE_SCOPE_NAME);
+    }
+
+    /// <summary>
+    /// Add custom emitters from the language scope.
+    /// </summary>
+    private void AddEmittersFromLanguageScope()
+    {
+        if (_LanguageScopeSet == null) return;
+
+        foreach (var scope in _LanguageScopeSet.Get())
+        {
+            foreach (var emitterType in scope.GetEmitters())
+            {
+                AddEmitter(scope.Name, emitterType);
+            }
+        }
     }
 
     /// <summary>

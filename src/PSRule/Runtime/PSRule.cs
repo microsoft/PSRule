@@ -349,6 +349,22 @@ public sealed class PSRule : ScopedItem
     }
 
     /// <summary>
+    /// Configure services for dependency injection.
+    /// </summary>
+    /// <param name="configure"></param>
+    /// <exception cref="RuntimeScopeException">
+    /// Thrown when accessing this method outside of a convention initialize block.
+    /// </exception>
+    public void ConfigureServices(Action<IRuntimeServiceCollection>? configure)
+    {
+        if (configure == null)
+            return;
+
+        RequireScope(RunspaceScope.ConventionInitialize);
+        GetContext()?.LanguageScope?.ConfigureServices(configure);
+    }
+
+    /// <summary>
     /// Retrieve a reusable singleton object from the PSRule runtime that has previously been stored with <see cref="AddService"/>.
     /// </summary>
     /// <param name="id">The unique identifier for the object.</param>

@@ -59,7 +59,8 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     internal IList<SuppressionGroupVisitor> SuppressionGroup;
 
     internal readonly IHostContext HostContext;
-    internal readonly IPipelineReader Reader;
+    private readonly Func<IPipelineReader> _GetReader;
+    internal IPipelineReader? Reader { get; private set; }
     internal readonly string RunId;
 
     internal readonly Stopwatch RunTime;
@@ -77,7 +78,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     /// </summary>
     public ILanguageScopeSet LanguageScope { get; }
 
-    private PipelineContext(PSRuleOption option, IHostContext hostContext, IPipelineReader reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache)
+    private PipelineContext(PSRuleOption option, IHostContext hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache)
     {
         Option = option ?? throw new ArgumentNullException(nameof(option));
         LanguageScope = languageScope ?? throw new ArgumentNullException(nameof(languageScope));
@@ -86,7 +87,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         ResourceCache = resourceCache;
 
         HostContext = hostContext;
-        Reader = reader;
+        _GetReader = reader;
         Writer = writer;
         _LanguageMode = option.Execution.LanguageMode ?? ExecutionOption.Default.LanguageMode!.Value;
         _PathExpressionCache = [];
@@ -103,7 +104,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         LanguageScope = languageScope;
     }
 
-    public static PipelineContext New(PSRuleOption option, IHostContext hostContext, IPipelineReader reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache)
+    public static PipelineContext New(PSRuleOption option, IHostContext hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache)
     {
         var context = new PipelineContext(option, hostContext, reader, writer, languageScope, optionBuilder, resourceCache);
         CurrentThread = context;
@@ -177,6 +178,8 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
 
         _DefaultOptionContext = _OptionBuilder.Build(null);
         _OptionBuilder.CheckObsolete(runspaceContext);
+
+        Reader = _GetReader();
     }
 
     internal void UpdateLanguageScope(ILanguageScope languageScope)
@@ -248,6 +251,8 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
                 LocalizedDataCache.Clear();
                 ExpressionCache.Clear();
                 ContentCache.Clear();
+                // Reader.Dispose();
+                Writer.Dispose();
                 RunTime.Stop();
             }
             _Disposed = true;

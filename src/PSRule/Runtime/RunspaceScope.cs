@@ -55,11 +55,6 @@ public enum RunspaceScope
     ConventionInitialize = 128,
 
     /// <summary>
-    /// Initialization.
-    /// </summary>
-    Initialize = ConventionInitialize,
-
-    /// <summary>
     /// When any convention block is executing.
     /// </summary>
     Convention = ConventionInitialize | ConventionBegin | ConventionProcess | ConventionEnd,
