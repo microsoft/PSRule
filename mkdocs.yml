@@ -166,7 +166,7 @@ plugins:
         'changelog.md': 'CHANGELOG-v3.md'
 
 hooks:
-  - docs/hooks/old_hooks.py
+  - docs/hooks/maml_formatting.py
 
 # watch:
 #   - includes
