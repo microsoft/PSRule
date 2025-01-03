@@ -23,7 +23,7 @@ internal delegate RuleConditionResult RuleCondition();
 [DebuggerDisplay("{Id} @{Source.Path}")]
 internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable, IResource, IRuleV1
 {
-    internal RuleBlock(ISourceFile source, ResourceId id, ResourceId? @ref, RuleProperties @default, RuleOverride @override, RuleHelpInfo info, ICondition condition, IResourceTags tag, ResourceId[] alias, ResourceId[] dependsOn, Hashtable configuration, ISourceExtent extent, ResourceFlags flags, IResourceLabels labels)
+    internal RuleBlock(ISourceFile source, ResourceId id, ResourceId? @ref, RuleProperties @default, RuleOverride? @override, RuleHelpInfo info, ICondition condition, IResourceTags tag, ResourceId[] alias, ResourceId[]? dependsOn, Hashtable? configuration, ISourceExtent? extent, ResourceFlags flags, IResourceLabels labels)
     {
         Source = source;
         Name = id.Name;
@@ -77,7 +77,7 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     /// <summary>
     /// Other rules that must completed successfully before calling this rule.
     /// </summary>
-    public readonly ResourceId[] DependsOn;
+    public readonly ResourceId[]? DependsOn;
 
     /// <summary>
     /// Tags assigned to block. Tags are additional metadata used to select rules to execute and identify results.
@@ -93,7 +93,7 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     /// <remarks>
     /// These defaults are used when the value does not exist in the baseline configuration.
     /// </remarks>
-    public readonly Hashtable Configuration;
+    public readonly Hashtable? Configuration;
 
     public readonly RuleHelpInfo Info;
 
@@ -101,7 +101,7 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     public ISourceFile Source { get; }
 
     /// <inheritdoc/>
-    public ISourceExtent Extent { get; }
+    public ISourceExtent? Extent { get; }
 
     /// <inheritdoc/>
     [JsonIgnore]
@@ -114,9 +114,9 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
 
     [JsonIgnore]
     [YamlIgnore]
-    public RuleOverride Override { get; }
+    public RuleOverride? Override { get; }
 
-    ResourceId[] IDependencyTarget.DependsOn => DependsOn;
+    ResourceId[]? IDependencyTarget.DependsOn => DependsOn;
 
     bool IDependencyTarget.Dependency => Source.IsDependency();
 

@@ -458,8 +458,8 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
                     Thread.CurrentThread.CurrentCulture,
                     PSRuleResources.RuleStackTrace,
                     RuleBlock.Name,
-                    RuleBlock.Extent.File,
-                    RuleBlock.Extent.Line)
+                    RuleBlock.Extent?.File,
+                    RuleBlock.Extent?.Line)
             );
     }
 
@@ -593,12 +593,12 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
             runId: Pipeline.RunId,
             ruleId: ruleBlock.Id,
             @ref: ruleBlock.Ref.GetValueOrDefault().Name,
-            targetObject: TargetObject,
-            targetName: Binding?.TargetName,
-            targetType: Binding?.TargetType,
+            targetObject: TargetObject!,
+            targetName: Binding?.TargetName!,
+            targetType: Binding?.TargetType!,
             tag: ruleBlock.Tag,
             info: ruleBlock.Info,
-            field: Binding.Field,
+            field: Binding?.Field,
             @default: ruleBlock.Default,
             extent: ruleBlock.Extent,
             @override: ruleBlock.Override
@@ -656,7 +656,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         if (LanguageScope == null) throw new InvalidOperationException("Can not call out of scope.");
 
         ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
-        return !Pipeline.LanguageScope.TryScope(scopeName, out var scope) || string.IsNullOrEmpty(name) ? null : scope.GetService(name);
+        return scopeName == null || !Pipeline.LanguageScope.TryScope(scopeName, out var scope) || scope == null || name == null || string.IsNullOrEmpty(name) ? null : scope.GetService(name);
     }
 
     private void RunConventionInitialize()
@@ -799,7 +799,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
             return false;
 
         // Get from baseline configuration
-        if (LanguageScope.TryConfigurationValue(name, out var result))
+        if (LanguageScope != null && LanguageScope.TryConfigurationValue(name, out var result))
         {
             value = result;
             return true;

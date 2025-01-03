@@ -32,7 +32,7 @@ public interface IHostContext
     /// <summary>
     /// Get the value of a named variable.
     /// </summary>
-    T GetVariable<T>(string variableName);
+    T? GetVariable<T>(string variableName);
 
     /// <summary>
     /// Set the value of a named variable.

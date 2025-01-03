@@ -63,7 +63,7 @@ internal sealed class OptionContextBuilder
     /// <summary>
     /// Build an <see cref="OptionContext"/>.
     /// </summary>
-    internal OptionContext Build(string languageScope)
+    internal OptionContext Build(string? languageScope)
     {
         languageScope = ResourceHelper.NormalizeScope(languageScope);
         var context = new OptionContext(_BindTargetName, _BindTargetType, _BindField, _InputTargetType);
@@ -76,7 +76,10 @@ internal sealed class OptionContextBuilder
                 Combine(context, _Scopes[i]);
         }
         //Combine(PSRuleOption.FromDefault());
+        context.Output ??= new();
         context.Output.Culture ??= _DefaultCulture;
+
+        context.Rule ??= new();
         context.Rule.IncludeLocal = GetIncludeLocal(_Scopes) ?? context.Rule.IncludeLocal ?? true;
 
         context.RuleFilter = GetRuleFilter(context.Rule);
@@ -202,15 +205,15 @@ internal sealed class OptionContextBuilder
             }
             include.AddUnique(add);
         }
-        return include.ToArray();
+        return [.. include];
     }
 
-    private bool? GetIncludeLocal(List<OptionScope> scopes)
+    private static bool? GetIncludeLocal(List<OptionScope> scopes)
     {
         for (var i = 0; i < scopes.Count; i++)
         {
-            if (scopes[i].Type == ScopeType.Workspace && scopes[i].Rule != null && scopes[i].Rule.IncludeLocal.HasValue)
-                return scopes[i].Rule.IncludeLocal.Value;
+            if (scopes[i].Type == ScopeType.Workspace && scopes[i].Rule != null && scopes[i].Rule.IncludeLocal != default)
+                return scopes[i].Rule.IncludeLocal!.Value;
         }
         return null;
     }

@@ -3,6 +3,8 @@
 
 namespace PSRule.Definitions;
 
+#nullable enable
+
 /// <summary>
 /// An object that relies on a dependency chain.
 /// </summary>
@@ -21,15 +23,17 @@ public interface IDependencyTarget
     /// <summary>
     /// Additional aliases for the resource.
     /// </summary>
-    ResourceId[] Alias { get; }
+    ResourceId[]? Alias { get; }
 
     /// <summary>
     /// Resources this target depends on.
     /// </summary>
-    ResourceId[] DependsOn { get; }
+    ResourceId[]? DependsOn { get; }
 
     /// <summary>
     /// Determines if the source was imported as a dependency.
     /// </summary>
     bool Dependency { get; }
 }
+
+#nullable restore

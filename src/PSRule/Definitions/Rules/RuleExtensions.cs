@@ -117,7 +117,7 @@ internal static class RuleExtensions
         // Process from PowerShell
         foreach (var block in blocks.OfType<RuleBlock>())
         {
-            if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
+            if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId) && duplicateId != null)
             {
                 context.DuplicateResourceId(block.Id, duplicateId.Value);
                 continue;
@@ -138,7 +138,7 @@ internal static class RuleExtensions
         foreach (var block in blocks.OfType<RuleV1>())
         {
             var ruleName = block.Name;
-            if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId))
+            if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId) && duplicateId != null)
             {
                 context.DuplicateResourceId(block.Id, duplicateId.Value);
                 continue;
@@ -151,7 +151,7 @@ internal static class RuleExtensions
             }
 
             context.EnterLanguageScope(block.Source);
-            context.LanguageScope.TryGetOverride(block.Id, out var propertyOverride);
+            context.LanguageScope!.TryGetOverride(block.Id, out var propertyOverride);
             try
             {
                 var info = GetRuleHelpInfo(context, block) ?? new RuleHelpInfo(

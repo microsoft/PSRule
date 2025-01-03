@@ -70,7 +70,7 @@ public sealed class PSRule : ScopedItem
         {
             var context = GetContext();
             context.Writer.VerboseInputAdded(path);
-            context.Pipeline.Reader.Add(path);
+            context.Pipeline.Reader?.Add(path);
         }
     }
 
@@ -323,7 +323,7 @@ public sealed class PSRule : ScopedItem
             if (sourceObject[i] == null)
                 continue;
 
-            GetContext().Pipeline.Reader.Enqueue(sourceObject[i], targetType: type, skipExpansion: true);
+            GetContext().Pipeline.Reader?.Enqueue(sourceObject[i], targetType: type, skipExpansion: true);
         }
     }
 

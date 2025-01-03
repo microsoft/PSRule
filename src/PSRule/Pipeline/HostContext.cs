@@ -42,7 +42,7 @@ public abstract class HostContext : IHostContext
     }
 
     /// <inheritdoc/>
-    public virtual T GetVariable<T>(string variableName)
+    public virtual T? GetVariable<T>(string variableName)
     {
         return default;
     }

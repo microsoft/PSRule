@@ -30,7 +30,7 @@ public sealed class BaselineOption : IEquatable<BaselineOption>, IBaselineOption
     /// Create an option instance based on an existing object.
     /// </summary>
     /// <param name="option">The existing object to copy.</param>
-    public BaselineOption(BaselineOption option)
+    public BaselineOption(BaselineOption? option)
     {
         if (option == null)
             return;
@@ -67,7 +67,7 @@ public sealed class BaselineOption : IEquatable<BaselineOption>, IBaselineOption
     /// The new instance uses any non-null values from <paramref name="o1"/>.
     /// Any null values from <paramref name="o1"/> are replaced with <paramref name="o2"/>.
     /// </summary>
-    public static BaselineOption Combine(BaselineOption o1, BaselineOption o2)
+    public static BaselineOption Combine(BaselineOption? o1, BaselineOption? o2)
     {
         var result = new BaselineOption(o1)
         {

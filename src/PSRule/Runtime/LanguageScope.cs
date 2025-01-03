@@ -16,29 +16,20 @@ namespace PSRule.Runtime;
 #nullable enable
 
 [DebuggerDisplay("{Name}")]
-internal sealed class LanguageScope : ILanguageScope, IRuntimeServiceCollection
+internal sealed class LanguageScope(string name) : ILanguageScope, IRuntimeServiceCollection
 {
-    private IDictionary<string, object>? _Configuration;
+    private IDictionary<string, object>? _Configuration = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
     private WildcardMap<RuleOverride>? _Override;
-    private readonly Dictionary<string, object> _Service;
-    private readonly List<Type> _Emitters;
-    private readonly Dictionary<ResourceKind, IResourceFilter> _Filter;
+    private readonly Dictionary<string, object> _Service = [];
+    private readonly List<Type> _Emitters = [];
+    private readonly Dictionary<ResourceKind, IResourceFilter> _Filter = [];
     private ITargetBinder? _TargetBinder;
     private StringComparer? _BindingComparer;
 
     private bool _Disposed;
 
-    public LanguageScope(string name)
-    {
-        _Configuration = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-        Name = ResourceHelper.NormalizeScope(name);
-        _Filter = [];
-        _Service = [];
-        _Emitters = [];
-    }
-
     /// <inheritdoc/>
-    public string Name { [DebuggerStepThrough] get; }
+    public string Name { [DebuggerStepThrough] get; } = ResourceHelper.NormalizeScope(name);
 
     /// <inheritdoc/>
     public string[]? Culture { [DebuggerStepThrough] get; [DebuggerStepThrough] private set; }
@@ -55,14 +46,14 @@ internal sealed class LanguageScope : ILanguageScope, IRuntimeServiceCollection
         WithFilter(context.RuleFilter);
         WithFilter(context.ConventionFilter);
         _BindingComparer = context.Binding.GetComparer();
-        Culture = context.Output.Culture;
+        Culture = context.Output?.Culture;
 
         var builder = new TargetBinderBuilder(context.BindTargetName, context.BindTargetType, context.BindField, context.InputTargetType);
         _TargetBinder = builder.Build(context.Binding);
         _Override = WithOverride(context.Override);
     }
 
-    private static WildcardMap<RuleOverride>? WithOverride(OverrideOption option)
+    private static WildcardMap<RuleOverride>? WithOverride(OverrideOption? option)
     {
         if (option == null || option.Level == null)
             return default;
@@ -92,8 +83,11 @@ internal sealed class LanguageScope : ILanguageScope, IRuntimeServiceCollection
     }
 
     /// <inheritdoc/>
-    public void WithFilter(IResourceFilter resourceFilter)
+    public void WithFilter(IResourceFilter? resourceFilter)
     {
+        if (resourceFilter == null)
+            return;
+
         _Filter[resourceFilter.Kind] = resourceFilter;
     }
 

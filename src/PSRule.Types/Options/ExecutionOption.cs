@@ -71,7 +71,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     /// Creates a execution option by copying an existing instance.
     /// </summary>
     /// <param name="option">The option instance to copy.</param>
-    public ExecutionOption(ExecutionOption option)
+    public ExecutionOption(ExecutionOption? option)
     {
         if (option == null)
             return;
@@ -143,7 +143,7 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
     /// Values from <paramref name="o1"/> that are set are not overridden.
     /// </summary>
-    internal static ExecutionOption Combine(ExecutionOption o1, ExecutionOption o2)
+    internal static ExecutionOption Combine(ExecutionOption? o1, ExecutionOption? o2)
     {
         var result = new ExecutionOption(o1)
         {

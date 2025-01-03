@@ -14,11 +14,11 @@ internal sealed class TargetBinderBuilder
 {
     private readonly List<ITargetBindingContext> _BindingContext;
     private readonly HashSet<string>? _TypeFilter;
-    private readonly BindTargetMethod _BindTargetName;
-    private readonly BindTargetMethod _BindTargetType;
-    private readonly BindTargetMethod _BindField;
+    private readonly BindTargetMethod? _BindTargetName;
+    private readonly BindTargetMethod? _BindTargetType;
+    private readonly BindTargetMethod? _BindField;
 
-    public TargetBinderBuilder(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, string[]? typeFilter)
+    public TargetBinderBuilder(BindTargetMethod? bindTargetName, BindTargetMethod? bindTargetType, BindTargetMethod? bindField, string[]? typeFilter)
     {
         _BindTargetName = bindTargetName;
         _BindTargetType = bindTargetType;

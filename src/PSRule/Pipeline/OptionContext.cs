@@ -9,26 +9,18 @@ namespace PSRule.Pipeline;
 
 #nullable enable
 
-internal sealed class OptionContext
+internal sealed class OptionContext(BindTargetMethod? bindTargetName, BindTargetMethod? bindTargetType, BindTargetMethod? bindField, string[]? inputTargetType)
 {
-    private ConventionOption _Convention;
-    private List<string> _ConventionOrder;
+    private ConventionOption? _Convention;
+    private List<string>? _ConventionOrder;
 
-    public OptionContext(BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, string[] inputTargetType)
-    {
-        BindTargetName = bindTargetName;
-        BindTargetType = bindTargetType;
-        BindField = bindField;
-        InputTargetType = inputTargetType;
-    }
+    public Options.BaselineOption? Baseline { get; set; }
 
-    public Options.BaselineOption Baseline { get; set; }
+    public BindingOption? Binding { get; set; }
 
-    public BindingOption Binding { get; set; }
+    public ConfigurationOption? Configuration { get; set; }
 
-    public ConfigurationOption Configuration { get; set; }
-
-    public ConventionOption Convention
+    public ConventionOption? Convention
     {
         get
         {
@@ -41,42 +33,42 @@ internal sealed class OptionContext
         }
     }
 
-    public ExecutionOption Execution { get; set; }
+    public ExecutionOption? Execution { get; set; }
 
-    public IncludeOption Include { get; set; }
+    public IncludeOption? Include { get; set; }
 
-    public InputOption Input { get; set; }
+    public InputOption? Input { get; set; }
 
-    public LoggingOption Logging { get; set; }
+    public LoggingOption? Logging { get; set; }
 
-    public OutputOption Output { get; set; }
+    public OutputOption? Output { get; set; }
 
-    public OverrideOption Override { get; set; }
+    public OverrideOption? Override { get; set; }
 
-    public RepositoryOption Repository { get; set; }
+    public RepositoryOption? Repository { get; set; }
 
-    public RequiresOption Requires { get; set; }
+    public RequiresOption? Requires { get; set; }
 
-    public RuleOption Rule { get; set; }
+    public RuleOption? Rule { get; set; }
 
-    public SuppressionOption Suppression { get; set; }
+    public SuppressionOption? Suppression { get; set; }
 
-    public IResourceFilter ConventionFilter { get; set; }
+    public IResourceFilter? ConventionFilter { get; set; }
 
-    public IResourceFilter RuleFilter { get; set; }
+    public IResourceFilter? RuleFilter { get; set; }
 
-    public BindTargetMethod BindTargetName { get; }
-    public BindTargetMethod BindTargetType { get; }
-    public BindTargetMethod BindField { get; }
+    public BindTargetMethod? BindTargetName { get; } = bindTargetName;
+    public BindTargetMethod? BindTargetType { get; } = bindTargetType;
+    public BindTargetMethod? BindField { get; } = bindField;
 
-    public string[] InputTargetType { get; }
+    public string[]? InputTargetType { get; } = inputTargetType;
 
     internal int GetConventionOrder(IConventionV1 convention)
     {
         if (Convention?.Include == null || Convention.Include.Length == 0)
             return -1;
 
-        _ConventionOrder ??= new List<string>(Convention.Include);
+        _ConventionOrder ??= [.. Convention.Include];
         var index = _ConventionOrder.IndexOf(convention.Id.Value);
         if (index == -1)
             index = _ConventionOrder.IndexOf(convention.Name);

@@ -19,19 +19,14 @@ internal sealed class LockEntryIntegrityJsonConverter : JsonConverter<LockEntryI
             return null;
 
         var parts = s.Split('-');
-        if (!Enum.TryParse<IntegrityAlgorithm>(parts[0], ignoreCase: true, result: out var algorithm))
-            return null;
-
-        return new LockEntryIntegrity
-        {
-            Algorithm = algorithm,
-            Hash = parts[1]
-        };
+        return Enum.TryParse<IntegrityAlgorithm>(parts[0], ignoreCase: true, result: out var algorithm)
+            ? new LockEntryIntegrity(algorithm, hash: parts[1])
+            : null;
     }
 
     public override void WriteJson(JsonWriter writer, LockEntryIntegrity? value, JsonSerializer serializer)
     {
-        if (value == null || value.Algorithm == null || value.Algorithm == IntegrityAlgorithm.Unknown || string.IsNullOrEmpty(value.Hash))
+        if (value == null || value.Algorithm == IntegrityAlgorithm.Unknown || string.IsNullOrEmpty(value.Hash))
             return;
 
         var algorithm = Enum.GetName(typeof(IntegrityAlgorithm), value.Algorithm).ToLower();

@@ -17,12 +17,12 @@ namespace PSRule.Emitters;
 internal sealed class EmitterContext : BaseEmitterContext
 {
     private readonly ConcurrentQueue<ITargetObject> _Queue;
-    private readonly PathFilter _InputFilter;
+    private readonly PathFilter? _InputFilter;
 
     /// <summary>
     /// Create an instance containing context for an <see cref="IEmitter"/>.
     /// </summary>
-    internal EmitterContext(ConcurrentQueue<ITargetObject> queue, PathFilter inputFilter, PSRuleOption? option)
+    internal EmitterContext(ConcurrentQueue<ITargetObject> queue, PathFilter? inputFilter, PSRuleOption? option)
         : base(option?.Input?.Format ?? InputFormat.None, option?.Input?.ObjectPath, option?.Input?.FileObjects ?? false)
     {
         _Queue = queue;
@@ -32,7 +32,8 @@ internal sealed class EmitterContext : BaseEmitterContext
     /// <inheritdoc/>
     protected override void Enqueue(ITargetObject value)
     {
-        if (!ShouldQueue(value)) return;
+        if (!ShouldQueue(value))
+            return;
 
         _Queue.Enqueue(value);
     }
@@ -42,7 +43,8 @@ internal sealed class EmitterContext : BaseEmitterContext
     /// </summary>
     private bool ShouldQueue(ITargetObject targetObject)
     {
-        if (_InputFilter == null) return true;
+        if (_InputFilter == null)
+            return true;
 
         foreach (var source in targetObject.Source)
         {

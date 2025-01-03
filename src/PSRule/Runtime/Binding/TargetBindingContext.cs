@@ -18,12 +18,12 @@ internal sealed class TargetBindingContext : ITargetBindingContext
     private readonly string[]? _TargetName;
     private readonly string[]? _TargetType;
     private readonly string _NameSeparator;
-    private readonly BindTargetMethod _BindTargetName;
-    private readonly BindTargetMethod _BindTargetType;
-    private readonly BindTargetMethod _BindField;
+    private readonly BindTargetMethod? _BindTargetName;
+    private readonly BindTargetMethod? _BindTargetType;
+    private readonly BindTargetMethod? _BindField;
     private readonly HashSet<string>? _TypeFilter;
 
-    public TargetBindingContext(BindingOption? bindingOption, BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField, HashSet<string>? typeFilter)
+    public TargetBindingContext(BindingOption? bindingOption, BindTargetMethod? bindTargetName, BindTargetMethod? bindTargetType, BindTargetMethod? bindField, HashSet<string>? typeFilter)
     {
         _PreferTargetInfo = bindingOption?.PreferTargetInfo ?? BindingOption.Default.PreferTargetInfo!.Value;
         _IgnoreCase = bindingOption?.IgnoreCase ?? BindingOption.Default.IgnoreCase!.Value;
@@ -84,9 +84,9 @@ internal sealed class TargetBindingContext : ITargetBindingContext
     /// <summary>
     /// Bind additional fields.
     /// </summary>
-    private static ImmutableHashtable? BindField(BindTargetMethod bindField, FieldMap?[] map, bool caseSensitive, object o)
+    private static ImmutableHashtable? BindField(BindTargetMethod? bindField, FieldMap?[] map, bool caseSensitive, object o)
     {
-        if (map == null || map.Length == 0)
+        if (map == null || map.Length == 0 || bindField == null)
             return null;
 
         var hashtable = new ImmutableHashtable();

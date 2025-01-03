@@ -17,12 +17,12 @@ namespace PSRule.Pipeline;
 /// </summary>
 internal sealed class PipelineInputStream : IPipelineReader
 {
-    private readonly InputPathBuilder _InputPath;
-    private readonly PathFilter _InputFilter;
+    private readonly InputPathBuilder? _InputPath;
+    private readonly PathFilter? _InputFilter;
     private readonly ConcurrentQueue<ITargetObject> _Queue;
     private readonly EmitterCollection _EmitterCollection;
 
-    public PipelineInputStream(ILanguageScopeSet? languageScopeSet, InputPathBuilder inputPath, PathFilter inputFilter, PSRuleOption? option)
+    public PipelineInputStream(ILanguageScopeSet? languageScopeSet, InputPathBuilder? inputPath, PathFilter? inputFilter, PSRuleOption? option)
     {
         _InputPath = inputPath;
         _InputFilter = inputFilter;

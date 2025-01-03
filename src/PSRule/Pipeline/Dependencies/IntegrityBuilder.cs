@@ -47,11 +47,7 @@ public static class IntegrityBuilder
             Formatting = Formatting.None,
         });
 
-        return new LockEntryIntegrity
-        {
-            Algorithm = IntegrityAlgorithm.SHA512,
-            Hash = CalculateHashFromContent(alg, content)
-        };
+        return new LockEntryIntegrity(IntegrityAlgorithm.SHA512, hash: CalculateHashFromContent(alg, content));
     }
 
     private static string CalculateHashFromPath(IntegrityAlgorithm alg, string path)
