@@ -84,7 +84,6 @@ nav:
   - Updates:
       # - January 2025: updates/v3.0.md
       - Change log: 'CHANGELOG-v3.md'
-      - Upgrade notes: upgrade-notes.md
       - Deprecations: deprecations.md
       - Changes and versioning: versioning.md
   - Reference:
@@ -164,6 +163,7 @@ plugins:
         'install-instructions.md': 'setup/index.md'
         'install.md': 'setup/index.md'
         'changelog.md': 'CHANGELOG-v3.md'
+        'upgrade-notes.md': 'deprecations.md'
 
 hooks:
   - docs/hooks/maml_formatting.py
