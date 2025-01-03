@@ -43,7 +43,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     private readonly Dictionary<string, PathExpression> _PathExpressionCache;
 
     // Objects kept for caching and disposal
-    private Runspace _Runspace;
+    private Runspace? _Runspace;
 
     // Track whether Dispose has been called.
     private bool _Disposed;
@@ -58,7 +58,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
 
     internal IList<SuppressionGroupVisitor> SuppressionGroup;
 
-    internal readonly IHostContext HostContext;
+    internal readonly IHostContext? HostContext;
     private readonly Func<IPipelineReader> _GetReader;
     internal IPipelineReader? Reader { get; private set; }
     internal readonly string RunId;
@@ -78,7 +78,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     /// </summary>
     public ILanguageScopeSet LanguageScope { get; }
 
-    private PipelineContext(PSRuleOption option, IHostContext hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache)
+    private PipelineContext(PSRuleOption option, IHostContext? hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache)
     {
         Option = option ?? throw new ArgumentNullException(nameof(option));
         LanguageScope = languageScope ?? throw new ArgumentNullException(nameof(languageScope));
@@ -100,11 +100,11 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         ObjectHashAlgorithm = option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm!.Value).GetHashAlgorithm();
         RunId = Environment.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
         RunTime = Stopwatch.StartNew();
-        _DefaultOptionContext = _OptionBuilder?.Build(null);
+        _DefaultOptionContext = _OptionBuilder.Build(null);
         LanguageScope = languageScope;
     }
 
-    public static PipelineContext New(PSRuleOption option, IHostContext hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache)
+    public static PipelineContext New(PSRuleOption option, IHostContext? hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache)
     {
         var context = new PipelineContext(option, hostContext, reader, writer, languageScope, optionBuilder, resourceCache);
         CurrentThread = context;

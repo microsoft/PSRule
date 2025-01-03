@@ -30,3 +30,4 @@ input:
     - '!**/*.psd1'
     - '!**/*.psm1'
     - '*.Designer.cs'
+    - '*.csproj'

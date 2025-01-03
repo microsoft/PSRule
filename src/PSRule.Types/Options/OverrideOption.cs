@@ -34,7 +34,7 @@ public sealed class OverrideOption : IEquatable<OverrideOption>, IOption
     /// Create an option instance based on an existing object.
     /// </summary>
     /// <param name="option">The existing object to copy.</param>
-    public OverrideOption(OverrideOption option)
+    public OverrideOption(OverrideOption? option)
     {
         if (option == null)
             return;
@@ -71,7 +71,7 @@ public sealed class OverrideOption : IEquatable<OverrideOption>, IOption
     /// The new instance uses any non-null values from <paramref name="o1"/>.
     /// Any null values from <paramref name="o1"/> are replaced with <paramref name="o2"/>.
     /// </summary>
-    public static OverrideOption Combine(OverrideOption o1, OverrideOption o2)
+    public static OverrideOption Combine(OverrideOption? o1, OverrideOption? o2)
     {
         var result = new OverrideOption(o1)
         {

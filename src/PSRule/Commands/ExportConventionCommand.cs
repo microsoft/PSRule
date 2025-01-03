@@ -70,7 +70,7 @@ internal sealed class ExportConventionCommand : LanguageBlock
         var context = RunspaceContext.CurrentThread;
         if (context == null) return;
 
-        var source = context.Source;
+        var source = context.Source!;
         var errorPreference = GetErrorActionPreference();
         var commentMetadata = GetCommentMetadata(source, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
         var metadata = new ResourceMetadata

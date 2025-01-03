@@ -51,7 +51,7 @@ public interface IResource : ILanguageBlock
     /// <summary>
     /// The source location of the resource.
     /// </summary>
-    ISourceExtent Extent { get; }
+    ISourceExtent? Extent { get; }
 
     /// <summary>
     /// Additional information about the resource.

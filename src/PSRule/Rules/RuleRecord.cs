@@ -27,7 +27,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
 
     internal readonly ResultDetail _Detail;
 
-    internal RuleRecord(string runId, ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, IResourceTags tag, RuleHelpInfo info, Hashtable field, RuleProperties @default, ISourceExtent extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, RuleOverride? @override = null)
+    internal RuleRecord(string runId, ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, IResourceTags tag, RuleHelpInfo info, Hashtable? field, RuleProperties @default, ISourceExtent? extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, RuleOverride? @override = null)
     {
         _TargetObject = targetObject;
         RunId = runId;
@@ -92,7 +92,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
     /// </summary>
     [JsonIgnore]
     [YamlIgnore]
-    public ISourceExtent Extent { get; }
+    public ISourceExtent? Extent { get; }
 
     /// <summary>
     /// The outcome after the rule processes an object.
@@ -149,7 +149,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
     /// A set of custom fields bound for the target object.
     /// </summary>
     [JsonProperty(PropertyName = "field")]
-    public Hashtable Field { get; }
+    public Hashtable? Field { get; }
 
     /// <summary>
     /// Tags set for the rule.
