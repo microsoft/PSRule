@@ -370,7 +370,7 @@ For a list of projects and integrations see [Related projects][10].
 ## Changes and versioning
 
 This repository uses [semantic versioning](http://semver.org/) to declare breaking changes.
-For details please see the [changes and versioning](https://microsoft.github.io/PSRule/v2/versioning/).
+For details please see the [changes and versioning](https://microsoft.github.io/PSRule/v3/versioning/).
 
 ## Contributing
 
