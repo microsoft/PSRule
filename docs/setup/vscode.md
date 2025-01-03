@@ -12,7 +12,7 @@ The Visual Studio Code extension includes a built-in tasks and configuration sch
 1. Download and install Visual Studio Code.
 2. Install the [PSRule extension from the marketplace][1].
 
-Alternatively you can separately download the extension as a packaged `.vsix` file and install it locally.
+Alternatively, you can separately download the extension as a packaged `.vsix` file and install it locally.
 
   [1]: https://marketplace.visualstudio.com/items?itemName=ps-rule.vscode-ps-rule
 
@@ -23,7 +23,7 @@ Each extension update includes all the key components to make PSRule work withou
 
 By default, Visual Studio Code automatically updates extensions installed from the marketplace when updates are available.
 
-!!! Note
+!!! Learn
     You can disable automatic updates of Visual Studio Code extensions if you prefer to update PSRule on your own schedule.
     It is also possible to switch to an older version of PSRule from v3.
 
