@@ -36,7 +36,7 @@ Also, consider voting up (👍) an issue that is important to you to help us pri
 To install a stable release see [Setting up PSRule][4].
 
   [3]: https://github.com/microsoft/PSRule/issues
-  [4]: setup.md
+  [4]: setup/index.md
 
 ## Pre-releases
 
