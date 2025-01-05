@@ -2321,6 +2321,62 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Run.Category' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Run.Category | Should -Be 'PSRule';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Run.Category' = 'Custom category' };
+            $option.Run.Category | Should -Be 'Custom category';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Run.Category | Should -Be 'Custom category';
+        }
+
+        It 'from Environment' {
+            try {
+                $Env:PSRULE_RUN_CATEGORY = 'Custom category';
+                $option = New-PSRuleOption;
+                $option.Run.Category | Should -Be 'Custom category';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_RUN_CATEGORY' -Force;
+            }
+        }
+    }
+
+    Context 'Read Run.Description' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Run.Description | Should -Be '';
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Run.Description' = 'An custom run.' };
+            $option.Run.Description | Should -Be 'An custom run.';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Run.Description | Should -Be 'An custom run.';
+        }
+
+        It 'from Environment' {
+            try {
+                $Env:PSRULE_RUN_DESCRIPTION = 'An custom run.';
+                $option = New-PSRuleOption;
+                $option.Run.Description | Should -Be 'An custom run.';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_RUN_DESCRIPTION' -Force;
+            }
+        }
+    }
+
     Context 'Read Suppression' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

@@ -35,7 +35,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     [ThreadStatic]
     internal static PipelineContext? CurrentThread;
 
-    private readonly OptionContextBuilder _OptionBuilder;
+    internal readonly OptionContextBuilder OptionBuilder;
 
     // Configuration parameters
 
@@ -61,7 +61,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     internal readonly IHostContext? HostContext;
     private readonly Func<IPipelineReader> _GetReader;
     internal IPipelineReader? Reader { get; private set; }
-    internal readonly string RunId;
+    internal readonly string RunInstance;
 
     internal readonly Stopwatch RunTime;
 
@@ -83,7 +83,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         Option = option ?? throw new ArgumentNullException(nameof(option));
         LanguageScope = languageScope ?? throw new ArgumentNullException(nameof(languageScope));
 
-        _OptionBuilder = optionBuilder;
+        OptionBuilder = optionBuilder;
         ResourceCache = resourceCache;
 
         HostContext = hostContext;
@@ -98,9 +98,9 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         SuppressionGroup = [];
 
         ObjectHashAlgorithm = option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm!.Value).GetHashAlgorithm();
-        RunId = Environment.GetRunId() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
+        RunInstance = Environment.GetRunInstance() ?? ObjectHashAlgorithm.GetDigest(Guid.NewGuid().ToByteArray());
         RunTime = Stopwatch.StartNew();
-        _DefaultOptionContext = _OptionBuilder.Build(null);
+        _DefaultOptionContext = OptionBuilder.Build(null);
         LanguageScope = languageScope;
     }
 
@@ -176,15 +176,15 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         var suppressionGroupFilter = new SuppressionGroupFilter();
         SuppressionGroup = ResourceCache.OfType<SuppressionGroupV1>().Where(suppressionGroupFilter.Match).Select(i => i.ToSuppressionGroupVisitor(runspaceContext)).ToList();
 
-        _DefaultOptionContext = _OptionBuilder.Build(null);
-        _OptionBuilder.CheckObsolete(runspaceContext);
+        _DefaultOptionContext = OptionBuilder.Build(null);
+        OptionBuilder.CheckObsolete(runspaceContext);
 
         Reader = _GetReader();
     }
 
     internal void UpdateLanguageScope(ILanguageScope languageScope)
     {
-        var context = _OptionBuilder.Build(languageScope.Name);
+        var context = OptionBuilder.Build(languageScope.Name);
         languageScope.Configure(context);
     }
 

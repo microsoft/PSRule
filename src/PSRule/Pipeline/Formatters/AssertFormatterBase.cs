@@ -367,7 +367,7 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
             return;
 
         var elapsed = PipelineContext.CurrentThread.RunTime.Elapsed;
-        WriteLineFormat(FormatterStrings.FooterRunInfo, PipelineContext.CurrentThread.RunId, elapsed.ToString("c", Thread.CurrentThread.CurrentCulture));
+        WriteLineFormat(FormatterStrings.FooterRunInfo, PipelineContext.CurrentThread.RunInstance, elapsed.ToString("c", Thread.CurrentThread.CurrentCulture));
     }
 
     protected void WriteStatus(string status, string statusIndent, ConsoleColor? statusForeground, ConsoleColor? statusBackground, ConsoleColor? messageForeground, ConsoleColor? messageBackground, string message, string suffix = null)

@@ -64,6 +64,9 @@ The following workspace options are available for use:
 - [Repository.BaseRef](#repositorybaseref)
 - [Repository.Url](#repositoryurl)
 - [Requires](#requires)
+- [Run.Category](#runcategory)
+- [Run.Description](#rundescription)
+- [Run.Instance](#runinstance)
 - [Suppression](#suppression)
 
 Additionally the following baseline options can be included:
@@ -3441,6 +3444,95 @@ rule:
 ```
 
 In the example above, rules must have a tag of `severity` set to either `Critical` or `Warning` to be included.
+
+### Run.Category
+
+<!-- module:version 3.0.0 -->
+
+Configures the run category that is used as an identifier for output results.
+By default, the run category is set to `PSRule`.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Run.Category hashtable key
+$option = New-PSRuleOption -Option @{ 'Run.Category' = 'Custom run' };
+```
+
+```yaml
+# YAML: Using the run/category property
+run:
+  category: Custom run
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_RUN_CATEOGRY='Custom run'
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_RUN_CATEOGRY: 'Custom run'
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_RUN_CATEOGRY
+  value: 'Custom run'
+```
+
+### Run.Description
+
+<!-- module:version 3.0.0 -->
+
+Configure the run description that is displayed in output.
+By default, the run description is not set.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Run.Description hashtable key
+$option = New-PSRuleOption -Option @{ 'Run.Description' = 'Custom run description.' };
+```
+
+```yaml
+# YAML: Using the run/description property
+run:
+  description: Custom run description.
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_RUN_DESCRIPTION='Custom run description.'
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_RUN_DESCRIPTION: 'Custom run description.'
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_RUN_DESCRIPTION
+  value: 'Custom run description.'
+```
+
+### Run.Instance
+
+<!-- module:version 3.0.0 -->
+
+An unique identifier for the current parent environment instance that is displayed in output as a component of the run ID.
+This is automatically set by PSRule when running in a GitHub Actions or Azure Pipeline pipeline.
+Alternatively, this option can be set using environment variables.
+
+```bash
+# Bash: Using environment variable
+export PSRULE_RUN_INSTANCE='12345678'
+```
 
 ### Suppression
 

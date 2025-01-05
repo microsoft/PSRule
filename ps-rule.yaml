@@ -9,6 +9,10 @@ repository:
   url: https://github.com/microsoft/PSRule
   baseRef: main
 
+run:
+  category: Scan for tests
+  description: This is used for unit testing and should not be used directly.
+
 output:
   culture:
     - en-US

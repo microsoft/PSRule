@@ -27,8 +27,8 @@ env:
 permissions: {}
 
 jobs:
-  build:
-    name: Build
+  build_module:
+    name: Build module
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -76,10 +76,10 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
-  test:
-    name: 🧪 Test (${{ matrix.rid }}-${{ matrix.shell }})
+  test_module:
+    name: 🧪 Test module (${{ matrix.rid }}-${{ matrix.shell }})
     runs-on: ${{ matrix.os }}
-    needs: build
+    needs: build_module
     permissions:
       contents: read
 

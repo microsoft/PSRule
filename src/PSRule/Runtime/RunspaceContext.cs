@@ -9,6 +9,7 @@ using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
 using PSRule.Options;
 using PSRule.Pipeline;
+using PSRule.Pipeline.Runs;
 using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime.Binding;
@@ -100,16 +101,9 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
 
     internal ITargetBinder? TargetBinder { get; private set; }
 
-    private ILanguageScope? _CurrentLanguageScope;
+    public IEnumerable<Run> Runs { get; private set; } = [];
 
-    internal ILanguageScope? LanguageScope
-    {
-        [DebuggerStepThrough]
-        get
-        {
-            return _CurrentLanguageScope;
-        }
-    }
+    public ILanguageScope? LanguageScope { get; private set; }
 
     internal bool IsScope(RunspaceScope scope)
     {
@@ -524,7 +518,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         if (!Pipeline.LanguageScope.TryScope(file.Module, out var scope))
             throw new Exception("Language scope is unknown.");
 
-        _CurrentLanguageScope = scope;
+        LanguageScope = scope;
 
         if (TargetObject != null && LanguageScope != null)
             Binding = LanguageScope.Bind(TargetObject);
@@ -535,7 +529,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
     public void ExitLanguageScope(ISourceFile file)
     {
         // Look at scope popping and validation.
-        _CurrentLanguageScope = null;
+        LanguageScope = null;
 
         Source = null;
     }
@@ -590,7 +584,6 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         _RuleErrors = 0;
         RuleBlock = ruleBlock;
         RuleRecord = new RuleRecord(
-            runId: Pipeline.RunId,
             ruleId: ruleBlock.Id,
             @ref: ruleBlock.Ref.GetValueOrDefault().Name,
             targetObject: TargetObject!,
@@ -727,6 +720,11 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         Array.Sort(_Conventions, new ConventionComparer(Pipeline.GetConventionOrder));
 
         RunConventionInitialize();
+
+        //Pipeline.OptionBuilder.Build()
+
+        // Split each run based on baselines.
+        Runs = new RunCollectionBuilder(Pipeline.Option, Pipeline.RunInstance).Build();
     }
 
     public void Begin()

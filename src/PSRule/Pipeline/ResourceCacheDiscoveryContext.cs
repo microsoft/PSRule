@@ -13,13 +13,13 @@ namespace PSRule.Pipeline;
 /// <summary>
 /// Define a context used for early stage resource discovery.
 /// </summary>
-internal sealed class ResourceCacheDiscoveryContext(IPipelineWriter writer, ILanguageScopeSet languageScopeSet) : IResourceDiscoveryContext
+internal sealed class ResourceCacheDiscoveryContext(IPipelineWriter? writer, ILanguageScopeSet languageScopeSet) : IResourceDiscoveryContext
 {
     private readonly ILanguageScopeSet _LanguageScopeSet = languageScopeSet;
 
     private ILanguageScope? _CurrentLanguageScope;
 
-    public IPipelineWriter Writer { get; } = writer;
+    public IPipelineWriter? Writer { get; } = writer;
 
     public ISourceFile? Source { get; private set; }
 

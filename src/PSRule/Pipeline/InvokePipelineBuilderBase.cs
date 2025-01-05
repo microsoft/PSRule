@@ -74,15 +74,15 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
         Option.Output.JsonIndent = NormalizeJsonIndentRange(option.Output.JsonIndent);
 
         if (option.Rule != null)
-            Option.Rule = new RuleOption(option.Rule);
+            Option.Rule = new(option.Rule);
 
         if (option.Configuration != null)
-            Option.Configuration = new ConfigurationOption(option.Configuration);
+            Option.Configuration = new(option.Configuration);
 
         ConfigureBinding(option);
-        Option.Requires = new RequiresOption(option.Requires);
+        Option.Requires = [.. option.Requires];
         if (option.Suppression.Count > 0)
-            Option.Suppression = new SuppressionOption(option.Suppression);
+            Option.Suppression = new(option.Suppression);
 
         return this;
     }

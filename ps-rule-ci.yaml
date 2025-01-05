@@ -9,6 +9,10 @@ repository:
   url: https://github.com/microsoft/PSRule
   baseRef: main
 
+run:
+  category: CI repository scan
+  description: An analysis scan that checks repository files aligned to expected format requirements.
+
 output:
   culture:
     - en-US

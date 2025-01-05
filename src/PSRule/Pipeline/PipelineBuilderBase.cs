@@ -15,6 +15,8 @@ using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// A base instance for a pipeline builder.
 /// </summary>
@@ -26,13 +28,13 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     protected readonly Source[] Source;
     protected readonly IHostContext HostContext;
 
-    private string[] _Include;
-    private Hashtable _Tag;
-    private Configuration.BaselineOption _Baseline;
-    private string[] _Convention;
-    private PathFilter _InputFilter;
-    private PipelineWriter _Writer;
-    private ILanguageScopeSet _LanguageScopeSet;
+    private string[]? _Include;
+    private Hashtable? _Tag;
+    private Configuration.BaselineOption? _Baseline;
+    private string[]? _Convention;
+    private PathFilter? _InputFilter;
+    private PipelineWriter? _Writer;
+    private ILanguageScopeSet? _LanguageScopeSet;
 
     private readonly HostPipelineWriter _Output;
 
@@ -95,17 +97,18 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         Option.Output = new OutputOption(option.Output);
         Option.Output.Outcome ??= OutputOption.Default.Outcome;
         Option.Output.Banner ??= OutputOption.Default.Banner;
-        Option.Output.Style = GetStyle(option.Output.Style ?? OutputOption.Default.Style.Value);
+        Option.Output.Style = GetStyle(option.Output.Style ?? OutputOption.Default.Style!.Value);
         Option.Override = new OverrideOption(option.Override);
         Option.Repository = GetRepository(option.Repository);
+        Option.Run = GetRun(option.Run);
         return this;
     }
 
     /// <inheritdoc/>
-    public abstract IPipeline Build(IPipelineWriter writer = null);
+    public abstract IPipeline Build(IPipelineWriter? writer = null);
 
     /// <inheritdoc/>
-    public void Baseline(Configuration.BaselineOption baseline)
+    public void Baseline(Configuration.BaselineOption? baseline)
     {
         if (baseline == null)
             return;
@@ -171,7 +174,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     /// <summary>
     /// Create a pipeline context.
     /// </summary>
-    protected PipelineContext PrepareContext((BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) binding, IPipelineWriter writer = default)
+    protected PipelineContext PrepareContext((BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) binding, IPipelineWriter? writer = default)
     {
         writer ??= PrepareWriter();
         var unresolved = new List<ResourceRef>();
@@ -208,15 +211,21 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         return _LanguageScopeSet = builder.Build();
     }
 
-    protected string[] ResolveBaselineGroup(string[] name)
+    protected string[]? ResolveBaselineGroup(string[]? name)
     {
+        var result = new List<string>();
         for (var i = 0; name != null && i < name.Length; i++)
-            name[i] = ResolveBaselineGroup(name[i]);
-
-        return name;
+        {
+            var n = ResolveBaselineGroup(name[i]);
+            if (n != null)
+            {
+                result.Add(n);
+            }
+        }
+        return result.Count == 0 ? null : [.. result];
     }
 
-    protected string ResolveBaselineGroup(string name)
+    protected string? ResolveBaselineGroup(string? name)
     {
         if (name == null || name.Length < 2 || !name.StartsWith("@") ||
             Option == null || Option.Baseline == null || Option.Baseline.Group == null ||
@@ -272,7 +281,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             : _Output;
     }
 
-    protected static string[] GetCulture(string[] culture)
+    protected static string[]? GetCulture(string[] culture)
     {
         var result = new List<string>();
         var parent = new List<string>();
@@ -297,7 +306,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         if (parent.Count > 0)
             result.AddRange(parent);
 
-        return result.Count == 0 ? null : result.ToArray();
+        return result.Count == 0 ? null : [.. result];
     }
 
     protected static RepositoryOption GetRepository(RepositoryOption option)
@@ -312,6 +321,12 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         return result;
     }
 
+    protected static RunOption GetRun(RunOption option)
+    {
+        var result = RunOption.Combine(option, RunOption.Default);
+        return result;
+    }
+
     /// <summary>
     /// Coalesce execution options with defaults.
     /// </summary>
@@ -320,20 +335,20 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         var result = ExecutionOption.Combine(option, ExecutionOption.Default);
 
         // Handle when preference is set to none. The default should be used.
-        result.AliasReference = result.AliasReference == ExecutionActionPreference.None ? ExecutionOption.Default.AliasReference.Value : result.AliasReference;
-        result.DuplicateResourceId = result.DuplicateResourceId == ExecutionActionPreference.None ? ExecutionOption.Default.DuplicateResourceId.Value : result.DuplicateResourceId;
-        result.InvariantCulture = result.InvariantCulture == ExecutionActionPreference.None ? ExecutionOption.Default.InvariantCulture.Value : result.InvariantCulture;
-        result.RuleExcluded = result.RuleExcluded == ExecutionActionPreference.None ? ExecutionOption.Default.RuleExcluded.Value : result.RuleExcluded;
-        result.RuleInconclusive = result.RuleInconclusive == ExecutionActionPreference.None ? ExecutionOption.Default.RuleInconclusive.Value : result.RuleInconclusive;
-        result.RuleSuppressed = result.RuleSuppressed == ExecutionActionPreference.None ? ExecutionOption.Default.RuleSuppressed.Value : result.RuleSuppressed;
-        result.SuppressionGroupExpired = result.SuppressionGroupExpired == ExecutionActionPreference.None ? ExecutionOption.Default.SuppressionGroupExpired.Value : result.SuppressionGroupExpired;
-        result.UnprocessedObject = result.UnprocessedObject == ExecutionActionPreference.None ? ExecutionOption.Default.UnprocessedObject.Value : result.UnprocessedObject;
+        result.AliasReference = result.AliasReference == ExecutionActionPreference.None ? ExecutionOption.Default.AliasReference!.Value : result.AliasReference;
+        result.DuplicateResourceId = result.DuplicateResourceId == ExecutionActionPreference.None ? ExecutionOption.Default.DuplicateResourceId!.Value : result.DuplicateResourceId;
+        result.InvariantCulture = result.InvariantCulture == ExecutionActionPreference.None ? ExecutionOption.Default.InvariantCulture!.Value : result.InvariantCulture;
+        result.RuleExcluded = result.RuleExcluded == ExecutionActionPreference.None ? ExecutionOption.Default.RuleExcluded!.Value : result.RuleExcluded;
+        result.RuleInconclusive = result.RuleInconclusive == ExecutionActionPreference.None ? ExecutionOption.Default.RuleInconclusive!.Value : result.RuleInconclusive;
+        result.RuleSuppressed = result.RuleSuppressed == ExecutionActionPreference.None ? ExecutionOption.Default.RuleSuppressed!.Value : result.RuleSuppressed;
+        result.SuppressionGroupExpired = result.SuppressionGroupExpired == ExecutionActionPreference.None ? ExecutionOption.Default.SuppressionGroupExpired!.Value : result.SuppressionGroupExpired;
+        result.UnprocessedObject = result.UnprocessedObject == ExecutionActionPreference.None ? ExecutionOption.Default.UnprocessedObject!.Value : result.UnprocessedObject;
         return result;
     }
 
-    protected PathFilter GetInputObjectSourceFilter()
+    protected PathFilter? GetInputObjectSourceFilter()
     {
-        return Option.Input.IgnoreObjectSource.GetValueOrDefault(InputOption.Default.IgnoreObjectSource.Value) ? GetInputFilter() : null;
+        return Option.Input.IgnoreObjectSource.GetValueOrDefault(InputOption.Default.IgnoreObjectSource!.Value) ? GetInputFilter() : null;
     }
 
     protected PathFilter GetInputFilter()
@@ -341,8 +356,8 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         if (_InputFilter == null)
         {
             var basePath = Environment.GetWorkingPath();
-            var ignoreGitPath = Option.Input.IgnoreGitPath ?? InputOption.Default.IgnoreGitPath.Value;
-            var ignoreRepositoryCommon = Option.Input.IgnoreRepositoryCommon ?? InputOption.Default.IgnoreRepositoryCommon.Value;
+            var ignoreGitPath = Option.Input.IgnoreGitPath ?? InputOption.Default.IgnoreGitPath!.Value;
+            var ignoreRepositoryCommon = Option.Input.IgnoreRepositoryCommon ?? InputOption.Default.IgnoreRepositoryCommon!.Value;
             var builder = PathFilterBuilder.Create(basePath, Option.Input.PathIgnore, ignoreGitPath, ignoreRepositoryCommon);
             builder.UseGitIgnore();
 
@@ -397,10 +412,10 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         return MIN_JSON_INDENT;
     }
 
-    protected bool TryChangedFiles(out string[] files)
+    protected bool TryChangedFiles(out string[]? files)
     {
         files = null;
-        if (!Option.Input.IgnoreUnchangedPath.GetValueOrDefault(InputOption.Default.IgnoreUnchangedPath.Value) ||
+        if (!Option.Input.IgnoreUnchangedPath.GetValueOrDefault(InputOption.Default.IgnoreUnchangedPath!.Value) ||
             !GitHelper.TryGetChangedFiles(Option.Repository.BaseRef, "d", null, out files))
             return false;
 
@@ -431,3 +446,5 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             OutputStyle.Client;
     }
 }
+
+#nullable restore

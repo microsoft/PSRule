@@ -130,6 +130,11 @@ output:
   sarifProblemsOnly: false
   style: GitHubActions
 
+# Configure run options
+run:
+  category: Custom category
+  description: An custom run.
+
 # Configure rule suppression
 suppression:
   SuppressionTest1:

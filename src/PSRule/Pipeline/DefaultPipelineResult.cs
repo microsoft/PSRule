@@ -6,10 +6,12 @@ using PSRule.Options;
 
 namespace PSRule.Pipeline;
 
-internal sealed class DefaultPipelineResult(IPipelineWriter writer, BreakLevel breakLevel) : IPipelineResult
+#nullable enable
+
+internal sealed class DefaultPipelineResult(IPipelineWriter? writer, BreakLevel breakLevel) : IPipelineResult
 {
-    private readonly IPipelineWriter _Writer = writer;
-    private readonly BreakLevel _BreakLevel = breakLevel == BreakLevel.None ? ExecutionOption.Default.Break.Value : breakLevel;
+    private readonly IPipelineWriter? _Writer = writer;
+    private readonly BreakLevel _BreakLevel = breakLevel == BreakLevel.None ? ExecutionOption.Default.Break!.Value : breakLevel;
     private bool _HadErrors;
     private bool _HadFailures;
     private SeverityLevel _WorstCase = SeverityLevel.None;
@@ -65,3 +67,5 @@ internal sealed class DefaultPipelineResult(IPipelineWriter writer, BreakLevel b
         }
     }
 }
+
+#nullable restore

@@ -44,6 +44,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         Output = OutputOption.Default,
         Override = OverrideOption.Default,
         Rule = RuleOption.Default,
+        Run = RunOption.Default,
     };
 
     /// <summary>
@@ -66,6 +67,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         Repository = new RepositoryOption();
         Requires = new RequiresOption();
         Rule = new RuleOption();
+        Run = new RunOption();
         Suppression = new SuppressionOption();
     }
 
@@ -87,6 +89,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         Override = new OverrideOption(option?.Override);
         Repository = new RepositoryOption(option?.Repository);
         Requires = new RequiresOption(option?.Requires);
+        Run = new RunOption(option?.Run);
         Rule = new RuleOption(option?.Rule);
         Suppression = new SuppressionOption(option?.Suppression);
     }
@@ -162,6 +165,11 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     public RuleOption Rule { get; set; }
 
     /// <summary>
+    /// Options that configure runs.
+    /// </summary>
+    public RunOption Run { get; set; }
+
+    /// <summary>
     /// A set of suppression rules.
     /// </summary>
     public SuppressionOption Suppression { get; set; }
@@ -229,6 +237,8 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         result.Output = OutputOption.Combine(result?.Output, o2?.Output);
         result.Override = OverrideOption.Combine(result?.Override, o2?.Override);
         result.Repository = RepositoryOption.Combine(result?.Repository, o2?.Repository);
+        result.Requires = RequiresOption.Combine(result?.Requires, o2?.Requires);
+        result.Run = RunOption.Combine(result?.Run, o2?.Run);
         return result;
     }
 
@@ -362,6 +372,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         option.Override.Load();
         option.Repository.Load();
         option.Requires.Load();
+        option.Run.Load();
         BaselineOption.Load(option);
         return option;
     }
@@ -394,6 +405,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         option.Override.Import(index);
         option.Repository.Load(index);
         option.Requires.Load(index);
+        option.Run.Import(index);
         BaselineOption.Load(option, index);
         return option;
     }
@@ -461,7 +473,9 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
             Override == other.Override &&
             Suppression == other.Suppression &&
             Repository == other.Repository &&
-            Rule == other.Rule;
+            Rule == other.Rule &&
+            Requires == other.Requires &&
+            Run == other.Run;
     }
 
     /// <inheritdoc/>
@@ -484,6 +498,8 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
             hash = hash * 23 + (Suppression != null ? Suppression.GetHashCode() : 0);
             hash = hash * 23 + (Repository != null ? Repository.GetHashCode() : 0);
             hash = hash * 23 + (Rule != null ? Rule.GetHashCode() : 0);
+            hash = hash * 23 + (Requires != null ? Requires.GetHashCode() : 0);
+            hash = hash * 23 + (Run != null ? Run.GetHashCode() : 0);
             return hash;
         }
     }

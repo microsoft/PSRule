@@ -5,6 +5,7 @@ using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Host;
+using PSRule.Pipeline.Runs;
 using PSRule.Rules;
 
 namespace PSRule.Pipeline;
@@ -65,9 +66,11 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
                 if (next is TargetObject to)
                 {
 
-                    var result = ProcessTargetObject(to);
-                    _Completed.Add(result);
-                    Pipeline.Writer.WriteObject(result, false);
+                    // var result = ProcessTargetObject(to);
+                    ProcessTargetObject(to);
+
+                    // _Completed.Add(result);
+                    // Pipeline.Writer.WriteObject(result, false);
                 }
             }
         }
@@ -96,104 +99,120 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
         Pipeline.Writer.End(Result);
     }
 
-    private InvokeResult ProcessTargetObject(TargetObject targetObject)
+    /// <summary>
+    /// Process each run with the target object.
+    /// </summary>
+    private void ProcessTargetObject(TargetObject targetObject)
     {
         try
         {
             Context.EnterTargetObject(targetObject);
-            var result = new InvokeResult();
-            var ruleCounter = 0;
-            var suppressedRuleCounter = 0;
-            var suppressionGroupCounter = new Dictionary<ISuppressionInfo, int>(new ISuppressionInfoComparer());
-
-            // Process rule blocks ordered by dependency graph
-            foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
+            foreach (var run in Context.Runs)
             {
-                // Enter rule block scope
-                var ruleRecord = Context.EnterRuleBlock(ruleBlock: ruleBlockTarget.Value);
-                ruleCounter++;
-
-                try
-                {
-                    if (Context.Binding != null && Context.Binding.ShouldFilter)
-                        continue;
-
-                    // Check if dependency failed
-                    if (ruleBlockTarget.Skipped)
-                    {
-                        ruleRecord.OutcomeReason = RuleOutcomeReason.DependencyFail;
-                    }
-                    // Check for suppression
-                    else if (_SuppressionFilter.Match(id: ruleBlockTarget.Value.Id, targetName: ruleRecord.TargetName))
-                    {
-                        ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
-                        suppressedRuleCounter++;
-
-                        if (!_IsSummary)
-                            Context.RuleSuppressed(ruleId: ruleRecord.RuleId);
-                    }
-                    // Check for suppression group
-                    else if (_SuppressionGroupFilter.TrySuppressionGroup(ruleId: ruleRecord.RuleId, targetObject, out var suppression))
-                    {
-                        ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
-                        if (!_IsSummary)
-                            Context.RuleSuppressionGroup(ruleId: ruleRecord.RuleId, suppression);
-                        else
-                            suppressionGroupCounter[suppression] = suppressionGroupCounter.TryGetValue(suppression, out var count) ? ++count : 1;
-                    }
-                    else
-                    {
-                        HostHelper.InvokeRuleBlock(context: Context, ruleBlock: ruleBlockTarget.Value, ruleRecord: ruleRecord);
-                        if (ruleRecord.OutcomeReason == RuleOutcomeReason.PreconditionFail)
-                            ruleCounter--;
-                    }
-
-                    // Report outcome to dependency graph
-                    if (ruleRecord.Outcome == RuleOutcome.Pass)
-                    {
-                        ruleBlockTarget.Pass();
-                        Context.Pass();
-                    }
-                    else if (ruleRecord.Outcome == RuleOutcome.Fail)
-                    {
-                        Result.Fail(ruleRecord.Level);
-                        ruleBlockTarget.Fail();
-                        Context.Fail();
-                    }
-                    else if (ruleRecord.Outcome == RuleOutcome.Error)
-                    {
-                        Result.HadErrors = true;
-                        ruleBlockTarget.Fail();
-                    }
-
-                    AddToSummary(ruleBlock: ruleBlockTarget.Value, outcome: ruleRecord.Outcome);
-                }
-                finally
-                {
-                    // Exit rule block scope
-                    Context.ExitRuleBlock(ruleBlock: ruleBlockTarget.Value);
-                    if (ShouldOutput(ruleRecord.Outcome))
-                        result.Add(ruleRecord);
-                }
+                var result = InvokeRun(run, targetObject);
+                _Completed.Add(result);
+                Pipeline.Writer.WriteObject(result, false);
             }
-
-            if (ruleCounter == 0)
-                Context.WarnObjectNotProcessed();
-
-            if (_IsSummary)
-            {
-                if (suppressedRuleCounter > 0)
-                    Context.WarnRuleCountSuppressed(ruleCount: suppressedRuleCounter);
-
-                foreach (var keyValuePair in suppressionGroupCounter)
-                    Context.RuleSuppressionGroupCount(suppression: keyValuePair.Key, count: keyValuePair.Value);
-            }
-            return result;
         }
         finally
         {
             Context.ExitTargetObject();
         }
+    }
+
+    /// <summary>
+    /// Invoke the run for the target object.
+    /// </summary>
+    private InvokeResult InvokeRun(IRun run, TargetObject targetObject)
+    {
+        var result = new InvokeResult(run);
+        var ruleCounter = 0;
+        var suppressedRuleCounter = 0;
+        var suppressionGroupCounter = new Dictionary<ISuppressionInfo, int>(new ISuppressionInfoComparer());
+
+        // Process rule blocks ordered by dependency graph
+        foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
+        {
+            // Enter rule block scope
+            var ruleRecord = Context.EnterRuleBlock(ruleBlock: ruleBlockTarget.Value);
+            ruleCounter++;
+
+            try
+            {
+                if (Context.Binding != null && Context.Binding.ShouldFilter)
+                    continue;
+
+                // Check if dependency failed
+                if (ruleBlockTarget.Skipped)
+                {
+                    ruleRecord.OutcomeReason = RuleOutcomeReason.DependencyFail;
+                }
+                // Check for suppression
+                else if (_SuppressionFilter.Match(id: ruleBlockTarget.Value.Id, targetName: ruleRecord.TargetName))
+                {
+                    ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
+                    suppressedRuleCounter++;
+
+                    if (!_IsSummary)
+                        Context.RuleSuppressed(ruleId: ruleRecord.RuleId);
+                }
+                // Check for suppression group
+                else if (_SuppressionGroupFilter.TrySuppressionGroup(ruleId: ruleRecord.RuleId, targetObject, out var suppression))
+                {
+                    ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
+                    if (!_IsSummary)
+                        Context.RuleSuppressionGroup(ruleId: ruleRecord.RuleId, suppression);
+                    else
+                        suppressionGroupCounter[suppression] = suppressionGroupCounter.TryGetValue(suppression, out var count) ? ++count : 1;
+                }
+                else
+                {
+                    HostHelper.InvokeRuleBlock(context: Context, ruleBlock: ruleBlockTarget.Value, ruleRecord: ruleRecord);
+                    if (ruleRecord.OutcomeReason == RuleOutcomeReason.PreconditionFail)
+                        ruleCounter--;
+                }
+
+                // Report outcome to dependency graph
+                if (ruleRecord.Outcome == RuleOutcome.Pass)
+                {
+                    ruleBlockTarget.Pass();
+                    Context.Pass();
+                }
+                else if (ruleRecord.Outcome == RuleOutcome.Fail)
+                {
+                    Result.Fail(ruleRecord.Level);
+                    ruleBlockTarget.Fail();
+                    Context.Fail();
+                }
+                else if (ruleRecord.Outcome == RuleOutcome.Error)
+                {
+                    Result.HadErrors = true;
+                    ruleBlockTarget.Fail();
+                }
+
+                AddToSummary(ruleBlock: ruleBlockTarget.Value, outcome: ruleRecord.Outcome);
+            }
+            finally
+            {
+                // Exit rule block scope
+                Context.ExitRuleBlock(ruleBlock: ruleBlockTarget.Value);
+                if (ShouldOutput(ruleRecord.Outcome))
+                    result.Add(ruleRecord);
+            }
+        }
+
+        if (ruleCounter == 0)
+            Context.WarnObjectNotProcessed();
+
+        if (_IsSummary)
+        {
+            if (suppressedRuleCounter > 0)
+                Context.WarnRuleCountSuppressed(ruleCount: suppressedRuleCounter);
+
+            foreach (var keyValuePair in suppressionGroupCounter)
+                Context.RuleSuppressionGroupCount(suppression: keyValuePair.Key, count: keyValuePair.Value);
+        }
+        return result;
     }
 
     private bool ShouldOutput(RuleOutcome outcome)
