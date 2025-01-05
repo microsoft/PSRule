@@ -6,11 +6,11 @@ using PSRule.Rules;
 
 namespace PSRule.Pipeline;
 
-internal abstract class SerializationOutputWriter<T> : ResultOutputWriter<T>
-{
-    protected SerializationOutputWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
-        : base(inner, option, shouldProcess) { }
+#nullable enable
 
+internal abstract class SerializationOutputWriter<T>(IPipelineWriter inner, PSRuleOption option, ShouldProcess? shouldProcess)
+    : ResultOutputWriter<T>(inner, option, shouldProcess)
+{
     public sealed override void End(IPipelineResult result)
     {
         var results = GetResults();
@@ -47,3 +47,5 @@ internal abstract class SerializationOutputWriter<T> : ResultOutputWriter<T>
         }
     }
 }
+
+#nullable restore

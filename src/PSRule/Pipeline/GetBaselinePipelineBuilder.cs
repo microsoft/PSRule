@@ -6,9 +6,11 @@ using PSRule.Definitions.Baselines;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 internal sealed class GetBaselinePipelineBuilder : PipelineBuilderBase
 {
-    private string[] _Name;
+    private string[]? _Name;
 
     internal GetBaselinePipelineBuilder(Source[] source, IHostContext hostContext)
         : base(source, hostContext) { }
@@ -16,7 +18,7 @@ internal sealed class GetBaselinePipelineBuilder : PipelineBuilderBase
     /// <summary>
     /// Filter returned baselines by name.
     /// </summary>
-    public new void Name(string[] name)
+    public new void Name(string[]? name)
     {
         if (name == null || name.Length == 0)
             return;
@@ -37,7 +39,7 @@ internal sealed class GetBaselinePipelineBuilder : PipelineBuilderBase
         return this;
     }
 
-    public override IPipeline Build(IPipelineWriter writer = null)
+    public override IPipeline Build(IPipelineWriter? writer = null)
     {
         var filter = new BaselineFilter(ResolveBaselineGroup(_Name));
         return new GetBaselinePipeline(
@@ -54,3 +56,5 @@ internal sealed class GetBaselinePipelineBuilder : PipelineBuilderBase
             format == OutputFormat.Json) ? OutputFormat.None : format.Value;
     }
 }
+
+#nullable restore

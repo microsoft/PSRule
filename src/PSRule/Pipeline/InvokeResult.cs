@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Definitions.Rules;
+using PSRule.Pipeline.Runs;
 using PSRule.Rules;
 
 namespace PSRule.Pipeline;
@@ -20,15 +21,21 @@ public sealed class InvokeResult
     private int _Pass;
     private int _Fail;
 
-    internal InvokeResult()
+    internal InvokeResult(IRun run)
     {
-        _Record = new List<RuleRecord>();
+        Run = run;
+        _Record = [];
         _Time = 0;
         _Total = 0;
         _Error = 0;
         _Pass = 0;
         _Fail = 0;
     }
+
+    /// <summary>
+    /// The parent run that generated the result.
+    /// </summary>
+    internal IRun Run { get; }
 
     /// <summary>
     /// The execution time of all rules in milliseconds.
@@ -133,6 +140,8 @@ public sealed class InvokeResult
             _Fail++;
             _Level = _Level.GetWorstCase(ruleRecord.Level);
         }
+
+        ruleRecord.RunId = Run.Id;
         _Record.Add(ruleRecord);
     }
 }

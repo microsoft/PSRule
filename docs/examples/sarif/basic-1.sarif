@@ -1,33 +1,15 @@
-# SARIF Output
-
-PSRule uses a JSON structured output format called the
-
-SARIF format to report results.
-The SARIF format is a standard format for the output of static analysis tools.
-The format is designed to be easily consumed by other tools and services.
-
-## Runs
-
-When running PSRule executed a run will be generated in `runs` containing details about PSRule and configuration details.
-
-## Invocation
-
-The `invocations` property reports runtime information about how the run started.
-
-### RuleConfigurationOverrides
-
-When a rule has been overridden in configuration this invocation property will contain any level overrides.
-
-## Examples
-
-### Successful result
-
-```json
 {
   "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
   "version": "2.1.0",
   "runs": [
     {
+      "automationDetails": {
+        "id": "CI repository scan/workspace/1",
+        "description": {
+          "text": "An analysis scan that checks repository files."
+        },
+        "correlationGuid": "00000000-0000-0000-0000-000000000000"
+      },
       "tool": {
         "driver": {
           "guid": "0130215d-58eb-4887-b6fa-31ed02500569",
@@ -48,13 +30,6 @@ When a rule has been overridden in configuration this invocation property will c
             }
           }
         ]
-      },
-      "automationDetails": {
-        "id": "CI repository scan/workspace/1",
-        "description": {
-          "text": "An analysis scan that checks repository files."
-        },
-        "correlationGuid": "00000000-0000-0000-0000-000000000000"
       },
       "invocations": [
         {
@@ -83,4 +58,3 @@ When a rule has been overridden in configuration this invocation property will c
     }
   ]
 }
-```

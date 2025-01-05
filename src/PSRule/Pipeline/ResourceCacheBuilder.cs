@@ -12,10 +12,10 @@ namespace PSRule.Pipeline;
 /// <summary>
 /// Defines a builder to create a resource cache.
 /// </summary>
-internal sealed class ResourceCacheBuilder(IPipelineWriter writer, ILanguageScopeSet languageScopeSet)
+internal sealed class ResourceCacheBuilder(IPipelineWriter? writer, ILanguageScopeSet languageScopeSet)
 {
     private IEnumerable<IResource>? _Resources;
-    private readonly IPipelineWriter _Writer = writer;
+    private readonly IPipelineWriter? _Writer = writer;
 
     public ResourceCacheBuilder Import(Source[]? sources)
     {

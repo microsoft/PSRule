@@ -7,19 +7,17 @@ using PSRule.Rules;
 
 namespace PSRule.Pipeline.Output;
 
-internal sealed class SarifOutputWriter : SerializationOutputWriter<InvokeResult>
-{
-    private readonly SarifBuilder _Builder;
-    private readonly Encoding _Encoding;
-    private readonly bool _ReportAll;
+#nullable enable
 
-    internal SarifOutputWriter(Source[] source, PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
-        : base(inner, option, shouldProcess)
-    {
-        _Builder = new SarifBuilder(source, option);
-        _Encoding = option.Output.GetEncoding();
-        _ReportAll = !option.Output.SarifProblemsOnly.GetValueOrDefault(OutputOption.Default.SarifProblemsOnly.Value);
-    }
+/// <summary>
+/// An output writer that generates SARIF output.
+/// </summary>
+internal sealed class SarifOutputWriter(Source[]? source, PipelineWriter inner, PSRuleOption option, ShouldProcess? shouldProcess)
+    : SerializationOutputWriter<InvokeResult>(inner, option, shouldProcess)
+{
+    private readonly SarifBuilder _Builder = new(source, option);
+    private readonly Encoding _Encoding = option.Output.GetEncoding();
+    private readonly bool _ReportAll = !option.Output.SarifProblemsOnly.GetValueOrDefault(OutputOption.Default.SarifProblemsOnly!.Value);
 
     public override void WriteObject(object sendToPipeline, bool enumerateCollection)
     {
@@ -33,10 +31,15 @@ internal sealed class SarifOutputWriter : SerializationOutputWriter<InvokeResult
     {
         for (var i = 0; o != null && i < o.Length; i++)
         {
+            var run = o[i].Run;
             var records = o[i].AsRecord();
             for (var j = 0; j < records.Length; j++)
+            {
                 if (ShouldReport(records[j]))
-                    _Builder.Add(records[j]);
+                {
+                    _Builder.Add(run, records[j]);
+                }
+            }
         }
         var log = _Builder.Build();
         using var stream = new MemoryStream();
@@ -53,3 +56,5 @@ internal sealed class SarifOutputWriter : SerializationOutputWriter<InvokeResult
             (record.Outcome & RuleOutcome.Problem) != RuleOutcome.None;
     }
 }
+
+#nullable restore

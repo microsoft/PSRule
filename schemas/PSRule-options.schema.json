@@ -784,6 +784,29 @@
       },
       "additionalProperties": false
     },
+    "run-option": {
+      "type": "object",
+      "title": "Run",
+      "description": "Configures run options.",
+      "markdownDescription": "Configures run options.",
+      "properties": {
+        "category": {
+          "type": "string",
+          "title": "Category",
+          "description": "Configures the run category that is used as an identifier for output results. By default, the category is PSRule.",
+          "markdownDescription": "Configures the run category that is used as an identifier for output results. By default, the category is `PSRule`.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#executioncategory)",
+          "default": "PSRule"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description",
+          "description": "Configure the run description that is displayed in output. By default, the description is empty.",
+          "markdownDescription": "Configure the run description that is displayed in output. By default, the description is empty.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#executiondescription)",
+          "default": ""
+        }
+      },
+      "additionalProperties": false
+    },
     "suppression-option": {
       "type": "object",
       "title": "Suppress rules",
@@ -1122,6 +1145,10 @@
               "$ref": "#/definitions/rule-option"
             }
           ]
+        },
+        "run": {
+          "type": "object",
+          "$ref": "#/definitions/run-option"
         },
         "suppression": {
           "type": "object",

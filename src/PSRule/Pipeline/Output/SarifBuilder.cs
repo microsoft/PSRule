@@ -10,8 +10,10 @@ using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
 using PSRule.Options;
+using PSRule.Pipeline.Runs;
 using PSRule.Resources;
 using PSRule.Rules;
+using Run = Microsoft.CodeAnalysis.Sarif.Run;
 
 namespace PSRule.Pipeline.Output;
 
@@ -29,30 +31,22 @@ internal sealed class SarifBuilder
     private const string LOCATION_KIND_OBJECT = "object";
     private const string LOCATION_ID_REPOROOT = "REPO_ROOT";
 
-    private readonly Run _Run;
+    private readonly Dictionary<string, Run> _Runs;
+    private readonly Source[]? _Source;
     private readonly System.Security.Cryptography.HashAlgorithm _ConfiguredHashAlgorithm;
     private readonly string _ConfiguredHashAlgorithmName;
     private readonly System.Security.Cryptography.HashAlgorithm? _SHA265;
     private readonly PSRuleOption _Option;
-    private readonly Dictionary<string, ReportingDescriptorReference> _Rules;
+    private readonly Dictionary<string, ReportingDescriptor> _Rules;
     private readonly Dictionary<string, ToolComponent> _Extensions;
-    private readonly Dictionary<string, Artifact> _Artifacts;
 
-    public SarifBuilder(Source[] source, PSRuleOption option)
+    public SarifBuilder(Source[]? source, PSRuleOption option)
     {
         _Option = option;
         _Rules = [];
         _Extensions = [];
-        _Artifacts = [];
-        _Run = new Run
-        {
-            Tool = GetTool(source),
-            Results = [],
-            Invocations = GetInvocation(),
-            AutomationDetails = GetAutomationDetails(),
-            OriginalUriBaseIds = GetBaseIds(),
-            VersionControlProvenance = GetVersionControl(option.Repository),
-        };
+        _Runs = [];
+        _Source = source;
         var algorithm = option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm!.Value);
         _ConfiguredHashAlgorithm = algorithm.GetHashAlgorithm();
         _ConfiguredHashAlgorithmName = algorithm.GetHashAlgorithmName();
@@ -100,27 +94,25 @@ internal sealed class SarifBuilder
 
     public SarifLog Build()
     {
-        AddArtifacts();
-        AddOptions();
-
-        var log = new SarifLog
+        return new SarifLog
         {
-            Runs = new List<Run>(1),
+            Runs = [.. _Runs.Values],
         };
-        log.Runs.Add(_Run);
-        return log;
     }
 
-    public void Add(RuleRecord record)
+    public void Add(IRun run, RuleRecord record)
     {
         if (record == null)
             return;
 
-        var rule = GetRule(record);
+        // Get the run data structure.
+        var runData = GetRun(run);
+
+        var descriptorReference = GetReportingDescriptorReference(runData, record);
         var result = new Result
         {
-            RuleId = rule.Id,
-            Rule = rule,
+            RuleId = descriptorReference.Id,
+            Rule = descriptorReference,
             Kind = GetKind(record),
             Level = GetLevel(record),
             Message = new Message { Text = record.Recommendation },
@@ -129,15 +121,41 @@ internal sealed class SarifBuilder
 
         AddFields(result, record);
         AddAnnotations(result, record);
-        AddArtifacts(record);
+        AddArtifacts(runData, record);
 
         // SARIF2004: Use the RuleId property instead of Rule for standalone rules.
-        if (rule.ToolComponent.Guid == TOOL_GUID)
+        if (descriptorReference.ToolComponent.Guid == TOOL_GUID)
         {
-            result.RuleId = rule.Id;
+            result.RuleId = descriptorReference.Id;
             result.Rule = null;
         }
-        _Run.Results.Add(result);
+
+        // Add the result to the run.
+        runData.Results.Add(result);
+    }
+
+    /// <summary>
+    /// Get the run data structure for the specified run.
+    /// </summary>
+    private Run GetRun(IRun run)
+    {
+        // Create the run if it doesn't exist.
+        if (!_Runs.TryGetValue(run.Id, out var runData))
+        {
+            runData = new Run
+            {
+                Tool = GetTool(_Source),
+                Results = [],
+                Invocations = GetInvocation(),
+                AutomationDetails = GetAutomationDetails(run),
+                OriginalUriBaseIds = GetBaseIds(),
+                VersionControlProvenance = GetVersionControl(_Option.Repository),
+            };
+            AddOptions(runData);
+
+            _Runs.Add(run.Id, runData);
+        }
+        return runData;
     }
 
     /// <summary>
@@ -179,17 +197,9 @@ internal sealed class SarifBuilder
     }
 
     /// <summary>
-    /// Get collected artifacts.
-    /// </summary>
-    private void AddArtifacts()
-    {
-        _Run.Artifacts = _Artifacts.Values.OrderBy(item => item.Location.Index).ToList();
-    }
-
-    /// <summary>
     /// Add options to the run.
     /// </summary>
-    private void AddOptions()
+    private void AddOptions(Run run)
     {
         var s = new JsonSerializer();
         s.Converters.Add(new PSObjectJsonConverter());
@@ -201,30 +211,41 @@ internal sealed class SarifBuilder
             ["workspace"] = localScope
         };
 
-        _Run.SetProperty("options", options);
+        run.SetProperty("options", options);
     }
 
-    private void AddArtifacts(RuleRecord record)
+    /// <summary>
+    /// Add artifacts to the run.
+    /// </summary>
+    private void AddArtifacts(Run run, RuleRecord record)
     {
         if (record.Source == null || record.Source.Length == 0) return;
 
         foreach (var source in record.Source)
-            AddArtifact(source);
+        {
+            AddArtifact(run, source);
+        }
     }
 
-    private void AddArtifact(TargetSourceInfo source)
+    /// <summary>
+    /// Add an artifact to the run.
+    /// </summary>
+    private void AddArtifact(Run run, TargetSourceInfo source)
     {
         if (source == null || string.IsNullOrEmpty(source.File)) return;
 
+        run.Artifacts ??= [];
+
         var relativePath = source.GetPath(useRelativePath: true);
         var fullPath = source.GetPath(useRelativePath: false);
-        if (relativePath == null || fullPath == null || _Artifacts.ContainsKey(relativePath)) return;
+        if (relativePath == null || fullPath == null || run.Artifacts.Any(item => item.Location.Uri == new Uri(relativePath, UriKind.Relative)))
+            return;
 
         var location = new ArtifactLocation
         (
             uri: new Uri(relativePath, uriKind: UriKind.Relative),
             uriBaseId: LOCATION_ID_REPOROOT,
-            index: _Artifacts.Count,
+            index: run.Artifacts.Count,
             description: null,
             properties: null
         );
@@ -234,9 +255,12 @@ internal sealed class SarifBuilder
             Hashes = GetArtifactHash(fullPath)
         };
 
-        _Artifacts.Add(relativePath, artifact);
+        run.Artifacts.Add(artifact);
     }
 
+    /// <summary>
+    /// Get the hash of an artifact.
+    /// </summary>
     private Dictionary<string, string>? GetArtifactHash(string path)
     {
         if (!File.Exists(path)) return null;
@@ -253,39 +277,17 @@ internal sealed class SarifBuilder
         return result;
     }
 
-    private ReportingDescriptorReference GetRule(RuleRecord record)
+    private ReportingDescriptorReference GetReportingDescriptorReference(Run run, RuleRecord record)
     {
+        // Get the rule descriptor.
         var id = record.Ref ?? record.RuleId;
-        if (!_Rules.TryGetValue(id, out var descriptorReference))
-            descriptorReference = AddRule(record, id);
+        var descriptor = GetReportingDescriptor(record, id);
 
-        return descriptorReference;
-    }
-
-    private ReportingDescriptorReference AddRule(RuleRecord record, string id)
-    {
+        // Get the tool component.
         if (string.IsNullOrEmpty(record.Info.ModuleName) || !_Extensions.TryGetValue(record.Info.ModuleName, out var toolComponent))
-            toolComponent = _Run.Tool.Driver;
+            toolComponent = run.Tool.Driver;
 
-        // Add the rule to the component.
-        var descriptor = new ReportingDescriptor
-        {
-            Id = id,
-            Name = record.RuleName,
-            ShortDescription = GetMessageString(record.Info.Synopsis),
-            HelpUri = record.Info.GetOnlineHelpUri(),
-            FullDescription = GetMessageString(record.Info.Description),
-            MessageStrings = GetMessageStrings(record),
-            DefaultConfiguration = new ReportingConfiguration
-            {
-                Enabled = true,
-                Level = GetLevel(record.Default.Level),
-            },
-        };
-
-        toolComponent.Rules.Add(descriptor);
-
-        // Create a reference to the rule.
+        // Create a reference to the rule descriptor.
         var descriptorReference = new ReportingDescriptorReference
         {
             Id = descriptor.Id,
@@ -293,36 +295,67 @@ internal sealed class SarifBuilder
             {
                 Guid = toolComponent.Guid,
                 Name = toolComponent.Name,
-                Index = _Run.Tool.Extensions == null ? -1 : _Run.Tool.Extensions.IndexOf(toolComponent),
+                Index = run.Tool.Extensions == null ? -1 : run.Tool.Extensions.IndexOf(toolComponent),
             },
         };
 
-        _Rules.Add(id, descriptorReference);
+        toolComponent.Rules ??= [];
 
-        // Create a configuration override if applicable.
-        if (record.Override != null && record.Override.Level.HasValue && record.Override.Level.Value != SeverityLevel.None && record.Override.Level != record.Default.Level)
+        // Check that the rule is not already added to the tool component.
+        if (!toolComponent.Rules.Any(item => item.Id == descriptor.Id))
         {
-            if (_Run.Invocations[0].RuleConfigurationOverrides == null)
-                _Run.Invocations[0].RuleConfigurationOverrides = [];
+            toolComponent.Rules.Add(descriptor);
 
-            _Run.Invocations[0].RuleConfigurationOverrides.Add(new ConfigurationOverride
+            // Add the rule configuration override.
+            if (record.Override != null && record.Override.Level.HasValue && record.Override.Level.Value != SeverityLevel.None && record.Override.Level != record.Default.Level)
             {
-                Descriptor = descriptorReference,
-                Configuration = new ReportingConfiguration
+                run.Invocations[0].RuleConfigurationOverrides ??= [];
+                run.Invocations[0].RuleConfigurationOverrides.Add(new ConfigurationOverride
                 {
-                    Level = GetLevel(record.Override.Level.Value),
-                }
-            });
+                    Descriptor = descriptorReference,
+                    Configuration = new ReportingConfiguration
+                    {
+                        Level = GetLevel(record.Override.Level.Value),
+                    }
+                });
+            }
         }
 
         return descriptorReference;
     }
 
-    private static RunAutomationDetails? GetAutomationDetails()
+    private ReportingDescriptor GetReportingDescriptor(RuleRecord record, string id)
     {
-        return PipelineContext.CurrentThread == null ? null : new RunAutomationDetails
+        if (!_Rules.TryGetValue(id, out var descriptor))
         {
-            Id = PipelineContext.CurrentThread.RunId,
+            // Add the rule to the component.
+            descriptor = new ReportingDescriptor
+            {
+                Id = id,
+                Name = record.RuleName,
+                ShortDescription = GetMessageString(record.Info.Synopsis),
+                HelpUri = record.Info.GetOnlineHelpUri(),
+                FullDescription = GetMessageString(record.Info.Description),
+                MessageStrings = GetMessageStrings(record),
+                DefaultConfiguration = new ReportingConfiguration
+                {
+                    Enabled = true,
+                    Level = GetLevel(record.Default.Level),
+                },
+            };
+
+            _Rules.Add(id, descriptor);
+        }
+        return descriptor;
+    }
+
+    private static RunAutomationDetails? GetAutomationDetails(IRun run)
+    {
+        return new RunAutomationDetails
+        {
+            Id = run.Id,
+            CorrelationGuid = run.CorrelationGuid,
+            Description = run.Description?.Text != null ? GetMessage(run.Description?.Text!) : null,
         };
     }
 
@@ -455,7 +488,7 @@ internal sealed class SarifBuilder
         };
     }
 
-    private Tool GetTool(Source[] source)
+    private Tool GetTool(Source[]? source)
     {
         var version = Engine.GetVersion();
         return new Tool
@@ -466,14 +499,14 @@ internal sealed class SarifBuilder
                 SemanticVersion = version,
                 Organization = TOOL_ORG,
                 Guid = TOOL_GUID,
-                Rules = new List<ReportingDescriptor>(),
+                Rules = [],
                 InformationUri = new Uri("https://aka.ms/ps-rule", UriKind.Absolute),
             },
             Extensions = GetExtensions(source),
         };
     }
 
-    private List<ToolComponent>? GetExtensions(Source[] source)
+    private List<ToolComponent>? GetExtensions(Source[]? source)
     {
         if (source == null || source.Length == 0)
             return null;

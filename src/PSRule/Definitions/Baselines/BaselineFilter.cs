@@ -6,12 +6,14 @@ using PSRule.Resources;
 
 namespace PSRule.Definitions.Baselines;
 
+#nullable enable
+
 internal sealed class BaselineFilter : IResourceFilter
 {
-    private readonly HashSet<string> _Include;
-    private readonly WildcardPattern _WildcardMatch;
+    private readonly HashSet<string>? _Include;
+    private readonly WildcardPattern? _WildcardMatch;
 
-    public BaselineFilter(string[] include)
+    public BaselineFilter(string[]? include)
     {
         _Include = include == null || include.Length == 0 ? null : new HashSet<string>(include, StringComparer.OrdinalIgnoreCase);
         _WildcardMatch = null;
@@ -36,3 +38,5 @@ internal sealed class BaselineFilter : IResourceFilter
         return _WildcardMatch != null && _WildcardMatch.IsMatch(name);
     }
 }
+
+#nullable restore

@@ -163,17 +163,13 @@ public static class Environment
     }
 
     /// <summary>
-    /// Get the run identifier for the current environment.
+    /// Get the run instance identifier for the current environment.
     /// </summary>
-    public static string? GetRunId()
+    public static string? GetRunInstance()
     {
-        if (TryString("PSRULE_RUN_ID", out var runId) && runId != null)
-            return runId;
-
-        return TryString("BUILD_REPOSITORY_NAME", out var prefix) && TryString("BUILD_BUILDID", out var suffix) ||
-            TryString("GITHUB_REPOSITORY", out prefix) && TryString("GITHUB_RUN_ID", out suffix)
-            ? string.Concat(prefix, "/", suffix)
-            : null;
+        return TryString("PSRULE_RUN_INSTANCE", out var runId) ||
+            TryString("BUILD_BUILDID", out runId) ||
+            TryString("GITHUB_RUN_ID", out runId) ? runId : null;
     }
 
     /// <summary>

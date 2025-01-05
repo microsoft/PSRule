@@ -27,10 +27,9 @@ public sealed class RuleRecord : IDetailedRuleResultV2
 
     internal readonly ResultDetail _Detail;
 
-    internal RuleRecord(string runId, ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, IResourceTags tag, RuleHelpInfo info, Hashtable? field, RuleProperties @default, ISourceExtent? extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, RuleOverride? @override = null)
+    internal RuleRecord(ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, IResourceTags tag, RuleHelpInfo info, Hashtable? field, RuleProperties @default, ISourceExtent? extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, RuleOverride? @override = null)
     {
         _TargetObject = targetObject;
-        RunId = runId;
         RuleId = ruleId.Value;
         RuleName = ruleId.Name;
         Ref = @ref;
@@ -58,7 +57,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
     /// A unique identifier for the run.
     /// </summary>
     [JsonProperty(PropertyName = "runId")]
-    public string RunId { get; }
+    public string? RunId { get; internal set; }
 
     /// <summary>
     /// A unique identifier for the rule.
@@ -156,7 +155,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
     /// </summary>
     [DefaultValue(null)]
     [JsonProperty(PropertyName = "tag")]
-    public Hashtable Tag { get; }
+    public Hashtable? Tag { get; }
 
     /// <summary>
     /// Help info for the rule.
@@ -177,7 +176,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
     /// </summary>
     [DefaultValue(null)]
     [JsonProperty(PropertyName = "error")]
-    public ErrorInfo Error { get; internal set; }
+    public ErrorInfo? Error { get; internal set; }
 
     /// <summary>
     /// Source of target object.
