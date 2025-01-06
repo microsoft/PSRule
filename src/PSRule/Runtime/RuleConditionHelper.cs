@@ -38,10 +38,10 @@ internal static class RuleConditionHelper
     private static bool TryBoolean(object o, out bool result)
     {
         result = false;
-        if (o is not bool bresult)
+        if (o is not bool b)
             return false;
 
-        result = bresult;
+        result = b;
         return true;
     }
 

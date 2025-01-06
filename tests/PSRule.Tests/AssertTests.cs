@@ -13,18 +13,13 @@ using Xunit.Abstractions;
 
 namespace PSRule;
 
-[Trait(LANGUAGE, LANGUAGEELEMENT)]
-public sealed class AssertTests : ContextBaseTests
+[Trait(LANGUAGE, LANGUAGE_ELEMENT)]
+public sealed class AssertTests(ITestOutputHelper output) : ContextBaseTests
 {
     private const string LANGUAGE = "Language";
-    private const string LANGUAGEELEMENT = "Variable";
+    private const string LANGUAGE_ELEMENT = "Variable";
 
-    private readonly ITestOutputHelper _Output;
-
-    public AssertTests(ITestOutputHelper output)
-    {
-        _Output = output;
-    }
+    private readonly ITestOutputHelper _Output = output;
 
     [Fact]
     public void Assertion()

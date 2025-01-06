@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Management.Automation;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Emitters;
 using PSRule.Pipeline;
 
@@ -57,6 +58,23 @@ public abstract class BaseTests
         var builder = new SourcePipelineBuilder(null, null);
         builder.Directory(GetSourcePath(path));
         return builder.Build();
+    }
+
+    protected static SourceFile GetSourceFile(string path)
+    {
+        switch (Path.GetExtension(path))
+        {
+            case ".json":
+            case ".jsonc":
+                return new SourceFile(GetSourcePath(path), null, SourceType.Json, null);
+
+            case ".yaml":
+            case ".yml":
+                return new SourceFile(GetSourcePath(path), null, SourceType.Yaml, null);
+
+            default:
+                return new SourceFile(GetSourcePath(path), null, SourceType.Script, null);
+        }
     }
 
     protected static PSObject GetObject(params (string name, object value)[] properties)

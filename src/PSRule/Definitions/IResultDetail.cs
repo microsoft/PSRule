@@ -6,10 +6,10 @@ namespace PSRule.Definitions;
 /// <summary>
 /// Detailed information about the rule result.
 /// </summary>
-public interface IResultDetailV2
+public interface IResultDetail
 {
     /// <summary>
     /// Any reasons for the result.
     /// </summary>
-    IEnumerable<IResultReasonV2> Reason { get; }
+    IEnumerable<IResultReason> Reason { get; }
 }

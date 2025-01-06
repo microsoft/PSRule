@@ -18,7 +18,7 @@ public interface IDetailedRuleResultV2 : IRuleResultV2
     /// <summary>
     /// Detailed information about the rule result.
     /// </summary>
-    IResultDetailV2 Detail { get; }
+    IResultDetail Detail { get; }
 
     /// <summary>
     /// A set of custom fields bound for the target object.
