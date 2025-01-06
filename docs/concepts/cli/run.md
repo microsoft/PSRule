@@ -51,15 +51,27 @@ The supported values are:
   This aggregated outcome includes `Fail`, or `Error` results.
 
 To specify multiple values, specify the parameter multiple times.
-For example: `--outcome Pass --Outcome Fail`.
+For example: `--outcome Pass --outcome Fail`.
 
 ### `--output` | `-o`
 
-Specifies the format to use when outputting results.
+Specifies the format to use when outputting results to file in addition to the console.
+By default, results are not written to a file.
+
+The supported values are:
+
+- `Yaml` - Output results in YAML format.
+- `Json` - Output results in JSON format.
+- `Markdown` - Output results in Markdown format.
+- `NUnit3` - Output results in NUnit format.
+- `Csv` - Output results in CSV format.
+- `Sarif` - Output results in SARIF format.
 
 ### `--output-path`
 
 Specifies a path to write results to.
+Use this argument in conjunction with the `--output` to set the output format.
+By default, results are not written to a file.
 
 ## Next steps
 

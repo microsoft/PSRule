@@ -20,8 +20,9 @@ public sealed class ClientContext
     /// <param name="option"></param>
     /// <param name="verbose"></param>
     /// <param name="debug"></param>
+    /// <param name="workingPath"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public ClientContext(InvocationContext invocation, string? option, bool verbose, bool debug)
+    public ClientContext(InvocationContext invocation, string? option, bool verbose, bool debug, string? workingPath = null)
     {
         Path = AppDomain.CurrentDomain.BaseDirectory;
         Invocation = invocation ?? throw new ArgumentNullException(nameof(invocation));
@@ -31,6 +32,7 @@ public sealed class ClientContext
         Option = GetOption(Host, option);
         CachePath = Path;
         IntegrityAlgorithm = Option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm!.Value).ToIntegrityAlgorithm();
+        WorkingPath = workingPath;
     }
 
     /// <summary>
@@ -73,6 +75,16 @@ public sealed class ClientContext
     /// The default integrity algorithm to use.
     /// </summary>
     public IntegrityAlgorithm IntegrityAlgorithm { get; }
+
+    /// <summary>
+    /// A map of resolved module versions when no version is specified.
+    /// </summary>
+    public Dictionary<string, string> ResolvedModuleVersions { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// The current working path.
+    /// </summary>
+    public string? WorkingPath { get; }
 
     private static PSRuleOption GetOption(ClientHost host, string? path)
     {

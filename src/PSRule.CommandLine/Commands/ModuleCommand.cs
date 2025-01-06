@@ -65,6 +65,7 @@ public sealed class ModuleCommand
             // clientContext.LogVerbose(Messages.UsingModule, module, targetVersion.ToString());
             if (IsInstalled(pwsh, module, targetVersion, out var installedVersion, out _) && !operationOptions.Force)
             {
+                clientContext.ResolvedModuleVersions[module] = installedVersion.ToShortString();
                 clientContext.LogVerbose($"[PSRule][M] -- The module {module} is already installed.");
                 continue;
             }
@@ -72,6 +73,7 @@ public sealed class ModuleCommand
             var idealVersion = await FindVersionAsync(module, null, targetVersion, null, cancellationToken);
             if (idealVersion != null)
             {
+                clientContext.ResolvedModuleVersions[module] = idealVersion.ToShortString();
                 installedVersion = await InstallVersionAsync(clientContext, module, idealVersion, kv.Value.Integrity, cancellationToken);
             }
 
@@ -104,6 +106,7 @@ public sealed class ModuleCommand
                     (moduleConstraint == null || moduleConstraint.Accepts(installedVersion)))
                 {
                     // invocation.Log(Messages.UsingModule, includeModule, installedVersion.ToString());
+                    clientContext.ResolvedModuleVersions[includeModule] = installedVersion.ToShortString();
                     clientContext.LogVerbose($"[PSRule][M] -- The module {includeModule} is already installed.");
                     continue;
                 }
@@ -112,6 +115,7 @@ public sealed class ModuleCommand
                 var idealVersion = await FindVersionAsync(includeModule, moduleConstraint, null, null, cancellationToken);
                 if (idealVersion != null)
                 {
+                    clientContext.ResolvedModuleVersions[includeModule] = idealVersion.ToShortString();
                     await InstallVersionAsync(clientContext, includeModule, idealVersion, null, cancellationToken);
                 }
                 else if (idealVersion == null)
