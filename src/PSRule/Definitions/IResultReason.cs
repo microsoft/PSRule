@@ -6,7 +6,7 @@ namespace PSRule.Definitions;
 /// <summary>
 /// A reason for the rule result.
 /// </summary>
-public interface IResultReasonV2
+public interface IResultReason : IEquatable<IResultReason>
 {
     /// <summary>
     /// The object path that failed.

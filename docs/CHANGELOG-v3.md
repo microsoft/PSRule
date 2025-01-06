@@ -40,6 +40,8 @@ What's changed since pre-release v3.0.0-B0351:
     [#1828](https://github.com/microsoft/PSRule/issues/1828)
   - Fixed directory handling of input paths without trailing slash by @BernieWhite.
     [#1842](https://github.com/microsoft/PSRule/issues/1842)
+  - Fixed duplicate reasons are reported for the same rule by @BernieWhite.
+    [#2553](https://github.com/microsoft/PSRule/issues/2553)
 
 ## v3.0.0-B0351 (pre-release)
 

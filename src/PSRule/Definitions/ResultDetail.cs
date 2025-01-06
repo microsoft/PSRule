@@ -3,7 +3,7 @@
 
 namespace PSRule.Definitions;
 
-internal sealed class ResultDetail : IResultDetailV2
+internal sealed class ResultDetail : IResultDetail
 {
     private readonly IList<ResultReason> _Reason;
 
@@ -24,5 +24,5 @@ internal sealed class ResultDetail : IResultDetailV2
         return _Reason.GetStrings();
     }
 
-    IEnumerable<IResultReasonV2> IResultDetailV2.Reason => _Reason;
+    IEnumerable<IResultReason> IResultDetail.Reason => _Reason;
 }

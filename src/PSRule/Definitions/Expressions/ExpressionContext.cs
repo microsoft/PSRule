@@ -15,11 +15,11 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
 
     internal ExpressionContext(RunspaceContext context, ISourceFile source, ResourceKind kind, object current)
     {
-        Context = context;
+        Context = context ?? throw new ArgumentNullException(nameof(context));
         Source = source;
         LanguageScope = source.Module;
         Kind = kind;
-        _NameTokenCache = new Dictionary<string, PathExpression>();
+        _NameTokenCache = [];
         Current = current;
     }
 
@@ -47,43 +47,42 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
 
     public void Debug(string message, params object[] args)
     {
-        if (RunspaceContext.CurrentThread?.Writer == null)
+        if (Context.Writer == null)
             return;
 
-        RunspaceContext.CurrentThread.Writer.WriteDebug(message, args);
+        Context.Writer.WriteDebug(message, args);
     }
 
     public void PushScope(RunspaceScope scope)
     {
-        RunspaceContext.CurrentThread.PushScope(scope);
-        RunspaceContext.CurrentThread.EnterLanguageScope(Source);
+        Context.PushScope(scope);
+        Context.EnterLanguageScope(Source);
     }
 
     public void PopScope(RunspaceScope scope)
     {
-        RunspaceContext.CurrentThread.PopScope(scope);
+        Context.PopScope(scope);
     }
 
     public void Reason(IOperand operand, string text, params object[] args)
     {
-        if (string.IsNullOrEmpty(text) || !RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule))
+        if (string.IsNullOrEmpty(text) || !Context.IsScope(RunspaceScope.Rule))
             return;
 
-        _Reason ??= [];
-        _Reason.Add(new ResultReason(Context.TargetObject?.Path, operand, text, args));
-    }
-
-    public void Reason(string text, params object[] args)
-    {
-        if (string.IsNullOrEmpty(text) || !RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule))
-            return;
-
-        _Reason ??= [];
-        _Reason.Add(new ResultReason(Context.TargetObject?.Path, null, text, args));
+        AddReason(new ResultReason(Context.TargetObject?.Path, operand, text, args));
     }
 
     internal ResultReason[] GetReasons()
     {
-        return _Reason == null || _Reason.Count == 0 ? Array.Empty<ResultReason>() : _Reason.ToArray();
+        return _Reason == null || _Reason.Count == 0 ? [] : [.. _Reason];
+    }
+
+    private void AddReason(ResultReason reason)
+    {
+        _Reason ??= [];
+
+        // Check if the reason already exists
+        if (!_Reason.Contains(reason))
+            _Reason.Add(reason);
     }
 }

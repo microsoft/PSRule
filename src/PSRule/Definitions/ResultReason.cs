@@ -5,24 +5,30 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions;
 
-internal sealed class ResultReason : IResultReasonV2
+#nullable enable
+
+/// <summary>
+/// A reason for the rule result.
+/// </summary>
+internal sealed class ResultReason : IResultReason
 {
-    private string _Path;
-    private string _Formatted;
-    private string _Message;
-    private string _FullPath;
     private readonly string _ParentPath;
 
-    internal ResultReason(string parentPath, IOperand operand, string text, object[] args)
+    private string? _Path;
+    private string? _Formatted;
+    private string? _Message;
+    private string? _FullPath;
+
+    internal ResultReason(string? parentPath, IOperand? operand, string text, object[]? args)
     {
-        _ParentPath = parentPath;
+        _ParentPath = parentPath ?? string.Empty;
         Operand = operand;
         _Path = Operand?.Path;
         Text = text;
         Args = args;
     }
 
-    internal IOperand Operand { get; }
+    internal IOperand? Operand { get; }
 
     /// <summary>
     /// The object path that failed.
@@ -31,15 +37,14 @@ internal sealed class ResultReason : IResultReasonV2
     {
         get
         {
-            _Path ??= GetPath();
-            return _Path;
+            return _Path ??= GetPath();
         }
     }
 
     /// <summary>
     /// A prefix to add to the object path that failed.
     /// </summary>
-    internal string Prefix
+    internal string? Prefix
     {
         get { return Operand?.Prefix; }
         set
@@ -59,21 +64,20 @@ internal sealed class ResultReason : IResultReasonV2
     {
         get
         {
-            _FullPath ??= GetFullPath();
-            return _FullPath;
+            return _FullPath ??= GetFullPath();
         }
     }
 
     public string Text { get; }
 
-    public object[] Args { get; }
+    public object[]? Args { get; }
 
+    /// <inheritdoc/>
     public string Message
     {
         get
         {
-            _Message ??= Args == null || Args.Length == 0 ? Text : string.Format(Thread.CurrentThread.CurrentCulture, Text, Args);
-            return _Message;
+            return _Message ??= Args == null || Args.Length == 0 ? Text : string.Format(Thread.CurrentThread.CurrentCulture, Text, Args);
         }
     }
 
@@ -82,13 +86,23 @@ internal sealed class ResultReason : IResultReasonV2
         return Format();
     }
 
+    public override int GetHashCode()
+    {
+        return ToString().GetHashCode();
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is IResultReason other && Equals(other);
+    }
+
+    /// <inheritdoc/>
     public string Format()
     {
-        _Formatted ??= string.Concat(
+        return _Formatted ??= string.Concat(
             Operand?.ToString(),
             Message
         );
-        return _Formatted;
     }
 
     private string GetPath()
@@ -100,4 +114,17 @@ internal sealed class ResultReason : IResultReasonV2
     {
         return Runtime.Operand.JoinPath(_ParentPath, Path);
     }
+
+    #region IEquatable<IResultReason>
+
+    public bool Equals(IResultReason? other)
+    {
+        return other != null &&
+            string.Equals(FullPath, other.FullPath, StringComparison.Ordinal) &&
+            string.Equals(Message, other.Message, StringComparison.Ordinal);
+    }
+
+    #endregion IEquatable<IResultReason>
 }
+
+#nullable restore

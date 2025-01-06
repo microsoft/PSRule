@@ -191,7 +191,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
     [DefaultValue(null)]
     [JsonProperty(PropertyName = "detail")]
     [YamlMember()]
-    public IResultDetailV2 Detail => _Detail;
+    public IResultDetail Detail => _Detail;
 
     /// <summary>
     /// Any default properties for the rule.

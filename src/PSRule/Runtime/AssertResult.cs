@@ -7,14 +7,16 @@ using PSRule.Resources;
 
 namespace PSRule.Runtime;
 
+#nullable enable
+
 /// <summary>
 /// The result of a single assertion.
 /// </summary>
 public sealed class AssertResult : IEquatable<bool>
 {
-    private readonly List<ResultReason> _Reason;
+    private List<ResultReason>? _Reason;
 
-    internal AssertResult(IOperand operand, bool value, string reason, object[] args)
+    internal AssertResult(IOperand? operand, bool value, string reason, object[] args)
     {
         Result = value;
         if (!Result)
@@ -54,7 +56,8 @@ public sealed class AssertResult : IEquatable<bool>
         if (result == null || Result || result.Result || result._Reason == null || result._Reason.Count == 0)
             return;
 
-        _Reason.AddRange(result._Reason);
+        _Reason ??= [];
+        _Reason.AddRange(result._Reason.Where(r => !_Reason.Contains(r)));
     }
 
     /// <summary>
@@ -63,13 +66,19 @@ public sealed class AssertResult : IEquatable<bool>
     /// <param name="operand">Identifies the operand that was the reason for the failure.</param>
     /// <param name="text">The text of a reason to add. This text should already be localized for the currently culture.</param>
     /// <param name="args">Replacement arguments for the format string.</param>
-    internal void AddReason(IOperand operand, string text, params object[] args)
+    internal void AddReason(IOperand? operand, string text, params object[]? args)
     {
         // Ignore reasons if this is a pass.
         if (Result || string.IsNullOrEmpty(text))
             return;
 
-        _Reason.Add(new ResultReason(RunspaceContext.CurrentThread?.TargetObject?.Path, operand, text, args));
+        _Reason ??= [];
+
+        var reason = new ResultReason(RunspaceContext.CurrentThread?.TargetObject?.Path, operand, text, args);
+        if (_Reason.Contains(reason))
+            return;
+
+        _Reason.Add(reason);
     }
 
     /// <summary>
@@ -164,7 +173,7 @@ public sealed class AssertResult : IEquatable<bool>
     public bool Complete()
     {
         // Check that the scope is still valid
-        if (!RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule))
+        if (!RunspaceContext.CurrentThread!.IsScope(RunspaceScope.Rule))
             throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, "Assert"));
 
         // Continue
@@ -179,7 +188,7 @@ public sealed class AssertResult : IEquatable<bool>
     /// </summary>
     public void Ignore()
     {
-        _Reason.Clear();
+        _Reason?.Clear();
     }
 
     /// <inheritdoc/>
@@ -204,9 +213,9 @@ public sealed class AssertResult : IEquatable<bool>
         return Result;
     }
 
-    internal IResultReasonV2[] ToResultReason()
+    internal IResultReason[] ToResultReason()
     {
-        return _Reason == null || _Reason.Count == 0 ? Array.Empty<IResultReasonV2>() : _Reason.ToArray();
+        return _Reason == null || _Reason.Count == 0 ? [] : _Reason.ToArray();
     }
 
     private bool IsNullOrEmptyReason()
@@ -214,3 +223,5 @@ public sealed class AssertResult : IEquatable<bool>
         return _Reason == null || _Reason.Count == 0;
     }
 }
+
+#nullable restore
