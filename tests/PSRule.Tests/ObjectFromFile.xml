@@ -1,0 +1,24 @@
+<policies>
+  <inbound>
+    <ip-filter action="allow">
+      <address-range from="0.0.0.0" to="0.0.0.0" />
+    </ip-filter>
+    <set-header name="x-request-context-data-1" exists-action="override">
+      <value>20</value>
+    </set-header>
+    <set-header name="x-request-context-data-2" exists-action="delete" />
+    <set-header name="x-request-context-data-3" exists-action="override">
+      <value>value1</value>
+      <value>value2</value>
+    </set-header>
+  </inbound>
+  <backend>
+    <base />
+  </backend>
+  <outbound>
+    <base />
+  </outbound>
+  <on-error>
+    <base />
+  </on-error>
+</policies>
