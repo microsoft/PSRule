@@ -11,6 +11,8 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace PSRule.Pipeline.Output;
 
+#nullable enable
+
 internal sealed class YamlOutputWriter : SerializationOutputWriter<object>
 {
     internal YamlOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
@@ -18,6 +20,9 @@ internal sealed class YamlOutputWriter : SerializationOutputWriter<object>
 
     protected override string Serialize(object[] o)
     {
+        if (o == null || o.Length == 0)
+            return string.Empty;
+
         return o[0] is IEnumerable<Baseline> baselines ? ToBaselineYaml(baselines) : ToYaml(o);
     }
 
@@ -57,3 +62,5 @@ internal sealed class YamlOutputWriter : SerializationOutputWriter<object>
         return output.ToString();
     }
 }
+
+#nullable restore
