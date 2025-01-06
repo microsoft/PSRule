@@ -136,6 +136,15 @@ public sealed class ClientHost : HostContext
         _Context.Invocation.Console.WriteLine(text);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public override string GetWorkingPath()
+    {
+        return _Context.WorkingPath == null ? base.GetWorkingPath() : _Context.WorkingPath;
+    }
+
     /// <inheritdoc/>
     public override string? CachePath => _Context.CachePath;
 }

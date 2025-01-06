@@ -7,7 +7,6 @@ using System.Reflection;
 using PSRule.CommandLine;
 using PSRule.CommandLine.Commands;
 using PSRule.CommandLine.Models;
-using PSRule.Rules;
 using PSRule.Tool.Resources;
 
 namespace PSRule.Tool;
@@ -31,7 +30,7 @@ internal sealed class ClientBuilder
     private readonly Option<bool> _Module_Add_SkipVerification;
     private readonly Option<bool> _Module_Prerelease;
     private readonly Option<string[]> _Global_Path;
-    private readonly Option<DirectoryInfo> _Run_OutputPath;
+    private readonly Option<string> _Run_OutputPath;
     private readonly Option<string> _Run_OutputFormat;
     private readonly Option<string[]> _Run_InputPath;
     private readonly Option<string[]> _Run_Module;
@@ -63,14 +62,14 @@ internal sealed class ClientBuilder
         );
 
         // Options for the run command.
-        _Run_OutputPath = new Option<DirectoryInfo>(
+        _Run_OutputPath = new Option<string>(
             ["--output-path"],
             description: CmdStrings.Run_OutputPath_Description
         );
         _Run_OutputFormat = new Option<string>(
             ["-o", "--output"],
             description: CmdStrings.Run_OutputFormat_Description
-        );
+        ).FromAmong("Yaml", "Json", "Markdown", "NUnit3", "Csv", "Sarif");
         _Run_InputPath = new Option<string[]>(
             ["-f", "--input-path"],
             description: CmdStrings.Run_InputPath_Description
@@ -162,9 +161,12 @@ internal sealed class ClientBuilder
                 InputPath = invocation.ParseResult.GetValueForOption(_Run_InputPath),
                 Module = invocation.ParseResult.GetValueForOption(_Run_Module),
                 Baseline = invocation.ParseResult.GetValueForOption(_Run_Baseline),
-                Outcome = ParseOutcome(invocation.ParseResult.GetValueForOption(_Run_Outcome)),
+                Outcome = invocation.ParseResult.GetValueForOption(_Run_Outcome).ToRuleOutcome(),
+                OutputPath = invocation.ParseResult.GetValueForOption(_Run_OutputPath),
+                OutputFormat = invocation.ParseResult.GetValueForOption(_Run_OutputFormat).ToOutputFormat(),
                 NoRestore = invocation.ParseResult.GetValueForOption(_Run_NoRestore),
             };
+
             var client = GetClientContext(invocation);
             invocation.ExitCode = await RunCommand.RunAsync(option, client);
         });
@@ -357,19 +359,5 @@ internal sealed class ClientBuilder
             verbose: verbose,
             debug: debug
         );
-    }
-
-    /// <summary>
-    /// Convert string arguments to flags of <see cref="RuleOutcome"/>.
-    /// </summary>
-    private static RuleOutcome? ParseOutcome(string[]? s)
-    {
-        var result = RuleOutcome.None;
-        for (var i = 0; s != null && i < s.Length; i++)
-        {
-            if (Enum.TryParse(s[i], ignoreCase: true, result: out RuleOutcome flag))
-                result |= flag;
-        }
-        return result == RuleOutcome.None ? null : result;
     }
 }

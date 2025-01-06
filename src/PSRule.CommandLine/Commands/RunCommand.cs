@@ -36,10 +36,20 @@ public sealed class RunCommand
             [Environment.GetWorkingPath()] : operationOptions.InputPath;
 
         if (operationOptions.Path != null)
+        {
             clientContext.Option.Include.Path = operationOptions.Path;
+        }
 
         if (operationOptions.Outcome != null && operationOptions.Outcome.Value != Rules.RuleOutcome.None)
+        {
             clientContext.Option.Output.Outcome = operationOptions.Outcome;
+        }
+
+        if (operationOptions.OutputPath != null && operationOptions.OutputFormat != null && operationOptions.OutputFormat.Value != OutputFormat.None)
+        {
+            clientContext.Option.Output.Path = operationOptions.OutputPath;
+            clientContext.Option.Output.Format = operationOptions.OutputFormat.Value;
+        }
 
         // Run restore command.
         if (!operationOptions.NoRestore)
@@ -52,7 +62,7 @@ public sealed class RunCommand
         }
 
         // Build command.
-        var builder = CommandLineBuilder.Assert(operationOptions.Module ?? [], clientContext.Option, clientContext.Host, file);
+        var builder = CommandLineBuilder.Assert(operationOptions.Module ?? [], clientContext.Option, clientContext.Host, file, clientContext.ResolvedModuleVersions);
         builder.Baseline(BaselineOption.FromString(operationOptions.Baseline));
         builder.InputPath(inputPath);
         builder.UnblockPublisher(PUBLISHER);
