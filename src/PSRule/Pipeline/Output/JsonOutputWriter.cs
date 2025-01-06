@@ -8,8 +8,12 @@ using PSRule.Definitions.Baselines;
 
 namespace PSRule.Pipeline.Output;
 
+#nullable enable
+
 internal sealed class JsonOutputWriter : SerializationOutputWriter<object>
 {
+    private const string EMPTY_ARRAY = "[]";
+
     internal JsonOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
         : base(inner, option, shouldProcess) { }
 
@@ -20,6 +24,9 @@ internal sealed class JsonOutputWriter : SerializationOutputWriter<object>
 
     internal static string ToJson(object[] o, int? jsonIndent)
     {
+        if (o == null || o.Length == 0)
+            return EMPTY_ARRAY;
+
         using var stringWriter = new StringWriter();
         using var jsonTextWriter = new JsonCommentWriter(stringWriter);
 
@@ -56,3 +63,5 @@ internal sealed class JsonOutputWriter : SerializationOutputWriter<object>
         return stringWriter.ToString();
     }
 }
+
+#nullable restore

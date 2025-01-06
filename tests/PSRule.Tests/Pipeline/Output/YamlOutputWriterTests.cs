@@ -11,12 +11,10 @@ namespace PSRule.Pipeline.Output;
 /// </summary>
 public sealed class YamlOutputWriterTests : OutputWriterBaseTests
 {
-
     [Fact]
-    public void Yaml()
+    public void Output_WithIndent_ShouldReturnResults()
     {
         var option = GetOption();
-        option.Repository.Url = "https://github.com/microsoft/PSRule.UnitTest";
         var output = new TestWriter(option);
         var result = new InvokeResult(GetRun());
         result.Add(GetPass());
@@ -109,4 +107,18 @@ public sealed class YamlOutputWriterTests : OutputWriterBaseTests
 ", output.Output.OfType<string>().FirstOrDefault());
     }
 
+    [Fact]
+    public void Output_WithNoRecords_ShouldReturnSuccessfully()
+    {
+        var option = GetOption();
+        var output = new TestWriter(option);
+        var result = new InvokeResult(GetRun());
+        var writer = new YamlOutputWriter(output, option, null);
+
+        writer.Begin();
+        writer.WriteObject(result, false);
+        writer.End(new DefaultPipelineResult(null, Options.BreakLevel.None));
+
+        Assert.Empty(output.Output.OfType<string>().FirstOrDefault());
+    }
 }

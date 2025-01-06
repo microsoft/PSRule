@@ -12,17 +12,17 @@ namespace PSRule.Pipeline.Output;
 public sealed class JsonOutputWriterTests : OutputWriterBaseTests
 {
     [Fact]
-    public void Json()
+    public void Output_WithIndent_ShouldReturnIndentedResults()
     {
         var option = GetOption();
         option.Output.JsonIndent = 2;
-        option.Repository.Url = "https://github.com/microsoft/PSRule.UnitTest";
         var output = new TestWriter(option);
         var result = new InvokeResult(GetRun());
         result.Add(GetPass());
         result.Add(GetFail());
         result.Add(GetFail("rid-003", SeverityLevel.Warning));
         result.Add(GetFail("rid-004", SeverityLevel.Information));
+
         var writer = new JsonOutputWriter(output, option, null);
         writer.Begin();
         writer.WriteObject(result, false);
@@ -131,5 +131,21 @@ public sealed class JsonOutputWriterTests : OutputWriterBaseTests
     ""time"": 1000
   }
 ]", output.Output.OfType<string>().FirstOrDefault());
+    }
+
+    [Fact]
+    public void Output_WithNoRecords_ShouldReturnEmptyArray()
+    {
+        var option = GetOption();
+        option.Output.JsonIndent = 2;
+        var output = new TestWriter(option);
+        var result = new InvokeResult(GetRun());
+        var writer = new JsonOutputWriter(output, option, null);
+
+        writer.Begin();
+        writer.WriteObject(result, false);
+        writer.End(new DefaultPipelineResult(null, Options.BreakLevel.None));
+
+        Assert.Equal("[]", output.Output.OfType<string>().FirstOrDefault());
     }
 }
