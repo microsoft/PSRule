@@ -44,6 +44,8 @@ What's changed since pre-release v3.0.0-B0351:
     [#2553](https://github.com/microsoft/PSRule/issues/2553)
   - Fixed JSON output format returns exception when no results are produced by @BernieWhite.
     [#1832](https://github.com/microsoft/PSRule/issues/1832)
+  - Fixed path navigation with XML nodes by @BernieWhite.
+    [#1518](https://github.com/microsoft/PSRule/issues/1518)
 
 ## v3.0.0-B0351 (pre-release)
 

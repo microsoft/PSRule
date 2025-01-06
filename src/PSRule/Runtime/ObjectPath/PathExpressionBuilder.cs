@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.Management.Automation;
 using System.Reflection;
+using System.Xml;
 using Newtonsoft.Json.Linq;
 using PSRule.Resources;
 
@@ -496,6 +497,34 @@ internal sealed class PathExpressionBuilder
         else if (o is DynamicObject dynamicObject)
         {
             return TryPropertyValue(dynamicObject, fieldName, caseSensitive, out value);
+        }
+        else if (o is XmlNode xmlNode)
+        {
+            // Try attribute first.
+            var item = xmlNode.Attributes?.GetNamedItem(fieldName);
+            if (item != null)
+            {
+                value = item.Value;
+                return true;
+            }
+
+            // Try elements next.
+            var nodes = xmlNode.SelectNodes(fieldName);
+            if (nodes != null && nodes.Count == 1)
+            {
+                value = nodes[0];
+                return true;
+            }
+
+            // Try to get the value of the node.
+            if (nodes != null && nodes.Count == 0 && string.Equals(fieldName, "InnerText", caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
+            {
+                value = xmlNode.InnerText;
+                return value != null;
+            }
+
+            value = nodes.Count > 1 ? nodes : null;
+            return value != null;
         }
 
         // Handle all other CLR types
