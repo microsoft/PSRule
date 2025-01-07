@@ -1,8 +1,11 @@
+---
+description: Labels are additional metadata that can be used to classify rules.
+---
+
 # Grouping rules
 
-!!! Abstract
-    _Labels_ are additional metadata that can be used to classify rules.
-    Together with tags they can be used to group or filter rules.
+_Labels_ are additional metadata that can be used to classify rules.
+Together with tags they can be used to group or filter rules.
 
 ## Using labels
 

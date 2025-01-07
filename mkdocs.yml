@@ -47,13 +47,12 @@ nav:
       - Setup:
           - Index: setup/index.md
           - Visual Studio Code: setup/vscode.md
-      - Quickstarts:
-          - Create a standalone rule: quickstart/standalone-rule.md
       - User guide:
           - Creating your pipeline: creating-your-pipeline.md
           - Validating locally: validating-locally.md
           - Analysis output: analysis-output.md
       - Developer guide:
+          - Your first standalone rule: quickstart/standalone-rule.md
           - Testing infrastructure: authoring/testing-infrastructure.md
           - Using expressions: authoring/using-expressions.md
           - Storing and naming rules: authoring/storing-rules.md
@@ -77,10 +76,6 @@ nav:
       - License and contributing: license-contributing.md
       - Related projects: related-projects.md
       - Support: support.md
-    # - Setup:
-    #   - Configuring options: setup/configuring-options.md
-    #   - Configuring rule defaults: setup/configuring-rules.md
-    #   - Configuring expansion: setup/configuring-expansion.md
   - Updates:
       # - January 2025: updates/v3.0.md
       - Change log: 'CHANGELOG-v3.md'

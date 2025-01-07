@@ -1,29 +1,56 @@
+---
+description: A baseline is a set of rules and configuration options. You can define a named baseline to run a set of rules for a specific use case.
+---
+
 # Baselines
 
-!!! Abstract
-    A _baseline_ is a set of rules and configuration options.
-    You can define a named baseline to run a set of rules for a specific use case.
+A _baseline_ is a set of rules and configuration options.
+You can define a named baseline to run a set of rules for a specific use case.
 
 Baselines cover two (2) main scenarios:
 
-- **Rules** &mdash; PSRule supports running rules by name or tag.
-  However, when working with a large number of rules it is often easier to group and run rules based on a name.
-- **Configuration** &mdash; A baseline allows you to run any included rules with a predefined configuration by name.
+- **A collection of rules** &mdash; Baselines allow you to define a set of rules that will run each time the baseline is specified.
+- **Paired with configuration** &mdash; Baselines allow you to pair configuration so rules run consistently.
 
-## Defining baselines
+## Using baselines
 
-A baseline is defined as a resource within YAML or JSON.
-Baselines can be defined side-by-side with rules you create or included separately as a custom baseline.
+To use a baseline, specify it by name when you run PSRule.
+For example:
 
-Continue reading [baseline][1] reference.
+=== "GitHub Actions"
 
-  [1]: ./PSRule/en-US/about_PSRule_Baseline.md
+    ```yaml
+    - name: Run PSRule
+      uses: microsoft/ps-rule@v2.9.0
+      with:
+        modules: 'PSRule.Rules.Azure'
+        baseline: 'Azure.GA_2024_09'
+    ```
 
-## Baseline groups
+=== "Azure Pipelines"
+
+    ```yaml
+    - task: ps-rule-assert@2
+      displayName: Run PSRule
+      inputs:
+        modules: 'PSRule.Rules.Azure'
+        baseline: 'Azure.GA_2024_09'
+    ```
+
+=== "Generic with PowerShell"
+
+    ```powershell
+    Assert-PSRule -InputPath '.' -Baseline 'Azure.GA_2024_09' -Module PSRule.Rules.Azure;
+    ```
+
+### Baseline groups
 
 :octicons-milestone-24: v2.9.0
 
-In addition to regular baselines, you can use a baseline group to provide a friendly name to an existing baseline.
+In addition to specifying a baseline by name you can use a baseline group.
+A baseline group provides an alternative name to an existing baseline.
+Baseline groups allowing you to decouple pipeline configuration from the baseline name when it changes often.
+
 A baseline groups are set by configuring the [Baseline.Group][2] option.
 
 !!! Experimental
@@ -40,12 +67,12 @@ In the following example, two baseline groups `latest` and `preview` are defined
 ```yaml title="ps-rule.yaml"
 baseline:
   group:
-    latest: PSRule.Rules.Azure\Azure.GA_2023_03
-    preview: PSRule.Rules.Azure\Azure.Preview_2023_03
+    latest: PSRule.Rules.Azure\Azure.GA_2024_09
+    preview: PSRule.Rules.Azure\Azure.Preview_2024_09
 ```
 
-- The `latest` baseline group is set to `Azure.GA_2023_03` within the `PSRule.Rules.Azure` module.
-- The `preview` baseline group is set to `Azure.Preview_2023_03` within the `PSRule.Rules.Azure` module.
+- The `latest` baseline group is set to `Azure.GA_2024_09` within the `PSRule.Rules.Azure` module.
+- The `preview` baseline group is set to `Azure.Preview_2024_09` within the `PSRule.Rules.Azure` module.
 
 To use the baseline group, prefix the group name with `@` when running PSRule.
 For example:
@@ -78,3 +105,12 @@ For example:
 
   [2]: ./PSRule/en-US/about_PSRule_Options.md#baselinegroup
   [3]: https://github.com/microsoft/PSRule/discussions
+
+## Defining baselines
+
+A baseline is defined as a resource within YAML or JSON.
+Custom baselines can be defined side-by-side with rules you create or included separately.
+
+Continue reading [baseline][1] reference.
+
+  [1]: ./PSRule/en-US/about_PSRule_Baseline.md
