@@ -120,7 +120,7 @@ dotnet tool install -g Microsoft.PSRule.Tool --version 3.0.0-B0203
 
 For a list of commands supported by the CLI, see [PSRule CLI][cli].
 
-  [cli]: concepts/cli/index.md
+  [cli]: ../concepts/cli/index.md
 
 ## With PowerShell
 
