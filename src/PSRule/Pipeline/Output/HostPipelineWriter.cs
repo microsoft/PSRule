@@ -4,6 +4,7 @@
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Rules;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline.Output;
 
@@ -201,6 +202,29 @@ internal sealed class HostPipelineWriter : PipelineWriter
     public override void ExitScope()
     {
         _ScopeName = null;
+    }
+
+    public override void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    {
+        if (logLevel == LogLevel.Error || logLevel == LogLevel.Critical)
+            HadErrors = true;
+
+        if (logLevel == LogLevel.Error || logLevel == LogLevel.Critical)
+        {
+            WriteError(new ErrorRecord(exception, eventId.Id.ToString(), ErrorCategory.InvalidOperation, null));
+        }
+        else if (logLevel == LogLevel.Warning)
+        {
+            WriteWarning(formatter(state, exception));
+        }
+        else if (logLevel == LogLevel.Information)
+        {
+            WriteInformation(new InformationRecord(formatter(state, exception), null));
+        }
+        else if (logLevel == LogLevel.Debug || logLevel == LogLevel.Trace)
+        {
+            WriteDebug(formatter(state, exception));
+        }
     }
 
     #endregion Internal logging methods

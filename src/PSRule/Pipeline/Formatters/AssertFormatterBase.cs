@@ -242,7 +242,7 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
                 "/",
                 result.Total,
                 "]"),
-            forgroundColor: GetTerminalSupport().StartResultForegroundColor);
+            foregroundColor: GetTerminalSupport().StartResultForegroundColor);
     }
 
     protected virtual TerminalSupport GetTerminalSupport()
@@ -398,35 +398,35 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
         });
     }
 
-    protected void WriteLine(string prefix, ConsoleColor? forgroundColor, string message, params object[] args)
+    protected void WriteLine(string prefix, ConsoleColor? foregroundColor, string message, params object[] args)
     {
         var output = args == null || args.Length == 0 ? message : string.Format(Thread.CurrentThread.CurrentCulture, message, args);
-        Writer.WriteHost(new HostInformationMessage { Message = string.Concat(prefix, output), ForegroundColor = forgroundColor });
+        Writer.WriteHost(new HostInformationMessage { Message = string.Concat(prefix, output), ForegroundColor = foregroundColor });
     }
 
-    protected void WriteLine(string message, string prefix = null, ConsoleColor? forgroundColor = null)
+    protected void WriteLine(string message, string prefix = null, ConsoleColor? foregroundColor = null)
     {
         var output = string.IsNullOrEmpty(prefix) ? message : string.Concat(prefix, message);
-        Writer.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = forgroundColor });
+        Writer.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = foregroundColor });
     }
 
-    protected void WriteIndentedLine(string message, string indent, string prefix = null, ConsoleColor? forgroundColor = null)
+    protected void WriteIndentedLine(string message, string indent, string prefix = null, ConsoleColor? foregroundColor = null)
     {
         if (string.IsNullOrEmpty(message))
             return;
 
         var output = string.Concat(indent, prefix, message);
-        Writer.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = forgroundColor });
+        Writer.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = foregroundColor });
     }
 
-    protected void WriteIndentedLines(string message, string indent, string prefix = null, ConsoleColor? forgroundColor = null)
+    protected void WriteIndentedLines(string message, string indent, string prefix = null, ConsoleColor? foregroundColor = null)
     {
         if (string.IsNullOrEmpty(message))
             return;
 
         var lines = message.SplitSemantic();
         for (var i = 0; i < lines.Length; i++)
-            WriteIndentedLine(lines[i], indent, prefix, forgroundColor);
+            WriteIndentedLine(lines[i], indent, prefix, foregroundColor);
     }
 
     protected void WriteLineFormat(string message, params object[] args)
@@ -434,14 +434,14 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
         WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
     }
 
-    protected void WriteLines(string message, string prefix = null, ConsoleColor? forgroundColor = null)
+    protected void WriteLines(string message, string prefix = null, ConsoleColor? foregroundColor = null)
     {
         if (string.IsNullOrEmpty(message))
             return;
 
         var lines = message.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None);
         for (var i = 0; i < lines.Length; i++)
-            WriteLine(lines[i], prefix, forgroundColor);
+            WriteLine(lines[i], prefix, foregroundColor);
     }
 
     protected void LineBreak()
@@ -501,7 +501,7 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
                     message: record.Source[i].ToString(FormatterStrings.SourceAt, useRelativePath: true),
                     indent: GetTerminalSupport().BodyIndent,
                     prefix: GetTerminalSupport().SourceLocationPrefix,
-                    forgroundColor: GetTerminalSupport().SourceLocationForegroundColor
+                    foregroundColor: GetTerminalSupport().SourceLocationForegroundColor
                 );
         }
     }
@@ -518,7 +518,7 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
             message: record.Info.Synopsis.Text,
             indent: GetTerminalSupport().BodyIndent,
             prefix: GetTerminalSupport().SynopsisPrefix,
-            forgroundColor: GetTerminalSupport().SynopsisForegroundColor
+            foregroundColor: GetTerminalSupport().SynopsisForegroundColor
         );
     }
 
@@ -528,12 +528,12 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
             return;
 
         LineBreak();
-        WriteLine(GetTerminalSupport().RecommendationHeading, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+        WriteLine(GetTerminalSupport().RecommendationHeading, foregroundColor: GetTerminalSupport().BodyForegroundColor);
         WriteIndentedLines(
             message: record.Info.Recommendation.Text,
             indent: GetTerminalSupport().BodyIndent,
             prefix: GetTerminalSupport().RecommendationPrefix,
-            forgroundColor: GetTerminalSupport().BodyForegroundColor
+            foregroundColor: GetTerminalSupport().BodyForegroundColor
         );
     }
 
@@ -542,14 +542,14 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
         if (record.Reason != null && record.Reason.Length > 0)
         {
             LineBreak();
-            WriteLine(GetTerminalSupport().ReasonHeading, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+            WriteLine(GetTerminalSupport().ReasonHeading, foregroundColor: GetTerminalSupport().BodyForegroundColor);
             for (var i = 0; i < record.Reason.Length; i++)
             {
                 WriteIndentedLine(
                     message: record.Reason[i],
                     indent: GetTerminalSupport().BodyIndent,
                     prefix: GetTerminalSupport().ReasonItemPrefix,
-                    forgroundColor: GetTerminalSupport().BodyForegroundColor
+                    foregroundColor: GetTerminalSupport().BodyForegroundColor
                 );
             }
         }
@@ -561,12 +561,12 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
         if (!string.IsNullOrEmpty(link))
         {
             LineBreak();
-            WriteLine(GetTerminalSupport().HelpHeading, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+            WriteLine(GetTerminalSupport().HelpHeading, foregroundColor: GetTerminalSupport().BodyForegroundColor);
             WriteIndentedLine(
                 message: link,
                 indent: GetTerminalSupport().BodyIndent,
                 prefix: GetTerminalSupport().HelpLinkPrefix,
-                forgroundColor: GetTerminalSupport().BodyForegroundColor
+                foregroundColor: GetTerminalSupport().BodyForegroundColor
             );
         }
     }

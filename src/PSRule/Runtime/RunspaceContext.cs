@@ -819,13 +819,26 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
     /// <inheritdoc/>
     bool ILogger.IsEnabled(LogLevel logLevel)
     {
-        return Writer != null && (
-            (logLevel == LogLevel.Warning && Writer.ShouldWriteWarning()) ||
-            ((logLevel == LogLevel.Error || logLevel == LogLevel.Critical) && Writer.ShouldWriteError()) ||
-            (logLevel == LogLevel.Information && Writer.ShouldWriteInformation()) ||
-            (logLevel == LogLevel.Debug && Writer.ShouldWriteVerbose()) ||
-            (logLevel == LogLevel.Trace && Writer.ShouldWriteDebug())
-        );
+        if (Writer == null)
+            return false;
+
+        switch (logLevel)
+        {
+            case LogLevel.Trace:
+            case LogLevel.Debug:
+                return Writer.ShouldWriteDebug();
+
+            case LogLevel.Information:
+                return Writer.ShouldWriteInformation();
+
+            case LogLevel.Warning:
+                return Writer.ShouldWriteWarning();
+
+            case LogLevel.Error:
+            case LogLevel.Critical:
+                return Writer.ShouldWriteError();
+        }
+        return false;
     }
 
     /// <inheritdoc/>
@@ -845,13 +858,9 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         {
             Writer.WriteInformation(new InformationRecord(formatter(state, exception), null));
         }
-        else if (logLevel == LogLevel.Debug)
+        else if (logLevel == LogLevel.Debug || logLevel == LogLevel.Trace)
         {
             Writer.WriteDebug(formatter(state, exception));
-        }
-        else if (logLevel == LogLevel.Trace)
-        {
-            Writer.WriteVerbose(formatter(state, exception));
         }
     }
 

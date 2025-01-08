@@ -5,13 +5,16 @@ using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Resources;
 using PSRule.Rules;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
+
+#nullable enable
 
 /// <summary>
 /// A base class for writers.
 /// </summary>
-internal abstract class PipelineWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess) : IPipelineWriter
+internal abstract class PipelineWriter(IPipelineWriter? inner, PSRuleOption option, ShouldProcess shouldProcess) : IPipelineWriter
 {
     protected const string ErrorPreference = "ErrorActionPreference";
     protected const string WarningPreference = "WarningPreference";
@@ -19,7 +22,7 @@ internal abstract class PipelineWriter(IPipelineWriter inner, PSRuleOption optio
     protected const string InformationPreference = "InformationPreference";
     protected const string DebugPreference = "DebugPreference";
 
-    private readonly IPipelineWriter _Writer = inner;
+    private readonly IPipelineWriter? _Writer = inner;
     private readonly ShouldProcess _ShouldProcess = shouldProcess;
 
     protected readonly PSRuleOption Option = option;
@@ -262,4 +265,42 @@ internal abstract class PipelineWriter(IPipelineWriter inner, PSRuleOption optio
     {
         return (ActionPreference)sessionState.PSVariable.GetValue(variableName);
     }
+
+    #region ILogger
+
+    public virtual bool IsEnabled(LogLevel logLevel)
+    {
+        switch (logLevel)
+        {
+            case LogLevel.Trace:
+            case LogLevel.Debug:
+                return ShouldWriteDebug();
+
+            case LogLevel.Information:
+                return ShouldWriteInformation();
+
+            case LogLevel.Warning:
+                return ShouldWriteWarning();
+
+            case LogLevel.Error:
+            case LogLevel.Critical:
+                return ShouldWriteError();
+        }
+        return false;
+    }
+
+    public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    {
+        if (logLevel == LogLevel.Error || logLevel == LogLevel.Critical)
+            HadErrors = true;
+
+        if (_Writer == null)
+            return;
+
+        _Writer.Log(logLevel, eventId, state, exception, formatter);
+    }
+
+    #endregion ILogger
 }
+
+#nullable restore

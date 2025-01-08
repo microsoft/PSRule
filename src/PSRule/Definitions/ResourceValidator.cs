@@ -8,17 +8,12 @@ using PSRule.Resources;
 
 namespace PSRule.Definitions;
 
-internal interface IResourceValidator : IResourceVisitor
-{
-
-}
-
 /// <summary>
 /// A helper class to help validate a resource object.
 /// </summary>
 internal sealed class ResourceValidator : IResourceValidator
 {
-    private const string ERRORID_INVALIDRESOURCENAME = "PSRule.Parse.InvalidResourceName";
+    private const string ERROR_ID_INVALID_RESOURCE_NAME = "PSRule.Parse.InvalidResourceName";
 
     private static readonly Regex ValidName = new("^[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F][^<>:/\\\\|?*\"'`+@\x00-\x1F]{1,126}[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F]$", RegexOptions.Compiled, TimeSpan.FromSeconds(5));
 
@@ -46,7 +41,7 @@ internal sealed class ResourceValidator : IResourceValidator
         if (IsNameValid(name))
             return true;
 
-        ReportError(ERRORID_INVALIDRESOURCENAME, PSRuleResources.InvalidResourceName, name, ReportExtent(resource.Extent));
+        ReportError(ERROR_ID_INVALID_RESOURCE_NAME, PSRuleResources.InvalidResourceName, name, ReportExtent(resource.Extent));
         return false;
     }
 

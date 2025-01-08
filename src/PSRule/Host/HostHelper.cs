@@ -277,12 +277,13 @@ internal static class HostHelper
                         while (parser.Current is DocumentStart)
                         {
                             var item = d.Deserialize<ResourceObject>(parser);
-                            if (item == null || item.Block == null)
-                                continue;
-
-                            if (item.Visit(visitor))
+                            if (item?.Block != null && item.Visit(visitor))
                             {
                                 result.Add(item.Block);
+                            }
+                            else if (item != null && item.Block == null)
+                            {
+                                context.Writer?.LogUnknownResourceKind(item.Kind, item.ApiVersion, file);
                             }
                         }
                     }
@@ -347,6 +348,10 @@ internal static class HostHelper
                                 if (item?.Block != null && item.Visit(visitor))
                                 {
                                     result.Add(item.Block);
+                                }
+                                else if (item != null && item.Block == null)
+                                {
+                                    context.Writer?.LogUnknownResourceKind(item.Kind, item.ApiVersion, file);
                                 }
 
                                 // Consume all end objects at the end of each resource

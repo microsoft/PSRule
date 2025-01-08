@@ -619,6 +619,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The resource &apos;{0}&apos; using API &apos;{1}&apos; is not recognized as a valid PSRule resource (source: {2})..
+        /// </summary>
+        internal static string PSR0007 {
+            get {
+                return ResourceManager.GetString("PSR0007", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deserialize the file &apos;{0}&apos;: {1}.
         /// </summary>
         internal static string ReadFileFailed {

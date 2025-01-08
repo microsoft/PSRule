@@ -3,7 +3,6 @@
 
 using System.Linq;
 using PSRule.Definitions.Selectors;
-using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 

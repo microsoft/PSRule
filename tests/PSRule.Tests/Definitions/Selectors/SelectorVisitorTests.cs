@@ -6,7 +6,6 @@ using System.Linq;
 using System.Management.Automation;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
-using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 
