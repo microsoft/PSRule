@@ -41,13 +41,13 @@ internal sealed class ClientFormatter : AssertFormatterBase, IAssertFormatter
             return;
 
         LineBreak();
-        WriteLine(FormatterStrings.Message, forgroundColor: GetTerminalSupport().ErrorForegroundColor);
-        WriteIndentedLine(record.Error.Message, GetTerminalSupport().BodyIndent, forgroundColor: GetTerminalSupport().ErrorForegroundColor);
+        WriteLine(FormatterStrings.Message, foregroundColor: GetTerminalSupport().ErrorForegroundColor);
+        WriteIndentedLine(record.Error.Message, GetTerminalSupport().BodyIndent, foregroundColor: GetTerminalSupport().ErrorForegroundColor);
         LineBreak();
-        WriteLine(FormatterStrings.Position, forgroundColor: GetTerminalSupport().BodyForegroundColor);
-        WriteIndentedLine(record.Error.PositionMessage, GetTerminalSupport().BodyIndent, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+        WriteLine(FormatterStrings.Position, foregroundColor: GetTerminalSupport().BodyForegroundColor);
+        WriteIndentedLine(record.Error.PositionMessage, GetTerminalSupport().BodyIndent, foregroundColor: GetTerminalSupport().BodyForegroundColor);
         LineBreak();
-        WriteLine(FormatterStrings.StackTrace, forgroundColor: GetTerminalSupport().BodyForegroundColor);
-        WriteIndentedLine(record.Error.ScriptStackTrace, GetTerminalSupport().BodyIndent, forgroundColor: GetTerminalSupport().BodyForegroundColor);
+        WriteLine(FormatterStrings.StackTrace, foregroundColor: GetTerminalSupport().BodyForegroundColor);
+        WriteIndentedLine(record.Error.ScriptStackTrace, GetTerminalSupport().BodyIndent, foregroundColor: GetTerminalSupport().BodyForegroundColor);
     }
 }

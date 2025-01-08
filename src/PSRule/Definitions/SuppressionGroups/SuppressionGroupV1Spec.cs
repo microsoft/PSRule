@@ -5,6 +5,8 @@ using PSRule.Definitions.Expressions;
 
 namespace PSRule.Definitions.SuppressionGroups;
 
+#nullable enable
+
 /// <summary>
 /// A specification for a V1 suppression group resource.
 /// </summary>
@@ -14,8 +16,10 @@ internal sealed class SuppressionGroupV1Spec : Spec, ISuppressionGroupV1Spec
     public DateTime? ExpiresOn { get; set; }
 
     /// <inheritdoc/>
-    public string[] Rule { get; set; }
+    public string[]? Rule { get; set; }
 
     /// <inheritdoc/>
-    public LanguageIf If { get; set; }
+    public LanguageIf? If { get; set; }
 }
+
+#nullable restore

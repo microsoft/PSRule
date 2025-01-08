@@ -34,6 +34,20 @@ spec:
     equals: 'TestType'
 
 ---
+# Synopsis: Ignore test objects by type precondition.
+apiVersion: github.com/microsoft/PSRule/2025-01-01
+kind: SuppressionGroup
+metadata:
+  name: SuppressWithTestTypePrecondition
+spec:
+  rule:
+    - 'FromFile3'
+    - 'FromFile5'
+  type:
+    - 'TestType'
+  if: {}
+
+---
 # Synopsis: Suppress with non-production tag.
 apiVersion: github.com/microsoft/PSRule/v1
 kind: SuppressionGroup

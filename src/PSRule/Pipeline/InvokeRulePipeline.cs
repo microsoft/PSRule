@@ -157,7 +157,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
                         Context.RuleSuppressed(ruleId: ruleRecord.RuleId);
                 }
                 // Check for suppression group
-                else if (_SuppressionGroupFilter.TrySuppressionGroup(ruleId: ruleRecord.RuleId, targetObject, out var suppression))
+                else if (_SuppressionGroupFilter.TrySuppressionGroup(ruleId: ruleBlockTarget.Value.Id, targetObject, out var suppression))
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
                     if (!_IsSummary)

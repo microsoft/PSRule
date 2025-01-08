@@ -259,8 +259,7 @@ public sealed class ParseException : PipelineException
     [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
     {
-        if (info == null)
-            throw new ArgumentNullException(nameof(info));
+        if (info == null) throw new ArgumentNullException(nameof(info));
 
         info.AddValue("ErrorId", ErrorId);
         base.GetObjectData(info, context);
@@ -434,7 +433,7 @@ public sealed class ConfigurationParseException : ConfigurationException
     /// <summary>
     /// Creates a configuration parse exception.
     /// </summary>
-    /// <param name="path">The path to the options file thay cause the exception.</param>
+    /// <param name="path">The path to the options file they cause the exception.</param>
     /// <param name="message">The detail of the exception.</param>
     public ConfigurationParseException(string path, string message)
         : base(message)
@@ -457,7 +456,7 @@ public sealed class ConfigurationParseException : ConfigurationException
     /// <summary>
     /// Creates a configuration parse exception.
     /// </summary>
-    /// <param name="path">The path to the options file thay cause the exception</param>
+    /// <param name="path">The path to the options file they cause the exception</param>
     /// <param name="message">The detail of the exception.</param>
     /// <param name="innerException">A nested exception that caused the issue.</param>
     public ConfigurationParseException(string path, string message, Exception innerException)

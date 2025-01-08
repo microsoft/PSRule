@@ -19,7 +19,7 @@ For example:
 ```yaml
 ---
 # Synopsis: An expression function example.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: Yaml.Fn.Example1

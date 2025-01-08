@@ -58,7 +58,7 @@ In this section the same rule will be authored using YAML, JSON, and PowerShell.
     ```yaml
     ---
     # Synopsis: An example rule to require TLS.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: 'Local.YAML.RequireTLS'
@@ -80,20 +80,20 @@ In this section the same rule will be authored using YAML, JSON, and PowerShell.
 
     ```json
     [
-        {
-            // Synopsis: An example rule to require TLS.
-            "apiVersion": "github.com/microsoft/PSRule/v1",
-            "kind": "Rule",
-            "metadata": {
-                "name": "Local.JSON.RequireTLS"
-            },
-            "spec": {
-                "condition": {
-                    "field": "configure.supportsHttpsTrafficOnly",
-                    "equals": true
-                }
-            }
+      {
+        // Synopsis: An example rule to require TLS.
+        "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
+        "kind": "Rule",
+        "metadata": {
+          "name": "Local.JSON.RequireTLS"
+        },
+        "spec": {
+          "condition": {
+            "field": "configure.supportsHttpsTrafficOnly",
+            "equals": true
+          }
         }
+      }
     ]
     ```
 
@@ -140,7 +140,7 @@ In the example a `minTLSVersion` configuration setting does not exist and is not
     ```yaml hl_lines="9 12-13"
     ---
     # Synopsis: An example rule to require TLS.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: 'Local.YAML.RequireTLS'
@@ -163,28 +163,28 @@ In the example a `minTLSVersion` configuration setting does not exist and is not
 
     ```json hl_lines="11 16-19"
     [
-        {
-            // Synopsis: An example rule to require TLS.
-            "apiVersion": "github.com/microsoft/PSRule/v1",
-            "kind": "Rule",
-            "metadata": {
-                "name": "Local.JSON.RequireTLS"
-            },
-            "spec": {
-                "condition": {
-                    "allOf": [
-                        {
-                            "field": "configure.supportsHttpsTrafficOnly",
-                            "equals": true
-                        },
-                        {
-                            "field": "configure.minTLSVersion",
-                            "equals": "1.2"
-                        }
-                    ]
-                }
-            }
+      {
+        // Synopsis: An example rule to require TLS.
+        "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
+        "kind": "Rule",
+        "metadata": {
+          "name": "Local.JSON.RequireTLS"
+        },
+        "spec": {
+          "condition": {
+            "allOf": [
+              {
+                "field": "configure.supportsHttpsTrafficOnly",
+                "equals": true
+              },
+              {
+                "field": "configure.minTLSVersion",
+                "equals": "1.2"
+              }
+            ]
+          }
         }
+      }
     ]
     ```
 
@@ -242,7 +242,7 @@ The following example shows how to set the severity level to `Warning`.
     ```yaml hl_lines="8"
     ---
     # Synopsis: An example rule to require TLS.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: 'Local.YAML.RequireTLS'
@@ -260,29 +260,29 @@ The following example shows how to set the severity level to `Warning`.
 
     ```json hl_lines="10"
     [
-        {
-            // Synopsis: An example rule to require TLS.
-            "apiVersion": "github.com/microsoft/PSRule/v1",
-            "kind": "Rule",
-            "metadata": {
-                "name": "Local.JSON.RequireTLS"
-            },
-            "spec": {
-                "level": "Warning",
-                "condition": {
-                    "allOf": [
-                        {
-                            "field": "configure.supportsHttpsTrafficOnly",
-                            "equals": true
-                        },
-                        {
-                            "field": "configure.minTLSVersion",
-                            "equals": "1.2"
-                        }
-                    ]
-                }
-            }
+      {
+        // Synopsis: An example rule to require TLS.
+        "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
+        "kind": "Rule",
+        "metadata": {
+          "name": "Local.JSON.RequireTLS"
+        },
+        "spec": {
+          "level": "Warning",
+          "condition": {
+            "allOf": [
+              {
+                "field": "configure.supportsHttpsTrafficOnly",
+                "equals": true
+              },
+              {
+                "field": "configure.minTLSVersion",
+                "equals": "1.2"
+              }
+            ]
+          }
         }
+      }
     ]
     ```
 

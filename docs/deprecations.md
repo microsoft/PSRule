@@ -114,7 +114,6 @@ This feature was hard to use and obsolete for most common use cases.
 
 Alternatively, configure `Binding.TargetName` and `Binding.TargetType` options to use the built-in binder.
 
-
 ## Unbound object names
 
 When an object is processed by PSRule, it is assigned a name.
@@ -193,7 +192,7 @@ Set the `includePrerelease` property to `true`.
 ```yaml
 ---
 # Synopsis: Test comparison with apiVersion.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: AnyVersion

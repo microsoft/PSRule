@@ -4,9 +4,8 @@
 using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
-using PSRule.Runtime;
 
-namespace PSRule;
+namespace PSRule.Runtime;
 
 /// <summary>
 /// Extension for <see cref="ILogger"/> to log common messages.
@@ -16,6 +15,7 @@ internal static class LoggerExtensions
     private static readonly EventId PSR0004 = new(4, "PSR0004");
     private static readonly EventId PSR0005 = new(5, "PSR0005");
     private static readonly EventId PSR0006 = new(6, "PSR0006");
+    private static readonly EventId PSR0007 = new(7, "PSR0007");
 
     /// <summary>
     /// PSR0005: The {0} '{1}' is obsolete.
@@ -77,6 +77,24 @@ internal static class LoggerExtensions
             PSRuleResources.PSR0006,
             path,
             innerException.Message
+        );
+    }
+
+    /// <summary>
+    /// PSR0007: The resource '{0}' using API '{1}' is not recognized as a valid PSRule resource (source: {2}).
+    /// </summary>
+    internal static void LogUnknownResourceKind(this ILogger logger, string kind, string apiVersion, ISourceFile file)
+    {
+        if (logger == null || !logger.IsEnabled(LogLevel.Error))
+            return;
+
+        logger.LogWarning
+        (
+            PSR0007,
+            PSRuleResources.PSR0007,
+            kind,
+            apiVersion,
+            file.Path
         );
     }
 }

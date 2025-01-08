@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Pipeline;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions.Expressions;
@@ -21,8 +22,8 @@ public sealed class LanguageExpressionsTests
             { "startsWith", new string[] { "abc" } }
         });
 
-        Assert.True(LanguageExpressions.StartsWith(context.Object, info, args, "abc"));
-        Assert.False(LanguageExpressions.StartsWith(context.Object, info, args, "efg"));
+        Assert.True(LanguageExpressions.StartsWith(context.Object, info, args, new TargetObject(new System.Management.Automation.PSObject("abc"))));
+        Assert.False(LanguageExpressions.StartsWith(context.Object, info, args, new TargetObject(new System.Management.Automation.PSObject("efg"))));
 
         context.VerifyAll();
     }

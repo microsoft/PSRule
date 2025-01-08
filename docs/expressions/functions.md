@@ -54,7 +54,7 @@ The conditions that are supported are:
 ```yaml title="YAML"
 ---
 # Synopsis: An expression function example.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: Yaml.Fn.Example1
@@ -69,7 +69,7 @@ spec:
 
 ---
 # Synopsis: An expression function example.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: Yaml.Fn.Example2
@@ -82,7 +82,7 @@ spec:
 
 ---
 # Synopsis: An expression function example.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: Yaml.Fn.Example3
@@ -95,7 +95,7 @@ spec:
 
 ---
 # Synopsis: An expression function example.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: Yaml.Fn.Example4
@@ -111,7 +111,7 @@ spec:
 
 ---
 # Synopsis: An expression function example.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: Yaml.Fn.Example5
@@ -124,7 +124,7 @@ spec:
 
 ---
 # Synopsis: An expression function example.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: Yaml.Fn.Example6

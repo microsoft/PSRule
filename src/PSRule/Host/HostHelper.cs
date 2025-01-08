@@ -6,12 +6,12 @@ using System.Management.Automation;
 using System.Text;
 using Newtonsoft.Json;
 using PSRule.Annotations;
+using PSRule.Converters.Json;
 using PSRule.Converters.Yaml;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Rules;
-using PSRule.Definitions.Selectors;
 using PSRule.Help;
 using PSRule.Pipeline;
 using PSRule.Rules;
@@ -97,14 +97,6 @@ internal static class HostHelper
     internal static IEnumerable<ModuleConfigV1> GetModuleConfigForTests(Source[] source, RunspaceContext context)
     {
         return GetMetaResources<ILanguageBlock>(source, context).ToModuleConfigV1(context);
-    }
-
-    /// <summary>
-    /// Read YAML/JSON objects and return selectors.
-    /// </summary>
-    internal static IEnumerable<SelectorV1> GetSelectorForTests(Source[] source, RunspaceContext context)
-    {
-        return GetMetaResources<ILanguageBlock>(source, context).ToSelectorV1(context);
     }
 
     /// <summary>
@@ -285,12 +277,13 @@ internal static class HostHelper
                         while (parser.Current is DocumentStart)
                         {
                             var item = d.Deserialize<ResourceObject>(parser);
-                            if (item == null || item.Block == null)
-                                continue;
-
-                            if (item.Visit(visitor))
+                            if (item?.Block != null && item.Visit(visitor))
                             {
                                 result.Add(item.Block);
+                            }
+                            else if (item != null && item.Block == null)
+                            {
+                                context.Writer?.LogUnknownResourceKind(item.Kind, item.ApiVersion, file);
                             }
                         }
                     }
@@ -355,6 +348,10 @@ internal static class HostHelper
                                 if (item?.Block != null && item.Visit(visitor))
                                 {
                                     result.Add(item.Block);
+                                }
+                                else if (item != null && item.Block == null)
+                                {
+                                    context.Writer?.LogUnknownResourceKind(item.Kind, item.ApiVersion, file);
                                 }
 
                                 // Consume all end objects at the end of each resource

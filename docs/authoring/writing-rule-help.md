@@ -28,7 +28,7 @@ Specify the synopsis of the rule with the `Synopsis` comment above the rule prop
     ```yaml hl_lines="2"
     ---
     # Synopsis: An example rule to require TLS.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: 'Local.YAML.RequireTLS'
@@ -42,20 +42,20 @@ Specify the synopsis of the rule with the `Synopsis` comment above the rule prop
 
     ```json hl_lines="3"
     [
-        {
-            // Synopsis: An example rule to require TLS.
-            "apiVersion": "github.com/microsoft/PSRule/v1",
-            "kind": "Rule",
-            "metadata": {
-                "name": "Local.JSON.RequireTLS"
-            },
-            "spec": {
-                "condition": {
-                    "field": "configure.supportsHttpsTrafficOnly",
-                    "equals": true
-                }
-            }
+      {
+        // Synopsis: An example rule to require TLS.
+        "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
+        "kind": "Rule",
+        "metadata": {
+          "name": "Local.JSON.RequireTLS"
+        },
+        "spec": {
+          "condition": {
+            "field": "configure.supportsHttpsTrafficOnly",
+            "equals": true
+          }
         }
+      }
     ]
     ```
 
@@ -72,7 +72,7 @@ Specify the display name of the rule with the `metadata.displayName` property.
     ```yaml hl_lines="7"
     ---
     # Synopsis: An example rule to require TLS.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: 'Local.YAML.RequireTLS'
@@ -87,21 +87,21 @@ Specify the display name of the rule with the `metadata.displayName` property.
 
     ```json hl_lines="8"
     [
-        {
-            // Synopsis: An example rule to require TLS.
-            "apiVersion": "github.com/microsoft/PSRule/v1",
-            "kind": "Rule",
-            "metadata": {
-                "name": "Local.JSON.RequireTLS",
-                "displayName": "Require TLS"
-            },
-            "spec": {
-                "condition": {
-                    "field": "configure.supportsHttpsTrafficOnly",
-                    "equals": true
-                }
-            }
+      {
+        // Synopsis: An example rule to require TLS.
+        "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
+        "kind": "Rule",
+        "metadata": {
+          "name": "Local.JSON.RequireTLS",
+          "displayName": "Require TLS"
+        },
+        "spec": {
+          "condition": {
+            "field": "configure.supportsHttpsTrafficOnly",
+            "equals": true
+          }
         }
+      }
     ]
     ```
 
@@ -118,7 +118,7 @@ Specify the description of the rule with the `metadata.description` property.
     ```yaml hl_lines="7"
     ---
     # Synopsis: An example rule to require TLS.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: 'Local.YAML.RequireTLS'
@@ -133,21 +133,21 @@ Specify the description of the rule with the `metadata.description` property.
 
     ```json hl_lines="8"
     [
-        {
-            // Synopsis: An example rule to require TLS.
-            "apiVersion": "github.com/microsoft/PSRule/v1",
-            "kind": "Rule",
-            "metadata": {
-                "name": "Local.JSON.RequireTLS",
-                "description": "The resource should only use TLS."
-            },
-            "spec": {
-                "condition": {
-                    "field": "configure.supportsHttpsTrafficOnly",
-                    "equals": true
-                }
-            }
+      {
+        // Synopsis: An example rule to require TLS.
+        "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
+        "kind": "Rule",
+        "metadata": {
+          "name": "Local.JSON.RequireTLS",
+          "description": "The resource should only use TLS."
+        },
+        "spec": {
+          "condition": {
+            "field": "configure.supportsHttpsTrafficOnly",
+            "equals": true
+          }
         }
+      }
     ]
     ```
 
@@ -164,7 +164,7 @@ Specify the online help URL of the rule with the `metadata.link` property.
     ```yaml hl_lines="7"
     ---
     # Synopsis: An example rule to require TLS.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: 'Local.YAML.RequireTLS'
@@ -179,21 +179,21 @@ Specify the online help URL of the rule with the `metadata.link` property.
 
     ```json hl_lines="8"
     [
-        {
-            // Synopsis: An example rule to require TLS.
-            "apiVersion": "github.com/microsoft/PSRule/v1",
-            "kind": "Rule",
-            "metadata": {
-                "name": "Local.JSON.RequireTLS",
-                "link": "https://aka.ms/ps-rule"
-            },
-            "spec": {
-                "condition": {
-                    "field": "configure.supportsHttpsTrafficOnly",
-                    "equals": true
-                }
-            }
+      {
+        // Synopsis: An example rule to require TLS.
+        "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
+        "kind": "Rule",
+        "metadata": {
+          "name": "Local.JSON.RequireTLS",
+          "link": "https://aka.ms/ps-rule"
+        },
+        "spec": {
+          "condition": {
+            "field": "configure.supportsHttpsTrafficOnly",
+            "equals": true
+          }
         }
+      }
     ]
     ```
 
@@ -210,7 +210,7 @@ Specify the rule recommendation with the `spec.recommend` property.
     ```yaml hl_lines="8"
     ---
     # Synopsis: An example rule to require TLS.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: 'Local.YAML.RequireTLS'
@@ -225,21 +225,21 @@ Specify the rule recommendation with the `spec.recommend` property.
 
     ```json hl_lines="10"
     [
-        {
-            // Synopsis: An example rule to require TLS.
-            "apiVersion": "github.com/microsoft/PSRule/v1",
-            "kind": "Rule",
-            "metadata": {
-                "name": "Local.JSON.RequireTLS"
-            },
-            "spec": {
-                "recommend": "",
-                "condition": {
-                    "field": "configure.supportsHttpsTrafficOnly",
-                    "equals": true
-                }
-            }
+      {
+        // Synopsis: An example rule to require TLS.
+        "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
+        "kind": "Rule",
+        "metadata": {
+          "name": "Local.JSON.RequireTLS"
+        },
+        "spec": {
+          "recommend": "",
+          "condition": {
+            "field": "configure.supportsHttpsTrafficOnly",
+            "equals": true
+          }
         }
+      }
     ]
     ```
 

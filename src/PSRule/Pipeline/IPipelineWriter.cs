@@ -2,13 +2,14 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
 /// <summary>
 /// An writer which receives output from PSRule.
 /// </summary>
-public interface IPipelineWriter : IDisposable
+public interface IPipelineWriter : IDisposable, ILogger
 {
     /// <summary>
     /// Determines if any errors were reported.

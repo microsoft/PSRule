@@ -35,7 +35,7 @@ internal sealed class SuppressionFilter
     public SuppressionFilter(IEnumerable<SuppressionGroupVisitor> suppressionGroups, ResourceIndex resourceIndex)
     {
         _ResourceIndex = resourceIndex;
-        _RuleSuppressionGroupIndex = new Dictionary<string, List<SuppressionGroupVisitor>>();
+        _RuleSuppressionGroupIndex = [];
         IndexSuppressionGroups(suppressionGroups);
     }
 
@@ -129,14 +129,14 @@ internal sealed class SuppressionFilter
     /// <param name="targetObject">The <seealso cref="TargetObject"/> we are evaluating.</param>
     /// <param name="suppression">Information about a matching suppression group.</param>
     /// <returns>Boolean indicating if suppression group has been found.</returns>
-    public bool TrySuppressionGroup(string ruleId, TargetObject targetObject, out ISuppressionInfo suppression)
+    public bool TrySuppressionGroup(ResourceId ruleId, TargetObject targetObject, out ISuppressionInfo suppression)
     {
         suppression = null;
-        if (_RuleSuppressionGroupIndex.TryGetValue(ruleId, out var suppressionGroupVisitors))
+        if (_RuleSuppressionGroupIndex.TryGetValue(ruleId.Value, out var suppressionGroupVisitors))
         {
             foreach (var visitor in suppressionGroupVisitors)
             {
-                if (visitor.TryMatch(targetObject.Value, out suppression))
+                if (visitor.TryMatch(ruleId, targetObject, out suppression))
                     return true;
             }
         }

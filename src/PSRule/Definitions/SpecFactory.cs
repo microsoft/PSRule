@@ -9,7 +9,7 @@ internal sealed class SpecFactory
 
     public SpecFactory()
     {
-        _Descriptors = new Dictionary<string, ISpecDescriptor>();
+        _Descriptors = [];
         foreach (var d in Specs.BuiltinTypes)
             With(d);
     }

@@ -621,7 +621,7 @@ public sealed class FunctionTests : ContextBaseTests
         targetObject.Properties.Add(new PSNoteProperty("name", "TestObject1"));
         var sources = GetSource();
         var context = new Runtime.RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: new OptionContextBuilder(GetOption(), null, null, null), resourceCache: GetResourceCache()));
-        var result = new ExpressionContext(context, sources[0].File[0], Definitions.ResourceKind.Rule, targetObject);
+        var result = new ExpressionContext(context, sources[0].File[0], Definitions.ResourceKind.Rule, new TargetObject(targetObject));
         context.Initialize(sources);
         context.Begin();
         context.PushScope(Runtime.RunspaceScope.Precondition);

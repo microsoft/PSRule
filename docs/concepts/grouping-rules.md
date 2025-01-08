@@ -23,7 +23,7 @@ For example:
     ```yaml
     ---
     # Synopsis: A rule with labels defined.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: WithLabels
@@ -40,7 +40,7 @@ For example:
     ```json
     {
       // Synopsis: A rule with labels defined.
-      "apiVersion": "github.com/microsoft/PSRule/v1",
+      "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
       "kind": "Rule",
       "metadata": {
         "name": "WithLabels",
@@ -73,7 +73,7 @@ For example:
 ```yaml
 ---
 # Synopsis: A baseline which returns only security rules.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Baseline
 metadata:
   name: TestBaseline6
@@ -84,7 +84,7 @@ spec:
 
 ---
 # Synopsis: A baseline which returns any rules that are classified to Azure.WAF/pillar.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Baseline
 metadata:
   name: TestBaseline6

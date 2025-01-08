@@ -418,4 +418,10 @@
   <data name="PSR0006" xml:space="preserve">
     <value>PSR0006: Failed to deserialize the file '{0}': {1}</value>
   </data>
+  <data name="InvalidResourceSpecification" xml:space="preserve">
+    <value>The resource '{0}' is not an accepted specification for '{1}'.</value>
+  </data>
+  <data name="PSR0007" xml:space="preserve">
+    <value>The resource '{0}' using API '{1}' is not recognized as a valid PSRule resource (source: {2}).</value>
+  </data>
 </root>

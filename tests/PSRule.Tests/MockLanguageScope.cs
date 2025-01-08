@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using PSRule.Configuration;
+using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
@@ -32,12 +33,7 @@ internal sealed class MockLanguageScope : ILanguageScope
 
     }
 
-    public ITargetBindingResult Bind(TargetObject targetObject)
-    {
-        throw new NotImplementedException();
-    }
-
-    public ITargetBindingResult Bind(object targetObject)
+    public ITargetBindingResult Bind(ITargetObject targetObject)
     {
         throw new NotImplementedException();
     }
@@ -87,7 +83,7 @@ internal sealed class MockLanguageScope : ILanguageScope
         throw new NotImplementedException();
     }
 
-    public bool TryGetName(object o, out string name, out string path)
+    public bool TryGetName(ITargetObject o, out string name, out string path)
     {
         throw new NotImplementedException();
     }
@@ -97,7 +93,7 @@ internal sealed class MockLanguageScope : ILanguageScope
         throw new NotImplementedException();
     }
 
-    public bool TryGetType(object o, out string type, out string path)
+    public bool TryGetType(ITargetObject o, out string type, out string path)
     {
         throw new NotImplementedException();
     }

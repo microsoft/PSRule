@@ -340,6 +340,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The resource &apos;{0}&apos; is not an accepted specification for &apos;{1}&apos;..
+        /// </summary>
+        internal static string InvalidResourceSpecification {
+            get {
+                return ResourceManager.GetString("InvalidResourceSpecification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rule nesting was detected for rule at {0}. Rules must not be nested..
         /// </summary>
         internal static string InvalidRuleNesting {
@@ -606,6 +615,15 @@ namespace PSRule.Resources {
         internal static string PSR0006 {
             get {
                 return ResourceManager.GetString("PSR0006", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The resource &apos;{0}&apos; using API &apos;{1}&apos; is not recognized as a valid PSRule resource (source: {2})..
+        /// </summary>
+        internal static string PSR0007 {
+            get {
+                return ResourceManager.GetString("PSR0007", resourceCulture);
             }
         }
         

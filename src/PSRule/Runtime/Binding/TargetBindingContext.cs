@@ -3,7 +3,7 @@
 
 using System.Collections;
 using PSRule.Configuration;
-using PSRule.Pipeline;
+using PSRule.Data;
 
 namespace PSRule.Runtime.Binding;
 
@@ -38,27 +38,16 @@ internal sealed class TargetBindingContext : ITargetBindingContext
         _TypeFilter = typeFilter;
     }
 
-    public ITargetBindingResult Bind(TargetObject o)
+    public ITargetBindingResult Bind(ITargetObject o)
     {
         var targetNamePath = ".";
-        var targetName = _PreferTargetInfo && o.TargetName != null ? o.TargetName : _BindTargetName(_TargetName, !_IgnoreCase, _PreferTargetInfo, o.Value, out targetNamePath);
+        var targetName = _PreferTargetInfo && o.Name != null ? o.Name : _BindTargetName(_TargetName, !_IgnoreCase, _PreferTargetInfo, o.Value, out targetNamePath);
         var targetTypePath = ".";
-        var targetType = _PreferTargetInfo && o.TargetType != null ? o.TargetType : _BindTargetType(_TargetType, !_IgnoreCase, _PreferTargetInfo, o.Value, out targetTypePath);
+        var targetType = _PreferTargetInfo && o.Type != null ? o.Type : _BindTargetType(_TargetType, !_IgnoreCase, _PreferTargetInfo, o.Value, out targetTypePath);
         var shouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(targetType));
 
         // Bind custom fields
         var field = BindField(_BindField, [_Field], !_IgnoreCase, o.Value);
-        return Bind(targetName, targetNamePath, targetType, targetTypePath, field);
-    }
-
-    public ITargetBindingResult Bind(object o)
-    {
-        var targetName = _BindTargetName(_TargetName, !_IgnoreCase, _PreferTargetInfo, o, out var targetNamePath);
-        var targetType = _BindTargetType(_TargetType, !_IgnoreCase, _PreferTargetInfo, o, out var targetTypePath);
-        var shouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(targetType));
-
-        // Bind custom fields
-        var field = BindField(_BindField, [_Field], !_IgnoreCase, o);
         return Bind(targetName, targetNamePath, targetType, targetTypePath, field);
     }
 

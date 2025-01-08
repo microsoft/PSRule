@@ -2,35 +2,34 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
+using PSRule.Data;
+using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions.Expressions;
 
-internal sealed class LanguageExpressionBuilder
+#nullable enable
+
+internal sealed class LanguageExpressionBuilder(bool debugger = true)
 {
     private const char Dot = '.';
     private const char OpenBracket = '[';
     private const char CloseBracket = ']';
 
-    private const string DOTWHERE = ".where";
+    private const string DOT_WHERE = ".where";
     private const string LESS = "less";
     private const string LESSOREQUAL = "lessOrEqual";
     private const string GREATER = "greater";
     private const string GREATEROREQUAL = "greaterOrEqual";
     private const string COUNT = "count";
 
-    private readonly bool _Debugger;
+    private readonly bool _Debugger = debugger;
 
-    private string[] _With;
-    private string[] _Type;
-    private LanguageExpression _When;
-    private string[] _Rule;
-
-    public LanguageExpressionBuilder(bool debugger = true)
-    {
-        _Debugger = debugger;
-    }
+    private string[]? _With;
+    private string[]? _Type;
+    private LanguageExpression? _When;
+    private string[]? _Rule;
 
     public LanguageExpressionBuilder WithSelector(string[] with)
     {
@@ -68,8 +67,9 @@ internal sealed class LanguageExpressionBuilder
         return this;
     }
 
-    public LanguageExpressionOuterFn Build(LanguageIf condition)
+    public LanguageExpressionOuterFn Build(LanguageIf? condition)
     {
+        condition ??= new LanguageIf(LanguageExpressionLambda.True);
         return Precondition(Expression(string.Empty, condition.Expression), _With, _Type, Expression(string.Empty, _When), _Rule);
     }
 
@@ -96,7 +96,7 @@ internal sealed class LanguageExpressionBuilder
         return (context, o) =>
         {
             // Evaluate selector rule pre-condition
-            if (!AcceptsRule(rule))
+            if (!AcceptsRule(context, rule))
             {
                 context.Debug(PSRuleResources.DebugTargetRuleMismatch);
                 return null;
@@ -110,7 +110,7 @@ internal sealed class LanguageExpressionBuilder
         return (context, o) =>
         {
             // Evaluate selector pre-condition
-            if (!AcceptsWith(with))
+            if (!AcceptsWith(context, with))
             {
                 context.Debug(PSRuleResources.DebugTargetTypeMismatch);
                 return null;
@@ -124,7 +124,7 @@ internal sealed class LanguageExpressionBuilder
         return (context, o) =>
         {
             // Evaluate type pre-condition
-            if (!AcceptsType(type))
+            if (!AcceptsType(context, type))
             {
                 context.Debug(PSRuleResources.DebugTargetTypeMismatch);
                 return null;
@@ -166,6 +166,8 @@ internal sealed class LanguageExpressionBuilder
             return Scope(Debugger(Operator(path, selectorOperator), path));
         else if (expression is LanguageCondition selectorCondition)
             return Scope(Debugger(Condition(path, selectorCondition), path));
+        else if (expression is LanguageExpressionLambda selectorLambda)
+            return Scope(Debugger(Lambda(path, selectorLambda), path));
 
         throw new InvalidOperationException();
     }
@@ -184,6 +186,12 @@ internal sealed class LanguageExpressionBuilder
     {
         var info = new ExpressionInfo(path);
         return (context, o) => expression.Descriptor.Fn(context, info, [expression.Property], o);
+    }
+
+    private static LanguageExpressionOuterFn Lambda(string path, LanguageExpressionLambda expression)
+    {
+        var info = new ExpressionInfo(path);
+        return (context, o) => expression.Descriptor.Fn(context, info, null, o);
     }
 
     private static string Path(string path, LanguageExpression expression)
@@ -210,10 +218,17 @@ internal sealed class LanguageExpressionBuilder
         }
         else
         {
-            var subselector = expression.Subselector != null ? Expression(string.Concat(path, DOTWHERE), expression.Subselector) : null;
+            var subselector = expression.Subselector != null ? Expression(string.Concat(path, DOT_WHERE), expression.Subselector) : null;
             return (context, o) =>
             {
-                ObjectHelper.GetPath(context, o, Value<string>(context, expression.Property["field"]), caseSensitive: false, out object[] items);
+                var objectPath = Value<string>(context, expression.Property["field"]);
+                ObjectHelper.GetPath(
+                    bindingContext: context,
+                    targetObject: o.Value,
+                    path: objectPath,
+                    caseSensitive: false,
+                    out object[] items
+                );
 
                 var quantifier = GetQuantifier(expression);
                 var pass = 0;
@@ -221,9 +236,10 @@ internal sealed class LanguageExpressionBuilder
                 // If any fail, all fail
                 for (var i = 0; items != null && i < items.Length; i++)
                 {
-                    if (subselector == null || subselector(context, items[i]).GetValueOrDefault(true))
+                    var child = TargetObjectChildIndex(items[i], objectPath, i);
+                    if (subselector == null || subselector(context, child).GetValueOrDefault(true))
                     {
-                        if (!expression.Descriptor.Fn(context, info, innerA, items[i]))
+                        if (!expression.Descriptor.Fn(context, info, innerA, child))
                         {
                             if (quantifier == null)
                                 return false;
@@ -237,6 +253,12 @@ internal sealed class LanguageExpressionBuilder
                 return quantifier == null || quantifier(pass);
             };
         }
+    }
+
+    private static TargetObjectChild TargetObjectChildIndex(object o, string path, int index)
+    {
+        path = string.Concat(path, OpenBracket, index, CloseBracket);
+        return new TargetObjectChild(o, path);
     }
 
     /// <summary>
@@ -273,7 +295,7 @@ internal sealed class LanguageExpressionBuilder
         return !_Debugger ? expression : ((context, o) => DebuggerFn(context, path, expression, o));
     }
 
-    private static bool? DebuggerFn(IExpressionContext context, string path, LanguageExpressionOuterFn expression, object o)
+    private static bool? DebuggerFn(IExpressionContext context, string path, LanguageExpressionOuterFn expression, ITargetObject o)
     {
         var result = expression(context, o);
         var type = context.Kind == ResourceKind.Rule ? 'R' : 'S';
@@ -281,13 +303,15 @@ internal sealed class LanguageExpressionBuilder
         return result;
     }
 
-    private static bool AcceptsType(string[] type)
+    private static bool AcceptsType(IExpressionContext context, string[] type)
     {
         if (type == null)
             return true;
 
-        var comparer = RunspaceContext.CurrentThread.LanguageScope.GetBindingComparer();
-        var targetType = RunspaceContext.CurrentThread.RuleRecord.TargetType;
+        if (!context.Context.LanguageScope.TryGetType(context.Current, out var targetType, out _))
+            return false;
+
+        var comparer = context.Context.LanguageScope.GetBindingComparer();
         for (var i = 0; i < type.Length; i++)
         {
             if (comparer.Equals(targetType, type[i]))
@@ -296,37 +320,37 @@ internal sealed class LanguageExpressionBuilder
         return false;
     }
 
-    private static bool AcceptsWith(string[] with)
+    private static bool AcceptsWith(IExpressionContext context, string[] with)
     {
         if (with == null || with.Length == 0)
             return true;
 
         for (var i = 0; i < with.Length; i++)
         {
-            if (RunspaceContext.CurrentThread.TrySelector(with[i]))
+            if (context.Context.TrySelector(with[i]))
                 return true;
         }
         return false;
     }
 
-    private static bool AcceptsSubselector(IExpressionContext context, LanguageExpressionOuterFn subselector, object o)
+    private static bool AcceptsSubselector(IExpressionContext context, LanguageExpressionOuterFn subselector, ITargetObject o)
     {
         return subselector == null || subselector.Invoke(context, o).GetValueOrDefault(false);
     }
 
-    private static bool AcceptsRule(string[] rule)
+    private static bool AcceptsRule(IExpressionContext context, string[] rule)
     {
+        if (context.RuleId == null)
+            return false;
+
         if (rule == null || rule.Length == 0)
             return true;
 
-        var context = RunspaceContext.CurrentThread;
-
-        var stringComparer = context.LanguageScope.GetBindingComparer();
+        var stringComparer = context.Context.LanguageScope.GetBindingComparer();
         var resourceIdComparer = ResourceIdEqualityComparer.Default;
 
-        var ruleRecord = context.RuleRecord;
-        var ruleName = ruleRecord.RuleName;
-        var ruleId = ruleRecord.RuleId;
+        var ruleName = context.RuleId.Value.Name;
+        var ruleId = context.RuleId.Value.Value;
 
         for (var i = 0; i < rule.Length; i++)
         {
@@ -336,3 +360,5 @@ internal sealed class LanguageExpressionBuilder
         return false;
     }
 }
+
+#nullable restore
