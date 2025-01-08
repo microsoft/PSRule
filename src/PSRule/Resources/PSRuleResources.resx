@@ -376,9 +376,6 @@
   <data name="ObjectPathNotFound" xml:space="preserve">
     <value>Object path not found.</value>
   </data>
-  <data name="ReadJsonFailedExpectedToken" xml:space="preserve">
-    <value>Read JSON failed because the token ({0}) was not expected at path '{1}'.</value>
-  </data>
   <data name="DebugTargetSubselectorMismatch" xml:space="preserve">
     <value>Target failed sub-selector pre-condition.</value>
   </data>
@@ -422,6 +419,18 @@
     <value>The resource '{0}' is not an accepted specification for '{1}'.</value>
   </data>
   <data name="PSR0007" xml:space="preserve">
-    <value>The resource '{0}' using API '{1}' is not recognized as a valid PSRule resource (source: {2}).</value>
+    <value>PSR0007: The resource '{0}' using API '{1}' is not recognized as a valid PSRule resource (source: {2}).</value>
+  </data>
+  <data name="PSR0008" xml:space="preserve">
+    <value>PSR0008: The capability '{0}' requested by the workspace is disabled.</value>
+  </data>
+  <data name="PSR0009" xml:space="preserve">
+    <value>PSR0009: The capability '{0}' requested by the workspace is not supported.</value>
+  </data>
+  <data name="PSR0010" xml:space="preserve">
+    <value>PSR0010: The capability '{0}' requested by the module '{1}' is disabled.</value>
+  </data>
+  <data name="PSR0011" xml:space="preserve">
+    <value>PSR0011: The capability '{0}' requested by the module '{1}' is not supported.</value>
   </data>
 </root>

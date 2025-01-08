@@ -119,22 +119,45 @@ internal class OptionScope
         };
     }
 
-    public static OptionScope FromModuleConfig(string module, ModuleConfigV1Spec spec)
+    public static OptionScope FromModuleConfig(string module, IModuleConfigSpec spec)
     {
-        return new OptionScope(ScopeType.Module, module)
+        switch (spec)
         {
-            Binding = spec.Binding,
-            Configuration = spec.Configuration,
-            Convention = ApplyScope(module, spec.Convention),
-            Output = new OutputOption
-            {
-                Culture = spec.Output?.Culture
-            },
-            Rule = new RuleOption
-            {
-                Baseline = spec.Rule?.Baseline
-            }
-        };
+            case IModuleConfigV1Spec v1:
+                return new OptionScope(ScopeType.Module, module)
+                {
+                    Binding = v1.Binding,
+                    Configuration = v1.Configuration,
+                    Convention = ApplyScope(module, v1.Convention),
+                    Output = new OutputOption
+                    {
+                        Culture = v1.Output?.Culture
+                    },
+                    Rule = new RuleOption
+                    {
+                        Baseline = v1.Rule?.Baseline
+                    }
+                };
+
+            case IModuleConfigV2Spec v2:
+                return new OptionScope(ScopeType.Module, module)
+                {
+                    Binding = v2.Binding,
+                    //
+                    Configuration = v2.Configuration,
+                    Convention = ApplyScope(module, v2.Convention),
+                    Output = new OutputOption
+                    {
+                        Culture = v2.Output?.Culture
+                    },
+                    Rule = new RuleOption
+                    {
+                        Baseline = v2.Rule?.Baseline
+                    }
+                };
+        }
+
+        throw new InvalidOperationException();
     }
 
     internal static OptionScope FromBaseline(ScopeType type, string baselineId, string module, BaselineSpec spec, bool obsolete)

@@ -59,5 +59,14 @@ namespace PSRule.Resources {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read JSON failed because the token ({0}) was not expected at path &apos;{1}&apos;..
+        /// </summary>
+        internal static string ReadJsonFailedExpectedToken {
+            get {
+                return ResourceManager.GetString("ReadJsonFailedExpectedToken", resourceCulture);
+            }
+        }
     }
 }

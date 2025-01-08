@@ -13,7 +13,7 @@ internal static class ResourceHelper
 
     internal const string STANDALONE_SCOPE_NAME = ".";
 
-    internal static string GetIdString(string scope, string name)
+    internal static string GetIdString(string? scope, string name)
     {
         return name.IndexOf(SCOPE_SEPARATOR) >= 0
             ? name

@@ -1,0 +1,4 @@
+# These are options for unit tests
+
+capabilities:
+  - api-2025-01-01

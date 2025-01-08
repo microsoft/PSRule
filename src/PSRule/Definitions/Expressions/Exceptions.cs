@@ -3,7 +3,6 @@
 
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using PSRule.Pipeline;
 
 namespace PSRule.Definitions.Expressions;
 

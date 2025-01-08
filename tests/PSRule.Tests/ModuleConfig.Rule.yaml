@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
 
 ---
 # Synopsis: A test module configuration
@@ -6,8 +8,24 @@ kind: ModuleConfig
 metadata:
   name: Configuration1
 spec:
-  binding: { }
-  configuration: { }
+  binding: {}
+  configuration: {}
   output:
     culture:
-    - en-US
+      - en-US
+
+---
+# Synopsis: A test module configuration with capabilities
+apiVersion: github.com/microsoft/PSRule/2025-01-01
+kind: ModuleConfig
+metadata:
+  name: ConfigurationWithCapabilities
+spec:
+  binding: {}
+  configuration: {}
+  capabilities:
+    - api-2025-01-01
+    - api-v1
+  output:
+    culture:
+      - en-US

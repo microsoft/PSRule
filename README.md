@@ -289,6 +289,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Binding.TargetName](https://aka.ms/ps-rule/options#bindingtargetname)
   - [Binding.TargetType](https://aka.ms/ps-rule/options#bindingtargettype)
   - [Binding.UseQualifiedName](https://aka.ms/ps-rule/options#bindingusequalifiedname)
+  - [Capabilities](https://aka.ms/ps-rule/options#capabilities)
   - [Configuration](https://aka.ms/ps-rule/options#configuration)
   - [Convention.Include](https://aka.ms/ps-rule/options#conventioninclude)
   - [Execution.AliasReference](https://aka.ms/ps-rule/options#executionaliasreference)

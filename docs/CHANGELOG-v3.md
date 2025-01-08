@@ -35,6 +35,11 @@ What's changed since pre-release v3.0.0-B0351:
     - A precondition `type` property has been added to selectors and suppression groups.
     - This simplifies type conditions that are common used in selectors and suppression groups.
     - To use this feature, set the `apiVersion` to `github.com/microsoft/PSRule/2025-01-01`.
+  - Add support for declaring required capabilities in workspaces and modules by @BernieWhite.
+    [#2707](https://github.com/microsoft/PSRule/issues/2707)
+    - A module or workspace can declare required capabilities that must be supported by the runtime.
+    - When a capability is not supported or disabled, the runtime will fail with a specific error.
+    - This provides a way to ensure that rules execute consistently across environments.
 - General improvements:
   - Added support for registering custom emitters by @BernieWhite.
     [#2681](https://github.com/microsoft/PSRule/issues/2681)

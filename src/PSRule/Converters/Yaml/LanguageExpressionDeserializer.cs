@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule;
 using PSRule.Definitions;
 using PSRule.Definitions.Expressions;
 using YamlDotNet.Core;

@@ -1086,6 +1086,10 @@
             }
           ]
         },
+        "capabilities": {
+          "type": "array",
+          "$ref": "#/definitions/capabilities"
+        },
         "configuration": {
           "type": "object",
           "oneOf": [
@@ -1202,6 +1206,21 @@
           }
         }
       ]
+    },
+    "capabilities": {
+      "type": "array",
+      "title": "Required capabilities",
+      "description": "Specifies a list of capabilities required by the configuration.",
+      "markdownDescription": "Specifies a list of capabilities required by the configuration. [See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#capabilities)",
+      "items": {
+        "type": "string",
+        "enum": [
+          "api-v1",
+          "api-2025-01-01",
+          "powershell-language"
+        ]
+      },
+      "uniqueItems": true
     },
     "rule-option": {
       "type": "object",

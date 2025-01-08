@@ -198,12 +198,19 @@ internal sealed class AssertPipelineBuilder : InvokePipelineBuilderBase
     {
         writer ??= PrepareWriter();
         Unblock(writer);
-        return !RequireModules() || !RequireSources()
-            ? null
-            : (IPipeline)new InvokeRulePipeline(
-                context: PrepareContext(PipelineHookActions.Default, writer: HandleJobSummary(writer ?? PrepareWriter())),
-                source: Source,
-                outcome: RuleOutcome.Processed);
+        if (!RequireModules() || !RequireWorkspaceCapabilities() || !RequireSources())
+            return null;
+
+        var context = PrepareContext(PipelineHookActions.Default, writer: HandleJobSummary(writer ?? PrepareWriter()), checkModuleCapabilities: true);
+        if (context == null)
+            return null;
+
+        return new InvokeRulePipeline
+        (
+            context: context,
+            source: Source,
+            outcome: RuleOutcome.Processed
+        );
     }
 
     private IPipelineWriter HandleJobSummary(IPipelineWriter writer)

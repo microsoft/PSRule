@@ -91,9 +91,19 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
     {
         writer ??= PrepareWriter();
         Unblock(writer);
-        return !RequireModules() || !RequireSources()
-            ? null
-            : (IPipeline)new InvokeRulePipeline(PrepareContext(PipelineHookActions.Default, writer), Source, Option.Output.Outcome.Value);
+        if (!RequireModules() || !RequireWorkspaceCapabilities() || !RequireSources())
+            return null;
+
+        var context = PrepareContext(PipelineHookActions.Default, writer, checkModuleCapabilities: true);
+        if (context == null)
+            return null;
+
+        return new InvokeRulePipeline
+        (
+            context: context,
+            source: Source,
+            outcome: Option.Output.Outcome.Value
+        );
     }
 
     protected void Unblock(IPipelineWriter writer)

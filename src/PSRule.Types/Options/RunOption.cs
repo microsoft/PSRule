@@ -54,7 +54,7 @@ public sealed class RunOption : IRunOption, IEquatable<RunOption>
     }
 
     /// <inheritdoc/>
-    public bool Equals(RunOption other)
+    public bool Equals(RunOption? other)
     {
         return other != null &&
             Category == other.Category &&

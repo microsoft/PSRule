@@ -305,7 +305,7 @@
             },
             "spec": {
               "type": "object",
-              "$ref": "#/definitions/moduleConfigSpec-v1"
+              "$ref": "#/definitions/moduleConfigSpec-v2"
             }
           },
           "required": [
@@ -584,6 +584,93 @@
       "properties": {
         "binding": {
           "$ref": "#/definitions/binding-option"
+        },
+        "configuration": {
+          "$ref": "#/definitions/configuration"
+        },
+        "convention": {
+          "$ref": "#/definitions/convention-option"
+        },
+        "output": {
+          "type": "object",
+          "title": "Output options",
+          "description": "Options that affect how output is generated.",
+          "properties": {
+            "culture": {
+              "type": "array",
+              "title": "Culture",
+              "description": "One or more cultures to use for generating output. When multiple cultures are specified, the first matching culture will be used. By default, the current PowerShell culture is used.",
+              "markdownDescription": "One or more cultures to use for generating output. When multiple cultures are specified, the first matching culture will be used. By default, the current PowerShell culture is used. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#outputculture)",
+              "items": {
+                "type": "string",
+                "description": "A culture for generating output.",
+                "minLength": 2
+              },
+              "uniqueItems": true,
+              "defaultSnippets": [
+                {
+                  "label": "en-AU",
+                  "bodyText": [
+                    "en-AU"
+                  ]
+                },
+                {
+                  "label": "en-US",
+                  "bodyText": [
+                    "en-US"
+                  ]
+                },
+                {
+                  "label": "en-GB",
+                  "bodyText": [
+                    "en-GB"
+                  ]
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "rule": {
+          "type": "object",
+          "title": "Rule",
+          "description": "A filter for included or excluded rules.",
+          "properties": {
+            "baseline": {
+              "type": "string",
+              "title": "Baseline",
+              "description": "The name of a baseline to use.",
+              "markdownDescription": "The name of a baseline to use. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#rulebaseline)",
+              "$ref": "#/definitions/resourceNameReference"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "moduleConfigSpec-v2": {
+      "type": "object",
+      "title": "Spec",
+      "description": "A specification for a module configuration.",
+      "properties": {
+        "binding": {
+          "$ref": "#/definitions/binding-option"
+        },
+        "capabilities": {
+          "type": "array",
+          "title": "Required capabilities",
+          "description": "Specifies a list of capabilities required by the configuration.",
+          "markdownDescription": "Specifies a list of capabilities required by the configuration. [See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#capabilities)",
+          "items": {
+            "type": "string",
+            "enum": [
+              "api-v1",
+              "api-2025-01-01",
+              "powershell-language"
+            ]
+          },
+          "uniqueItems": true
         },
         "configuration": {
           "$ref": "#/definitions/configuration"

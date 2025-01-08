@@ -13,6 +13,13 @@ run:
   category: CI repository scan
   description: An analysis scan that checks repository files aligned to expected format requirements.
 
+requires:
+  PSRule.Rules.MSFT.OSS: '>=1.1.0'
+
+capabilities:
+  - api-2025-01-01
+  - api-v1
+
 output:
   culture:
     - en-US

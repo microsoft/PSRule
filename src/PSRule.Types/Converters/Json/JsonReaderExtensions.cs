@@ -4,10 +4,9 @@
 using System.Diagnostics;
 using Newtonsoft.Json;
 using PSRule.Definitions;
-using PSRule.Pipeline;
 using PSRule.Resources;
 
-namespace PSRule;
+namespace PSRule.Converters.Json;
 
 internal static class JsonReaderExtensions
 {
@@ -23,10 +22,10 @@ internal static class JsonReaderExtensions
         return true;
     }
 
-    public static bool GetSourceExtent(this JsonReader reader, ISourceFile file, out ISourceExtent extent)
+    public static bool GetSourceExtent(this JsonReader reader, ISourceFile file, out ISourceExtent? extent)
     {
         extent = null;
-        if (file == null || !TryLineInfo(reader, out var lineNumber, out var linePosition))
+        if (file == null || !reader.TryLineInfo(out var lineNumber, out var linePosition))
             return false;
 
         extent = new SourceExtent(file, lineNumber, linePosition);
@@ -44,7 +43,7 @@ internal static class JsonReaderExtensions
     }
 
     [DebuggerStepThrough]
-    public static bool TryConsume(this JsonReader reader, JsonToken token, out object value)
+    public static bool TryConsume(this JsonReader reader, JsonToken token, out object? value)
     {
         value = null;
         if (reader.TokenType != token)
@@ -59,7 +58,7 @@ internal static class JsonReaderExtensions
     public static void Consume(this JsonReader reader, JsonToken token)
     {
         if (reader.TokenType != token)
-            throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
+            throw new PipelineSerializationException(Messages.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
 
         reader.Read();
     }
