@@ -2710,7 +2710,7 @@ If multiple Type and Selector pre-conditions are specified, only one must be tru
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="nn">---</span>
 <span class="c1"># Synopsis: An example YAML rule with pre-conditions.</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.com/microsoft/PSRule/v1</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.com/microsoft/PSRule/2025-01-01</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Rule</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;YamlRule&#39;</span>
@@ -2726,7 +2726,7 @@ If multiple Type and Selector pre-conditions are specified, only one must be tru
 <div class="highlight"><pre><span></span><code>[
   {
     // Synopsis: An example YAML rule with pre-conditions.
-    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/2025-01-01&quot;,
     &quot;kind&quot;: &quot;Rule&quot;,
     &quot;metadata&quot;: {
       &quot;name&quot;: &quot;YamlRule&quot;
@@ -2772,7 +2772,7 @@ Multiple rules can be defined in a single YAML file by separating each rule with
 <p>Syntax:</p>
 <div class="highlight"><pre><span></span><code><span class="nn">---</span>
 <span class="c1"># Synopsis: {{ Synopsis }}</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.com/microsoft/PSRule/v1</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.com/microsoft/PSRule/2025-01-01</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Rule</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{{</span><span class="nv"> </span><span class="s">Name</span><span class="nv"> </span><span class="s">}}&#39;</span>
@@ -2785,7 +2785,7 @@ Multiple rules can be defined in a single YAML file by separating each rule with
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="nn">---</span>
 <span class="c1"># Synopsis: Use a Standard load-balancer with AKS clusters.</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.com/microsoft/PSRule/v1</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.com/microsoft/PSRule/2025-01-01</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Rule</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Azure.AKS.StandardLB&#39;</span>
@@ -2810,7 +2810,7 @@ We recommend using <code>.jsonc</code> to view <a href="https://code.visualstudi
 <div class="highlight"><pre><span></span><code>[
   {
     // Synopsis: {{ Synopsis }}
-    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/2025-01-01&quot;,
     &quot;kind&quot;: &quot;Rule&quot;,
     &quot;metadata&quot;: {
       &quot;name&quot;: &quot;{{ Name }}&quot;,
@@ -2828,7 +2828,7 @@ We recommend using <code>.jsonc</code> to view <a href="https://code.visualstudi
 <div class="highlight"><pre><span></span><code>[
   {
     // Synopsis: Use a Standard load-balancer with AKS clusters.
-    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/v1&quot;,
+    &quot;apiVersion&quot;: &quot;github.com/microsoft/PSRule/2025-01-01&quot;,
     &quot;kind&quot;: &quot;Rule&quot;,
     &quot;metadata&quot;: {
       &quot;name&quot;: &quot;Azure.AKS.StandardLB&quot;,
@@ -2875,7 +2875,7 @@ We recommend using <code>.jsonc</code> to view <a href="https://code.visualstudi
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 19, 2022</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 8, 2025</span>
   </span>
 
     
