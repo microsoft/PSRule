@@ -95,12 +95,25 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
     /// <returns>If the resource should be ignored then return <c>true</c>, otherwise <c>false</c> is returned.</returns>
     private bool TrackIssue(IResource resource)
     {
-        if (TrySuppressionGroup(resource, out var suppressionGroup))
+        if (TrySuppressionGroup(resource, out var suppressionGroup) && suppressionGroup != null)
         {
-            if (suppressionGroup!.Spec.ExpiresOn.HasValue && suppressionGroup.Spec.ExpiresOn.Value <= DateTime.UtcNow)
+            switch (suppressionGroup.Spec)
             {
-                _TrackedIssues.Add(new ResourceIssue(resource, ResourceIssueType.SuppressionGroupExpired));
-                return true;
+                case ISuppressionGroupV1Spec v1:
+                    if (v1.ExpiresOn.HasValue && v1.ExpiresOn.Value <= DateTime.UtcNow)
+                    {
+                        _TrackedIssues.Add(new ResourceIssue(resource, ResourceIssueType.SuppressionGroupExpired));
+                        return true;
+                    }
+                    break;
+
+                case ISuppressionGroupV2Spec v2:
+                    if (v2.ExpiresOn.HasValue && v2.ExpiresOn.Value <= DateTime.UtcNow)
+                    {
+                        _TrackedIssues.Add(new ResourceIssue(resource, ResourceIssueType.SuppressionGroupExpired));
+                        return true;
+                    }
+                    break;
             }
         }
         return false;
@@ -151,10 +164,10 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
         return false;
     }
 
-    private static bool TrySelector(IResource resource, out SelectorV1? selector)
+    private static bool TrySelector(IResource resource, out ISelector? selector)
     {
         selector = null;
-        if (resource.Kind == ResourceKind.Selector && resource is SelectorV1 result)
+        if (resource.Kind == ResourceKind.Selector && resource is ISelector result)
         {
             selector = result;
             return true;
@@ -162,10 +175,10 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
         return false;
     }
 
-    private static bool TrySuppressionGroup(IResource resource, out SuppressionGroupV1? suppressionGroup)
+    private static bool TrySuppressionGroup(IResource resource, out ISuppressionGroup? suppressionGroup)
     {
         suppressionGroup = null;
-        if (resource.Kind == ResourceKind.SuppressionGroup && resource is SuppressionGroupV1 result)
+        if (resource.Kind == ResourceKind.SuppressionGroup && resource is ISuppressionGroup result)
         {
             suppressionGroup = result;
             return true;

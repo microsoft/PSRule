@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline;
+using PSRule.Data;
 
 namespace PSRule.Runtime.Binding;
 
@@ -15,12 +15,7 @@ internal interface ITargetBinder
     /// <summary>
     /// Bind to an object.
     /// </summary>
-    ITargetBindingResult Bind(TargetObject targetObject);
-
-    /// <summary>
-    /// Bind to an object.
-    /// </summary>
-    ITargetBindingResult Bind(object targetObject);
+    ITargetBindingResult Bind(ITargetObject targetObject);
 }
 
 #nullable restore

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline;
+using PSRule.Data;
 
 namespace PSRule.Runtime.Binding;
 
@@ -18,13 +18,7 @@ internal sealed class TargetBinder : ITargetBinder
     }
 
     /// <inheritdoc/>
-    public ITargetBindingResult Bind(TargetObject targetObject)
-    {
-        return _BindingContext.Bind(targetObject);
-    }
-
-    /// <inheritdoc/>
-    public ITargetBindingResult Bind(object targetObject)
+    public ITargetBindingResult Bind(ITargetObject targetObject)
     {
         return _BindingContext.Bind(targetObject);
     }

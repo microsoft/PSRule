@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Data;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions.Expressions;
@@ -17,7 +18,13 @@ internal interface IExpressionContext : IBindingContext
 
     void Debug(string message, params object[] args);
 
-    object Current { get; }
+    ITargetObject Current { get; }
+
+    /// <summary>
+    /// The current rule identifier.
+    /// This is only applicable for suppression groups, otherwise this is null.
+    /// </summary>
+    ResourceId? RuleId { get; }
 
     RunspaceContext Context { get; }
 

@@ -170,11 +170,11 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         ReportIssue(runspaceContext);
 
         // Build selectors
-        Selector = ResourceCache.OfType<SelectorV1>().ToDictionary(key => key.Id.Value, value => value.ToSelectorVisitor(runspaceContext));
+        Selector = ResourceCache.OfType<ISelector>().ToDictionary(key => key.Id.Value, value => value.ToSelectorVisitor(runspaceContext));
 
         // Build suppression groups
         var suppressionGroupFilter = new SuppressionGroupFilter();
-        SuppressionGroup = ResourceCache.OfType<SuppressionGroupV1>().Where(suppressionGroupFilter.Match).Select(i => i.ToSuppressionGroupVisitor(runspaceContext)).ToList();
+        SuppressionGroup = ResourceCache.OfType<ISuppressionGroup>().Where(suppressionGroupFilter.Match).Select(i => i.ToSuppressionGroupVisitor(runspaceContext)).ToList();
 
         _DefaultOptionContext = OptionBuilder.Build(null);
         OptionBuilder.CheckObsolete(runspaceContext);

@@ -29,6 +29,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v3.0.0-B0351:
 
+- New features:
+  - Simplify type conditions for selectors and suppression groups with 2025-01-01 API by @BernieWhite.
+    [#2702](https://github.com/microsoft/PSRule/issues/2702)
+    - A precondition `type` property has been added to selectors and suppression groups.
+    - This simplifies type conditions that are common used in selectors and suppression groups.
+    - To use this feature, set the `apiVersion` to `github.com/microsoft/PSRule/2025-01-01`.
 - General improvements:
   - Added support for registering custom emitters by @BernieWhite.
     [#2681](https://github.com/microsoft/PSRule/issues/2681)

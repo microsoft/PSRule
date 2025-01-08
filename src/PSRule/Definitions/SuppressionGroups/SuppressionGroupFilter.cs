@@ -6,12 +6,28 @@ namespace PSRule.Definitions.SuppressionGroups;
 /// <summary>
 /// Filter out suppression groups that have already expired.
 /// </summary>
-internal sealed class SuppressionGroupFilter : ResourceFilter<SuppressionGroupV1>
+internal sealed class SuppressionGroupFilter : ResourceFilter<ISuppressionGroup>
 {
     public override ResourceKind Kind => ResourceKind.SuppressionGroup;
 
-    public override bool Match(SuppressionGroupV1 resource)
+    public override bool Match(ISuppressionGroup resource)
     {
-        return !resource.Spec.ExpiresOn.HasValue || resource.Spec.ExpiresOn.Value > DateTime.UtcNow;
+        switch (resource.Spec)
+        {
+            case ISuppressionGroupV1Spec v1:
+                if (!v1.ExpiresOn.HasValue || v1.ExpiresOn.Value > DateTime.UtcNow)
+                {
+                    return true;
+                }
+                break;
+
+            case ISuppressionGroupV2Spec v2:
+                if (!v2.ExpiresOn.HasValue || v2.ExpiresOn.Value > DateTime.UtcNow)
+                {
+                    return true;
+                }
+                break;
+        }
+        return false;
     }
 }

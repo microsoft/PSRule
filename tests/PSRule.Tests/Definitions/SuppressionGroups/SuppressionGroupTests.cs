@@ -4,14 +4,19 @@
 using System;
 using System.Linq;
 using PSRule.Configuration;
-using PSRule.Definitions.SuppressionGroups;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 
-namespace PSRule;
+namespace PSRule.Definitions.SuppressionGroups;
 
+/// <summary>
+/// Tests for <see cref="SuppressionGroupV1"/>.
+/// </summary>
 public sealed class SuppressionGroupTests : ContextBaseTests
 {
+    /// <summary>
+    /// Test that suppression groups V1 can be imported.
+    /// </summary>
     [Theory]
     [InlineData("SuppressionGroups.Rule.yaml")]
     [InlineData("SuppressionGroups.Rule.jsonc")]
@@ -54,6 +59,33 @@ public sealed class SuppressionGroupTests : ContextBaseTests
         Assert.Equal("Suppress by scope.", actual.Info.Synopsis.Text);
     }
 
+    /// <summary>
+    /// Test that suppression groups V2 can be imported.
+    /// </summary>
+    [Theory]
+    [InlineData("SuppressionGroups.Rule.yaml")]
+    [InlineData("SuppressionGroups.Rule.jsonc")]
+    public void Import_WhenSuppressionGroupV2HasTypePrecondition_ShouldReturnMatchingVisitor(string path)
+    {
+        var sources = GetSource(path);
+        var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
+        var context = new RunspaceContext(GetPipelineContext(option: GetOption(), optionBuilder: GetOptionContext(), sources: sources, resourceCache: resourcesCache));
+        context.Initialize(sources);
+        context.Begin();
+
+        var suppressionGroup = resourcesCache.OfType<SuppressionGroupV2>().ToArray();
+        Assert.NotNull(suppressionGroup);
+        Assert.Single(suppressionGroup);
+
+        var actual = suppressionGroup[0];
+        var visitor = context.Pipeline.SuppressionGroup.FirstOrDefault(g => g.Id == actual.Id);
+        Assert.Equal("SuppressWithTestTypePrecondition", actual.Name);
+        Assert.Equal("Ignore test objects by type precondition.", visitor.Info.Synopsis.Text);
+        Assert.Null(actual.Spec.ExpiresOn);
+        Assert.Equal("TestType", actual.Spec.Type[0]);
+        Assert.Contains(context.Pipeline.SuppressionGroup, g => g.Id.Equals(".\\SuppressWithTestTypePrecondition"));
+    }
+
     [Theory]
     [InlineData("SuppressionGroups.Rule.yaml")]
     [InlineData("SuppressionGroups.Rule.jsonc")]
@@ -76,29 +108,6 @@ public sealed class SuppressionGroupTests : ContextBaseTests
         Assert.Equal("Suppress with expiry.", actual.Info.Synopsis.Text);
         Assert.Equal(DateTime.Parse("2022-01-01T00:00:00Z").ToUniversalTime(), actual.Spec.ExpiresOn);
     }
-
-    //[Theory]
-    //[InlineData("SuppressionGroups.Rule.yaml")]
-    //[InlineData("SuppressionGroups.Rule.jsonc")]
-    //public void EvaluateSuppressionGroup(string path)
-    //{
-    //    var context = new RunspaceContext(PipelineContext.New(GetOption(), null, null, PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, GetOptionContext(), null), null);
-    //    context.Init(GetSource(path));
-    //    context.Begin();
-    //    var suppressionGroup = HostHelper.GetSuppressionGroup(GetSource(path), context).ToArray();
-    //    Assert.NotNull(suppressionGroup);
-
-    //    var testObject = GetObject((name: "name", value: "TestObject1"));
-    //    context.EnterTargetObject(new TargetObject(testObject, targetName: "TestObject1", scope: "/scope1"));
-
-    //    var actual = suppressionGroup[0];
-    //    var visitor = new SuppressionGroupVisitor(context, actual.Id, actual.Source, actual.Spec, actual.Info);
-    //    Assert.True(visitor.TryMatch(testObject, out _));
-
-    //    actual = suppressionGroup[4];
-    //    visitor = new SuppressionGroupVisitor(context, actual.Id, actual.Source, actual.Spec, actual.Info);
-    //    //Assert.True(visitor.TryMatch());
-    //}
 
     #region Helper methods
 

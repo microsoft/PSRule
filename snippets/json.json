@@ -5,7 +5,7 @@
     "body": [
       "{",
       "    // Synopsis: ${2}",
-      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/2025-01-01\",",
       "    \"kind\": \"Baseline\",",
       "    \"metadata\": {",
       "        \"name\": \"${1}\"",
@@ -22,7 +22,7 @@
     "body": [
       "{",
       "    // Synopsis: ${2}",
-      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/2025-01-01\",",
       "    \"kind\": \"ModuleConfig\",",
       "    \"metadata\": {",
       "        \"name\": \"${1}\"",
@@ -39,7 +39,7 @@
     "body": [
       "{",
       "    // Synopsis: ${2}",
-      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/2025-01-01\",",
       "    \"kind\": \"Selector\",",
       "    \"metadata\": {",
       "        \"name\": \"${1}\"",
@@ -58,7 +58,7 @@
     "body": [
       "{",
       "    // Synopsis: ${2}",
-      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/2025-01-01\",",
       "    \"kind\": \"Rule\",",
       "    \"metadata\": {",
       "        \"name\": \"${1}\"",
@@ -80,7 +80,7 @@
     "body": [
       "{",
       "    // Synopsis: ${2}",
-      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/2025-01-01\",",
       "    \"kind\": \"Rule\",",
       "    \"metadata\": {",
       "        \"name\": \"${1}\"",
@@ -102,7 +102,7 @@
     "body": [
       "{",
       "    // Synopsis: ${2}",
-      "    \"apiVersion\": \"github.com/microsoft/PSRule/v1\",",
+      "    \"apiVersion\": \"github.com/microsoft/PSRule/2025-01-01\",",
       "    \"kind\": \"SuppressionGroup\",",
       "    \"metadata\": {",
       "        \"name\": \"${1}\"",

@@ -569,7 +569,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         if (annotation.TryGetSelectorResult(selector, out var result))
             return result;
 
-        result = selector.Match(TargetObject.Value);
+        result = selector.Match(TargetObject);
         annotation.SetSelectorResult(selector, result);
         return result;
     }

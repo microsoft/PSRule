@@ -6,14 +6,16 @@ using System.Linq;
 using System.Management.Automation;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
-using PSRule.Definitions.Selectors;
 using PSRule.Host;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 
-namespace PSRule;
+namespace PSRule.Definitions.Selectors;
 
-public sealed class SelectorTests : ContextBaseTests
+/// <summary>
+/// Tests for <see cref="SelectorVisitor"/>.
+/// </summary>
+public sealed class SelectorVisitorTests : ContextBaseTests
 {
     private const string SelectorYamlFileName = "Selectors.Rule.yaml";
     private const string SelectorJsonFileName = "Selectors.Rule.jsonc";
@@ -23,28 +25,48 @@ public sealed class SelectorTests : ContextBaseTests
     [Theory]
     [InlineData("Yaml", SelectorYamlFileName)]
     [InlineData("Json", SelectorJsonFileName)]
-    public void ReadSelector(string type, string path)
+    public void ReadSelectorV1(string type, string path)
     {
-        var testObject = GetObject((name: "value", value: 3));
+        var testObject = GetTargetObject((name: "value", value: 3));
         var sources = GetSource(path);
-        var context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources));
+        var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
+        var context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, resourceCache: resourcesCache));
         context.Initialize(sources);
         context.Begin();
-        var selector = HostHelper.GetSelectorForTests(sources, context).ToArray();
+        var selector = resourcesCache.OfType<SelectorV1>().ToArray();
         Assert.NotNull(selector);
         Assert.Equal(104, selector.Length);
 
         var actual = selector[0];
-        var visitor = new SelectorVisitor(context, actual.Id, actual.Source, actual.Spec.If);
+        var visitor = actual.ToSelectorVisitor(context);
         Assert.Equal("BasicSelector", actual.Name);
         Assert.NotNull(actual.Spec.If);
         Assert.False(visitor.Match(testObject));
 
         actual = selector[4];
-        visitor = new SelectorVisitor(context, actual.Id, actual.Source, actual.Spec.If);
+        visitor = actual.ToSelectorVisitor(context);
         Assert.Equal($"{type}AllOf", actual.Name);
         Assert.NotNull(actual.Spec.If);
         Assert.False(visitor.Match(testObject));
+    }
+
+    [Theory]
+    [InlineData("Yaml", SelectorYamlFileName)]
+    [InlineData("Json", SelectorJsonFileName)]
+    public void ReadSelectorV2(string type, string path)
+    {
+        var sources = GetSource(path);
+        var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
+        var context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, resourceCache: resourcesCache));
+        context.Initialize(sources);
+        context.Begin();
+        var selector = resourcesCache.OfType<SelectorV2>().ToArray();
+        Assert.NotNull(selector);
+        Assert.Single(selector);
+
+        var actual = selector[0];
+        Assert.Equal($"{type}TypePrecondition", actual.Name);
+        Assert.NotNull(actual.Spec.If);
     }
 
     #region Conditions
@@ -56,9 +78,9 @@ public sealed class SelectorTests : ContextBaseTests
     {
         var existsTrue = GetSelectorVisitor($"{type}ExistsTrue", GetSource(path), out _);
         var existsFalse = GetSelectorVisitor($"{type}ExistsFalse", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: 3));
-        var actual2 = GetObject((name: "notValue", value: 3));
-        var actual3 = GetObject((name: "value", value: null));
+        var actual1 = GetTargetObject((name: "value", value: 3));
+        var actual2 = GetTargetObject((name: "notValue", value: 3));
+        var actual3 = GetTargetObject((name: "value", value: null));
 
         Assert.True(existsTrue.Match(actual1));
         Assert.False(existsTrue.Match(actual2));
@@ -75,34 +97,34 @@ public sealed class SelectorTests : ContextBaseTests
     public void EqualsExpression(string type, string path)
     {
         var equals = GetSelectorVisitor($"{type}Equals", GetSource(path), out _);
-        var actual1 = GetObject(
+        var actual1 = GetTargetObject(
             (name: "ValueString", value: "abc"),
             (name: "ValueInt", value: 123),
             (name: "ValueBool", value: true),
             (name: "ValueEnum", value: TestEnumValue.All)
         );
-        var actual2 = GetObject(
+        var actual2 = GetTargetObject(
             (name: "ValueString", value: "efg"),
             (name: "ValueInt", value: 123),
             (name: "ValueBool", value: true)
         );
-        var actual3 = GetObject(
+        var actual3 = GetTargetObject(
             (name: "ValueString", value: "abc"),
             (name: "ValueInt", value: 456),
             (name: "ValueBool", value: true)
         );
-        var actual4 = GetObject(
+        var actual4 = GetTargetObject(
             (name: "ValueString", value: "abc"),
             (name: "ValueInt", value: 123),
             (name: "ValueBool", value: false)
         );
-        var actual5 = GetObject(
+        var actual5 = GetTargetObject(
             (name: "ValueString", value: "abc"),
             (name: "ValueInt", value: 123),
             (name: "ValueBool", value: true),
             (name: "ValueEnum", value: TestEnumValue.None)
         );
-        var actual6 = GetObject(
+        var actual6 = GetTargetObject(
             (name: "ValueString", value: "ABC"),
             (name: "ValueInt", value: 123),
             (name: "ValueBool", value: true)
@@ -117,30 +139,28 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameEquals", GetSource(path), out var context);
-        actual1 = GetObject(
+        actual1 = GetTargetObject(
            (name: "Name", value: "TargetObject1")
         );
-        actual2 = GetObject(
+        actual2 = GetTargetObject(
            (name: "Name", value: "TargetObject2")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         Assert.True(withName.Match(actual1));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actual2);
         Assert.False(withName.Match(actual2));
 
         // With type
         var withType = GetSelectorVisitor($"{type}TypeEquals", GetSource(path), out context);
-        var actual7 = GetObject();
-        actual7.TypeNames.Insert(0, "CustomType1");
-        var actual8 = GetObject();
-        actual8.TypeNames.Insert(0, "CustomType2");
+        var actual7 = new TargetObject(GetObject(), targetType: "CustomType1");
+        var actual8 = new TargetObject(GetObject(), targetType: "CustomType2");
 
-        context.EnterTargetObject(new TargetObject(actual7));
+        context.EnterTargetObject(actual7);
         Assert.True(withType.Match(actual7));
 
-        context.EnterTargetObject(new TargetObject(actual8));
+        context.EnterTargetObject(actual8);
         Assert.False(withType.Match(actual8));
     }
 
@@ -150,34 +170,34 @@ public sealed class SelectorTests : ContextBaseTests
     public void NotEqualsExpression(string type, string path)
     {
         var notEquals = GetSelectorVisitor($"{type}NotEquals", GetSource(path), out _);
-        var actual1 = GetObject(
+        var actual1 = GetTargetObject(
             (name: "ValueString", value: "efg"),
             (name: "ValueInt", value: 456),
             (name: "ValueBool", value: false),
             (name: "ValueEnum", value: TestEnumValue.None)
         );
-        var actual2 = GetObject(
+        var actual2 = GetTargetObject(
             (name: "ValueString", value: "abc"),
             (name: "ValueInt", value: 456),
             (name: "ValueBool", value: false)
         );
-        var actual3 = GetObject(
+        var actual3 = GetTargetObject(
             (name: "ValueString", value: "efg"),
             (name: "ValueInt", value: 123),
             (name: "ValueBool", value: false)
         );
-        var actual4 = GetObject(
+        var actual4 = GetTargetObject(
             (name: "ValueString", value: "efg"),
             (name: "ValueInt", value: 456),
             (name: "ValueBool", value: true)
         );
-        var actual5 = GetObject(
+        var actual5 = GetTargetObject(
             (name: "ValueString", value: "efg"),
             (name: "ValueInt", value: 456),
             (name: "ValueBool", value: false),
             (name: "ValueEnum", value: TestEnumValue.All)
         );
-        var actual6 = GetObject(
+        var actual6 = GetTargetObject(
             (name: "ValueString", value: "ABC"),
             (name: "ValueInt", value: 456),
             (name: "ValueBool", value: false)
@@ -192,17 +212,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameNotEquals", GetSource(path), out var context);
-        actual1 = GetObject(
+        actual1 = GetTargetObject(
            (name: "Name", value: "TargetObject1")
         );
-        actual2 = GetObject(
+        actual2 = GetTargetObject(
            (name: "Name", value: "TargetObject2")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         Assert.False(withName.Match(actual1));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actual2);
         Assert.True(withName.Match(actual2));
     }
 
@@ -213,9 +233,9 @@ public sealed class SelectorTests : ContextBaseTests
     {
         var hasValueTrue = GetSelectorVisitor($"{type}HasValueTrue", GetSource(path), out _);
         var hasValueFalse = GetSelectorVisitor($"{type}HasValueFalse", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: 3));
-        var actual2 = GetObject((name: "notValue", value: 3));
-        var actual3 = GetObject((name: "value", value: null));
+        var actual1 = GetTargetObject((name: "value", value: 3));
+        var actual2 = GetTargetObject((name: "notValue", value: 3));
+        var actual3 = GetTargetObject((name: "value", value: null));
 
         Assert.True(hasValueTrue.Match(actual1));
         Assert.False(hasValueTrue.Match(actual2));
@@ -227,9 +247,9 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameHasValue", GetSource(path), out var context);
-        var actual4 = GetObject();
+        var actual4 = GetTargetObject();
 
-        context.EnterTargetObject(new TargetObject(actual4));
+        context.EnterTargetObject(actual4);
         Assert.True(withName.Match(actual4));
     }
 
@@ -239,11 +259,11 @@ public sealed class SelectorTests : ContextBaseTests
     public void MatchExpression(string type, string path)
     {
         var match = GetSelectorVisitor($"{type}Match", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: "efg"));
-        var actual3 = GetObject((name: "value", value: "hij"));
-        var actual4 = GetObject((name: "value", value: 0));
-        var actual5 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: "efg"));
+        var actual3 = GetTargetObject((name: "value", value: "hij"));
+        var actual4 = GetTargetObject((name: "value", value: 0));
+        var actual5 = GetTargetObject();
 
         Assert.True(match.Match(actual1));
         Assert.True(match.Match(actual2));
@@ -253,23 +273,23 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameMatch", GetSource(path), out var context);
-        actual1 = GetObject(
+        actual1 = GetTargetObject(
            (name: "Name", value: "TargetObject1")
         );
-        actual2 = GetObject(
+        actual2 = GetTargetObject(
            (name: "Name", value: "TargetObject2")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         Assert.True(withName.Match(actual1));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actual2);
         Assert.False(withName.Match(actual2));
 
         // With case-sensitivity
         var withCaseSensitivity = GetSelectorVisitor($"{type}MatchCaseSensitive", GetSource(path), out _);
-        actual1 = GetObject((name: "value", value: "abc"));
-        actual2 = GetObject((name: "value", value: "aBc"));
+        actual1 = GetTargetObject((name: "value", value: "abc"));
+        actual2 = GetTargetObject((name: "value", value: "aBc"));
 
         Assert.True(withCaseSensitivity.Match(actual1));
         Assert.False(withCaseSensitivity.Match(actual2));
@@ -281,10 +301,10 @@ public sealed class SelectorTests : ContextBaseTests
     public void NotMatchExpression(string type, string path)
     {
         var notMatch = GetSelectorVisitor($"{type}NotMatch", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: "efg"));
-        var actual3 = GetObject((name: "value", value: "hij"));
-        var actual4 = GetObject((name: "value", value: 0));
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: "efg"));
+        var actual3 = GetTargetObject((name: "value", value: "hij"));
+        var actual4 = GetTargetObject((name: "value", value: 0));
 
         Assert.False(notMatch.Match(actual1));
         Assert.False(notMatch.Match(actual2));
@@ -293,23 +313,23 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameNotMatch", GetSource(path), out var context);
-        actual1 = GetObject(
+        actual1 = GetTargetObject(
            (name: "Name", value: "TargetObject1")
         );
-        actual2 = GetObject(
+        actual2 = GetTargetObject(
            (name: "Name", value: "TargetObject2")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         Assert.False(withName.Match(actual1));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actual2);
         Assert.True(withName.Match(actual2));
 
         // With case-sensitivity
         var withCaseSensitivity = GetSelectorVisitor($"{type}NotMatchCaseSensitive", GetSource(path), out _);
-        actual1 = GetObject((name: "value", value: "abc"));
-        actual2 = GetObject((name: "value", value: "aBc"));
+        actual1 = GetTargetObject((name: "value", value: "abc"));
+        actual2 = GetTargetObject((name: "value", value: "aBc"));
 
         Assert.False(withCaseSensitivity.Match(actual1));
         Assert.True(withCaseSensitivity.Match(actual2));
@@ -330,38 +350,41 @@ public sealed class SelectorTests : ContextBaseTests
         source.Properties.Add(new PSNoteProperty("Type", "Template"));
         var info = new PSObject();
         info.Properties.Add(new PSNoteProperty("source", new PSObject[] { source }));
-        var actual1 = new PSObject();
-        actual1.Properties.Add(new PSNoteProperty("Name", "TestObject1"));
-        actual1.Properties.Add(new PSNoteProperty("Value", 1));
-        actual1.Properties.Add(new PSNoteProperty("_PSRule", info));
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        var actual = new PSObject();
+        actual.Properties.Add(new PSNoteProperty("Name", "TestObject1"));
+        actual.Properties.Add(new PSNoteProperty("Value", 1));
+        actual.Properties.Add(new PSNoteProperty("_PSRule", info));
 
-        Assert.True(sourceWithinPath.Match(actual1));
+        var actualTO = new TargetObject(actual);
+        context.EnterTargetObject(actualTO);
+
+        Assert.True(sourceWithinPath.Match(actualTO));
 
         // Source Case sensitive
         var sourceWithinPathCaseSensitive = GetSelectorVisitor($"{type}SourceWithinPathCaseSensitive", GetSource(path), out context);
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actualTO);
 
-        Assert.False(sourceWithinPathCaseSensitive.Match(actual1));
+        Assert.False(sourceWithinPathCaseSensitive.Match(actualTO));
 
         // Field Case insensitive
         var fieldWithinPath = GetSelectorVisitor($"{type}FieldWithinPath", GetSource(path), out context);
 
-        var actual2 = new PSObject();
-        actual2.Properties.Add(new PSNoteProperty("FullName", "policy/policy.json"));
+        actual = new PSObject();
+        actual.Properties.Add(new PSNoteProperty("FullName", "policy/policy.json"));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        actualTO = new TargetObject(actual);
+        context.EnterTargetObject(actualTO);
 
-        Assert.True(fieldWithinPath.Match(actual2));
+        Assert.True(fieldWithinPath.Match(actualTO));
 
         // Field Case sensitive
         var fieldWithinPathCaseSensitive = GetSelectorVisitor($"{type}FieldWithinPathCaseSensitive", GetSource(path), out context);
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actualTO);
 
-        Assert.False(fieldWithinPathCaseSensitive.Match(actual2));
+        Assert.False(fieldWithinPathCaseSensitive.Match(actualTO));
     }
 
     [Theory]
@@ -379,38 +402,40 @@ public sealed class SelectorTests : ContextBaseTests
         source.Properties.Add(new PSNoteProperty("Type", "Template"));
         var info = new PSObject();
         info.Properties.Add(new PSNoteProperty("source", new PSObject[] { source }));
-        var actual1 = new PSObject();
-        actual1.Properties.Add(new PSNoteProperty("Name", "TestObject1"));
-        actual1.Properties.Add(new PSNoteProperty("Value", 1));
-        actual1.Properties.Add(new PSNoteProperty("_PSRule", info));
+        var actual = new PSObject();
+        actual.Properties.Add(new PSNoteProperty("Name", "TestObject1"));
+        actual.Properties.Add(new PSNoteProperty("Value", 1));
+        actual.Properties.Add(new PSNoteProperty("_PSRule", info));
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        var actualTO = new TargetObject(actual);
+        context.EnterTargetObject(actualTO);
 
-        Assert.False(notWithinPath.Match(actual1));
+        Assert.False(notWithinPath.Match(actualTO));
 
         // Source Case sensitive
         var notWithinPathCaseSensitive = GetSelectorVisitor($"{type}SourceNotWithinPathCaseSensitive", GetSource(path), out context);
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actualTO);
 
-        Assert.True(notWithinPathCaseSensitive.Match(actual1));
+        Assert.True(notWithinPathCaseSensitive.Match(actualTO));
 
         // Field Case insensitive
         var fieldNotWithinPath = GetSelectorVisitor($"{type}FieldNotWithinPath", GetSource(path), out context);
 
-        var actual2 = new PSObject();
-        actual2.Properties.Add(new PSNoteProperty("FullName", "policy/policy.json"));
+        actual = new PSObject();
+        actual.Properties.Add(new PSNoteProperty("FullName", "policy/policy.json"));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        actualTO = new TargetObject(actual);
+        context.EnterTargetObject(actualTO);
 
-        Assert.False(fieldNotWithinPath.Match(actual2));
+        Assert.False(fieldNotWithinPath.Match(actualTO));
 
         // Field Case sensitive
         var fieldNotWithinPathCaseSensitive = GetSelectorVisitor($"{type}FieldNotWithinPathCaseSensitive", GetSource(path), out context);
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actualTO);
 
-        Assert.True(fieldNotWithinPathCaseSensitive.Match(actual2));
+        Assert.True(fieldNotWithinPathCaseSensitive.Match(actualTO));
     }
 
     [Theory]
@@ -419,12 +444,12 @@ public sealed class SelectorTests : ContextBaseTests
     public void InExpression(string type, string path)
     {
         var @in = GetSelectorVisitor($"{type}In", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: new string[] { "Value1" }));
-        var actual2 = GetObject((name: "value", value: new string[] { "Value2" }));
-        var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: new string[] { "Value1" }));
+        var actual2 = GetTargetObject((name: "value", value: new string[] { "Value2" }));
+        var actual3 = GetTargetObject((name: "value", value: new string[] { "Value3" }));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject();
 
         Assert.True(@in.Match(actual1));
         Assert.True(@in.Match(actual2));
@@ -435,17 +460,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameIn", GetSource(path), out var context);
-        var actual7 = GetObject(
+        var actual7 = GetTargetObject(
            (name: "Name", value: "TargetObject1")
         );
-        var actual8 = GetObject(
+        var actual8 = GetTargetObject(
            (name: "Name", value: "TargetObject2")
         );
 
-        context.EnterTargetObject(new TargetObject(actual7));
+        context.EnterTargetObject(actual7);
         Assert.True(withName.Match(actual7));
 
-        context.EnterTargetObject(new TargetObject(actual8));
+        context.EnterTargetObject(actual8);
         Assert.False(withName.Match(actual8));
     }
 
@@ -455,11 +480,11 @@ public sealed class SelectorTests : ContextBaseTests
     public void NotInExpression(string type, string path)
     {
         var notIn = GetSelectorVisitor($"{type}NotIn", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: new string[] { "Value1" }));
-        var actual2 = GetObject((name: "value", value: new string[] { "Value2" }));
-        var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
+        var actual1 = GetTargetObject((name: "value", value: new string[] { "Value1" }));
+        var actual2 = GetTargetObject((name: "value", value: new string[] { "Value2" }));
+        var actual3 = GetTargetObject((name: "value", value: new string[] { "Value3" }));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
 
         Assert.False(notIn.Match(actual1));
         Assert.False(notIn.Match(actual2));
@@ -469,17 +494,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameNotIn", GetSource(path), out var context);
-        var actual6 = GetObject(
+        var actual6 = GetTargetObject(
            (name: "Name", value: "TargetObject1")
         );
-        var actual7 = GetObject(
+        var actual7 = GetTargetObject(
            (name: "Name", value: "TargetObject2")
         );
 
-        context.EnterTargetObject(new TargetObject(actual6));
+        context.EnterTargetObject(actual6);
         Assert.False(withName.Match(actual6));
 
-        context.EnterTargetObject(new TargetObject(actual7));
+        context.EnterTargetObject(actual7);
         Assert.True(withName.Match(actual7));
     }
 
@@ -489,16 +514,16 @@ public sealed class SelectorTests : ContextBaseTests
     public void SetOfExpression(string type, string path)
     {
         var setOf = GetSelectorVisitor($"{type}SetOf", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-apiserver", "kube-scheduler" }));
-        var actual2 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler" }));
-        var actual3 = GetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
-        var actual4 = GetObject((name: "value", value: new string[] { "kube-apiserver", "kube-scheduler" }));
-        var actual5 = GetObject((name: "value", value: new string[] { "kube-scheduler" }));
-        var actual6 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual7 = GetObject((name: "value", value: null));
-        var actual8 = GetObject();
-        var actual9 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler", "kube-apiserver" }));
-        var actual10 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-APIserver" }));
+        var actual1 = GetTargetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-apiserver", "kube-scheduler" }));
+        var actual2 = GetTargetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler" }));
+        var actual3 = GetTargetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
+        var actual4 = GetTargetObject((name: "value", value: new string[] { "kube-apiserver", "kube-scheduler" }));
+        var actual5 = GetTargetObject((name: "value", value: new string[] { "kube-scheduler" }));
+        var actual6 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual7 = GetTargetObject((name: "value", value: null));
+        var actual8 = GetTargetObject();
+        var actual9 = GetTargetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler", "kube-apiserver" }));
+        var actual10 = GetTargetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-APIserver" }));
 
         Assert.False(setOf.Match(actual1));
         Assert.True(setOf.Match(actual2));
@@ -518,16 +543,16 @@ public sealed class SelectorTests : ContextBaseTests
     public void SubsetExpression(string type, string path)
     {
         var subset = GetSelectorVisitor($"{type}Subset", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-apiserver", "kube-scheduler" }));
-        var actual2 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler" }));
-        var actual3 = GetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
-        var actual4 = GetObject((name: "value", value: new string[] { "kube-apiserver", "kube-scheduler" }));
-        var actual5 = GetObject((name: "value", value: new string[] { "kube-scheduler" }));
-        var actual6 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual7 = GetObject((name: "value", value: null));
-        var actual8 = GetObject();
-        var actual9 = GetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler", "kube-apiserver" }));
-        var actual10 = GetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-APIserver" }));
+        var actual1 = GetTargetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-apiserver", "kube-scheduler" }));
+        var actual2 = GetTargetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler" }));
+        var actual3 = GetTargetObject((name: "value", value: new string[] { "cluster-autoscaler" }));
+        var actual4 = GetTargetObject((name: "value", value: new string[] { "kube-apiserver", "kube-scheduler" }));
+        var actual5 = GetTargetObject((name: "value", value: new string[] { "kube-scheduler" }));
+        var actual6 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual7 = GetTargetObject((name: "value", value: null));
+        var actual8 = GetTargetObject();
+        var actual9 = GetTargetObject((name: "value", value: new string[] { "kube-apiserver", "cluster-autoscaler", "kube-apiserver" }));
+        var actual10 = GetTargetObject((name: "value", value: new string[] { "cluster-autoscaler", "kube-APIserver" }));
 
         Assert.True(subset.Match(actual1));
         Assert.True(subset.Match(actual2));
@@ -547,14 +572,14 @@ public sealed class SelectorTests : ContextBaseTests
     public void CountExpression(string type, string path)
     {
         var count = GetSelectorVisitor($"{type}Count", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
-        var actual2 = GetObject((name: "value", value: new string[] { "2", "1" }));
-        var actual3 = GetObject((name: "value", value: new string[] { "1" }));
-        var actual4 = GetObject((name: "value", value: new int[] { 2, 3 }));
-        var actual5 = GetObject((name: "value", value: new int[] { 3 }));
-        var actual6 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual7 = GetObject((name: "value", value: null));
-        var actual8 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: new string[] { "1", "2", "3" }));
+        var actual2 = GetTargetObject((name: "value", value: new string[] { "2", "1" }));
+        var actual3 = GetTargetObject((name: "value", value: new string[] { "1" }));
+        var actual4 = GetTargetObject((name: "value", value: new int[] { 2, 3 }));
+        var actual5 = GetTargetObject((name: "value", value: new int[] { 3 }));
+        var actual6 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual7 = GetTargetObject((name: "value", value: null));
+        var actual8 = GetTargetObject();
 
         Assert.False(count.Match(actual1));
         Assert.True(count.Match(actual2));
@@ -572,14 +597,14 @@ public sealed class SelectorTests : ContextBaseTests
     public void NotCountExpression(string type, string path)
     {
         var count = GetSelectorVisitor($"{type}NotCount", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: new string[] { "1", "2", "3" }));
-        var actual2 = GetObject((name: "value", value: new string[] { "2", "1" }));
-        var actual3 = GetObject((name: "value", value: new string[] { "1" }));
-        var actual4 = GetObject((name: "value", value: new int[] { 2, 3 }));
-        var actual5 = GetObject((name: "value", value: new int[] { 3 }));
-        var actual6 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual7 = GetObject((name: "value", value: null));
-        var actual8 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: new string[] { "1", "2", "3" }));
+        var actual2 = GetTargetObject((name: "value", value: new string[] { "2", "1" }));
+        var actual3 = GetTargetObject((name: "value", value: new string[] { "1" }));
+        var actual4 = GetTargetObject((name: "value", value: new int[] { 2, 3 }));
+        var actual5 = GetTargetObject((name: "value", value: new int[] { 3 }));
+        var actual6 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual7 = GetTargetObject((name: "value", value: null));
+        var actual8 = GetTargetObject();
 
         Assert.True(count.Match(actual1));
         Assert.False(count.Match(actual2));
@@ -597,15 +622,15 @@ public sealed class SelectorTests : ContextBaseTests
     public void LessExpression(string type, string path)
     {
         var less = GetSelectorVisitor($"{type}Less", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: 3));
-        var actual2 = GetObject((name: "value", value: 4));
-        var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject((name: "value", value: 2));
-        var actual7 = GetObject((name: "value", value: -1));
-        var actual8 = GetObject((name: "valueStr", value: "0"));
-        var actual9 = GetObject((name: "valueStr", value: "-1"));
+        var actual1 = GetTargetObject((name: "value", value: 3));
+        var actual2 = GetTargetObject((name: "value", value: 4));
+        var actual3 = GetTargetObject((name: "value", value: new string[] { "Value3" }));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject((name: "value", value: 2));
+        var actual7 = GetTargetObject((name: "value", value: -1));
+        var actual8 = GetTargetObject((name: "valueStr", value: "0"));
+        var actual9 = GetTargetObject((name: "valueStr", value: "-1"));
 
         Assert.False(less.Match(actual1));
         Assert.False(less.Match(actual2));
@@ -619,17 +644,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameLess", GetSource(path), out var context);
-        actual1 = GetObject(
+        actual1 = GetTargetObject(
            (name: "Name", value: "ItemTwo")
         );
-        actual2 = GetObject(
+        actual2 = GetTargetObject(
            (name: "Name", value: "ItemThree")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         Assert.True(withName.Match(actual1));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actual2);
         Assert.False(withName.Match(actual2));
     }
 
@@ -639,15 +664,15 @@ public sealed class SelectorTests : ContextBaseTests
     public void LessOrEqualsExpression(string type, string path)
     {
         var lessOrEquals = GetSelectorVisitor($"{type}LessOrEquals", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: 3));
-        var actual2 = GetObject((name: "value", value: 4));
-        var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject((name: "value", value: 2));
-        var actual7 = GetObject((name: "value", value: -1));
-        var actual8 = GetObject((name: "valueStr", value: "0"));
-        var actual9 = GetObject((name: "valueStr", value: "-1"));
+        var actual1 = GetTargetObject((name: "value", value: 3));
+        var actual2 = GetTargetObject((name: "value", value: 4));
+        var actual3 = GetTargetObject((name: "value", value: new string[] { "Value3" }));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject((name: "value", value: 2));
+        var actual7 = GetTargetObject((name: "value", value: -1));
+        var actual8 = GetTargetObject((name: "valueStr", value: "0"));
+        var actual9 = GetTargetObject((name: "valueStr", value: "-1"));
 
         Assert.True(lessOrEquals.Match(actual1));
         Assert.False(lessOrEquals.Match(actual2));
@@ -661,17 +686,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameLessOrEquals", GetSource(path), out var context);
-        actual1 = GetObject(
+        actual1 = GetTargetObject(
            (name: "Name", value: "ItemTwo")
         );
-        actual2 = GetObject(
+        actual2 = GetTargetObject(
            (name: "Name", value: "ItemThree")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         Assert.True(withName.Match(actual1));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actual2);
         Assert.False(withName.Match(actual2));
     }
 
@@ -681,15 +706,15 @@ public sealed class SelectorTests : ContextBaseTests
     public void GreaterExpression(string type, string path)
     {
         var greater = GetSelectorVisitor($"{type}Greater", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: 3));
-        var actual2 = GetObject((name: "value", value: 4));
-        var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject((name: "value", value: 2));
-        var actual7 = GetObject((name: "value", value: -1));
-        var actual8 = GetObject((name: "valueStr", value: "0"));
-        var actual9 = GetObject((name: "valueStr", value: "-1"));
+        var actual1 = GetTargetObject((name: "value", value: 3));
+        var actual2 = GetTargetObject((name: "value", value: 4));
+        var actual3 = GetTargetObject((name: "value", value: new string[] { "Value3" }));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject((name: "value", value: 2));
+        var actual7 = GetTargetObject((name: "value", value: -1));
+        var actual8 = GetTargetObject((name: "valueStr", value: "0"));
+        var actual9 = GetTargetObject((name: "valueStr", value: "-1"));
 
         Assert.False(greater.Match(actual1));
         Assert.True(greater.Match(actual2));
@@ -703,17 +728,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameGreater", GetSource(path), out var context);
-        actual1 = GetObject(
+        actual1 = GetTargetObject(
            (name: "Name", value: "ItemTwo")
         );
-        actual2 = GetObject(
+        actual2 = GetTargetObject(
            (name: "Name", value: "ItemThree")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         Assert.False(withName.Match(actual1));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actual2);
         Assert.True(withName.Match(actual2));
     }
 
@@ -723,15 +748,15 @@ public sealed class SelectorTests : ContextBaseTests
     public void GreaterOrEqualsExpression(string type, string path)
     {
         var greaterOrEquals = GetSelectorVisitor($"{type}GreaterOrEquals", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: 3));
-        var actual2 = GetObject((name: "value", value: 4));
-        var actual3 = GetObject((name: "value", value: new string[] { "Value3" }));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject((name: "value", value: 2));
-        var actual7 = GetObject((name: "value", value: -1));
-        var actual8 = GetObject((name: "valueStr", value: "0"));
-        var actual9 = GetObject((name: "valueStr", value: "-1"));
+        var actual1 = GetTargetObject((name: "value", value: 3));
+        var actual2 = GetTargetObject((name: "value", value: 4));
+        var actual3 = GetTargetObject((name: "value", value: new string[] { "Value3" }));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject((name: "value", value: 2));
+        var actual7 = GetTargetObject((name: "value", value: -1));
+        var actual8 = GetTargetObject((name: "valueStr", value: "0"));
+        var actual9 = GetTargetObject((name: "valueStr", value: "-1"));
 
         Assert.True(greaterOrEquals.Match(actual1));
         Assert.True(greaterOrEquals.Match(actual2));
@@ -745,17 +770,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameGreaterOrEquals", GetSource(path), out var context);
-        actual1 = GetObject(
+        actual1 = GetTargetObject(
            (name: "Name", value: "ItemTwo")
         );
-        actual2 = GetObject(
+        actual2 = GetTargetObject(
            (name: "Name", value: "ItemThree")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         Assert.False(withName.Match(actual1));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actual2);
         Assert.True(withName.Match(actual2));
     }
 
@@ -765,16 +790,16 @@ public sealed class SelectorTests : ContextBaseTests
     public void StartsWithExpression(string type, string path)
     {
         var startsWith = GetSelectorVisitor($"{type}StartsWith", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: "efg"));
-        var actual3 = GetObject((name: "value", value: "hij"));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject();
-        var actual7 = GetObject((name: "value", value: "EFG"));
-        var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
-        var actual9 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
-        var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: "efg"));
+        var actual3 = GetTargetObject((name: "value", value: "hij"));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject();
+        var actual7 = GetTargetObject((name: "value", value: "EFG"));
+        var actual8 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
+        var actual9 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
+        var actual10 = GetTargetObject((name: "value", value: new string[] { "hij", "abc" }));
 
         Assert.True(startsWith.Match(actual1));
         Assert.True(startsWith.Match(actual2));
@@ -789,17 +814,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameStartsWith", GetSource(path), out var context);
-        actual1 = GetObject(
+        actual1 = GetTargetObject(
            (name: "Name", value: "1TargetObject")
         );
-        actual2 = GetObject(
+        actual2 = GetTargetObject(
            (name: "Name", value: "2TargetObject")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         Assert.True(withName.Match(actual1));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actual2);
         Assert.False(withName.Match(actual2));
     }
 
@@ -809,16 +834,16 @@ public sealed class SelectorTests : ContextBaseTests
     public void NotStartsWithExpression(string type, string path)
     {
         var notStartsWith = GetSelectorVisitor($"{type}NotStartsWith", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: "efg"));
-        var actual3 = GetObject((name: "value", value: "hij"));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject();
-        var actual7 = GetObject((name: "value", value: "EFG"));
-        var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
-        var actual9 = GetObject((name: "value", value: "hij"), (name: "OtherValue", value: TestEnumValue.None));
-        var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: "efg"));
+        var actual3 = GetTargetObject((name: "value", value: "hij"));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject();
+        var actual7 = GetTargetObject((name: "value", value: "EFG"));
+        var actual8 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
+        var actual9 = GetTargetObject((name: "value", value: "hij"), (name: "OtherValue", value: TestEnumValue.None));
+        var actual10 = GetTargetObject((name: "value", value: new string[] { "hij", "abc" }));
 
         Assert.False(notStartsWith.Match(actual1));
         Assert.False(notStartsWith.Match(actual2));
@@ -838,16 +863,16 @@ public sealed class SelectorTests : ContextBaseTests
     public void EndsWithExpression(string type, string path)
     {
         var endsWith = GetSelectorVisitor($"{type}EndsWith", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: "efg"));
-        var actual3 = GetObject((name: "value", value: "hij"));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject();
-        var actual7 = GetObject((name: "value", value: "EFG"));
-        var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
-        var actual9 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
-        var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: "efg"));
+        var actual3 = GetTargetObject((name: "value", value: "hij"));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject();
+        var actual7 = GetTargetObject((name: "value", value: "EFG"));
+        var actual8 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
+        var actual9 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
+        var actual10 = GetTargetObject((name: "value", value: new string[] { "hij", "abc" }));
 
         Assert.True(endsWith.Match(actual1));
         Assert.True(endsWith.Match(actual2));
@@ -862,17 +887,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameEndsWith", GetSource(path), out var context);
-        actual1 = GetObject(
+        actual1 = GetTargetObject(
            (name: "Name", value: "TargetObject1")
         );
-        actual2 = GetObject(
+        actual2 = GetTargetObject(
            (name: "Name", value: "TargetObject2")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         Assert.True(withName.Match(actual1));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actual2);
         Assert.False(withName.Match(actual2));
 
         // With source
@@ -884,12 +909,13 @@ public sealed class SelectorTests : ContextBaseTests
         source.Properties.Add(new PSNoteProperty("Type", "Template"));
         var info = new PSObject();
         info.Properties.Add(new PSNoteProperty("source", new PSObject[] { source }));
-        actual1 = new PSObject();
-        actual1.Properties.Add(new PSNoteProperty("Name", "TestObject1"));
-        actual1.Properties.Add(new PSNoteProperty("Value", 1));
-        actual1.Properties.Add(new PSNoteProperty("_PSRule", info));
+        actual1 = GetTargetObject(
+            (name: "Name", value: "TestObject1"),
+            (name: "Value", value: 1),
+            (name: "_PSRule", value: info)
+        );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         Assert.True(withSource.Match(actual1));
     }
 
@@ -899,16 +925,16 @@ public sealed class SelectorTests : ContextBaseTests
     public void NotEndsWithExpression(string type, string path)
     {
         var notEndsWith = GetSelectorVisitor($"{type}NotEndsWith", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: "efg"));
-        var actual3 = GetObject((name: "value", value: "hij"));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject();
-        var actual7 = GetObject((name: "value", value: "EFG"));
-        var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
-        var actual9 = GetObject((name: "value", value: "hij"), (name: "OtherValue", value: TestEnumValue.None));
-        var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: "efg"));
+        var actual3 = GetTargetObject((name: "value", value: "hij"));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject();
+        var actual7 = GetTargetObject((name: "value", value: "EFG"));
+        var actual8 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
+        var actual9 = GetTargetObject((name: "value", value: "hij"), (name: "OtherValue", value: TestEnumValue.None));
+        var actual10 = GetTargetObject((name: "value", value: new string[] { "hij", "abc" }));
 
         Assert.False(notEndsWith.Match(actual1));
         Assert.False(notEndsWith.Match(actual2));
@@ -928,16 +954,16 @@ public sealed class SelectorTests : ContextBaseTests
     public void ContainsExpression(string type, string path)
     {
         var contains = GetSelectorVisitor($"{type}Contains", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: "bcd"));
-        var actual3 = GetObject((name: "value", value: "hij"));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject();
-        var actual7 = GetObject((name: "value", value: "BCD"));
-        var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
-        var actual9 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
-        var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: "bcd"));
+        var actual3 = GetTargetObject((name: "value", value: "hij"));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject();
+        var actual7 = GetTargetObject((name: "value", value: "BCD"));
+        var actual8 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
+        var actual9 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.None));
+        var actual10 = GetTargetObject((name: "value", value: new string[] { "hij", "abc" }));
 
         Assert.True(contains.Match(actual1));
         Assert.True(contains.Match(actual2));
@@ -952,18 +978,18 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameContains", GetSource(path), out var context);
-        actual1 = GetObject(
+        actual1 = GetTargetObject(
            (name: "Name", value: "Target.1.Object")
         );
-        actual2 = GetObject(
+        actual2 = GetTargetObject(
            (name: "Name", value: "Target.2.Object")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual1);
         context.EnterLanguageScope(withName.Source);
         Assert.True(withName.Match(actual1));
 
-        context.EnterTargetObject(new TargetObject(actual2));
+        context.EnterTargetObject(actual2);
         Assert.False(withName.Match(actual2));
     }
 
@@ -973,16 +999,16 @@ public sealed class SelectorTests : ContextBaseTests
     public void NotContainsExpression(string type, string path)
     {
         var notContains = GetSelectorVisitor($"{type}NotContains", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: "bcd"));
-        var actual3 = GetObject((name: "value", value: "hij"));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject();
-        var actual7 = GetObject((name: "value", value: "BCD"));
-        var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
-        var actual9 = GetObject((name: "value", value: "hij"), (name: "OtherValue", value: TestEnumValue.None));
-        var actual10 = GetObject((name: "value", value: new string[] { "hij", "abc" }));
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: "bcd"));
+        var actual3 = GetTargetObject((name: "value", value: "hij"));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject();
+        var actual7 = GetTargetObject((name: "value", value: "BCD"));
+        var actual8 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: TestEnumValue.All));
+        var actual9 = GetTargetObject((name: "value", value: "hij"), (name: "OtherValue", value: TestEnumValue.None));
+        var actual10 = GetTargetObject((name: "value", value: new string[] { "hij", "abc" }));
 
         Assert.False(notContains.Match(actual1));
         Assert.False(notContains.Match(actual2));
@@ -1002,15 +1028,15 @@ public sealed class SelectorTests : ContextBaseTests
     public void LikeExpression(string type, string path)
     {
         var like = GetSelectorVisitor($"{type}Like", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: "efg"));
-        var actual3 = GetObject((name: "value", value: "hij"));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject();
-        var actual7 = GetObject((name: "value", value: "EFG"));
-        var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: "123"));
-        var actual9 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: 123));
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: "efg"));
+        var actual3 = GetTargetObject((name: "value", value: "hij"));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject();
+        var actual7 = GetTargetObject((name: "value", value: "EFG"));
+        var actual8 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: "123"));
+        var actual9 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: 123));
 
         Assert.True(like.Match(actual1));
         Assert.True(like.Match(actual2));
@@ -1029,15 +1055,15 @@ public sealed class SelectorTests : ContextBaseTests
     public void NotLikeExpression(string type, string path)
     {
         var notLike = GetSelectorVisitor($"{type}NotLike", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: "efg"));
-        var actual3 = GetObject((name: "value", value: "hij"));
-        var actual4 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject();
-        var actual7 = GetObject((name: "value", value: "EFG"));
-        var actual8 = GetObject((name: "value", value: "abc"), (name: "OtherValue", value: "123"));
-        var actual9 = GetObject((name: "value", value: "hij"), (name: "OtherValue", value: 123));
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: "efg"));
+        var actual3 = GetTargetObject((name: "value", value: "hij"));
+        var actual4 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject();
+        var actual7 = GetTargetObject((name: "value", value: "EFG"));
+        var actual8 = GetTargetObject((name: "value", value: "abc"), (name: "OtherValue", value: "123"));
+        var actual9 = GetTargetObject((name: "value", value: "hij"), (name: "OtherValue", value: 123));
 
         Assert.False(notLike.Match(actual1));
         Assert.False(notLike.Match(actual2));
@@ -1057,11 +1083,11 @@ public sealed class SelectorTests : ContextBaseTests
     {
         var isStringTrue = GetSelectorVisitor($"{type}IsStringTrue", GetSource(path), out _);
         var isStringFalse = GetSelectorVisitor($"{type}IsStringFalse", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: 4));
-        var actual3 = GetObject((name: "value", value: Array.Empty<string>()));
-        var actual4 = GetObject((name: "value", value: null));
-        var actual5 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: 4));
+        var actual3 = GetTargetObject((name: "value", value: Array.Empty<string>()));
+        var actual4 = GetTargetObject((name: "value", value: null));
+        var actual5 = GetTargetObject();
 
         // isString: true
         Assert.True(isStringTrue.Match(actual1));
@@ -1079,17 +1105,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameIsString", GetSource(path), out var context);
-        var actual7 = GetObject(
+        var actual7 = GetTargetObject(
            (name: "Name", value: "TargetObject1")
         );
-        var actual8 = GetObject(
+        var actual8 = GetTargetObject(
            (name: "Name", value: 1)
         );
 
-        context.EnterTargetObject(new TargetObject(actual7));
+        context.EnterTargetObject(actual7);
         Assert.True(withName.Match(actual7));
 
-        context.EnterTargetObject(new TargetObject(actual8));
+        context.EnterTargetObject(actual8);
         Assert.True(withName.Match(actual8));
     }
 
@@ -1100,13 +1126,13 @@ public sealed class SelectorTests : ContextBaseTests
     {
         var isArrayTrue = GetSelectorVisitor($"{type}IsArrayTrue", GetSource(path), out _);
         var isArrayFalse = GetSelectorVisitor($"{type}IsArrayFalse", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: new string[] { "abc" }));
-        var actual2 = GetObject((name: "value", value: 4));
-        var actual3 = GetObject((name: "value", value: PSObject.AsPSObject(new int[] { 1 })));
-        var actual4 = GetObject((name: "value", value: null));
-        var actual5 = GetObject((name: "value", value: "abc"));
-        var actual6 = GetObject((name: "value", value: new int[] { 1 }));
-        var actual7 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: new string[] { "abc" }));
+        var actual2 = GetTargetObject((name: "value", value: 4));
+        var actual3 = GetTargetObject((name: "value", value: PSObject.AsPSObject(new int[] { 1 })));
+        var actual4 = GetTargetObject((name: "value", value: null));
+        var actual5 = GetTargetObject((name: "value", value: "abc"));
+        var actual6 = GetTargetObject((name: "value", value: new int[] { 1 }));
+        var actual7 = GetTargetObject();
 
         // isArray: true
         Assert.True(isArrayTrue.Match(actual1));
@@ -1132,14 +1158,14 @@ public sealed class SelectorTests : ContextBaseTests
     [InlineData("Json", SelectorJsonFileName)]
     public void IsBooleanExpression(string type, string path)
     {
-        var actual1 = GetObject((name: "value", value: true));
-        var actual2 = GetObject((name: "value", value: false));
-        var actual3 = GetObject((name: "value", value: "true"));
-        var actual4 = GetObject((name: "value", value: "false"));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject((name: "value", value: PSObject.AsPSObject(true)));
-        var actual7 = GetObject((name: "value", value: Array.Empty<bool>()));
-        var actual8 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: true));
+        var actual2 = GetTargetObject((name: "value", value: false));
+        var actual3 = GetTargetObject((name: "value", value: "true"));
+        var actual4 = GetTargetObject((name: "value", value: "false"));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject((name: "value", value: PSObject.AsPSObject(true)));
+        var actual7 = GetTargetObject((name: "value", value: Array.Empty<bool>()));
+        var actual8 = GetTargetObject();
 
         // Without conversion
         var isBooleanTrue = GetSelectorVisitor($"{type}IsBooleanTrue", GetSource(path), out _);
@@ -1195,15 +1221,15 @@ public sealed class SelectorTests : ContextBaseTests
     [InlineData("Json", SelectorJsonFileName)]
     public void IsDateTimeExpression(string type, string path)
     {
-        var actual1 = GetObject((name: "value", value: DateTime.Now));
-        var actual2 = GetObject((name: "value", value: 1));
-        var actual3 = GetObject((name: "value", value: "2021-04-03T15:00:00.00+10:00"));
-        var actual4 = GetObject((name: "value", value: new JValue(DateTime.Now)));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject((name: "value", value: PSObject.AsPSObject(DateTime.Now)));
-        var actual7 = GetObject((name: "value", value: new JValue("2021-04-03T15:00:00.00+10:00")));
-        var actual8 = GetObject((name: "value", value: long.MaxValue));
-        var actual9 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: DateTime.Now));
+        var actual2 = GetTargetObject((name: "value", value: 1));
+        var actual3 = GetTargetObject((name: "value", value: "2021-04-03T15:00:00.00+10:00"));
+        var actual4 = GetTargetObject((name: "value", value: new JValue(DateTime.Now)));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject((name: "value", value: PSObject.AsPSObject(DateTime.Now)));
+        var actual7 = GetTargetObject((name: "value", value: new JValue("2021-04-03T15:00:00.00+10:00")));
+        var actual8 = GetTargetObject((name: "value", value: long.MaxValue));
+        var actual9 = GetTargetObject();
 
         // Without conversion
         var isDateTimeTrue = GetSelectorVisitor($"{type}IsDateTimeTrue", GetSource(path), out _);
@@ -1263,14 +1289,14 @@ public sealed class SelectorTests : ContextBaseTests
     [InlineData("Json", SelectorJsonFileName)]
     public void IsIntegerExpression(string type, string path)
     {
-        var actual1 = GetObject((name: "value", value: 123));
-        var actual2 = GetObject((name: "value", value: 1.0f));
-        var actual3 = GetObject((name: "value", value: long.MaxValue));
-        var actual4 = GetObject((name: "value", value: "123"));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject((name: "value", value: PSObject.AsPSObject(123)));
-        var actual7 = GetObject((name: "value", value: byte.MaxValue));
-        var actual8 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: 123));
+        var actual2 = GetTargetObject((name: "value", value: 1.0f));
+        var actual3 = GetTargetObject((name: "value", value: long.MaxValue));
+        var actual4 = GetTargetObject((name: "value", value: "123"));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject((name: "value", value: PSObject.AsPSObject(123)));
+        var actual7 = GetTargetObject((name: "value", value: byte.MaxValue));
+        var actual8 = GetTargetObject();
 
         // Without conversion
         var isIntegerTrue = GetSelectorVisitor($"{type}IsIntegerTrue", GetSource(path), out _);
@@ -1326,15 +1352,15 @@ public sealed class SelectorTests : ContextBaseTests
     [InlineData("Json", SelectorJsonFileName)]
     public void IsNumericExpression(string type, string path)
     {
-        var actual1 = GetObject((name: "value", value: 123));
-        var actual2 = GetObject((name: "value", value: 1.0f));
-        var actual3 = GetObject((name: "value", value: long.MaxValue));
-        var actual4 = GetObject((name: "value", value: "123"));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject((name: "value", value: PSObject.AsPSObject(123)));
-        var actual7 = GetObject((name: "value", value: byte.MaxValue));
-        var actual8 = GetObject((name: "value", value: double.MaxValue));
-        var actual9 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: 123));
+        var actual2 = GetTargetObject((name: "value", value: 1.0f));
+        var actual3 = GetTargetObject((name: "value", value: long.MaxValue));
+        var actual4 = GetTargetObject((name: "value", value: "123"));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject((name: "value", value: PSObject.AsPSObject(123)));
+        var actual7 = GetTargetObject((name: "value", value: byte.MaxValue));
+        var actual8 = GetTargetObject((name: "value", value: double.MaxValue));
+        var actual9 = GetTargetObject();
 
         // Without conversion
         var isNumericTrue = GetSelectorVisitor($"{type}IsNumericTrue", GetSource(path), out _);
@@ -1396,12 +1422,12 @@ public sealed class SelectorTests : ContextBaseTests
     {
         var isLowerTrue = GetSelectorVisitor($"{type}IsLowerTrue", GetSource(path), out _);
         var isLowerFalse = GetSelectorVisitor($"{type}IsLowerFalse", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "abc"));
-        var actual2 = GetObject((name: "value", value: "aBc"));
-        var actual3 = GetObject((name: "value", value: "a-b-c"));
-        var actual4 = GetObject((name: "value", value: 4));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: "abc"));
+        var actual2 = GetTargetObject((name: "value", value: "aBc"));
+        var actual3 = GetTargetObject((name: "value", value: "a-b-c"));
+        var actual4 = GetTargetObject((name: "value", value: 4));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject();
 
         // isLower: true
         Assert.True(isLowerTrue.Match(actual1));
@@ -1421,17 +1447,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameIsLower", GetSource(path), out var context);
-        var actual7 = GetObject(
+        var actual7 = GetTargetObject(
            (name: "Name", value: "targetobject1")
         );
-        var actual8 = GetObject(
+        var actual8 = GetTargetObject(
            (name: "Name", value: "TargetObject2")
         );
 
-        context.EnterTargetObject(new TargetObject(actual7));
+        context.EnterTargetObject(actual7);
         Assert.True(withName.Match(actual7));
 
-        context.EnterTargetObject(new TargetObject(actual8));
+        context.EnterTargetObject(actual8);
         Assert.False(withName.Match(actual8));
     }
 
@@ -1442,12 +1468,12 @@ public sealed class SelectorTests : ContextBaseTests
     {
         var isUpperTrue = GetSelectorVisitor($"{type}IsUpperTrue", GetSource(path), out _);
         var isUpperFalse = GetSelectorVisitor($"{type}IsUpperFalse", GetSource(path), out _);
-        var actual1 = GetObject((name: "value", value: "ABC"));
-        var actual2 = GetObject((name: "value", value: "aBc"));
-        var actual3 = GetObject((name: "value", value: "A-B-C"));
-        var actual4 = GetObject((name: "value", value: 4));
-        var actual5 = GetObject((name: "value", value: null));
-        var actual6 = GetObject();
+        var actual1 = GetTargetObject((name: "value", value: "ABC"));
+        var actual2 = GetTargetObject((name: "value", value: "aBc"));
+        var actual3 = GetTargetObject((name: "value", value: "A-B-C"));
+        var actual4 = GetTargetObject((name: "value", value: 4));
+        var actual5 = GetTargetObject((name: "value", value: null));
+        var actual6 = GetTargetObject();
 
         // isUpper: true
         Assert.True(isUpperTrue.Match(actual1));
@@ -1467,17 +1493,17 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With name
         var withName = GetSelectorVisitor($"{type}NameIsUpper", GetSource(path), out var context);
-        var actual7 = GetObject(
+        var actual7 = GetTargetObject(
            (name: "Name", value: "TARGETOBJECT1")
         );
-        var actual8 = GetObject(
+        var actual8 = GetTargetObject(
            (name: "Name", value: "TargetObject2")
         );
 
-        context.EnterTargetObject(new TargetObject(actual7));
+        context.EnterTargetObject(actual7);
         Assert.True(withName.Match(actual7));
 
-        context.EnterTargetObject(new TargetObject(actual8));
+        context.EnterTargetObject(actual8);
         Assert.False(withName.Match(actual8));
     }
 
@@ -1488,12 +1514,12 @@ public sealed class SelectorTests : ContextBaseTests
     public void HasSchemaExpression(string type, string path)
     {
         var hasSchema = GetSelectorVisitor($"{type}HasSchema", GetSource(path), out _);
-        var actual1 = GetObject((name: "key", value: "value"), (name: "$schema", value: "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#"));
-        var actual2 = GetObject((name: "key", value: "value"), (name: "$schema", value: "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json"));
-        var actual3 = GetObject((name: "key", value: "value"), (name: "$schema", value: "http://schema.management.azure.com/schemas/2019-04-01/DeploymentParameters.json#"));
-        var actual4 = GetObject((name: "key", value: "value"), (name: "$schema", value: null));
-        var actual5 = GetObject((name: "key", value: "value"), (name: "$schema", value: ""));
-        var actual6 = GetObject();
+        var actual1 = GetTargetObject((name: "key", value: "value"), (name: "$schema", value: "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#"));
+        var actual2 = GetTargetObject((name: "key", value: "value"), (name: "$schema", value: "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json"));
+        var actual3 = GetTargetObject((name: "key", value: "value"), (name: "$schema", value: "http://schema.management.azure.com/schemas/2019-04-01/DeploymentParameters.json#"));
+        var actual4 = GetTargetObject((name: "key", value: "value"), (name: "$schema", value: null));
+        var actual5 = GetTargetObject((name: "key", value: "value"), (name: "$schema", value: ""));
+        var actual6 = GetTargetObject();
 
         Assert.True(hasSchema.Match(actual1));
         Assert.True(hasSchema.Match(actual2));
@@ -1532,13 +1558,13 @@ public sealed class SelectorTests : ContextBaseTests
     [InlineData("Json", SelectorJsonFileName)]
     public void Version(string type, string path)
     {
-        var actual1 = GetObject((name: "version", value: "1.2.3"));
-        var actual2 = GetObject((name: "version", value: "0.2.3"));
-        var actual3 = GetObject((name: "version", value: "2.2.3"));
-        var actual4 = GetObject((name: "version", value: "1.1.3"));
-        var actual5 = GetObject((name: "version", value: "1.3.3-preview.1"));
-        var actual6 = GetObject();
-        var actual7 = GetObject((name: "version", value: "a.b.c"));
+        var actual1 = GetTargetObject((name: "version", value: "1.2.3"));
+        var actual2 = GetTargetObject((name: "version", value: "0.2.3"));
+        var actual3 = GetTargetObject((name: "version", value: "2.2.3"));
+        var actual4 = GetTargetObject((name: "version", value: "1.1.3"));
+        var actual5 = GetTargetObject((name: "version", value: "1.3.3-preview.1"));
+        var actual6 = GetTargetObject();
+        var actual7 = GetTargetObject((name: "version", value: "a.b.c"));
 
         var version = GetSelectorVisitor($"{type}Version", GetSource(path), out _);
         Assert.True(version.Match(actual1));
@@ -1582,13 +1608,13 @@ public sealed class SelectorTests : ContextBaseTests
     [InlineData("Json", SelectorJsonFileName)]
     public void APIVersion(string type, string path)
     {
-        var actual1 = GetObject((name: "dateVersion", value: "2015-10-01"));
-        var actual2 = GetObject((name: "dateVersion", value: "2014-01-01"));
-        var actual3 = GetObject((name: "dateVersion", value: "2022-01-01"));
-        var actual4 = GetObject((name: "dateVersion", value: "2015-10-01-preview"));
-        var actual5 = GetObject((name: "dateVersion", value: "2022-01-01-preview"));
-        var actual6 = GetObject();
-        var actual7 = GetObject((name: "dateVersion", value: "a-b-c"));
+        var actual1 = GetTargetObject((name: "dateVersion", value: "2015-10-01"));
+        var actual2 = GetTargetObject((name: "dateVersion", value: "2014-01-01"));
+        var actual3 = GetTargetObject((name: "dateVersion", value: "2022-01-01"));
+        var actual4 = GetTargetObject((name: "dateVersion", value: "2015-10-01-preview"));
+        var actual5 = GetTargetObject((name: "dateVersion", value: "2022-01-01-preview"));
+        var actual6 = GetTargetObject();
+        var actual7 = GetTargetObject((name: "dateVersion", value: "a-b-c"));
 
         var version = GetSelectorVisitor($"{type}APIVersion", GetSource(path), out _);
         Assert.True(version.Match(actual1));
@@ -1632,14 +1658,14 @@ public sealed class SelectorTests : ContextBaseTests
     [InlineData("Json", SelectorJsonFileName)]
     public void HasDefault(string type, string path)
     {
-        var actual1 = GetObject((name: "integerValue", value: 100), (name: "boolValue", value: true), (name: "stringValue", value: "testValue"));
-        var actual2 = GetObject((name: "integerValue", value: 1));
-        var actual3 = GetObject((name: "boolValue", value: false));
-        var actual4 = GetObject((name: "stringValue", value: "TestValue"));
-        var actual5 = GetObject();
-        var actual6 = GetObject((name: "integerValue", value: new JValue(100)));
-        var actual7 = GetObject((name: "boolValue", value: new JValue(true)));
-        var actual8 = GetObject((name: "stringValue", value: new JValue("testValue")));
+        var actual1 = GetTargetObject((name: "integerValue", value: 100), (name: "boolValue", value: true), (name: "stringValue", value: "testValue"));
+        var actual2 = GetTargetObject((name: "integerValue", value: 1));
+        var actual3 = GetTargetObject((name: "boolValue", value: false));
+        var actual4 = GetTargetObject((name: "stringValue", value: "TestValue"));
+        var actual5 = GetTargetObject();
+        var actual6 = GetTargetObject((name: "integerValue", value: new JValue(100)));
+        var actual7 = GetTargetObject((name: "boolValue", value: new JValue(true)));
+        var actual8 = GetTargetObject((name: "stringValue", value: new JValue("testValue")));
 
         var hasDefault = GetSelectorVisitor($"{type}HasDefault", GetSource(path), out _);
         Assert.True(hasDefault.Match(actual1));
@@ -1662,10 +1688,10 @@ public sealed class SelectorTests : ContextBaseTests
     public void AllOf(string type, string path)
     {
         var allOf = GetSelectorVisitor($"{type}AllOf", GetSource(path), out _);
-        var actual1 = GetObject((name: "Name", value: "Name1"));
-        var actual2 = GetObject((name: "AlternateName", value: "Name2"));
-        var actual3 = GetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
-        var actual4 = GetObject((name: "OtherName", value: "Name3"));
+        var actual1 = GetTargetObject((name: "Name", value: "Name1"));
+        var actual2 = GetTargetObject((name: "AlternateName", value: "Name2"));
+        var actual3 = GetTargetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
+        var actual4 = GetTargetObject((name: "OtherName", value: "Name3"));
 
         Assert.False(allOf.Match(actual1));
         Assert.False(allOf.Match(actual2));
@@ -1674,16 +1700,16 @@ public sealed class SelectorTests : ContextBaseTests
 
         // With quantifier
         allOf = GetSelectorVisitor($"{type}AllOfWithQuantifier", GetSource(path), out _);
-        actual1 = GetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: new object[]
+        actual1 = GetTargetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: new object[]
         {
             GetObject((name: "name", value: "log1"))
         }))));
-        actual2 = GetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: new object[]
+        actual2 = GetTargetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: new object[]
         {
             GetObject((name: "name", value: "log1")),
             GetObject((name: "name", value: "log2"))
         }))));
-        actual3 = GetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: Array.Empty<object>()))));
+        actual3 = GetTargetObject((name: "Name", value: "TargetObject1"), (name: "properties", value: GetObject((name: "logs", value: Array.Empty<object>()))));
 
         Assert.True(allOf.Match(actual1));
         Assert.True(allOf.Match(actual2));
@@ -1696,10 +1722,10 @@ public sealed class SelectorTests : ContextBaseTests
     public void AnyOf(string type, string path)
     {
         var allOf = GetSelectorVisitor($"{type}AnyOf", GetSource(path), out _);
-        var actual1 = GetObject((name: "Name", value: "Name1"));
-        var actual2 = GetObject((name: "AlternateName", value: "Name2"));
-        var actual3 = GetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
-        var actual4 = GetObject((name: "OtherName", value: "Name3"));
+        var actual1 = GetTargetObject((name: "Name", value: "Name1"));
+        var actual2 = GetTargetObject((name: "AlternateName", value: "Name2"));
+        var actual3 = GetTargetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
+        var actual4 = GetTargetObject((name: "OtherName", value: "Name3"));
 
         Assert.True(allOf.Match(actual1));
         Assert.True(allOf.Match(actual2));
@@ -1713,10 +1739,10 @@ public sealed class SelectorTests : ContextBaseTests
     public void Not(string type, string path)
     {
         var allOf = GetSelectorVisitor($"{type}Not", GetSource(path), out _);
-        var actual1 = GetObject((name: "Name", value: "Name1"));
-        var actual2 = GetObject((name: "AlternateName", value: "Name2"));
-        var actual3 = GetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
-        var actual4 = GetObject((name: "OtherName", value: "Name3"));
+        var actual1 = GetTargetObject((name: "Name", value: "Name1"));
+        var actual2 = GetTargetObject((name: "AlternateName", value: "Name2"));
+        var actual3 = GetTargetObject((name: "Name", value: "Name1"), (name: "AlternateName", value: "Name2"));
+        var actual4 = GetTargetObject((name: "OtherName", value: "Name3"));
 
         Assert.False(allOf.Match(actual1));
         Assert.False(allOf.Match(actual2));
@@ -1734,12 +1760,25 @@ public sealed class SelectorTests : ContextBaseTests
     public void Type(string type, string path)
     {
         var equals = GetSelectorVisitor($"{type}TypeEquals", GetSource(path), out var context);
-        var actual1 = GetObject();
-        actual1.TypeNames.Insert(0, "CustomType1");
+        var actual = new TargetObject(GetObject(), targetType: "CustomType1");
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual);
 
-        Assert.True(equals.Match(actual1));
+        Assert.True(equals.Match(actual));
+    }
+
+    [Theory]
+    [InlineData("Yaml", SelectorYamlFileName)]
+    [InlineData("Json", SelectorJsonFileName)]
+    public void TypePrecondition(string type, string path)
+    {
+        var equals = GetSelectorVisitor($"{type}TypePrecondition", GetSource(path), out var context);
+        var actual = new TargetObject(GetObject(), targetType: "CustomType1");
+
+        context.EnterTargetObject(actual);
+        context.EnterLanguageScope(equals.Source);
+
+        Assert.True(equals.Match(actual));
     }
 
     [Theory]
@@ -1748,13 +1787,13 @@ public sealed class SelectorTests : ContextBaseTests
     public void Name(string type, string path)
     {
         var equals = GetSelectorVisitor($"{type}NameEquals", GetSource(path), out var context);
-        var actual1 = GetObject(
+        var actual = GetTargetObject(
             (name: "Name", value: "TargetObject1")
         );
 
-        context.EnterTargetObject(new TargetObject(actual1));
+        context.EnterTargetObject(actual);
 
-        Assert.True(equals.Match(actual1));
+        Assert.True(equals.Match(actual));
     }
 
     [Theory]
@@ -1767,41 +1806,56 @@ public sealed class SelectorTests : ContextBaseTests
         );
 
         var equals = GetSelectorVisitor($"{type}ScopeEquals", GetSource(path), out var context);
-        context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope1" }));
-        Assert.True(equals.Match(testObject));
 
-        context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope2" }));
-        Assert.False(equals.Match(testObject));
+        var actual = new TargetObject(testObject, scope: ["/scope1"]);
+        context.EnterTargetObject(actual);
+        Assert.True(equals.Match(actual));
 
-        context.EnterTargetObject(new TargetObject(testObject));
-        Assert.False(equals.Match(testObject));
+        actual = new TargetObject(testObject, scope: ["/scope2"]);
+        context.EnterTargetObject(actual);
+        Assert.False(equals.Match(actual));
+
+        actual = new TargetObject(testObject);
+        context.EnterTargetObject(actual);
+        Assert.False(equals.Match(actual));
 
         var startsWith = GetSelectorVisitor($"{type}ScopeStartsWith", GetSource(path), out context);
-        context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope1/" }));
-        Assert.True(startsWith.Match(testObject));
 
-        context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope2/" }));
-        Assert.True(startsWith.Match(testObject));
+        actual = new TargetObject(testObject, scope: ["/scope1/"]);
+        context.EnterTargetObject(actual);
+        Assert.True(startsWith.Match(actual));
 
-        context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope2" }));
-        Assert.False(startsWith.Match(testObject));
+        actual = new TargetObject(testObject, scope: ["/scope2/"]);
+        context.EnterTargetObject(actual);
+        Assert.True(startsWith.Match(actual));
 
-        context.EnterTargetObject(new TargetObject(testObject));
-        Assert.False(startsWith.Match(testObject));
+        actual = new TargetObject(testObject, scope: ["/scope2"]);
+        context.EnterTargetObject(actual);
+        Assert.False(startsWith.Match(actual));
+
+        actual = new TargetObject(testObject);
+        context.EnterTargetObject(actual);
+        Assert.False(startsWith.Match(actual));
 
         var hasValueFalse = GetSelectorVisitor($"{type}ScopeHasValueFalse", GetSource(path), out context);
-        context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope1" }));
-        Assert.False(hasValueFalse.Match(testObject));
 
-        context.EnterTargetObject(new TargetObject(testObject));
-        Assert.True(hasValueFalse.Match(testObject));
+        actual = new TargetObject(testObject, scope: ["/scope1"]);
+        context.EnterTargetObject(actual);
+        Assert.False(hasValueFalse.Match(actual));
+
+        actual = new TargetObject(testObject);
+        context.EnterTargetObject(actual);
+        Assert.True(hasValueFalse.Match(actual));
 
         var hasValueTrue = GetSelectorVisitor($"{type}ScopeHasValueTrue", GetSource(path), out context);
-        context.EnterTargetObject(new TargetObject(testObject, scope: new string[] { "/scope1" }));
-        Assert.True(hasValueTrue.Match(testObject));
 
-        context.EnterTargetObject(new TargetObject(testObject));
-        Assert.False(hasValueTrue.Match(testObject));
+        actual = new TargetObject(testObject, scope: ["/scope1"]);
+        context.EnterTargetObject(actual);
+        Assert.True(hasValueTrue.Match(actual));
+
+        actual = new TargetObject(testObject);
+        context.EnterTargetObject(actual);
+        Assert.False(hasValueTrue.Match(actual));
     }
 
     #endregion Properties
@@ -1819,7 +1873,7 @@ public sealed class SelectorTests : ContextBaseTests
         var example4 = GetSelectorVisitor($"{type}.Fn.Example4", GetSource(path), out _);
         var example5 = GetSelectorVisitor($"{type}.Fn.Example5", GetSource(path), out _);
         var example6 = GetSelectorVisitor($"{type}.Fn.Example6", GetSource(path), out _);
-        var actual1 = GetObject(
+        var actual1 = GetTargetObject(
             (name: "Name", value: "TestObject1")
         );
 
@@ -1843,7 +1897,7 @@ public sealed class SelectorTests : ContextBaseTests
         var example5 = GetSelectorVisitor($"{type}.Fn.Split", GetSource(path), out _);
         var example6 = GetSelectorVisitor($"{type}.Fn.PadLeft", GetSource(path), out _);
         var example7 = GetSelectorVisitor($"{type}.Fn.PadRight", GetSource(path), out _);
-        var actual1 = GetObject(
+        var actual1 = GetTargetObject(
             (name: "Name", value: "TestObject1")
         );
 
@@ -1864,18 +1918,20 @@ public sealed class SelectorTests : ContextBaseTests
     {
         var option = new PSRuleOption();
         option.Configuration["ConfigArray"] = new string[] { "1", "2", "3", "4", "5" };
+        option.Binding.PreferTargetInfo = true;
         return option;
     }
 
     private SelectorVisitor GetSelectorVisitor(string name, Source[] sources, out RunspaceContext context)
     {
+        var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
         var optionBuilder = new OptionContextBuilder(option: GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
-        context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: optionBuilder));
+        context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: optionBuilder, resourceCache: resourcesCache));
         context.Initialize(sources);
         context.Begin();
-        var selector = HostHelper.GetSelectorForTests(sources, context).ToArray().FirstOrDefault(s => s.Name == name);
+        var selector = resourcesCache.OfType<ISelector>().FirstOrDefault(s => s.Id.Name == name);
         context.EnterLanguageScope(selector.Source);
-        return new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
+        return selector.ToSelectorVisitor(context);
     }
 
     #endregion Helper methods

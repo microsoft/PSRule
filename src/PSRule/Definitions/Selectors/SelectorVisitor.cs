@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
+using PSRule.Data;
 using PSRule.Definitions.Expressions;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -9,19 +10,34 @@ using PSRule.Runtime;
 namespace PSRule.Definitions.Selectors;
 
 [DebuggerDisplay("Id: {Id}")]
-internal sealed class SelectorVisitor : ISelector
+internal sealed class SelectorVisitor
 {
     private readonly LanguageExpressionOuterFn _Fn;
     private readonly RunspaceContext _Context;
 
-    public SelectorVisitor(RunspaceContext context, ResourceId id, ISourceFile source, LanguageIf expression)
+    public SelectorVisitor(RunspaceContext context, string apiVersion, ResourceId id, ISourceFile source, ISelectorSpec spec)
     {
         _Context = context;
         Id = id;
         Source = source;
         InstanceId = Guid.NewGuid();
-        var builder = new LanguageExpressionBuilder();
-        _Fn = builder.Build(expression);
+
+        switch (spec)
+        {
+            case ISelectorV1Spec v1:
+                _Fn = new LanguageExpressionBuilder()
+                    .Build(v1.If);
+                break;
+
+            case ISelectorV2Spec v2:
+                _Fn = new LanguageExpressionBuilder()
+                    .WithType(v2.Type)
+                    .Build(v2.If);
+                break;
+
+            default:
+                throw new UnknownSpecificationException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InvalidResourceSpecification, nameof(ISelectorSpec), id));
+        }
     }
 
     public Guid InstanceId { get; }
@@ -30,7 +46,7 @@ internal sealed class SelectorVisitor : ISelector
 
     public ISourceFile Source { get; }
 
-    public bool Match(object o)
+    public bool Match(ITargetObject o)
     {
         var context = new ExpressionContext(_Context, Source, ResourceKind.Selector, o);
         context.Debug(PSRuleResources.SelectorMatchTrace, Id);

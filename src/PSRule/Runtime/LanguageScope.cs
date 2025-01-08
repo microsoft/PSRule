@@ -131,18 +131,13 @@ internal sealed class LanguageScope(string name) : ILanguageScope, IRuntimeServi
         return _Emitters;
     }
 
-    public ITargetBindingResult? Bind(TargetObject targetObject)
-    {
-        return _TargetBinder?.Bind(targetObject);
-    }
-
-    public ITargetBindingResult? Bind(object targetObject)
+    public ITargetBindingResult? Bind(ITargetObject targetObject)
     {
         return _TargetBinder?.Bind(targetObject);
     }
 
     /// <inheritdoc/>
-    public bool TryGetType(object o, out string? type, out string? path)
+    public bool TryGetType(ITargetObject o, out string? type, out string? path)
     {
         if (_TargetBinder != null)
         {
@@ -157,7 +152,7 @@ internal sealed class LanguageScope(string name) : ILanguageScope, IRuntimeServi
     }
 
     /// <inheritdoc/>
-    public bool TryGetName(object o, out string? name, out string? path)
+    public bool TryGetName(ITargetObject o, out string? name, out string? path)
     {
         if (_TargetBinder != null)
         {

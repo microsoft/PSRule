@@ -3,7 +3,10 @@
 
 namespace PSRule.Definitions.Selectors;
 
-internal interface ISelector : ILanguageBlock
+/// <summary>
+/// A base interface for a selector resource.
+/// </summary>
+internal interface ISelector : IResource<ISelectorSpec>
 {
 
 }

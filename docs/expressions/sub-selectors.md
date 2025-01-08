@@ -34,7 +34,7 @@ For example:
     ```yaml hl_lines="8-10"
     ---
     # Synopsis: A rule with a sub-selector precondition.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: Yaml.Subselector.Precondition
@@ -52,7 +52,7 @@ For example:
     ```json hl_lines="9-12"
     {
       // Synopsis: A rule with a sub-selector precondition.
-      "apiVersion": "github.com/microsoft/PSRule/v1",
+      "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
       "kind": "Rule",
       "metadata": {
         "name": "Json.Subselector.Precondition"
@@ -128,7 +128,7 @@ A rule to test if any sub-resources with the `detailedErrorLoggingEnabled` set t
     ```yaml hl_lines="10-12"
     ---
     # Synopsis: A rule with a sub-selector filter.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: Yaml.Subselector.Filter
@@ -148,7 +148,7 @@ A rule to test if any sub-resources with the `detailedErrorLoggingEnabled` set t
     ```json
     {
       // Synopsis: A rule with a sub-selector filter.
-      "apiVersion": "github.com/microsoft/PSRule/v1",
+      "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
       "kind": "Rule",
       "metadata": {
         "name": "Json.Subselector.Filter"
@@ -205,7 +205,7 @@ For example:
     ```yaml hl_lines="9 11-14 19-20"
     ---
     # Synopsis: A rule with a sub-selector filter.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: Yaml.Subselector.FilterOr
@@ -230,7 +230,7 @@ For example:
     ```json hl_lines="10 12-16 25-26"
     {
       // Synopsis: A rule with a sub-selector filter.
-      "apiVersion": "github.com/microsoft/PSRule/v1",
+      "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
       "kind": "Rule",
       "metadata": {
         "name": "Json.Subselector.FilterOr"
@@ -296,7 +296,7 @@ For example:
     ```yaml hl_lines="13"
     ---
     # Synopsis: A rule with a sub-selector quantifier.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: Rule
     metadata:
       name: Yaml.Subselector.Quantifier
@@ -317,7 +317,7 @@ For example:
     ```json hl_lines="15"
     {
       // Synopsis: A rule with a sub-selector quantifier.
-      "apiVersion": "github.com/microsoft/PSRule/v1",
+      "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
       "kind": "Rule",
       "metadata": {
         "name": "Json.Subselector.Quantifier"

@@ -48,12 +48,12 @@ internal sealed class RuleVisitor : ICondition
 
     public IConditionResult If()
     {
-        var context = new ExpressionContext(_Context, Source, ResourceKind.Rule, _Context.TargetObject.Value);
+        var context = new ExpressionContext(_Context, Source, ResourceKind.Rule, _Context.TargetObject);
         context.Debug(PSRuleResources.RuleMatchTrace, Id);
         context.PushScope(RunspaceScope.Rule);
         try
         {
-            var result = _Condition(context, _Context.TargetObject.Value);
+            var result = _Condition(context, _Context.TargetObject);
             if (result.HasValue && !result.Value)
                 _Context.WriteReason(context.GetReasons());
 

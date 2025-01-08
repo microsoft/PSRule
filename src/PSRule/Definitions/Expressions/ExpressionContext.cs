@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
+using PSRule.Data;
 using PSRule.Runtime;
 using PSRule.Runtime.ObjectPath;
 
@@ -13,12 +14,13 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
 
     private List<ResultReason> _Reason;
 
-    internal ExpressionContext(RunspaceContext context, ISourceFile source, ResourceKind kind, object current)
+    internal ExpressionContext(RunspaceContext context, ISourceFile source, ResourceKind kind, ITargetObject current, ResourceId? ruleId = null)
     {
         Context = context ?? throw new ArgumentNullException(nameof(context));
         Source = source;
         LanguageScope = source.Module;
         Kind = kind;
+        RuleId = ruleId;
         _NameTokenCache = [];
         Current = current;
     }
@@ -29,7 +31,10 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
 
     public ResourceKind Kind { get; }
 
-    public object Current { get; }
+    public ITargetObject Current { get; }
+
+    /// <inheritdoc/>
+    public ResourceId? RuleId { get; }
 
     public RunspaceContext Context { get; }
 

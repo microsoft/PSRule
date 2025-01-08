@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
+using PSRule.Data;
 using PSRule.Definitions.Expressions;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -15,18 +16,36 @@ internal sealed class SuppressionGroupVisitor
     private readonly SuppressionInfo _Info;
     private readonly RunspaceContext _Context;
 
-    public SuppressionGroupVisitor(RunspaceContext context, ResourceId id, ISourceFile source, ISuppressionGroupV1Spec spec, IResourceHelpInfo info)
+    public SuppressionGroupVisitor(RunspaceContext context, string apiVersion, ResourceId id, ISourceFile source, ISuppressionGroupSpec spec, IResourceHelpInfo info)
     {
         _Context = context;
+        ApiVersion = apiVersion;
         Id = id;
         Source = source;
         InstanceId = Guid.NewGuid();
-        Rule = spec.Rule;
         Info = info;
         _Info = new SuppressionInfo(id, info);
-        _Fn = new LanguageExpressionBuilder()
-            .WithRule(Rule)
-            .Build(spec.If);
+
+        switch (spec)
+        {
+            case ISuppressionGroupV1Spec v1:
+                Rule = v1.Rule;
+                _Fn = new LanguageExpressionBuilder()
+                    .WithRule(Rule)
+                    .Build(v1.If);
+                break;
+
+            case ISuppressionGroupV2Spec v2:
+                Rule = v2.Rule;
+                _Fn = new LanguageExpressionBuilder()
+                    .WithRule(Rule)
+                    .WithType(v2.Type)
+                    .Build(v2.If);
+                break;
+
+            default:
+                throw new UnknownSpecificationException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InvalidResourceSpecification, nameof(ISuppressionGroupSpec), id));
+        }
     }
 
     /// <summary>
@@ -70,6 +89,8 @@ internal sealed class SuppressionGroupVisitor
         }
     }
 
+    public string ApiVersion { get; }
+
     public ResourceId Id { get; }
 
     public IResourceHelpInfo Info { get; }
@@ -80,10 +101,10 @@ internal sealed class SuppressionGroupVisitor
 
     public string[] Rule { get; }
 
-    public bool TryMatch(object o, out ISuppressionInfo suppression)
+    public bool TryMatch(ResourceId ruleId, ITargetObject o, out ISuppressionInfo suppression)
     {
         suppression = null;
-        var context = new ExpressionContext(_Context, Source, ResourceKind.SuppressionGroup, o);
+        var context = new ExpressionContext(_Context, Source, ResourceKind.SuppressionGroup, o, ruleId);
         context.Debug(PSRuleResources.SelectorMatchTrace, Id);
         if (_Fn(context, o).GetValueOrDefault(false))
         {

@@ -99,11 +99,12 @@ Use the following template to define a selector:
 ```yaml
 ---
 # Synopsis: {{ Synopsis }}
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: '{{ Name }}'
 spec:
+  type: []
   if: { }
 ```
 
@@ -111,12 +112,13 @@ spec:
 [
   {
     // Synopsis: {{ Synopsis }}
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Selector",
     "metadata": {
       "name": "{{ Name }}"
     },
     "spec": {
+      "type": [],
       "if": {}
     }
   }
@@ -124,6 +126,10 @@ spec:
 ```
 
 Within the `if` object, one or more conditions or logical operators can be used.
+If the `if` object is empty, the selector will always evaluate to true.
+
+Optionally, a `type` precondition can be used to define the type of object the selector is intended to evaluate.
+When not specified, the selector will apply to all object types, that match the `if` condition.
 
 ## EXAMPLES
 
@@ -133,7 +139,7 @@ Within the `if` object, one or more conditions or logical operators can be used.
 # Example Selectors.Rule.yaml
 ---
 # Synopsis: Require the CustomValue field.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: RequireCustomValue
@@ -144,7 +150,7 @@ spec:
 
 ---
 # Synopsis: Require a Name or AlternativeName.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: RequireName
@@ -158,7 +164,7 @@ spec:
 
 ---
 # Synopsis: Require a specific CustomValue
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Selector
 metadata:
   name: RequireSpecificCustomValue
@@ -177,7 +183,7 @@ spec:
 [
   {
     // Synopsis: Require the CustomValue field.
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Selector",
     "metadata": {
       "name": "RequireCustomValue"
@@ -191,7 +197,7 @@ spec:
   },
   {
     // Synopsis: Require a Name or AlternativeName.
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Selector",
     "metadata": {
       "name": "RequireName"
@@ -213,7 +219,7 @@ spec:
   },
   {
     // Synopsis: Require a specific CustomValue
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Selector",
     "metadata": {
       "name": "RequireSpecificCustomValue"

@@ -69,7 +69,7 @@ Rule 'ScriptRule' -If { $True } -Type 'CustomType1', 'CustomType2' -With 'Select
 ```yaml
 ---
 # Synopsis: An example YAML rule with pre-conditions.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Rule
 metadata:
   name: 'YamlRule'
@@ -87,7 +87,7 @@ spec:
 [
   {
     // Synopsis: An example YAML rule with pre-conditions.
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Rule",
     "metadata": {
       "name": "YamlRule"
@@ -149,7 +149,7 @@ Syntax:
 ```yaml
 ---
 # Synopsis: {{ Synopsis }}
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Rule
 metadata:
   name: '{{ Name }}'
@@ -165,7 +165,7 @@ Example:
 ```yaml
 ---
 # Synopsis: Use a Standard load-balancer with AKS clusters.
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Rule
 metadata:
   name: 'Azure.AKS.StandardLB'
@@ -197,7 +197,7 @@ Syntax:
 [
   {
     // Synopsis: {{ Synopsis }}
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Rule",
     "metadata": {
       "name": "{{ Name }}",
@@ -218,7 +218,7 @@ Example:
 [
   {
     // Synopsis: Use a Standard load-balancer with AKS clusters.
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Rule",
     "metadata": {
       "name": "Azure.AKS.StandardLB",

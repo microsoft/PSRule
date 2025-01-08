@@ -42,7 +42,7 @@ To define a YAML baseline spec use the following structure:
 ```yaml
 ---
 # Synopsis: <synopsis>
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Baseline
 metadata:
   name: <name>
@@ -59,7 +59,7 @@ For example:
 ```yaml
 ---
 # Synopsis: This is an example baseline
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Baseline
 metadata:
   name: Baseline1
@@ -75,7 +75,7 @@ spec:
 
 ---
 # Synopsis: This is an example baseline
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Baseline
 metadata:
   name: Baseline2
@@ -95,7 +95,7 @@ To define a JSON baseline spec use the following structure:
 [
   {
     // Synopsis: <synopsis>
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Baseline",
     "metadata": {
       "name": "<name>",
@@ -116,7 +116,7 @@ For example:
 [
   {
     // Synopsis: This is an example baseline
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Baseline",
     "metadata": {
       "name": "Baseline1"
@@ -138,7 +138,7 @@ For example:
   },
   {
     // Synopsis: This is an example baseline
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Baseline",
     "metadata": {
       "name": "Baseline2"
@@ -186,7 +186,7 @@ YAML example:
 ```yaml
 ---
 # Synopsis: This is an example baseline that is obsolete
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Baseline
 metadata:
   name: ObsoleteBaseline
@@ -201,7 +201,7 @@ JSON example:
 [
   {
     // Synopsis: This is an example baseline that is obsolete
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Baseline",
     "metadata": {
       "name": "ObsoleteBaseline",
@@ -223,7 +223,7 @@ JSON example:
 
 ---
 # Synopsis: This is an example baseline
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Baseline
 metadata:
   name: TestBaseline1
@@ -236,7 +236,7 @@ spec:
 
 ---
 # Synopsis: This is an example baseline
-apiVersion: github.com/microsoft/PSRule/v1
+apiVersion: github.com/microsoft/PSRule/2025-01-01
 kind: Baseline
 metadata:
   name: TestBaseline2
@@ -256,7 +256,7 @@ spec:
 [
   {
     // Synopsis: This is an example baseline
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Baseline",
     "metadata": {
       "name": "TestBaseline1"
@@ -274,7 +274,7 @@ spec:
   },
   {
     // Synopsis: This is an example baseline
-    "apiVersion": "github.com/microsoft/PSRule/v1",
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
     "kind": "Baseline",
     "metadata": {
       "name": "TestBaseline2"
@@ -295,7 +295,7 @@ spec:
 
 ## NOTE
 
-An online version of this document is available at https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Baseline/.
+An online version of this document is available at https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Baseline/.
 
 ## KEYWORDS
 

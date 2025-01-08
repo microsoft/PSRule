@@ -982,6 +982,17 @@ spec:
     type: '.'
     equals: 'CustomType1'
 
+---
+# Synopsis: Test with a type precondition
+apiVersion: github.com/microsoft/PSRule/2025-01-01
+kind: Selector
+metadata:
+  name: YamlTypePrecondition
+spec:
+  type:
+    - 'CustomType1'
+  if: {}
+
 #endregion With type tests
 
 #region With name tests

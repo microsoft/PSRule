@@ -5,10 +5,12 @@ using PSRule.Definitions.Expressions;
 
 namespace PSRule.Definitions.SuppressionGroups;
 
+#nullable enable
+
 /// <summary>
 /// A specification for a V1 suppression group resource.
 /// </summary>
-internal interface ISuppressionGroupV1Spec
+internal interface ISuppressionGroupV1Spec : ISuppressionGroupSpec
 {
     /// <summary>
     /// The date time that the suppression is valid until.
@@ -21,10 +23,12 @@ internal interface ISuppressionGroupV1Spec
     /// <summary>
     /// This only applies to rules that match the specified rule names.
     /// </summary>
-    string[] Rule { get; }
+    string[]? Rule { get; }
 
     /// <summary>
     /// An expression. If the expression evaluates as true and rules specified by <see cref="Rule"/> are suppressed.
     /// </summary>
-    LanguageIf If { get; }
+    LanguageIf? If { get; }
 }
+
+#nullable restore

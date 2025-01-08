@@ -18,13 +18,14 @@ internal static class SelectorExtensions
     /// <param name="resource">The selector resource.</param>
     /// <param name="runspaceContext">A valid runspace context.</param>
     /// <returns>An instance of a <see cref="SelectorVisitor"/>.</returns>
-    public static SelectorVisitor ToSelectorVisitor(this SelectorV1 resource, RunspaceContext runspaceContext)
+    public static SelectorVisitor ToSelectorVisitor(this ISelector resource, RunspaceContext runspaceContext)
     {
         return new SelectorVisitor(
             runspaceContext,
+            resource.ApiVersion,
             resource.Id,
             resource.Source,
-            resource.Spec.If
+            resource.Spec
         );
     }
 

@@ -86,6 +86,11 @@ public abstract class BaseTests
         return result;
     }
 
+    protected static TargetObject GetTargetObject(params (string name, object value)[] properties)
+    {
+        return new TargetObject(GetObject(properties));
+    }
+
     #endregion Helper methods
 }
 

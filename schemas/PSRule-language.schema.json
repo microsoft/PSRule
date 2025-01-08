@@ -2,24 +2,395 @@
   "$schema": "https://json-schema.org/draft-07/schema#",
   "title": "PSRule language",
   "description": "A schema for PSRule resources.",
-  "$ref": "#/definitions/resource-v1",
+  "$ref": "#/definitions/resources",
   "definitions": {
-    "resource-v1": {
+    "resources": {
       "oneOf": [
         {
-          "$ref": "#/definitions/rule-v1"
+          "type": "object",
+          "title": "Rule",
+          "description": "A rule resource.",
+          "markdownDescription": "A rule resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Rules/)",
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "title": "API Version",
+              "description": "The API Version for the PSRule resources.",
+              "enum": [
+                "github.com/microsoft/PSRule/v1"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "title": "Kind",
+              "description": "A rule resource.",
+              "markdownDescription": "A rule resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Rules/)",
+              "enum": [
+                "Rule"
+              ]
+            },
+            "metadata": {
+              "type": "object",
+              "$ref": "#/definitions/ruleMetadata"
+            },
+            "spec": {
+              "type": "object",
+              "$ref": "#/definitions/ruleSpec-v1"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "metadata",
+            "spec"
+          ]
         },
         {
-          "$ref": "#/definitions/baseline-v1"
+          "type": "object",
+          "title": "Baseline",
+          "description": "A PSRule Baseline.",
+          "markdownDescription": "A PSRule Baseline. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Baseline/)",
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "title": "API Version",
+              "description": "The API Version for the PSRule resources.",
+              "enum": [
+                "github.com/microsoft/PSRule/v1"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "title": "Kind",
+              "description": "A PSRule Baseline resource.",
+              "markdownDescription": "A PSRule Baseline resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Baseline/)",
+              "enum": [
+                "Baseline"
+              ]
+            },
+            "metadata": {
+              "type": "object",
+              "$ref": "#/definitions/resource-metadata"
+            },
+            "spec": {
+              "type": "object",
+              "$ref": "#/definitions/baselineSpec-v1"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "metadata",
+            "spec"
+          ],
+          "additionalProperties": false
         },
         {
-          "$ref": "#/definitions/moduleConfig-v1"
+          "type": "object",
+          "title": "ModuleConfig",
+          "description": "A PSRule ModuleConfig.",
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "title": "API Version",
+              "description": "The API Version for the PSRule resources.",
+              "enum": [
+                "github.com/microsoft/PSRule/v1"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "title": "Kind",
+              "description": "A PSRule ModuleConfig resource.",
+              "enum": [
+                "ModuleConfig"
+              ]
+            },
+            "metadata": {
+              "type": "object",
+              "$ref": "#/definitions/resource-metadata"
+            },
+            "spec": {
+              "type": "object",
+              "$ref": "#/definitions/moduleConfigSpec-v1"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "metadata",
+            "spec"
+          ],
+          "additionalProperties": false
         },
         {
-          "$ref": "#/definitions/selector-v1"
+          "type": "object",
+          "title": "Selector",
+          "description": "A selector resource.",
+          "markdownDescription": "A selector resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Selectors/)",
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "title": "API Version",
+              "description": "The API Version for the PSRule resources.",
+              "enum": [
+                "github.com/microsoft/PSRule/v1"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "title": "Kind",
+              "description": "A PSRule Selector resource.",
+              "enum": [
+                "Selector"
+              ]
+            },
+            "metadata": {
+              "type": "object",
+              "$ref": "#/definitions/resource-metadata"
+            },
+            "spec": {
+              "type": "object",
+              "$ref": "#/definitions/selectorSpec-v1"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "metadata",
+            "spec"
+          ]
         },
         {
-          "$ref": "#/definitions/suppressionGroup-v1"
+          "type": "object",
+          "title": "SuppressionGroup",
+          "description": "A PSRule Suppression Group",
+          "markdownDescription": "A PSRule Suppression Group. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_SuppressionGroups/)",
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "title": "API Version",
+              "description": "The API Version for the PSRule resources.",
+              "enum": [
+                "github.com/microsoft/PSRule/v1"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "title": "Kind",
+              "description": "A PSRule SuppressionGroup resource.",
+              "enum": [
+                "SuppressionGroup"
+              ]
+            },
+            "metadata": {
+              "type": "object",
+              "$ref": "#/definitions/resource-metadata"
+            },
+            "spec": {
+              "type": "object",
+              "$ref": "#/definitions/suppressionGroupSpec-v1"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "metadata",
+            "spec"
+          ]
+        },
+        {
+          "type": "object",
+          "title": "Rule",
+          "description": "A rule resource.",
+          "markdownDescription": "A rule resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Rules/)",
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "title": "API Version",
+              "description": "The API Version for the PSRule resources.",
+              "enum": [
+                "github.com/microsoft/PSRule/2025-01-01"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "title": "Kind",
+              "description": "A rule resource.",
+              "markdownDescription": "A rule resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Rules/)",
+              "enum": [
+                "Rule"
+              ]
+            },
+            "metadata": {
+              "type": "object",
+              "$ref": "#/definitions/ruleMetadata"
+            },
+            "spec": {
+              "type": "object",
+              "$ref": "#/definitions/ruleSpec-v1"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "metadata",
+            "spec"
+          ]
+        },
+        {
+          "type": "object",
+          "title": "Baseline",
+          "description": "A PSRule Baseline.",
+          "markdownDescription": "A PSRule Baseline. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Baseline/)",
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "title": "API Version",
+              "description": "The API Version for the PSRule resources.",
+              "enum": [
+                "github.com/microsoft/PSRule/2025-01-01"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "title": "Kind",
+              "description": "A PSRule Baseline resource.",
+              "markdownDescription": "A PSRule Baseline resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Baseline/)",
+              "enum": [
+                "Baseline"
+              ]
+            },
+            "metadata": {
+              "type": "object",
+              "$ref": "#/definitions/resource-metadata"
+            },
+            "spec": {
+              "type": "object",
+              "$ref": "#/definitions/baselineSpec-v1"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "metadata",
+            "spec"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "ModuleConfig",
+          "description": "A PSRule ModuleConfig.",
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "title": "API Version",
+              "description": "The API Version for the PSRule resources.",
+              "enum": [
+                "github.com/microsoft/PSRule/2025-01-01"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "title": "Kind",
+              "description": "A PSRule ModuleConfig resource.",
+              "enum": [
+                "ModuleConfig"
+              ]
+            },
+            "metadata": {
+              "type": "object",
+              "$ref": "#/definitions/resource-metadata"
+            },
+            "spec": {
+              "type": "object",
+              "$ref": "#/definitions/moduleConfigSpec-v1"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "metadata",
+            "spec"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Selector",
+          "description": "A selector resource.",
+          "markdownDescription": "A selector resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Selectors/)",
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "title": "API Version",
+              "description": "The API Version for the PSRule resources.",
+              "enum": [
+                "github.com/microsoft/PSRule/2025-01-01"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "title": "Kind",
+              "description": "A PSRule Selector resource.",
+              "enum": [
+                "Selector"
+              ]
+            },
+            "metadata": {
+              "type": "object",
+              "$ref": "#/definitions/resource-metadata"
+            },
+            "spec": {
+              "type": "object",
+              "$ref": "#/definitions/selectorSpec-v2"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "metadata",
+            "spec"
+          ]
+        },
+        {
+          "type": "object",
+          "title": "SuppressionGroup",
+          "description": "A PSRule Suppression Group",
+          "markdownDescription": "A PSRule Suppression Group. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_SuppressionGroups/)",
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "title": "API Version",
+              "description": "The API Version for the PSRule resources.",
+              "enum": [
+                "github.com/microsoft/PSRule/2025-01-01"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "title": "Kind",
+              "description": "A PSRule SuppressionGroup resource.",
+              "enum": [
+                "SuppressionGroup"
+              ]
+            },
+            "metadata": {
+              "type": "object",
+              "$ref": "#/definitions/resource-metadata"
+            },
+            "spec": {
+              "type": "object",
+              "$ref": "#/definitions/suppressionGroupSpec-v2"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "metadata",
+            "spec"
+          ]
         }
       ]
     },
@@ -87,47 +458,7 @@
       ],
       "additionalProperties": false
     },
-    "baseline-v1": {
-      "type": "object",
-      "title": "Baseline",
-      "description": "A PSRule Baseline.",
-      "markdownDescription": "A PSRule Baseline. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Baseline/)",
-      "properties": {
-        "apiVersion": {
-          "type": "string",
-          "title": "API Version",
-          "description": "The API Version for the PSRule resources.",
-          "enum": [
-            "github.com/microsoft/PSRule/v1"
-          ]
-        },
-        "kind": {
-          "type": "string",
-          "title": "Kind",
-          "description": "A PSRule Baseline resource.",
-          "markdownDescription": "A PSRule Baseline resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Baseline/)",
-          "enum": [
-            "Baseline"
-          ]
-        },
-        "metadata": {
-          "type": "object",
-          "$ref": "#/definitions/resource-metadata"
-        },
-        "spec": {
-          "type": "object",
-          "$ref": "#/definitions/baselineSpec"
-        }
-      },
-      "required": [
-        "apiVersion",
-        "kind",
-        "metadata",
-        "spec"
-      ],
-      "additionalProperties": false
-    },
-    "baselineSpec": {
+    "baselineSpec-v1": {
       "type": "object",
       "title": "Spec",
       "description": "A specification for a baseline.",
@@ -246,48 +577,10 @@
       },
       "additionalProperties": false
     },
-    "moduleConfig-v1": {
-      "type": "object",
-      "title": "ModuleConfig",
-      "description": "A PSRule ModuleConfig.",
-      "properties": {
-        "apiVersion": {
-          "type": "string",
-          "title": "API Version",
-          "description": "The API Version for the PSRule resources.",
-          "enum": [
-            "github.com/microsoft/PSRule/v1"
-          ]
-        },
-        "kind": {
-          "type": "string",
-          "title": "Kind",
-          "description": "A PSRule ModuleConfig resource.",
-          "enum": [
-            "ModuleConfig"
-          ]
-        },
-        "metadata": {
-          "type": "object",
-          "$ref": "#/definitions/resource-metadata"
-        },
-        "spec": {
-          "type": "object",
-          "$ref": "#/definitions/moduleConfigSpec"
-        }
-      },
-      "required": [
-        "apiVersion",
-        "kind",
-        "metadata",
-        "spec"
-      ],
-      "additionalProperties": false
-    },
-    "moduleConfigSpec": {
+    "moduleConfigSpec-v1": {
       "type": "object",
       "title": "Spec",
-      "description": "A specification for a ModuleConfig.",
+      "description": "A specification for a module configuration.",
       "properties": {
         "binding": {
           "$ref": "#/definitions/binding-option"
@@ -486,45 +779,7 @@
       },
       "additionalProperties": false
     },
-    "selector-v1": {
-      "type": "object",
-      "title": "Selector",
-      "description": "A selector resource.",
-      "markdownDescription": "A selector resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Selectors/)",
-      "properties": {
-        "apiVersion": {
-          "type": "string",
-          "title": "API Version",
-          "description": "The API Version for the PSRule resources.",
-          "enum": [
-            "github.com/microsoft/PSRule/v1"
-          ]
-        },
-        "kind": {
-          "type": "string",
-          "title": "Kind",
-          "description": "A PSRule Selector resource.",
-          "enum": [
-            "Selector"
-          ]
-        },
-        "metadata": {
-          "type": "object",
-          "$ref": "#/definitions/resource-metadata"
-        },
-        "spec": {
-          "type": "object",
-          "$ref": "#/definitions/selectorSpec"
-        }
-      },
-      "required": [
-        "apiVersion",
-        "kind",
-        "metadata",
-        "spec"
-      ]
-    },
-    "selectorSpec": {
+    "selectorSpec-v1": {
       "type": "object",
       "title": "Spec",
       "description": "The specification for a selector.",
@@ -543,45 +798,36 @@
       ],
       "additionalProperties": false
     },
-    "suppressionGroup-v1": {
+    "selectorSpec-v2": {
       "type": "object",
-      "title": "SuppressionGroup",
-      "description": "A PSRule Suppression Group",
-      "markdownDescription": "A PSRule Suppression Group. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_SuppressionGroups/)",
+      "title": "Spec",
+      "description": "The specification for a selector.",
+      "markdownDescription": "The specification for a selector. [See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Selectors/)",
       "properties": {
-        "apiVersion": {
-          "type": "string",
-          "title": "API Version",
-          "description": "The API Version for the PSRule resources.",
-          "enum": [
-            "github.com/microsoft/PSRule/v1"
-          ]
+        "type": {
+          "type": "array",
+          "title": "Type pre-condition",
+          "description": "An optional type pre-condition before the selector is evaluated.",
+          "items": {
+            "type": "string",
+            "default": ""
+          },
+          "uniqueItems": true
         },
-        "kind": {
-          "type": "string",
-          "title": "Kind",
-          "description": "A PSRule SuppressionGroup resource.",
-          "enum": [
-            "SuppressionGroup"
-          ]
-        },
-        "metadata": {
+        "if": {
           "type": "object",
-          "$ref": "#/definitions/resource-metadata"
-        },
-        "spec": {
-          "type": "object",
-          "$ref": "#/definitions/suppressionGroupSpec"
+          "title": "If",
+          "description": "A condition made up of one or more expressions that will determine if an object is selected by the selector.",
+          "markdownDescription": "A condition made up of one or more [expressions](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/) that will determine if an object is selected by the selector. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Selectors/)",
+          "$ref": "#/definitions/expressions"
         }
       },
       "required": [
-        "apiVersion",
-        "kind",
-        "metadata",
-        "spec"
-      ]
+        "if"
+      ],
+      "additionalProperties": false
     },
-    "suppressionGroupSpec": {
+    "suppressionGroupSpec-v1": {
       "type": "object",
       "title": "Spec",
       "description": "PSRule Suppression Group specification.",
@@ -617,46 +863,53 @@
       ],
       "additionalProperties": false
     },
-    "rule-v1": {
+    "suppressionGroupSpec-v2": {
       "type": "object",
-      "title": "Rule",
-      "description": "A rule resource.",
-      "markdownDescription": "A rule resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Rules/)",
+      "title": "Spec",
+      "description": "PSRule Suppression Group specification.",
+      "markdownDescription": "PSRule Suppression Group specification. [See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_SuppressionGroups/)",
       "properties": {
-        "apiVersion": {
+        "expiresOn": {
           "type": "string",
-          "title": "API Version",
-          "description": "The API Version for the PSRule resources.",
-          "enum": [
-            "github.com/microsoft/PSRule/v1"
-          ]
+          "title": "Expires On",
+          "description": "The date time that the suppression is valid until. After this date time, the suppression is ignored. When not set, the suppression does not expire. This RFC3339 (ISO 8601) formatted date time using the format yyyy-MM-ddTHH:mm:ssZ.",
+          "markdownDescription": "The date time that the suppression is valid until. After this date time, the suppression is ignored. When not set, the suppression does not expire. This RFC3339 (ISO 8601) formatted date time using the format `yyyy-MM-ddTHH:mm:ssZ`.",
+          "format": "date-time"
         },
-        "kind": {
-          "type": "string",
-          "title": "Kind",
-          "description": "A rule resource.",
-          "markdownDescription": "A rule resource. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Rules/)",
-          "enum": [
-            "Rule"
-          ]
+        "rule": {
+          "type": "array",
+          "title": "Rule pre-condition",
+          "description": "This only applies to rules that match the specified rule names.",
+          "markdownDescription": "This only applies to rules that match the specified rule names.",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
         },
-        "metadata": {
+        "type": {
+          "type": "array",
+          "title": "Type pre-condition",
+          "description": "An optional type pre-condition before the suppression group is evaluated.",
+          "items": {
+            "type": "string",
+            "default": ""
+          },
+          "uniqueItems": true
+        },
+        "if": {
           "type": "object",
-          "$ref": "#/definitions/ruleMetadata"
-        },
-        "spec": {
-          "type": "object",
-          "$ref": "#/definitions/ruleSpec"
+          "title": "If",
+          "description": "A condition made up of one or more expressions that will determine if the rule is suppressed.",
+          "markdownDescription": "A condition made up of one or more [expressions](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Expressions/) that will determine if the rule is suppressed. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_SuppressionGroups/)",
+          "$ref": "#/definitions/expressions"
         }
       },
       "required": [
-        "apiVersion",
-        "kind",
-        "metadata",
-        "spec"
-      ]
+        "if"
+      ],
+      "additionalProperties": false
     },
-    "ruleSpec": {
+    "ruleSpec-v1": {
       "type": "object",
       "title": "Spec",
       "description": "The specification for the rule.",
@@ -857,20 +1110,20 @@
       "oneOf": [
         {
           "type": "string",
-          "ztitle": "Value from string",
-          "zdescription": "A value to compare.",
+          "title": "Value of string",
+          "description": "A value to compare.",
           "default": ""
         },
         {
           "type": "boolean",
-          "ztitle": "Value from boolean",
-          "zdescription": "A value to compare.",
+          "title": "Value of boolean",
+          "description": "A value to compare.",
           "default": true
         },
         {
           "type": "integer",
-          "ztitle": "Value from integer",
-          "zdescription": "A value to compare.",
+          "title": "Value of integer",
+          "description": "A value to compare.",
           "default": 0
         },
         {
@@ -884,6 +1137,11 @@
           }
         },
         {
+          "type": "array",
+          "title": "Value for array",
+          "description": "A value to compare."
+        },
+        {
           "$ref": "#/definitions/fn"
         }
       ]
@@ -891,6 +1149,10 @@
     "expressions": {
       "type": "object",
       "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false
+        },
         {
           "$ref": "#/definitions/expressions/definitions/operators/definitions/allOf"
         },
@@ -1539,6 +1801,9 @@
                 },
                 "field": {
                   "$ref": "#/definitions/expressions/definitions/properties/definitions/field"
+                },
+                "name": {
+                  "$ref": "#/definitions/expressions/definitions/properties/definitions/name"
                 },
                 "scope": {
                   "$ref": "#/definitions/expressions/definitions/properties/definitions/scope"

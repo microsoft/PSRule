@@ -118,7 +118,7 @@ To prevent a rule executing you can either:
     ```yaml
     ---
     # Synopsis: Ignore test objects by name.
-    apiVersion: github.com/microsoft/PSRule/v1
+    apiVersion: github.com/microsoft/PSRule/2025-01-01
     kind: SuppressionGroup
     metadata:
       name: SuppressWithTargetName

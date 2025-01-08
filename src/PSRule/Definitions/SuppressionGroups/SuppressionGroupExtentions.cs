@@ -18,10 +18,11 @@ internal static class SuppressionGroupExtensions
     /// <param name="resource">The suppression group resource.</param>
     /// <param name="runspaceContext">A valid runspace context.</param>
     /// <returns>An instance of a <see cref="SuppressionGroupVisitor"/>.</returns>
-    public static SuppressionGroupVisitor ToSuppressionGroupVisitor(this SuppressionGroupV1 resource, RunspaceContext runspaceContext)
+    public static SuppressionGroupVisitor ToSuppressionGroupVisitor(this ISuppressionGroup resource, RunspaceContext runspaceContext)
     {
         return new SuppressionGroupVisitor(
             context: runspaceContext,
+            apiVersion: resource.ApiVersion,
             id: resource.Id,
             source: resource.Source,
             spec: resource.Spec,

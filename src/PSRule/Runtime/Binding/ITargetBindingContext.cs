@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline;
+using PSRule.Data;
 
 namespace PSRule.Runtime.Binding;
 
@@ -10,7 +10,5 @@ namespace PSRule.Runtime.Binding;
 /// </summary>
 internal interface ITargetBindingContext
 {
-    ITargetBindingResult Bind(object o);
-
-    ITargetBindingResult Bind(TargetObject o);
+    ITargetBindingResult Bind(ITargetObject o);
 }

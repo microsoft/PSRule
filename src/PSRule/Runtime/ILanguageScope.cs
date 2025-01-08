@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
@@ -66,19 +67,17 @@ internal interface ILanguageScope : IDisposable
     /// </summary>
     IEnumerable<Type> GetEmitters();
 
-    ITargetBindingResult? Bind(TargetObject targetObject);
-
-    ITargetBindingResult? Bind(object targetObject);
+    ITargetBindingResult? Bind(ITargetObject targetObject);
 
     /// <summary>
     /// Try to bind the type of the object.
     /// </summary>
-    bool TryGetType(object o, out string? type, out string? path);
+    bool TryGetType(ITargetObject o, out string? type, out string? path);
 
     /// <summary>
     /// Try to bind the name of the object.
     /// </summary>
-    bool TryGetName(object o, out string? name, out string? path);
+    bool TryGetName(ITargetObject o, out string? name, out string? path);
 
     /// <summary>
     /// Try to get a rule override by resource ID.

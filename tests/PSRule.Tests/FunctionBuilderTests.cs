@@ -29,13 +29,14 @@ public sealed class FunctionBuilderTests : ContextBaseTests
 
     #region Helper methods
 
-    private SelectorVisitor GetSelectorVisitor(string name, Source[] source, out RunspaceContext context)
+    private SelectorVisitor GetSelectorVisitor(string name, Source[] sources, out RunspaceContext context)
     {
-        context = new RunspaceContext(GetPipelineContext());
-        context.Initialize(source);
+        var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
+        context = new RunspaceContext(GetPipelineContext(resourceCache: resourcesCache));
+        context.Initialize(sources);
         context.Begin();
-        var selector = HostHelper.GetSelectorForTests(source, context).ToArray().FirstOrDefault(s => s.Name == name);
-        return new SelectorVisitor(context, selector.Id, selector.Source, selector.Spec.If);
+        var selector = resourcesCache.OfType<SelectorV1>().FirstOrDefault(s => s.Id.Name == name);
+        return selector.ToSelectorVisitor(context);
     }
 
     #endregion Helper methods

@@ -1417,6 +1417,20 @@
     }
   },
   {
+    // Synopsis: Test with a type precondition
+    "apiVersion": "github.com/microsoft/PSRule/2025-01-01",
+    "kind": "Selector",
+    "metadata": {
+      "name": "JsonTypePrecondition"
+    },
+    "spec": {
+      "type": [
+        "CustomType1"
+      ],
+      "if": {}
+    }
+  },
+  {
     // Synopsis: Test equals with name
     "apiVersion": "github.com/microsoft/PSRule/v1",
     "kind": "Selector",

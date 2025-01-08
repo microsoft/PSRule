@@ -125,7 +125,7 @@ internal static class Functions
 
         return (context) =>
         {
-            return ObjectHelper.GetPath(context, context.Current, path, false, out object value) ? value : null;
+            return ObjectHelper.GetPath(context, context.Current.Value, path, false, out object value) ? value : null;
         };
     }
 

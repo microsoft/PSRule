@@ -11,7 +11,7 @@ namespace PSRule.Definitions;
 /// A base class for resources.
 /// </summary>
 /// <typeparam name="TSpec">The type for the resource specification.</typeparam>
-[DebuggerDisplay("Kind = {Kind}, Id = {Id}")]
+[DebuggerDisplay("Kind = {Kind}, ApiVersion = {ApiVersion}, Id = {Id}")]
 public abstract class Resource<TSpec> where TSpec : Spec, new()
 {
     /// <summary>
