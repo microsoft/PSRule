@@ -35,6 +35,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     private PathFilter? _InputFilter;
     private PipelineWriter? _Writer;
     private ILanguageScopeSet? _LanguageScopeSet;
+    private CapabilitySet? _CapabilitySet;
 
     private readonly HostPipelineWriter _Output;
 
@@ -89,6 +90,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
 
         Option.Baseline = new Options.BaselineOption(option.Baseline);
         Option.Binding = new BindingOption(option.Binding);
+        Option.Capabilities = new CapabilityOption(option.Capabilities);
         Option.Convention = new ConventionOption(option.Convention);
         Option.Execution = GetExecutionOption(option.Execution);
         Option.Format = new FormatOption(option.Format);
@@ -152,6 +154,82 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         return true;
     }
 
+    /// <summary>
+    /// Require capabilities for pipeline execution
+    /// </summary>
+    protected bool RequireWorkspaceCapabilities()
+    {
+        if (Option.Capabilities == null || Option.Capabilities.Items == null || Option.Capabilities.Items.Length == 0)
+            return true;
+
+        // Get all capabilities.
+        var set = GetCapabilitySet();
+
+        // Check each capability.
+        var result = true;
+        foreach (var capability in Option.Capabilities.Items)
+        {
+            if (set.GetCapabilityState(capability) == CapabilityState.Disabled)
+            {
+                PrepareWriter().ErrorWorkspaceCapabilityDisabled(capability);
+                result = false;
+            }
+            else if (set.GetCapabilityState(capability) == CapabilityState.Unknown)
+            {
+                PrepareWriter().ErrorWorkspaceCapabilityNotSupported(capability);
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Require module capabilities for pipeline execution.
+    /// </summary>
+    protected bool RequireModuleCapabilities(ResourceCache resourceCache)
+    {
+        // Get all capabilities.
+        var set = GetCapabilitySet();
+
+        // Check each capability.
+        var result = true;
+        foreach (var moduleConfig in resourceCache.OfType<IModuleConfig>())
+        {
+
+            if (moduleConfig.Spec is IModuleConfigV2Spec spec && spec?.Capabilities?.Items?.Length > 0)
+            {
+                foreach (var capability in spec.Capabilities.Items)
+                {
+                    if (set.GetCapabilityState(capability) == CapabilityState.Disabled)
+                    {
+                        PrepareWriter().ErrorModuleCapabilityDisabled(capability, moduleConfig.Name);
+                        result = false;
+                    }
+                    else if (set.GetCapabilityState(capability) == CapabilityState.Unknown)
+                    {
+                        PrepareWriter().ErrorModuleCapabilityNotSupported(capability, moduleConfig.Name);
+                        result = false;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    protected CapabilitySet GetCapabilitySet()
+    {
+        if (_CapabilitySet != null)
+            return _CapabilitySet;
+
+        // Get all capabilities.
+        _CapabilitySet = new CapabilitySet();
+        _CapabilitySet.AddOptional("powershell-language", () =>
+        {
+            return Option.Execution?.RestrictScriptSource.GetValueOrDefault(ExecutionOption.Default.RestrictScriptSource!.Value) != RestrictScriptSource.DisablePowerShell;
+        });
+        return _CapabilitySet;
+    }
+
     private bool GuardModuleVersion(string moduleName, string moduleVersion, string requiredVersion)
     {
         if (!TryModuleVersion(moduleVersion, requiredVersion))
@@ -174,7 +252,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     /// <summary>
     /// Create a pipeline context.
     /// </summary>
-    protected PipelineContext PrepareContext((BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) binding, IPipelineWriter? writer = default)
+    protected PipelineContext? PrepareContext((BindTargetMethod bindTargetName, BindTargetMethod bindTargetType, BindTargetMethod bindField) binding, IPipelineWriter? writer = default, bool checkModuleCapabilities = false)
     {
         writer ??= PrepareWriter();
         var unresolved = new List<ResourceRef>();
@@ -189,6 +267,9 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         {
             scope.Configure(options.Build(scope.Name));
         }
+
+        if (checkModuleCapabilities && !RequireModuleCapabilities(resourceCache))
+            return null;
 
         return PipelineContext.New(
             option: Option,
@@ -379,9 +460,9 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     {
         var builder = new OptionContextBuilder(Option, _Include, _Tag, _Convention, binding.bindTargetName, binding.bindTargetType, binding.bindField);
 
-        foreach (var moduleConfig in resourceCache.OfType<ModuleConfigV1>())
+        foreach (var moduleConfig in resourceCache.OfType<IModuleConfig>())
         {
-            builder.ModuleConfig(moduleConfig.Source.Module, moduleConfig.Spec);
+            builder.ModuleConfig(moduleConfig.Source.Module, moduleConfig.Name, moduleConfig.Spec);
         }
 
         foreach (var kv in resourceCache.Baselines)

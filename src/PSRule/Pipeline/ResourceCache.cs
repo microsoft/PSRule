@@ -61,12 +61,17 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
         }
         else if (TryModuleConfig(resource, out var moduleConfig))
         {
-            if (!string.IsNullOrEmpty(moduleConfig!.Spec?.Rule?.Baseline))
+            switch (moduleConfig!.Spec)
             {
-                var baselineId = ResourceHelper.GetIdString(moduleConfig.Source.Module, moduleConfig.Spec!.Rule.Baseline);
-                if (!Baselines.ContainsKey(baselineId))
-                    _Unresolved.Add(new BaselineRef(baselineId, ScopeType.Baseline));
+                case IModuleConfigV1Spec v1:
+                    TrackUnresolvedBaseline(moduleConfig.Source.Module, v1.Rule?.Baseline);
+                    break;
+
+                case IModuleConfigV2Spec v2:
+                    TrackUnresolvedBaseline(moduleConfig.Source.Module, v2.Rule?.Baseline);
+                    break;
             }
+
             _Resources.Add(moduleConfig);
             return true;
         }
@@ -87,6 +92,18 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
         }
 
         return false;
+    }
+
+    private void TrackUnresolvedBaseline(string? module, string? baseline)
+    {
+        if (!string.IsNullOrEmpty(baseline) && baseline != null && module != null)
+        {
+            var baselineId = ResourceHelper.GetIdString(module, baseline);
+            if (!Baselines.ContainsKey(baselineId))
+            {
+                _Unresolved.Add(new BaselineRef(baselineId, ScopeType.Baseline));
+            }
+        }
     }
 
     /// <summary>
@@ -150,13 +167,10 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
         return false;
     }
 
-    private static bool TryModuleConfig(IResource resource, out ModuleConfigV1? moduleConfig)
+    private static bool TryModuleConfig(IResource resource, out IModuleConfig? moduleConfig)
     {
         moduleConfig = null;
-        if (resource.Kind == ResourceKind.ModuleConfig &&
-            !string.IsNullOrEmpty(resource.Source.Module) &&
-            StringComparer.OrdinalIgnoreCase.Equals(resource.Source.Module, resource.Name) &&
-            resource is ModuleConfigV1 result)
+        if (resource.Kind == ResourceKind.ModuleConfig && resource is IModuleConfig result)
         {
             moduleConfig = result;
             return true;

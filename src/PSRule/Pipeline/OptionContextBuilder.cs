@@ -122,15 +122,19 @@ internal sealed class OptionContextBuilder
         _Scopes.Add(OptionScope.FromWorkspace(option));
     }
 
-    internal void Baseline(ScopeType type, string baselineId, string module, BaselineSpec spec, bool obsolete)
+    internal void Baseline(ScopeType type, string baselineId, string? module, BaselineSpec spec, bool obsolete)
     {
         baselineId = ResourceHelper.GetIdString(module, baselineId);
         _ModuleBaselineScope.Add(baselineId, obsolete);
         _Scopes.Add(OptionScope.FromBaseline(type, baselineId, module, spec, obsolete));
     }
 
-    internal void ModuleConfig(string module, ModuleConfigV1Spec spec)
+    internal void ModuleConfig(string? module, string name, IModuleConfigSpec spec)
     {
+        // Ignore module configurations that are not withing a match module name.
+        if (module == null || string.IsNullOrEmpty(module) || !StringComparer.OrdinalIgnoreCase.Equals(module, name))
+            return;
+
         _Scopes.Add(OptionScope.FromModuleConfig(module, spec));
     }
 

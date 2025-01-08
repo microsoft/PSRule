@@ -4,7 +4,6 @@
 using Newtonsoft.Json;
 using PSRule.Definitions;
 using PSRule.Definitions.Expressions;
-using PSRule.Pipeline;
 using PSRule.Resources;
 
 namespace PSRule.Converters.Json;
@@ -81,7 +80,7 @@ internal sealed class LanguageExpressionJsonConverter : JsonConverter
                         reader.Consume(JsonToken.EndObject);
                     }
                     if (reader.TokenType == JsonToken.EndObject)
-                        throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
+                        throw new PipelineSerializationException(Messages.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
                 }
                 reader.Consume(JsonToken.EndArray);
                 reader.SkipComments(out _);

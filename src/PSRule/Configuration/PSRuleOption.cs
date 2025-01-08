@@ -35,6 +35,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     {
         Baseline = Options.BaselineOption.Default,
         Binding = BindingOption.Default,
+        Capabilities = CapabilityOption.Default,
         Convention = ConventionOption.Default,
         Execution = ExecutionOption.Default,
         Format = FormatOption.Default,
@@ -55,6 +56,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         // Set defaults
         Baseline = new Options.BaselineOption();
         Binding = new BindingOption();
+        Capabilities = new CapabilityOption();
         Configuration = new ConfigurationOption();
         Convention = new ConventionOption();
         Execution = new ExecutionOption();
@@ -78,6 +80,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         // Set from existing option instance
         Baseline = new Options.BaselineOption(option?.Baseline);
         Binding = new BindingOption(option?.Binding);
+        Capabilities = new CapabilityOption(option?.Capabilities);
         Configuration = new ConfigurationOption(option?.Configuration);
         Convention = new ConventionOption(option?.Convention);
         Execution = new ExecutionOption(option?.Execution);
@@ -103,6 +106,11 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     /// Options that affect property binding.
     /// </summary>
     public BindingOption Binding { get; set; }
+
+    /// <summary>
+    /// Options that configure required capabilities.
+    /// </summary>
+    public CapabilityOption Capabilities { get; set; }
 
     /// <summary>
     /// Allows configuration key/ values to be specified that can be used within rule definitions.
@@ -227,6 +235,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         var result = new PSRuleOption(o1?._SourcePath ?? o2?._SourcePath, o1);
         result.Baseline = Options.BaselineOption.Combine(result.Baseline, o2?.Baseline);
         result.Binding = BindingOption.Combine(result.Binding, o2?.Binding);
+        result.Capabilities = CapabilityOption.Combine(result.Capabilities, o2?.Capabilities);
         result.Configuration = ConfigurationOption.Combine(result.Configuration, o2?.Configuration);
         result.Convention = ConventionOption.Combine(result.Convention, o2?.Convention);
         result.Execution = ExecutionOption.Combine(result.Execution, o2?.Execution);
@@ -334,6 +343,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
                 .WithTypeConverter(new StringArrayMapConverter())
                 .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
+                .WithTypeConverter(new CapabilityOptionYamlConverter())
                 .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
                 .Build();
 
@@ -362,6 +372,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         // Start loading matching values
         option.Baseline.Load();
         option.Binding.Load();
+        option.Capabilities.Load();
         option.Convention.Load();
         option.Execution.Load();
         option.Format.Load();
@@ -395,6 +406,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         var index = BuildIndex(hashtable);
         option.Baseline.Import(index);
         option.Binding.Import(index);
+        option.Capabilities.Import(index);
         option.Convention.Load(index);
         option.Execution.Import(index);
         option.Format.Import(index);
@@ -462,6 +474,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         return other != null &&
             Baseline == other.Baseline &&
             Binding == other.Binding &&
+            Capabilities == other.Capabilities &&
             Configuration == other.Configuration &&
             Convention == other.Convention &&
             Execution == other.Execution &&
@@ -486,6 +499,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
             var hash = 17;
             hash = hash * 23 + (Baseline != null ? Baseline.GetHashCode() : 0);
             hash = hash * 23 + (Binding != null ? Binding.GetHashCode() : 0);
+            hash = hash * 23 + (Capabilities != null ? Capabilities.GetHashCode() : 0);
             hash = hash * 23 + (Configuration != null ? Configuration.GetHashCode() : 0);
             hash = hash * 23 + (Convention != null ? Convention.GetHashCode() : 0);
             hash = hash * 23 + (Execution != null ? Execution.GetHashCode() : 0);
@@ -575,6 +589,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .WithTypeConverter(new FieldMapYamlTypeConverter())
             .WithTypeConverter(new StringArrayMapConverter())
+            .WithTypeConverter(new CapabilityOptionYamlConverter())
             .Build();
 
         return s.Serialize(this);

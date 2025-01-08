@@ -691,6 +691,49 @@ variables:
   value: '2'
 ```
 
+### Capabilities
+
+<!-- module:version 3.0.0 -->
+
+Specifies a list of capabilities required by the configuration.
+When set, PSRule will validate that the capabilities are available before executing the configuration.
+If the capabilities are not available, PSRule will report an error.
+
+Capabilities may not be available if the PSRule version you are using does not support the feature.
+Additionally, some capabilities may be disabled by the environment or configuration.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Capabilities hashtable key
+$option = New-PSRuleOption -Option @{ 'Capabilities' = 'api-2025-01-01' };
+```
+
+```yaml
+# YAML: Using the capabilities property
+capabilities:
+  - 'api-2025-01-01'
+  - 'api-v1
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_CAPABILITIES='api-2025-01-01;api-v1'
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_CAPABILITIES: 'api-2025-01-01;api-v1'
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_CAPABILITIES
+  value: 'api-2025-01-01;api-v1'
+```
+
 ### Convention.Include
 
 Specifies conventions to execute when the pipeline run.

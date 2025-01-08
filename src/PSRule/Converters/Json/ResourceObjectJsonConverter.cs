@@ -4,7 +4,6 @@
 using Newtonsoft.Json;
 using PSRule.Annotations;
 using PSRule.Definitions;
-using PSRule.Pipeline;
 using PSRule.Resources;
 
 namespace PSRule.Converters.Json;

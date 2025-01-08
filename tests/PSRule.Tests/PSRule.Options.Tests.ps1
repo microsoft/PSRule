@@ -581,6 +581,52 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Capabilities' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Capabilities.Items | Should -Be $Null;
+        }
+
+        It 'from Hashtable' {
+            # With single item
+            $option = New-PSRuleOption -Option @{ 'Capabilities' = 'api-2025-01-01' };
+            $option.Capabilities.Items | Should -BeIn 'api-2025-01-01';
+            $option.Capabilities.Items.Length | Should -Be 1;
+
+            # With array
+            $option = New-PSRuleOption -Option @{ 'Capabilities' = 'api-2025-01-01', 'api-v1' };
+            $option.Capabilities.Items | Should -BeIn 'api-2025-01-01', 'api-v1';
+            $option.Capabilities.Items.Length | Should -Be 2;
+        }
+
+        It 'from YAML' {
+            # With single item
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests18.yml');
+            $option.Capabilities.Items | Should -BeIn 'api-2025-01-01';
+            $option.Capabilities.Items.Length | Should -Be 1;
+        }
+
+        It 'from Environment' {
+            try {
+                # With single item
+                $Env:PSRULE_CAPABILITIES = 'api-2025-01-01';
+                $option = New-PSRuleOption;
+                $option.Capabilities.Items | Should -BeIn 'api-2025-01-01';
+                $option.Capabilities.Items.Length | Should -Be 1;
+
+                # With array
+                $Env:PSRULE_CAPABILITIES = 'api-2025-01-01;api-v1';
+                $option = New-PSRuleOption;
+                $option.Capabilities.Items | Should -BeIn 'api-2025-01-01', 'api-v1';
+                $option.Capabilities.Items.Length | Should -Be 2;
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_CAPABILITIES' -Force;
+            }
+        }
+
+    }
+
     Context 'Read Convention.Include' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

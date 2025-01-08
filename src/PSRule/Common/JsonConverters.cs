@@ -6,11 +6,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using PSRule.Configuration;
 using PSRule.Converters;
+using PSRule.Converters.Json;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Emitters;
-using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
 
@@ -38,7 +38,7 @@ internal abstract class PSObjectBaseConverter : JsonConverter
         SkipComments(reader);
         var path = reader.Path;
         if (reader.TokenType != JsonToken.StartObject || !reader.Read())
-            throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
+            throw new PipelineSerializationException(Messages.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
 
         string name = null;
         var lineNumber = 0;
@@ -88,7 +88,7 @@ internal abstract class PSObjectBaseConverter : JsonConverter
                     break;
             }
             if (!reader.Read() || reader.TokenType == JsonToken.None)
-                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
+                throw new PipelineSerializationException(Messages.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
         }
         if (bindTargetInfo)
         {
@@ -112,7 +112,7 @@ internal abstract class PSObjectBaseConverter : JsonConverter
     {
         SkipComments(reader);
         if (reader.TokenType != JsonToken.StartArray || !reader.Read())
-            throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
+            throw new PipelineSerializationException(Messages.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
 
         var result = new List<PSObject>();
 
@@ -143,7 +143,7 @@ internal abstract class PSObjectBaseConverter : JsonConverter
                     break;
             }
             if (!reader.Read() || reader.TokenType == JsonToken.None)
-                throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
+                throw new PipelineSerializationException(Messages.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
         }
         return result.ToArray();
     }
@@ -246,7 +246,7 @@ internal sealed class PSObjectArrayJsonConverter : PSObjectBaseConverter
             return Array.Empty<PSObject>();
 
         if (reader.TokenType != JsonToken.StartObject && reader.TokenType != JsonToken.StartArray)
-            throw new PipelineSerializationException(PSRuleResources.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
+            throw new PipelineSerializationException(Messages.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
 
         var parser = reader as JsonEmitterParser;
         var fileInfo = parser?.Info ?? _SourceInfo;

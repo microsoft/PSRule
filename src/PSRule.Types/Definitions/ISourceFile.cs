@@ -16,7 +16,7 @@ public interface ISourceFile
     /// <summary>
     /// The name of the module if the source was loaded from a module.
     /// </summary>
-    string Module { get; }
+    string? Module { get; }
 
     /// <summary>
     /// The type of source file.

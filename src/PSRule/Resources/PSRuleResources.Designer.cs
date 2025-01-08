@@ -619,11 +619,47 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The resource &apos;{0}&apos; using API &apos;{1}&apos; is not recognized as a valid PSRule resource (source: {2})..
+        ///   Looks up a localized string similar to PSR0007: The resource &apos;{0}&apos; using API &apos;{1}&apos; is not recognized as a valid PSRule resource (source: {2})..
         /// </summary>
         internal static string PSR0007 {
             get {
                 return ResourceManager.GetString("PSR0007", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSR0008: The capability &apos;{0}&apos; requested by the workspace is disabled..
+        /// </summary>
+        internal static string PSR0008 {
+            get {
+                return ResourceManager.GetString("PSR0008", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSR0009: The capability &apos;{0}&apos; requested by the workspace is not supported..
+        /// </summary>
+        internal static string PSR0009 {
+            get {
+                return ResourceManager.GetString("PSR0009", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSR0010: The capability &apos;{0}&apos; requested by the module &apos;{1}&apos; is disabled..
+        /// </summary>
+        internal static string PSR0010 {
+            get {
+                return ResourceManager.GetString("PSR0010", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSR0011: The capability &apos;{0}&apos; requested by the module &apos;{1}&apos; is not supported..
+        /// </summary>
+        internal static string PSR0011 {
+            get {
+                return ResourceManager.GetString("PSR0011", resourceCulture);
             }
         }
         
@@ -651,15 +687,6 @@ namespace PSRule.Resources {
         internal static string ReadJsonFailed {
             get {
                 return ResourceManager.GetString("ReadJsonFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Read JSON failed because the token ({0}) was not expected at path &apos;{1}&apos;..
-        /// </summary>
-        internal static string ReadJsonFailedExpectedToken {
-            get {
-                return ResourceManager.GetString("ReadJsonFailedExpectedToken", resourceCulture);
             }
         }
         

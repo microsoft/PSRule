@@ -10,7 +10,6 @@ using PSRule.Converters.Json;
 using PSRule.Converters.Yaml;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
-using PSRule.Definitions.ModuleConfigs;
 using PSRule.Definitions.Rules;
 using PSRule.Help;
 using PSRule.Pipeline;
@@ -89,14 +88,6 @@ internal static class HostHelper
     internal static IEnumerable<Baseline> GetBaseline(Source[] source, RunspaceContext context)
     {
         return GetMetaResources<ILanguageBlock>(source, context).ToBaselineV1(context);
-    }
-
-    /// <summary>
-    /// Read YAML/JSON objects and return module configurations.
-    /// </summary>
-    internal static IEnumerable<ModuleConfigV1> GetModuleConfigForTests(Source[] source, RunspaceContext context)
-    {
-        return GetMetaResources<ILanguageBlock>(source, context).ToModuleConfigV1(context);
     }
 
     /// <summary>
@@ -250,6 +241,7 @@ internal static class HostHelper
             .WithTypeConverter(new StringArrayConverter())
             .WithTypeConverter(new PSObjectYamlTypeConverter())
             .WithTypeConverter(new EnumMapYamlTypeConverter<SeverityLevel>())
+            .WithTypeConverter(new CapabilityOptionYamlConverter())
             .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
             .WithNodeDeserializer(
                 inner => new ResourceNodeDeserializer(context, new LanguageExpressionDeserializer(context, inner)),
@@ -318,6 +310,7 @@ internal static class HostHelper
         deserializer.Converters.Add(new StringArrayJsonConverter());
         deserializer.Converters.Add(new LanguageExpressionJsonConverter(context));
         deserializer.Converters.Add(new EnumMapJsonConverter<SeverityLevel>());
+        deserializer.Converters.Add(new CapabilityOptionJsonConverter());
 
         try
         {

@@ -42,7 +42,7 @@ internal static class Specs
         // 2025-01-01
         new SpecDescriptor<RuleV1, RuleV1Spec>(API_2025_01_01, Rule),
         new SpecDescriptor<Baseline, BaselineSpec>(API_2025_01_01, Baseline),
-        new SpecDescriptor<ModuleConfigV1, ModuleConfigV1Spec>(API_2025_01_01, ModuleConfig),
+        new SpecDescriptor<ModuleConfigV2, ModuleConfigV2Spec>(API_2025_01_01, ModuleConfig),
         new SpecDescriptor<SelectorV2, SelectorV2Spec>(API_2025_01_01, Selector),
         new SpecDescriptor<SuppressionGroupV2, SuppressionGroupV2Spec>(API_2025_01_01, SuppressionGroup)
     ];
