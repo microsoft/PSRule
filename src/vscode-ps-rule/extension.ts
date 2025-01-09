@@ -20,6 +20,8 @@ import { showTasks } from './commands/showTasks';
 import { PSRuleLanguageServer, getActiveOrFirstWorkspace, getLanguageServer } from './utils';
 import { restore } from './commands/restore';
 import { initLock } from './commands/initLock';
+import { client } from './client';
+import { LanguageClient } from 'vscode-languageclient/node';
 
 export let taskManager: PSRuleTaskProvider | undefined;
 export let docLensProvider: DocumentationLensProvider | undefined;
@@ -36,6 +38,7 @@ export class ExtensionManager implements vscode.Disposable {
     private _info!: ExtensionInfo;
     private _context!: vscode.ExtensionContext;
     private _server!: PSRuleLanguageServer | undefined;
+    private _client!: LanguageClient;
 
     constructor() { }
 
@@ -90,6 +93,10 @@ export class ExtensionManager implements vscode.Disposable {
         if (logger) {
             logger.dispose();
         }
+        if (this._client) {
+            this._client.stop();
+            this._client.dispose();
+        }
     }
 
     private async activateFeatures(): Promise<void> {
@@ -140,7 +147,6 @@ export class ExtensionManager implements vscode.Disposable {
                     initLock();
                 })
             );
-
         }
     }
 
@@ -169,6 +175,8 @@ export class ExtensionManager implements vscode.Disposable {
             this._server = await getLanguageServer(this._context);
 
             await this.restoreOnActivation()
+
+            this._client = await client.configure(this._context);
         }
     }
 

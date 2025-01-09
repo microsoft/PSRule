@@ -37,7 +37,7 @@ using System;
 
 namespace PSRule
 {{
-    internal static partial class Engine
+    public static partial class Engine
     {{
         private const string _Version = ""{productVersion}"";
     }}

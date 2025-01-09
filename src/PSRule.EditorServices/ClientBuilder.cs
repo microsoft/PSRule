@@ -7,6 +7,8 @@ using System.Reflection;
 using PSRule.CommandLine;
 using PSRule.CommandLine.Commands;
 using PSRule.CommandLine.Models;
+using PSRule.EditorServices.Commands;
+using PSRule.EditorServices.Models;
 using PSRule.EditorServices.Resources;
 using PSRule.Pipeline;
 
@@ -37,6 +39,8 @@ internal sealed class ClientBuilder
     private readonly Option<string> _Run_Baseline;
     private readonly Option<string[]> _Run_Outcome;
     private readonly Option<bool> _Run_NoRestore;
+    private readonly Option<bool> _Listen_Stdio;
+    private readonly Option<string> _Listen_Pipe;
 
     private ClientBuilder(RootCommand cmd)
     {
@@ -115,6 +119,17 @@ internal sealed class ClientBuilder
             description: CmdStrings.Module_Restore_Force_Description
         );
 
+        // Options for the listen command.
+        _Listen_Stdio = new Option<bool>(
+            ["--stdio"],
+            description: CmdStrings.Listen_Stdio_Description
+        );
+
+        _Listen_Pipe = new Option<string>(
+            ["--pipe"],
+            description: CmdStrings.Listen_Pipe_Description
+        );
+
         cmd.AddGlobalOption(_Global_Option);
         cmd.AddGlobalOption(_Global_Verbose);
         cmd.AddGlobalOption(_Global_Debug);
@@ -132,6 +147,7 @@ internal sealed class ClientBuilder
         var builder = new ClientBuilder(cmd);
         builder.AddRun();
         builder.AddModule();
+        builder.AddListen();
         return builder.Command;
     }
 
@@ -319,6 +335,26 @@ internal sealed class ClientBuilder
         cmd.AddCommand(restore);
 
         cmd.AddOption(_Global_Path);
+        Command.AddCommand(cmd);
+    }
+
+    private void AddListen()
+    {
+        var cmd = new Command("listen", CmdStrings.Listen_Description);
+        cmd.AddOption(_Global_Path);
+        cmd.AddOption(_Listen_Stdio);
+        cmd.AddOption(_Listen_Pipe);
+        cmd.SetHandler(async (invocation) =>
+        {
+            var option = new ListenOptions
+            {
+                Path = invocation.ParseResult.GetValueForOption(_Global_Path),
+                Pipe = invocation.ParseResult.GetValueForOption(_Listen_Pipe),
+                Stdio = invocation.ParseResult.GetValueForOption(_Listen_Stdio),
+            };
+            var client = GetClientContext(invocation);
+            invocation.ExitCode = await ListenCommand.ListenAsync(option, client);
+        });
         Command.AddCommand(cmd);
     }
 

@@ -25,6 +25,8 @@ namespace PSRule.CommandLine.Commands;
 /// </summary>
 public sealed class ModuleCommand
 {
+    private const int ERROR_SUCCESS = 0;
+
     /// <summary>
     /// Failed to install a module.
     /// </summary>
@@ -46,7 +48,7 @@ public sealed class ModuleCommand
     /// </summary>
     public static async Task<int> ModuleRestoreAsync(RestoreOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
     {
-        var exitCode = 0;
+        var exitCode = ERROR_SUCCESS;
         var requires = clientContext.Option.Requires.ToDictionary();
         var file = LockFile.Read(null);
 
@@ -135,7 +137,7 @@ public sealed class ModuleCommand
             }
         }
 
-        if (exitCode == 0)
+        if (exitCode == ERROR_SUCCESS)
         {
             clientContext.LogVerbose("[PSRule][M] -- All modules are restored and up-to-date.");
         }
@@ -152,7 +154,7 @@ public sealed class ModuleCommand
     /// </summary>
     public static async Task<int> ModuleInitAsync(ModuleOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
     {
-        var exitCode = 0;
+        var exitCode = ERROR_SUCCESS;
         var requires = clientContext.Option.Requires.ToDictionary();
         var existingFile = LockFile.Read(null);
         var file = !operationOptions.Force ? existingFile : new LockFile();
@@ -218,12 +220,12 @@ public sealed class ModuleCommand
     public static async Task<int> ModuleListAsync(ModuleOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
-        var exitCode = 0;
+        var exitCode = ERROR_SUCCESS;
         var requires = clientContext.Option.Requires.ToDictionary();
         var file = LockFile.Read(null);
         var pwsh = CreatePowerShell();
 
-        if (exitCode == 0)
+        if (exitCode == ERROR_SUCCESS)
         {
             ListModules(clientContext, GetModules(pwsh, file, clientContext.Option));
         }
@@ -235,7 +237,7 @@ public sealed class ModuleCommand
     /// </summary>
     public static async Task<int> ModuleAddAsync(ModuleOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
     {
-        var exitCode = 0;
+        var exitCode = ERROR_SUCCESS;
         if (operationOptions.Module == null || operationOptions.Module.Length == 0) return exitCode;
 
         var requires = clientContext.Option.Requires.ToDictionary();
@@ -296,7 +298,7 @@ public sealed class ModuleCommand
 
         file.Write(null);
 
-        if (exitCode == 0)
+        if (exitCode == ERROR_SUCCESS)
         {
             ListModules(clientContext, GetModules(pwsh, file, clientContext.Option));
         }
@@ -310,7 +312,7 @@ public sealed class ModuleCommand
     public static async Task<int> ModuleRemoveAsync(ModuleOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
-        var exitCode = 0;
+        var exitCode = ERROR_SUCCESS;
         if (operationOptions.Module == null || operationOptions.Module.Length == 0) return exitCode;
 
         var file = LockFile.Read(null);
@@ -330,7 +332,7 @@ public sealed class ModuleCommand
 
         file.Write(null);
 
-        if (exitCode == 0)
+        if (exitCode == ERROR_SUCCESS)
         {
             ListModules(clientContext, GetModules(pwsh, file, clientContext.Option));
         }
@@ -342,7 +344,7 @@ public sealed class ModuleCommand
     /// </summary>
     public static async Task<int> ModuleUpgradeAsync(ModuleOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
     {
-        var exitCode = 0;
+        var exitCode = ERROR_SUCCESS;
         var requires = clientContext.Option.Requires.ToDictionary();
         var file = LockFile.Read(null);
         var filteredModules = operationOptions.Module != null && operationOptions.Module.Length > 0 ? new HashSet<string>(operationOptions.Module, StringComparer.OrdinalIgnoreCase) : null;
@@ -379,7 +381,7 @@ public sealed class ModuleCommand
 
         file.Write(null);
 
-        if (exitCode == 0)
+        if (exitCode == ERROR_SUCCESS)
         {
             ListModules(clientContext, GetModules(pwsh, file, clientContext.Option));
         }

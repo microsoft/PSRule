@@ -38,6 +38,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Types.Tests", "tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSRule.EditorServices", "src\PSRule.EditorServices\PSRule.EditorServices.csproj", "{061DD38A-B9E9-4EF1-B5B7-D0A484DB74D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSRule.EditorServices.Tests", "tests\PSRule.EditorServices.Tests\PSRule.EditorServices.Tests.csproj", "{89D6AAAA-2AD9-4899-935E-5330EFB3383E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +102,10 @@ Global
 		{061DD38A-B9E9-4EF1-B5B7-D0A484DB74D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{061DD38A-B9E9-4EF1-B5B7-D0A484DB74D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{061DD38A-B9E9-4EF1-B5B7-D0A484DB74D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89D6AAAA-2AD9-4899-935E-5330EFB3383E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89D6AAAA-2AD9-4899-935E-5330EFB3383E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89D6AAAA-2AD9-4899-935E-5330EFB3383E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89D6AAAA-2AD9-4899-935E-5330EFB3383E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,6 +115,7 @@ Global
 		{DA46C891-08F1-4D01-9F98-1F8BB10CAFEC} = {E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}
 		{C25E2FC1-E306-4D99-925C-15E5DD51F6A2} = {E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}
 		{34095F78-CDA3-4E72-B64C-6366EA4B3EAF} = {E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}
+		{89D6AAAA-2AD9-4899-935E-5330EFB3383E} = {E0EA0CBA-96C5-4447-8B69-BC13EF0D7A4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {533491EB-BAE9-472E-B57F-A675ECD335B5}
