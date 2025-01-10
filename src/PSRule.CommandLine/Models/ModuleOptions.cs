@@ -4,7 +4,7 @@
 namespace PSRule.CommandLine.Models;
 
 /// <summary>
-/// Options for the module command.
+/// Options for the <c>module</c> command.
 /// </summary>
 public sealed class ModuleOptions
 {

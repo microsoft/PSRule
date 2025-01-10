@@ -145,3 +145,6 @@ The following table lists exit codes that may be returned by the PSRule language
 Exit code | Description | Notes
 --------- | ----------- | -----
 0         | Success | The language server exited during normal operation.
+901       | The language server was unable to start due to missing or invalid configuration. | Unexpected. Please report this issue.
+902       | The language server encountered an unexpected exception and stopped. | Unexpected. Please report this issue.
+903       | A debugger failed to attach to the language server. | When debugging the language server, ensure the debugger is attached within 5 minutes.

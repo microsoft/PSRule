@@ -21,6 +21,8 @@ export interface ILogger {
     log(message: string, ...additionalMessages: string[]): void;
 
     dispose(): void;
+
+    get channel(): vscode.OutputChannel;
 }
 
 export class Logger implements ILogger {
@@ -45,6 +47,10 @@ export class Logger implements ILogger {
 
     public log(message: string, ...additionalMessages: string[]): void {
         this.write(LogLevel.Normal, message, ...additionalMessages);
+    }
+
+    public get channel(): vscode.OutputChannel {
+        return this._Output;
     }
 
     private write(logLevel: LogLevel, message: string, ...additionalMessages: string[]): void {

@@ -195,4 +195,13 @@
   <data name="Run_NoRestore_Description" xml:space="preserve">
     <value>Do not restore modules before running rules.</value>
   </data>
+  <data name="Listen_Stdio_Description" xml:space="preserve">
+    <value>Use stdin/stdout for LSP communication.</value>
+  </data>
+  <data name="Listen_Pipe_Description" xml:space="preserve">
+    <value>The named pipe to connect to for LSP communication.</value>
+  </data>
+  <data name="Listen_Description" xml:space="preserve">
+    <value>Run the language server.</value>
+  </data>
 </root>

@@ -106,6 +106,33 @@ namespace PSRule.EditorServices.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run the language server..
+        /// </summary>
+        internal static string Listen_Description {
+            get {
+                return ResourceManager.GetString("Listen_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The named pipe to connect to for LSP communication..
+        /// </summary>
+        internal static string Listen_Pipe_Description {
+            get {
+                return ResourceManager.GetString("Listen_Pipe_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use stdin/stdout for LSP communication..
+        /// </summary>
+        internal static string Listen_Stdio_Description {
+            get {
+                return ResourceManager.GetString("Listen_Stdio_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add one or more modules to the lock file..
         /// </summary>
         internal static string Module_Add_Description {
