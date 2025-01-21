@@ -4,6 +4,11 @@
     "PSRule.Rules.MSFT.OSS": {
       "version": "1.1.0",
       "integrity": "sha512-4oEbkAT3VIQQlrDUOpB9qKkbNU5BMktvkDCriws4LgCMUiyUoYMcN0XovljAIW4FO0cmP7mP6A8Z7MPNGlgK7Q=="
+    },
+    "PSRule.Rules.Azure": {
+      "version": "1.39.3",
+      "includePrerelease": true,
+      "integrity": "sha512-BS6NhS0xlt7+iLoBWchc72I3/LAi1bWum9jV48aKNfQ/02lzrCiSgUHu3Svc0sS3oICdSfO3zoxlcI24Oo3Zfw=="
     }
   }
 }

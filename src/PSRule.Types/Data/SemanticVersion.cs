@@ -437,7 +437,7 @@ public static class SemanticVersion
     /// <summary>
     /// A semantic version.
     /// </summary>
-    [DebuggerDisplay("{_VersionString}")]
+    [DebuggerDisplay("{ToString()}")]
     public sealed class Version : IComparable<Version>, IEquatable<Version>
     {
         private string? _VersionString;

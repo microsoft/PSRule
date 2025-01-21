@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\PSRule.LangServer\PSRule.LangServer.csproj" />
+    <ProjectReference Include="..\..\src\PSRule.EditorServices\PSRule.EditorServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>
