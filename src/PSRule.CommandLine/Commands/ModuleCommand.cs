@@ -277,9 +277,10 @@ public sealed class ModuleCommand
                     return ERROR_MODULE_FAILED_TO_FIND;
                 }
 
-                if (!IsInstalled(pwsh, module, idealVersion, out _, out _))
+                if (!IsInstalled(pwsh, module, idealVersion, out _, out _) && await InstallVersionAsync(clientContext, module, idealVersion, null, cancellationToken) == null)
                 {
-                    await InstallVersionAsync(clientContext, module, idealVersion, null, cancellationToken);
+                    clientContext.LogError(Messages.Error_501, module, idealVersion);
+                    return ERROR_MODULE_FAILED_TO_INSTALL;
                 }
 
                 clientContext.LogVerbose(Messages.UsingModule, module, idealVersion.ToString());
@@ -352,8 +353,17 @@ public sealed class ModuleCommand
         using var pwsh = CreatePowerShell();
         foreach (var kv in file.Modules.Where(m => filteredModules == null || filteredModules.Contains(m.Key)))
         {
-            // Get a constraint if set from options.
-            var moduleConstraint = requires.TryGetValue(kv.Key, out var c) ? c : ModuleConstraint.Any(kv.Key, includePrerelease: kv.Value.IncludePrerelease ?? operationOptions.Prerelease);
+            var includePrerelease = kv.Value.IncludePrerelease ?? operationOptions.Prerelease;
+
+            // Get the module constraint.
+            var moduleConstraint = ModuleConstraint.Any(kv.Key, includePrerelease: includePrerelease);
+
+            // Use the constraint set in options.
+            if (requires.TryGetValue(kv.Key, out var c))
+            {
+                // Only allow pre-releases if both the constraint and lock file/ context allows it.
+                moduleConstraint = !includePrerelease ? c.Stable() : c;
+            }
 
             // Find the ideal version.
             var idealVersion = await FindVersionAsync(kv.Key, moduleConstraint, null, null, cancellationToken);
@@ -366,9 +376,10 @@ public sealed class ModuleCommand
             if (idealVersion == kv.Value.Version)
                 continue;
 
-            if (!IsInstalled(pwsh, kv.Key, idealVersion, out _, out _))
+            if (!IsInstalled(pwsh, kv.Key, idealVersion, out _, out _) && await InstallVersionAsync(clientContext, kv.Key, idealVersion, null, cancellationToken) == null)
             {
-                await InstallVersionAsync(clientContext, kv.Key, idealVersion, null, cancellationToken);
+                clientContext.LogError(Messages.Error_501, kv.Key, idealVersion);
+                return ERROR_MODULE_FAILED_TO_INSTALL;
             }
 
             clientContext.LogVerbose(Messages.UsingModule, kv.Key, idealVersion.ToString());
@@ -580,7 +591,7 @@ public sealed class ModuleCommand
                 // Clean up the temp path.
                 if (Directory.Exists(tempPath))
                 {
-                    Directory.Delete(tempPath, true);
+                    Retry(3, 1000, () => Directory.Delete(tempPath, true));
                 }
 
                 context.LogError(Messages.Error_504, name, version);
@@ -593,7 +604,7 @@ public sealed class ModuleCommand
             Directory.CreateDirectory(parentDirectory);
 
         // Move the module to the final path.
-        Directory.Move(tempPath, modulePath);
+        Retry(3, 1000, () => Directory.Move(tempPath, modulePath));
 
         if (!Directory.Exists(modulePath))
             return null;
@@ -630,6 +641,33 @@ public sealed class ModuleCommand
     private static PowerShell CreatePowerShell()
     {
         return PowerShell.Create();
+    }
+
+    /// <summary>
+    /// Retry an action a number of times with a delay.
+    /// </summary>
+    /// <param name="retryCount">The number of retries.</param>
+    /// <param name="delay">The delay in milliseconds.</param>
+    /// <param name="action">The action to attempt.</param>
+    private static void Retry(int retryCount, int delay, Action action)
+    {
+        var attempts = 0;
+        while (attempts < retryCount)
+        {
+            try
+            {
+                action();
+                return;
+            }
+            catch (Exception)
+            {
+                attempts++;
+                if (attempts >= retryCount)
+                    throw;
+
+                Thread.Sleep(delay);
+            }
+        }
     }
 
     #endregion Helper methods

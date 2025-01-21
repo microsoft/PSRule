@@ -3,6 +3,7 @@
 
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using PSRule.Converters.Json;
 using PSRule.Data;
@@ -14,6 +15,7 @@ namespace PSRule.Pipeline.Dependencies;
 /// <summary>
 /// An entry within the lock file.
 /// </summary>
+[DebuggerDisplay("{Version.ToString()}, IncludePrerelease={IncludePrerelease}, {Integrity.Hash}")]
 public sealed class LockEntry(SemanticVersion.Version version)
 {
     /// <summary>

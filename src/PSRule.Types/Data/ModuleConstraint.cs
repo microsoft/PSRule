@@ -14,6 +14,8 @@ namespace PSRule.Data;
 [DebuggerDisplay("{Module}")]
 public sealed class ModuleConstraint(string module, ISemanticVersionConstraint constraint) : ISemanticVersionConstraint
 {
+    private bool _RequireStableVersions = false;
+
     /// <summary>
     /// The name of the module.
     /// </summary>
@@ -25,7 +27,19 @@ public sealed class ModuleConstraint(string module, ISemanticVersionConstraint c
     public ISemanticVersionConstraint Constraint { get; } = constraint ?? throw new ArgumentNullException(nameof(constraint));
 
     /// <inheritdoc/>
-    public bool Accepts(SemanticVersion.Version? version) => Constraint.Accepts(version);
+    public bool Accepts(SemanticVersion.Version? version)
+    {
+        return version != null && _RequireStableVersions && !version.Stable ? false : Constraint.Accepts(version);
+    }
+
+    /// <summary>
+    /// Flag that any accept versions must be stable.
+    /// </summary>
+    public ModuleConstraint Stable()
+    {
+        _RequireStableVersions = true;
+        return this;
+    }
 
     /// <summary>
     /// Get a constraint that accepts any version of the specified module.

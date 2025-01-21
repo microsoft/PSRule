@@ -33,8 +33,7 @@ public static class IntegrityBuilder
     /// <param name="path">The directory path to the dependency.</param>
     public static LockEntryIntegrity Build(IntegrityAlgorithm alg, string path)
     {
-        if (!Directory.Exists(path))
-            throw new InvalidOperationException($"The path '{path}' does not exist.");
+        if (!Directory.Exists(path)) throw new InvalidOperationException($"The path '{path}' does not exist.");
 
         var ignoredFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {

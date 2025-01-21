@@ -61,7 +61,7 @@ namespace PSRule.CommandLine.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to restore module: {0} -- v{1}.
+        ///   Looks up a localized string similar to Failed to install module: {0} -- v{1}.
         /// </summary>
         internal static string Error_501 {
             get {
