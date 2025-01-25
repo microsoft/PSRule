@@ -1,36 +1,69 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Microsoft.Extensions.DependencyInjection;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using OmniSharp.Extensions.LanguageServer.Server;
+using PSRule.EditorServices.Handlers;
+using PSRule.Runtime;
 
 namespace PSRule.EditorServices.Hosting;
 
 /// <summary>
 /// The LSP server for PSRule integration.
 /// </summary>
-internal sealed class LspServer(Action<LanguageServerOptions> configure) : IDisposable
+internal sealed class LspServer : IDisposable
 {
-    private readonly LanguageServer _Server = LanguageServer.PreInit(options =>
-    {
-        WithHandlers(options);
-        WithEvents(options);
-
-        configure(options);
-    });
+    private readonly LanguageServer _Server;
 
     private bool _Disposed;
+
+    public LspServer(Action<LanguageServerOptions> configure)
+    {
+        _Server = LanguageServer.PreInit(options =>
+        {
+            WithHandlers(options);
+            WithEvents(options);
+            WithServices(options);
+
+            configure(options);
+        });
+    }
 
     /// <summary>
     /// Run the language server and block until exit.
     /// </summary>
+    public async Task RunWaitAsync(CancellationToken cancellationToken)
+    {
+        await RunAsync(cancellationToken);
+        await WaitForExitAsync();
+    }
+
     public async Task RunAsync(CancellationToken cancellationToken)
     {
         await _Server.Initialize(cancellationToken);
 
         _Server.LogInfo($"Language server running on processId: {System.Environment.ProcessId}");
+    }
 
-        await _Server.WaitForExit;
+    /// <summary>
+    /// Returns a task that can be awaited to block calls until the server exits.
+    /// </summary>
+    public Task WaitForExitAsync()
+    {
+        return _Server.WaitForExit;
+    }
+
+    /// <summary>
+    /// Register services for dependency injection.
+    /// </summary>
+    private void WithServices(LanguageServerOptions options)
+    {
+        options.WithServices(services =>
+        {
+            services.AddSingleton<ILogger>(new ServerLogger(GetLanguageServer));
+        });
     }
 
     /// <summary>
@@ -38,7 +71,7 @@ internal sealed class LspServer(Action<LanguageServerOptions> configure) : IDisp
     /// </summary>
     private static void WithHandlers(LanguageServerOptions options)
     {
-        // options.WithHandler<GetVersionHandler>();
+        options.WithHandler<UpgradeDependencyCommandHandler>();
     }
 
     /// <summary>
@@ -51,6 +84,11 @@ internal sealed class LspServer(Action<LanguageServerOptions> configure) : IDisp
             server.SendServerReady();
             return Task.CompletedTask;
         });
+    }
+
+    private ILanguageServer? GetLanguageServer()
+    {
+        return _Server;
     }
 
     #region IDisposable

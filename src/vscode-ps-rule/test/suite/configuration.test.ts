@@ -8,6 +8,7 @@ suite('ConfigurationManager tests', () => {
     test('Defaults', () => {
         const config = new ConfigurationManager(undefined, 'PSRule_unit_test');
 
+        assert.equal(config.get().codeLensDependencyManagement, true);
         assert.equal(config.get().codeLensRuleDocumentationLinks, true);
         assert.equal(config.get().documentationCustomSnippetPath, undefined);
         assert.equal(config.get().documentationLocalePath, 'en');
@@ -23,6 +24,6 @@ suite('ConfigurationManager tests', () => {
         assert.equal(config.get().notificationsShowModuleRestore, true);
         assert.equal(config.get().notificationsShowPowerShellExtension, true);
         assert.equal(config.get().ruleBaseline, undefined);
-        //assert.equal(config.get().languageServerPath, false);
+        assert.equal(config.get().traceTask, false);
     });
 });

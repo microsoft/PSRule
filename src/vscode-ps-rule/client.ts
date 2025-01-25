@@ -9,8 +9,6 @@ import { logger } from './logger';
 import { ext } from './extension';
 import { getActiveOrFirstWorkspace } from './utils';
 
-// export const GetVersionRequestType = new lsp.RequestType<string, string, void>('ps-rule/getVersion');
-
 export const StartProgressNotificationType = new lsp.ProgressType<string>();
 
 /**
@@ -55,7 +53,7 @@ export class PSRuleClient implements vscode.Disposable {
         });
 
         client.onProgress(StartProgressNotificationType, 'server/ready', (arg1) => {
-            logger.verbose(`Connected to client v${arg1}.`);
+            logger.verbose(`Language server ready and connected: v${arg1}.`);
         });
 
         // Start the server and return the client.
@@ -88,6 +86,7 @@ export class PSRuleClient implements vscode.Disposable {
                 fileEvents: [
                     vscode.workspace.createFileSystemWatcher('**/'), // folder changes
                     vscode.workspace.createFileSystemWatcher('**/*.Rule.yaml'), // Rule file changes
+                    vscode.workspace.createFileSystemWatcher('**/ps-rule.lock.json'), // Lock file changes
                 ],
             },
         };

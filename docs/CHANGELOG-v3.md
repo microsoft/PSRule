@@ -29,6 +29,11 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v3.0.0-B0390:
 
+- New features:
+  - Added support dependency management in VSCode by @BernieWhite.
+    [#2734](https://github.com/microsoft/PSRule/issues/2734)
+    - Code lens in `ps-rule.lock.json` allows you to upgrade all or specific modules to the latest version.
+    - The command `Upgrade dependency` allows you to upgrade all or specific modules to the latest version.
 - Bug fixes:
   - Fixed upgrade dependency could use pre-release version by @BernieWhite.
     [#2726](https://github.com/microsoft/PSRule/issues/2726)

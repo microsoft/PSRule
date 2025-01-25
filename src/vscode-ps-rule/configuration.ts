@@ -52,7 +52,16 @@ export enum TraceLevelPreference {
  * PSRule extension settings.
  */
 export interface ISetting {
+    /**
+     * Determines if code lens rule documentation links are enabled.
+     */
     codeLensRuleDocumentationLinks: boolean;
+
+    /**
+     * Determines if code lens for dependency management are enabled.
+     */
+    codeLensDependencyManagement: boolean;
+
     documentationCustomSnippetPath: string | undefined;
     documentationSnippet: string;
     documentationPath: string | undefined;
@@ -130,6 +139,7 @@ export interface ISetting {
  */
 const globalDefaults: ISetting = {
     codeLensRuleDocumentationLinks: true,
+    codeLensDependencyManagement: true,
     documentationCustomSnippetPath: undefined,
     documentationSnippet: 'Rule Doc',
     documentationPath: undefined,
@@ -220,6 +230,11 @@ export class ConfigurationManager {
         this.current.codeLensRuleDocumentationLinks = config.get<boolean>(
             'codeLens.ruleDocumentationLinks',
             this.default.codeLensRuleDocumentationLinks
+        );
+
+        this.current.codeLensDependencyManagement = config.get<boolean>(
+            'codeLens.dependencyManagement',
+            this.default.codeLensDependencyManagement
         );
 
         this.current.executionRuleExcluded = config.get<ExecutionActionPreference>('execution.ruleExcluded', this.default.executionRuleExcluded);

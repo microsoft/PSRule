@@ -11,6 +11,18 @@ public static class LoggerExtensions
     private static readonly Func<FormattedLogValues, Exception?, string> _messageFormatter = MessageFormatter;
 
     /// <summary>
+    /// Log an information level message.
+    /// </summary>
+    /// <param name="logger">A valid <see cref="ILogger"/> instance.</param>
+    /// <param name="eventId">An event identifier for the warning.</param>
+    /// <param name="message">The format message text.</param>
+    /// <param name="args">Additional arguments to use within the format message.</param>
+    public static void LogInformation(this ILogger logger, EventId eventId, string? message, params object?[] args)
+    {
+        logger.Log(LogLevel.Information, eventId, default, message, args);
+    }
+
+    /// <summary>
     /// Log a warning message.
     /// </summary>
     /// <param name="logger">A valid <see cref="ILogger"/> instance.</param>
