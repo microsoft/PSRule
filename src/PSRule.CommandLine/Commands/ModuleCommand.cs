@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections;
+using System.CommandLine.IO;
 using System.Diagnostics.CodeAnalysis;
 using System.Management.Automation;
 using Newtonsoft.Json;
@@ -376,7 +377,7 @@ public sealed class ModuleCommand
             if (idealVersion == kv.Value.Version)
                 continue;
 
-            if (!IsInstalled(pwsh, kv.Key, idealVersion, out _, out _) && await InstallVersionAsync(clientContext, kv.Key, idealVersion, null, cancellationToken) == null)
+            if (!IsInstalled(pwsh, kv.Key, idealVersion, out _, out var modulePath) && await InstallVersionAsync(clientContext, kv.Key, idealVersion, null, cancellationToken) == null)
             {
                 clientContext.LogError(Messages.Error_501, kv.Key, idealVersion);
                 return ERROR_MODULE_FAILED_TO_INSTALL;
@@ -385,7 +386,7 @@ public sealed class ModuleCommand
             clientContext.LogVerbose(Messages.UsingModule, kv.Key, idealVersion.ToString());
 
             kv.Value.Version = idealVersion;
-            kv.Value.Integrity = IntegrityBuilder.Build(clientContext.IntegrityAlgorithm, GetModulePath(clientContext, kv.Key, idealVersion));
+            kv.Value.Integrity = IntegrityBuilder.Build(clientContext.IntegrityAlgorithm, modulePath ?? GetModulePath(clientContext, kv.Key, idealVersion));
             kv.Value.IncludePrerelease = (kv.Value.IncludePrerelease.GetValueOrDefault(false) || operationOptions.Prerelease) && !idealVersion.Stable ? true : null;
             file.Modules[kv.Key] = kv.Value;
         }
@@ -441,7 +442,7 @@ public sealed class ModuleCommand
 
     private static void ListModules(ClientContext context, IEnumerable<ModuleRecord> results)
     {
-        context.Invocation.Console.Out.Write(JsonConvert.SerializeObject(results, new JsonSerializerSettings
+        context.Invocation.Console.Out.WriteLine(JsonConvert.SerializeObject(results, new JsonSerializerSettings
         {
             Formatting = Formatting.Indented
         }));

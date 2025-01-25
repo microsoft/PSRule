@@ -22,9 +22,12 @@ import { restore } from './commands/restore';
 import { initLock } from './commands/initLock';
 import { client } from './client';
 import { LanguageClient } from 'vscode-languageclient/node';
+import { DependencyLensProvider } from './dependencyLens';
+import { upgradeDependency } from './commands/upgradeDependency';
 
 export let taskManager: PSRuleTaskProvider | undefined;
 export let docLensProvider: DocumentationLensProvider | undefined;
+export let lockLensProvider: DependencyLensProvider | undefined;
 
 export interface ExtensionInfo {
     id: string;
@@ -72,6 +75,10 @@ export class ExtensionManager implements vscode.Disposable {
         return this._server;
     }
 
+    public get client(): LanguageClient {
+        return this._client;
+    }
+
     public activate(context: vscode.ExtensionContext) {
         this._context = context;
         this._info = this.checkExtension(context);
@@ -83,6 +90,9 @@ export class ExtensionManager implements vscode.Disposable {
     public dispose(): void {
         if (docLensProvider) {
             docLensProvider.dispose();
+        }
+        if (lockLensProvider) {
+            lockLensProvider.dispose();
         }
         if (taskManager) {
             taskManager.dispose();
@@ -147,6 +157,11 @@ export class ExtensionManager implements vscode.Disposable {
                     initLock();
                 })
             );
+            this._context.subscriptions.push(
+                vscode.commands.registerCommand('PSRule.upgradeDependency', (path: string, name: string) => {
+                    upgradeDependency(path, name);
+                })
+            );
         }
     }
 
@@ -156,6 +171,11 @@ export class ExtensionManager implements vscode.Disposable {
         if (!docLensProvider) {
             docLensProvider = new DocumentationLensProvider(logger, this._context);
             docLensProvider.register();
+        }
+
+        if (!lockLensProvider) {
+            lockLensProvider = new DependencyLensProvider(logger, this._context);
+            lockLensProvider.register();
         }
 
         if (this.isTrusted) {

@@ -30,6 +30,9 @@ interface IContext {
     readonly extensionContext: ExtensionContext;
 }
 
+/**
+ * Provides a code lenses linking to rule documentation.
+ */
 export class DocumentationLensProvider implements CodeLensProvider, Disposable {
     // Fields
     private readonly context: IContext;

@@ -106,6 +106,11 @@
         "command": "PSRule.initLock",
         "title": "Initialize lock file",
         "category": "PSRule"
+      },
+      {
+        "command": "PSRule.upgradeDependency",
+        "title": "Upgrade dependency",
+        "category": "PSRule"
       }
     ],
     "configuration": [
@@ -115,7 +120,13 @@
           "PSRule.codeLens.ruleDocumentationLinks": {
             "type": "boolean",
             "default": true,
-            "description": "Enables Code Lens that displays links to rule documentation.",
+            "markdownDescription": "Enables Code Lens that displays links to rule documentation.",
+            "scope": "application"
+          },
+          "PSRule.codeLens.dependencyManagement": {
+            "type": "boolean",
+            "default": true,
+            "markdownDescription": "Enables Code Lens that displays links to manage dependencies.",
             "scope": "application"
           },
           "PSRule.documentation.path": {
@@ -127,13 +138,13 @@
           "PSRule.documentation.localePath": {
             "type": "string",
             "default": null,
-            "description": "The locale path to use for locating rule documentation. The VS Code locale will be used by default.",
+            "markdownDescription": "The locale path to use for locating rule documentation. The VS Code locale will be used by default.",
             "scope": "window"
           },
           "PSRule.documentation.customSnippetPath": {
             "type": "string",
             "default": null,
-            "description": "The path to a file containing a rule documentation snippet. When not set, built-in PSRule snippets will be used.",
+            "markdownDescription": "The path to a file containing a rule documentation snippet. When not set, built-in PSRule snippets will be used.",
             "scope": "window"
           },
           "PSRule.documentation.snippet": {
@@ -199,45 +210,43 @@
           "PSRule.experimental.enabled": {
             "type": "boolean",
             "default": false,
-            "description": "Enables experimental features in the PSRule extension.",
+            "markdownDescription": "Enables experimental features in the PSRule extension.",
             "scope": "application"
           },
           "PSRule.lock.restore": {
             "type": "boolean",
             "default": false,
-            "description": "Determines if workspace modules will automatically be restored during activation. Modules can be restored manually using the PSRule: Restore modules command.",
             "markdownDescription": "Determines if workspace modules will automatically be restored during activation. Modules can be restored manually using the `PSRule: Restore modules` command.",
             "scope": "window"
           },
           "PSRule.notifications.showChannelUpgrade": {
             "type": "boolean",
             "default": true,
-            "description": "Determines if a notification to switch to the stable channel is shown on activation.",
+            "markdownDescription": "Determines if a notification to switch to the stable channel is shown on activation.",
             "scope": "application"
           },
           "PSRule.notifications.showModuleRestore": {
             "type": "boolean",
             "default": true,
-            "description": "Determines if a notification to restore modules is shown on activation.",
+            "markdownDescription": "Determines if a notification to restore modules is shown on activation.",
             "scope": "application"
           },
           "PSRule.notifications.showPowerShellExtension": {
             "type": "boolean",
             "default": true,
-            "description": "Determines if a notification to install the PowerShell extension is shown on activation.",
+            "markdownDescription": "Determines if a notification to install the PowerShell extension is shown on activation.",
             "scope": "application"
           },
           "PSRule.options.path": {
             "type": "string",
             "default": null,
-            "description": "The path specifying a PSRule option file. When not set, the default ps-rule.yaml will be used from the current workspace.",
             "markdownDescription": "The path specifying a PSRule option file. When not set, the default `ps-rule.yaml` will be used from the current workspace.",
             "scope": "window"
           },
           "PSRule.output.as": {
             "type": "string",
             "default": "Summary",
-            "description": "Configures the output of analysis tasks, either summary or detailed.",
+            "markdownDescription": "Configures the output of analysis tasks, either summary or detailed.",
             "enum": [
               "Detail",
               "Summary"
@@ -247,13 +256,13 @@
           "PSRule.rule.baseline": {
             "type": "string",
             "default": null,
-            "description": "The name of the default baseline to use for executing rules. This setting can be overridden on individual PSRule tasks.",
+            "markdownDescription": "The name of the default baseline to use for executing rules. This setting can be overridden on individual PSRule tasks.",
             "scope": "window"
           },
           "PSRule.trace.task": {
             "type": "string",
             "default": "Off",
-            "description": "Determines if verbose logging is enabled for task output.",
+            "markdownDescription": "Determines if verbose logging is enabled for task output.",
             "enum": [
               "Off",
               "Verbose"

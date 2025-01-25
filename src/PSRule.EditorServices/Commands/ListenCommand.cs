@@ -2,6 +2,8 @@
 // Licensed under the MIT License.
 
 using System.IO.Pipes;
+using Microsoft.Extensions.DependencyInjection;
+using OmniSharp.Extensions.LanguageServer.Server;
 using PSRule.CommandLine;
 using PSRule.EditorServices.Hosting;
 using PSRule.EditorServices.Models;
@@ -15,6 +17,12 @@ internal sealed class ListenCommand
 {
     private const string LOCAL_PIPE_SERVER_NAME = ".";
     private const string WINDOWS_PIPE_PREFIX = @"\\.\pipe\";
+
+    // Timeout in minutes to wait for the debugger to attach.
+    private const int DEBUGGER_ATTACH_TIMEOUT = 5;
+
+    // Time in milliseconds to wait between debugger attach checks.
+    private const int DEBUGGER_ATTACH_CYCLE_WAIT_TIME = 500;
 
     private const int ERROR_SUCCESS = 0;
     private const int ERROR_INVALID_CONFIGURATION = 901;
@@ -35,13 +43,13 @@ internal sealed class ListenCommand
             System.Diagnostics.Debugger.Break();
         }
 
-        var server = await GetServerAsync(operationOptions, cancellationToken);
+        var server = await GetServerAsync(operationOptions, clientContext, cancellationToken);
         if (server == null)
             return ERROR_INVALID_CONFIGURATION;
 
         try
         {
-            await server.RunAsync(cancellationToken);
+            await server.RunWaitAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -52,7 +60,7 @@ internal sealed class ListenCommand
         return ERROR_SUCCESS;
     }
 
-    private static async Task<LspServer?> GetServerAsync(ListenOptions operationOptions, CancellationToken cancellationToken)
+    private static async Task<LspServer?> GetServerAsync(ListenOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken)
     {
         // Create a server with a named pipe client stream.
         if (operationOptions.Pipe is { } pipeName)
@@ -61,6 +69,8 @@ internal sealed class ListenCommand
 
             return new LspServer(options =>
             {
+                WithServices(options, clientContext);
+
                 options.WithInput(clientPipe)
                     .WithOutput(clientPipe)
                     .RegisterForDisposal(clientPipe);
@@ -70,6 +80,8 @@ internal sealed class ListenCommand
         {
             return new LspServer(options =>
             {
+                WithServices(options, clientContext);
+
                 options.WithInput(Console.OpenStandardInput())
                     .WithOutput(Console.OpenStandardOutput());
             });
@@ -101,12 +113,12 @@ internal sealed class ListenCommand
             var debuggerTimeoutToken = CancellationTokenSource.CreateLinkedTokenSource
             (
                 cancellationToken,
-                new CancellationTokenSource(TimeSpan.FromMinutes(5)).Token
+                new CancellationTokenSource(TimeSpan.FromMinutes(DEBUGGER_ATTACH_TIMEOUT)).Token
             ).Token;
 
             while (!System.Diagnostics.Debugger.IsAttached)
             {
-                await Task.Delay(500, debuggerTimeoutToken);
+                await Task.Delay(DEBUGGER_ATTACH_CYCLE_WAIT_TIME, debuggerTimeoutToken);
             }
         }
         catch
@@ -115,5 +127,16 @@ internal sealed class ListenCommand
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Register services for dependency injection.
+    /// </summary>
+    private static void WithServices(LanguageServerOptions options, ClientContext clientContext)
+    {
+        options.WithServices(services =>
+        {
+            services.AddSingleton<ClientContext>(clientContext);
+        });
     }
 }
