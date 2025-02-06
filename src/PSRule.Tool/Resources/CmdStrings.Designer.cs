@@ -268,6 +268,15 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A list of formats to enable..
+        /// </summary>
+        internal static string Run_Formats_Description {
+            get {
+                return ResourceManager.GetString("Run_Formats_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The file or directory path to search for input file to use during a run. By default, this is the current working path..
         /// </summary>
         internal static string Run_InputPath_Description {

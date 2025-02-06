@@ -34,6 +34,15 @@ What's changed since pre-release v3.0.0-B0390:
     [#2734](https://github.com/microsoft/PSRule/issues/2734)
     - Code lens in `ps-rule.lock.json` allows you to upgrade all or specific modules to the latest version.
     - The command `Upgrade dependency` allows you to upgrade all or specific modules to the latest version.
+  - Added support for enabling/ disabling emitters by @BernieWhite.
+    [#2752](https://github.com/microsoft/PSRule/issues/2752)
+    - Emitters can be enabled or disabled by setting the `enabled` property on each format.
+    - Additionally, the `formats` parameter/ input can be set on the command-line and CI to enable emitters for a run.
+  - Added support for configuring replacement string for each format by @BernieWhite.
+    [#2753](https://github.com/microsoft/PSRule/issues/2753)
+    - Replacement strings allow common literal tokens to be replaced when processed by PSRule.
+      i.e. `{{environment}}` replaced with `dev`.
+    - All built-in emitters now support replacement strings, by configuring the `replace` property on each format.
 - Bug fixes:
   - Fixed upgrade dependency could use pre-release version by @BernieWhite.
     [#2726](https://github.com/microsoft/PSRule/issues/2726)

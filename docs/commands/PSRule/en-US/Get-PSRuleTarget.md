@@ -16,15 +16,17 @@ Get a list of target objects.
 ### Input (Default)
 
 ```text
-Get-PSRuleTarget [-Format <InputFormat>] [-Option <PSRuleOption>] [-ObjectPath <String>]
- -InputObject <PSObject> [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-PSRuleTarget [-Formats <String[]>] [-InputStringFormat <String>] [-Option <PSRuleOption>]
+ [-ObjectPath <String>] -InputObject <PSObject> [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### InputPath
 
 ```text
-Get-PSRuleTarget -InputPath <String[]> [-Format <InputFormat>] [-Option <PSRuleOption>] [-ObjectPath <String>]
- [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-PSRuleTarget -InputPath <String[]> [-Formats <String[]>] [-InputStringFormat <String>]
+ [-Option <PSRuleOption>] [-ObjectPath <String>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -59,30 +61,43 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Format
+### -Formats
 
-Configures the input format for when a string is passed in as a target object.
+Enables one or more formats by name to process files and deserialized objects.
+Parameter is equivalent to setting `Format.<name>.Enabled` = `true` for each of the specified formats.
 
-When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default.
-Set this option to either `Yaml`, `Json`, `Markdown`, `PowerShellData` to have PSRule deserialize the object.
-
-When the `-InputPath` parameter is used with a file path or URL.
-If the `Detect` format is used, the file extension will be used to automatically detect the format.
-When `-InputPath` is not used, `Detect` is the same as `None`.
-
-See `about_PSRule_Options` for details.
-
-This parameter takes precedence over the `Input.Format` option if set.
+This parameter takes precedence over the `Format.<name>.Enabled` option if set.
 
 ```yaml
-Type: InputFormat
+Type: String[]
 Parameter Sets: (All)
 Aliases:
-Accepted values: None, Yaml, Json, Markdown, PowerShellData, File, Detect
 
 Required: False
 Position: Named
-Default value: Detect
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputStringFormat
+
+Configures the input format for when a string is passed in as a target object.
+This parameter also enables the format if it is not already enabled.
+
+When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default.
+Set this option to an available format for example: `yaml`, `json`, `markdown`, `powershell_data`.
+
+This parameter takes precedence over the `Input.StringFormat` option if set.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

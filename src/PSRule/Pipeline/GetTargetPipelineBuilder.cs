@@ -5,12 +5,14 @@ using PSRule.Configuration;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// A helper to construct the pipeline for Assert-PSRule.
 /// </summary>
 internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTargetPipelineBuilder
 {
-    private InputPathBuilder _InputPath;
+    private InputPathBuilder? _InputPath;
 
     internal GetTargetPipelineBuilder(Source[] source, IHostContext hostContext)
         : base(source, hostContext)
@@ -36,12 +38,12 @@ internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTarget
     }
 
     /// <inheritdoc/>
-    public void InputPath(string[] path)
+    public void InputPath(string[]? path)
     {
         if (path == null || path.Length == 0)
             return;
 
-        PathFilter required = null;
+        PathFilter? required = null;
         if (TryChangedFiles(out var files))
         {
             required = PathFilter.Create(Environment.GetWorkingPath(), path);
@@ -54,7 +56,16 @@ internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTarget
     }
 
     /// <inheritdoc/>
-    public override IPipeline Build(IPipelineWriter writer = null)
+    public void Formats(string[]? format)
+    {
+        if (format == null || format.Length == 0)
+            return;
+
+        EnableFormatsByName(format);
+    }
+
+    /// <inheritdoc/>
+    public override IPipeline Build(IPipelineWriter? writer = null)
     {
         return new GetTargetPipeline(PrepareContext(PipelineHookActions.Empty, writer ?? PrepareWriter()));
     }
@@ -62,6 +73,8 @@ internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTarget
     /// <inheritdoc/>
     protected override PipelineInputStream PrepareReader()
     {
-        return new PipelineInputStream(GetLanguageScopeSet(), _InputPath, GetInputObjectSourceFilter(), Option);
+        return new PipelineInputStream(GetLanguageScopeSet(), _InputPath, GetInputObjectSourceFilter(), Option, _Output);
     }
 }
+
+#nullable restore

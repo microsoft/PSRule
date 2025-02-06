@@ -37,7 +37,7 @@ The following workspace options are available for use:
 - [Include.Module](#includemodule)
 - [Include.Path](#includepath)
 - [Input.FileObjects](#inputfileobjects)
-- [Input.Format](#inputformat)
+- [Input.StringFormat](#inputstringformat)
 - [Input.IgnoreGitPath](#inputignoregitpath)
 - [Input.IgnoreObjectSource](#inputignoreobjectsource)
 - [Input.IgnoreRepositoryCommon](#inputignorerepositorycommon)
@@ -1169,7 +1169,7 @@ variables:
 
 :octicons-milestone-24: v3.0.0
 
-Configures where to allow PowerShell language features (such as rules and conventions) to run from.
+Configures where PowerShell language features (such as rules and conventions) are allowed to run from.
 In locked down environments, running PowerShell scripts from the workspace may not be allowed.
 Only run scripts from a trusted source.
 
@@ -1521,49 +1521,72 @@ variables:
 
 :octicons-milestone-24: v3.0.0
 
-Configures each format by setting mapped types.
-The following built-in types can be configured:
+Configures each format by setting the following common properties:
+
+- `enabled` &mdash; Enable or disable the format. All formats are disabled by default.
+- `type` &mdash; The file extensions that will be processed.
+- `replace` &mdash; A set of key-value pairs to replace in the file content.
+
+The following built-in formats can be configured:
 
 - `yaml`
 - `json`
 - `markdown`
 - `powershell_data`
 
-The following is the default configuration for each format:
+The following is the default properties for built-in formats:
 
 ```yaml
 format:
   yaml:
-    types:
+    enabled: false
+    type:
       - .yaml
       - .yml
+    replace: {}
   json:
-    types:
+    enabled: false
+    type:
       - .json
       - .jsonc
       - .sarif
+    replace: {}
   markdown:
-    types:
+    enabled: false
+    type:
       - .md
       - .markdown
+    replace: {}
   powershell_data:
-    types:
+    enabled: false
+    type:
       - .psd1
+    replace: {}
 ```
 
-The configuration for each built-in or custom format a hashtable key by using the name:
+The properties for each built-in or custom formats can be set by hashtable key as follows:
 
 ```powershell
 $option = New-PSRuleOption -Option @{ 'Format.<FORMAT>.Type' = value };
 ```
 
-For example:
+For example (simple case):
 
 ```powershell
 $option = New-PSRuleOption -Option @{ 'Format.Yaml.Type' = @('.yaml', '.yml') };
 ```
 
-The configuration for each built-in or custom format can be set by environment variable by using the name:
+For example (with all properties):
+
+```powershell
+$option = New-PSRuleOption -Option @{
+  'Format.Yaml.Type' = @('.yaml', '.yml');
+  'Format.Yaml.Enabled' = $True;
+  'Format.Yaml.Replace' = @{ '{{environment}}' = 'production' }
+};
+```
+
+The properties for each built-in or custom formats can be set by environment variable key as follows:
 
 ```text
 PSRULE_FORMAT_<FORMAT>_TYPE='<value>'
@@ -1572,7 +1595,9 @@ PSRULE_FORMAT_<FORMAT>_TYPE='<value>'
 For example:
 
 ```bash
-export PSRULE_FORMAT_YAML_TYPES='.yaml;.yml'
+export PSRULE_FORMAT_YAML_TYPE='.yaml;.yml'
+export PSRULE_FORMAT_YAML_ENABLED='true'
+export PSRULE_FORMAT_YAML_REPLACE='{ "{{environment}}": "production" }'
 ```
 
 ### Include.Module
@@ -1735,85 +1760,60 @@ variables:
   value: true
 ```
 
-### Input.Format
+### Input.StringFormat
 
 Configures the input format for when a string is passed in as a target object.
-This option determines if the target object is deserialized into an alternative form.
+This option is specific to PowerShell cmdlets and .NET APIs and does not affect the input format for files.
 
-Use this option with `Assert-PSRule`, `Invoke-PSRule` or `Test-PSRuleTarget`.
-Set this option to either `Yaml`, `Json`, `Markdown`, `PowerShellData` to deserialize as a specific format.
-The `-Format` parameter will override any value set in configuration.
+The specified format will be used to deserialize the string into an alternative form.
+This option also enables the format if it is not already enabled.
 
-When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default.
-`FileInfo` objects for supported file formats will be deserialized based on file extension.
+The following built-in formats are available:
 
-When the `-InputPath` parameter is used, supported file formats will be deserialized based on file extension.
-The `-InputPath` parameter can be used with a file path or URL.
-
-The following formats are available:
-
-- `None` - Treat strings as plain text and do not deserialize files.
-  This is the default.
-- `Yaml` - Deserialize as one or more YAML objects.
-- `Json` - Deserialize as one or more JSON objects.
-- `Markdown` - Deserialize as a markdown object.
-- `PowerShellData` - Deserialize as a PowerShell data object.
-
-The `Markdown` format does not parse the whole markdown document.
-Specifically this format deserializes YAML front matter from the top of the document if any exists.
-
-Files within `.git` sub-directories are ignored.
-Path specs specified in `.gitignore` directly in the current working path are ignored.
-A `RepositoryInfo` object is generated if the current working path if a `.git` sub-directory is present.
-Additionally, PSRule performs automatic type binding for file objects, using the extension as the type.
-When files have no extension the whole file name is used.
-
-Detect uses the following file extensions:
-
-- Yaml - `.yaml` or `.yml`
-- Json - `.json` or `.jsonc`
-- Markdown - `.md` or `.markdown`
-- PowerShellData - `.psd1`
+- `yaml` - Deserialize as one or more YAML objects.
+- `json` - Deserialize as one or more JSON objects.
+- `markdown` - Deserialize as a markdown object.
+- `powershell_data` - Deserialize as a PowerShell data object.
 
 This option can be specified using:
 
 ```powershell
 # PowerShell: Using the Format parameter
-$option = New-PSRuleOption -Format Yaml;
+$option = New-PSRuleOption -InputStringFormat yaml;
 ```
 
 ```powershell
 # PowerShell: Using the Input.Format hashtable key
-$option = New-PSRuleOption -Option @{ 'Input.Format' = 'Yaml' };
+$option = New-PSRuleOption -Option @{ 'Input.StringFormat' = 'yaml' };
 ```
 
 ```powershell
-# PowerShell: Using the Format parameter to set YAML
-Set-PSRuleOption -Format Yaml;
+# PowerShell: Using the InputStringFormat parameter to set YAML
+Set-PSRuleOption -InputStringFormat yaml;
 ```
 
 ```yaml
-# YAML: Using the input/format property
+# YAML: Using the input/stringFormat property
 input:
-  format: Yaml
+  stringFormat: yaml
 ```
 
 ```bash
 # Bash: Using environment variable
-export PSRULE_INPUT_FORMAT=Yaml
+export PSRULE_INPUT_STRINGFORMAT=yaml
 ```
 
 ```yaml
 # GitHub Actions: Using environment variable
 env:
-  PSRULE_INPUT_FORMAT: Yaml
+  PSRULE_INPUT_STRINGFORMAT: yaml
 ```
 
 ```yaml
 # Azure Pipelines: Using environment variable
 variables:
-- name: PSRULE_INPUT_FORMAT
-  value: Yaml
+- name: PSRULE_INPUT_STRINGFORMAT
+  value: yaml
 ```
 
 ### Input.IgnoreGitPath
@@ -3791,21 +3791,29 @@ execution:
 # Configure formats
 format:
   yaml:
-    types:
+    enabled: false
+    type:
       - .yaml
       - .yml
+    replace: {}
   json:
-    types:
+    enabled: false
+    type:
       - .json
       - .jsonc
       - .sarif
+    replace: {}
   markdown:
-    types:
+    enabled: false
+    type:
       - .md
       - .markdown
+    replace: {}
   powershell_data:
-    types:
+    enabled: false
+    type:
       - .psd1
+    replace: {}
 
 # Configure include options
 include:

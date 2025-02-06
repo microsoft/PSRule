@@ -266,7 +266,7 @@ internal static class TypeConverter
     }
 
     /// <summary>
-    /// Try to get the environment variable as a enum of type <typeparamref name="T"/>.
+    /// Try to get <paramref name="o"/> as a enum of type <typeparamref name="T"/>.
     /// </summary>
     public static bool TryEnum<T>(object o, bool convert, out T? value) where T : struct, Enum
     {
@@ -276,6 +276,39 @@ internal static class TypeConverter
             return true;
         }
         value = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Try to get a dictionary of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="o"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool TryDictionary<T>(object o, out IDictionary<string, T>? value)
+    {
+        value = null;
+        if (o is IDictionary<string, T> dictionary)
+        {
+            value = dictionary;
+            return true;
+        }
+        else if (o is JObject jObject)
+        {
+            value = jObject.ToObject<Dictionary<string, T>>();
+            return true;
+        }
+        else if (o is Hashtable hashtable)
+        {
+            value = new Dictionary<string, T>();
+            foreach (DictionaryEntry entry in hashtable)
+            {
+                if (entry.Key is string key && entry.Value is T t)
+                    value[key] = t;
+            }
+            return true;
+        }
         return false;
     }
 

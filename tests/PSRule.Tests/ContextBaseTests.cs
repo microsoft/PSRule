@@ -19,7 +19,7 @@ public abstract class ContextBaseTests : BaseTests
         return PipelineContext.New(
             option: option,
             hostContext: null,
-            reader: () => new PipelineInputStream(null, null, null, null),
+            reader: () => new PipelineInputStream(null, null, null, null, null),
             writer: writer,
             languageScope: languageScope,
             optionBuilder: optionBuilder ?? new OptionContextBuilder(),

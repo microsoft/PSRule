@@ -63,6 +63,18 @@ public sealed class EmptyEmitterConfiguration : IEmitterConfiguration
         value = null;
         return false;
     }
+
+    /// <inheritdoc/>
+    public bool IsFormatEnabled(string format)
+    {
+        return false;
+    }
+
+    /// <inheritdoc/>
+    public KeyValuePair<string, string>[]? GetFormatReplacementTokens(string format)
+    {
+        return default;
+    }
 }
 
 #pragma warning restore CA1822

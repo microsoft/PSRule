@@ -13,9 +13,12 @@ using YamlDotNet.Serialization.NodeDeserializers;
 
 namespace PSRule.Emitters;
 
+#nullable enable
+
 /// <summary>
 /// An <seealso cref="IEmitter"/> for processing YAML.
 /// </summary>
+[EmitterFormat(FORMAT)]
 internal sealed class YamlEmitter : FileEmitter
 {
     private const string FORMAT = "yaml";
@@ -26,6 +29,7 @@ internal sealed class YamlEmitter : FileEmitter
     private readonly PSObjectYamlTypeConverter _TypeConverter;
     private readonly IDeserializer _Deserializer;
     private readonly ImmutableHashSet<string> _Types;
+    private readonly KeyValuePair<string, string>[]? _ReplacementTokens;
 
     public YamlEmitter(ILogger<YamlEmitter> logger, IEmitterConfiguration emitterConfiguration)
     {
@@ -34,7 +38,8 @@ internal sealed class YamlEmitter : FileEmitter
         _Logger = logger ?? throw new NullReferenceException(nameof(logger));
         _TypeConverter = new PSObjectYamlTypeConverter();
         _Deserializer = GetDeserializer();
-        _Types = emitterConfiguration.GetFormatTypes(FORMAT, _DefaultTypes).ToImmutableHashSet();
+        _Types = emitterConfiguration.GetFormatTypes(FORMAT, _DefaultTypes)!.ToImmutableHashSet();
+        _ReplacementTokens = emitterConfiguration.GetFormatReplacementTokens(FORMAT);
     }
 
     /// <summary>
@@ -42,13 +47,13 @@ internal sealed class YamlEmitter : FileEmitter
     /// </summary>
     protected override bool AcceptsFilePath(IEmitterContext context, IFileInfo info)
     {
-        return info != null && _Types.Contains(info.Extension);
+        return info != null && info.Extension != null && _Types.Contains(info.Extension);
     }
 
     /// <inheritdoc/>
     protected override bool VisitFile(IEmitterContext context, IFileStream stream)
     {
-        using var reader = stream.AsTextReader();
+        using var reader = GetReader(stream);
         if (reader == null) return false;
 
         try
@@ -82,9 +87,16 @@ internal sealed class YamlEmitter : FileEmitter
         //return false;
     }
 
+    private TextReader GetReader(IFileStream stream)
+    {
+        return _ReplacementTokens == null || _ReplacementTokens.Length == 0
+            ? stream.AsTextReader()
+            : new ReplaceTextReader(stream.AsTextReader(), _ReplacementTokens);
+    }
+
     protected override bool AcceptsString(IEmitterContext context)
     {
-        return context.Format == Options.InputFormat.Yaml;
+        return string.Equals(context.StringFormat, FORMAT, StringComparison.OrdinalIgnoreCase);
     }
 
     protected override bool VisitString(IEmitterContext context, string content)
@@ -160,3 +172,5 @@ internal sealed class YamlEmitter : FileEmitter
     //    //value.Issue.AddRange(targetInfo.Issue.ToArray());
     //}
 }
+
+#nullable restore

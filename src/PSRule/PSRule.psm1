@@ -47,8 +47,10 @@ function Invoke-PSRule {
         [PSRule.Configuration.ResultFormat]$As = [PSRule.Configuration.ResultFormat]::Detail,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData')]
-        [PSRule.Options.InputFormat]$Format = [PSRule.Options.InputFormat]::None,
+        [String[]]$Formats,
+
+        [Parameter(Mandatory = $False)]
+        [String]$InputStringFormat,
 
         [Parameter(Mandatory = $False)]
         [String]$OutputPath,
@@ -123,12 +125,12 @@ function Invoke-PSRule {
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
-        # If DeviceGuard is enabled, force a contrained execution environment
+        # If DeviceGuard is enabled, force a constrained execution environment
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
-        if ($PSBoundParameters.ContainsKey('Format')) {
-            $Option.Input.Format = $Format;
+        if ($PSBoundParameters.ContainsKey('InputStringFormat')) {
+            $Option.Input.StringFormat = $InputStringFormat;
         }
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
@@ -158,6 +160,7 @@ function Invoke-PSRule {
         $builder.Tag($Tag);
         $builder.Convention($Convention);
         $builder.Baseline($Baseline);
+        $builder.Formats($Formats);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $builder.InputPath($InputPath);
@@ -216,8 +219,10 @@ function Test-PSRuleTarget {
         [PSRule.Rules.RuleOutcome]$Outcome = [PSRule.Rules.RuleOutcome]::Processed,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData')]
-        [PSRule.Options.InputFormat]$Format,
+        [String[]]$Formats,
+
+        [Parameter(Mandatory = $False)]
+        [String]$InputStringFormat,
 
         [Parameter(Mandatory = $False)]
         [String[]]$Convention,
@@ -281,12 +286,12 @@ function Test-PSRuleTarget {
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
-        # If DeviceGuard is enabled, force a contrained execution environment
+        # If DeviceGuard is enabled, force a constrained execution environment
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
-        if ($PSBoundParameters.ContainsKey('Format')) {
-            $Option.Input.Format = $Format;
+        if ($PSBoundParameters.ContainsKey('InputStringFormat')) {
+            $Option.Input.StringFormat = $InputStringFormat;
         }
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
@@ -306,6 +311,7 @@ function Test-PSRuleTarget {
         $builder.Name($Name);
         $builder.Tag($Tag);
         $builder.Convention($Convention);
+        $builder.Formats($Formats);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $builder.InputPath($InputPath);
@@ -358,8 +364,10 @@ function Get-PSRuleTarget {
         [String[]]$InputPath,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData')]
-        [PSRule.Options.InputFormat]$Format = [PSRule.Options.InputFormat]::None,
+        [String[]]$Formats,
+
+        [Parameter(Mandatory = $False)]
+        [String]$InputStringFormat,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.PSRuleOption]$Option,
@@ -387,12 +395,12 @@ function Get-PSRuleTarget {
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
-        # If DeviceGuard is enabled, force a contrained execution environment
+        # If DeviceGuard is enabled, force a constrained execution environment
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
-        if ($PSBoundParameters.ContainsKey('Format')) {
-            $Option.Input.Format = $Format;
+        if ($PSBoundParameters.ContainsKey('InputStringFormat')) {
+            $Option.Input.StringFormat = $InputStringFormat;
         }
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
@@ -409,6 +417,7 @@ function Get-PSRuleTarget {
 
         $hostContext = [PSRule.Pipeline.PSHostContext]::new($PSCmdlet, $ExecutionContext);
         $builder = [PSRule.Pipeline.PipelineBuilder]::GetTarget($Option, $hostContext);
+        $builder.Formats($Formats);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $builder.InputPath($InputPath);
@@ -465,8 +474,10 @@ function Assert-PSRule {
         [String[]]$Module,
 
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData')]
-        [PSRule.Options.InputFormat]$Format = [PSRule.Options.InputFormat]::None,
+        [String[]]$Formats,
+
+        [Parameter(Mandatory = $False)]
+        [String]$InputStringFormat,
 
         [Parameter(Mandatory = $False)]
         [PSRule.Configuration.BaselineOption]$Baseline,
@@ -554,12 +565,12 @@ function Assert-PSRule {
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
-        # If DeviceGuard is enabled, force a contrained execution environment
+        # If DeviceGuard is enabled, force a constrained execution environment
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
-        if ($PSBoundParameters.ContainsKey('Format')) {
-            $Option.Input.Format = $Format;
+        if ($PSBoundParameters.ContainsKey('InputStringFormat')) {
+            $Option.Input.StringFormat = $InputStringFormat;
         }
         if ($PSBoundParameters.ContainsKey('ObjectPath')) {
             $Option.Input.ObjectPath = $ObjectPath;
@@ -593,6 +604,7 @@ function Assert-PSRule {
         $builder.Convention($Convention);
         $builder.Baseline($Baseline);
         $builder.ResultVariable($ResultVariable);
+        $builder.Formats($Formats);
 
         if ($PSBoundParameters.ContainsKey('InputPath')) {
             $builder.InputPath($InputPath);
@@ -716,7 +728,7 @@ function Get-PSRule {
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
-        # If DeviceGuard is enabled, force a contrained execution environment
+        # If DeviceGuard is enabled, force a constrained execution environment
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
@@ -1049,7 +1061,7 @@ function Get-PSRuleHelp {
 
         $isDeviceGuard = IsDeviceGuardEnabled;
 
-        # If DeviceGuard is enabled, force a contrained execution environment
+        # If DeviceGuard is enabled, force a constrained execution environment
         if ($isDeviceGuard) {
             $Option.Execution.LanguageMode = [PSRule.Options.LanguageMode]::ConstrainedLanguage;
         }
@@ -1217,11 +1229,9 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$InputFileObjects = $False,
 
-        # Sets the Input.Format option
+        # Sets the Input.StringFormat option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData')]
-        [Alias('InputFormat')]
-        [PSRule.Options.InputFormat]$Format = 'None',
+        [String]$InputStringFormat,
 
         # Sets the Input.IgnoreGitPath option
         [Parameter(Mandatory = $False)]
@@ -1524,11 +1534,9 @@ function Set-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$InputFileObjects = $False,
 
-        # Sets the Input.Format option
+        # Sets the Input.StringFormat option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData')]
-        [Alias('InputFormat')]
-        [PSRule.Options.InputFormat]$Format = 'None',
+        [String]$InputStringFormat,
 
         # Sets the Input.IgnoreGitPath option
         [Parameter(Mandatory = $False)]
@@ -2292,11 +2300,9 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$InputFileObjects = $False,
 
-        # Sets the Input.Format option
+        # Sets the Input.StringFormat option
         [Parameter(Mandatory = $False)]
-        [ValidateSet('None', 'Yaml', 'Json', 'Markdown', 'PowerShellData')]
-        [Alias('InputFormat')]
-        [PSRule.Options.InputFormat]$Format = 'None',
+        [String]$InputStringFormat,
 
         # Sets the Input.IgnoreGitPath option
         [Parameter(Mandatory = $False)]
@@ -2535,9 +2541,9 @@ function SetOptions {
             $Option.Input.FileObjects = $InputFileObjects;
         }
 
-        # Sets option Input.Format
-        if ($PSBoundParameters.ContainsKey('Format')) {
-            $Option.Input.Format = $Format;
+        # Sets option Input.StringFormat
+        if ($PSBoundParameters.ContainsKey('InputStringFormat')) {
+            $Option.Input.StringFormat = $InputStringFormat;
         }
 
         # Sets option Input.IgnoreGitPath

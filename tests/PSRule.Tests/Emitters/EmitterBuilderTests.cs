@@ -2,7 +2,9 @@
 // Licensed under the MIT License.
 
 using System.Linq;
+using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Options;
 using PSRule.Runtime;
 
 namespace PSRule.Emitters;
@@ -19,7 +21,8 @@ public sealed class EmitterBuilderTests : ContextBaseTests
     public void Build_WhenNull_ShouldAddDefaultEmitters()
     {
         // Check for default emitters.
-        var collection = new EmitterBuilder().Build(new TestEmitterContext());
+        var option = GetOption();
+        var collection = new EmitterBuilder(formatOption: option.Format).Build(new TestEmitterContext());
         Assert.Equal(4, collection.Count);
     }
 
@@ -30,12 +33,12 @@ public sealed class EmitterBuilderTests : ContextBaseTests
     public void Build_WhenEmitterSupportsConfiguration_ShouldInjectConfigurationInstance()
     {
         var option = GetOption();
-        option.Format.Add("test", new Options.FormatType { Type = [".t"] });
+        option.Format.Add("test", new FormatType { Type = [".t"] });
         option.Configuration["custom_flag"] = true;
         var optionContextBuilder = GetOptionBuilder(option);
 
         var languageScopeSet = GetLanguageScopeSet(optionContextBuilder: optionContextBuilder);
-        var builder = new EmitterBuilder(languageScopeSet, option.Format);
+        var builder = new EmitterBuilder(languageScopeSet, option.Format, allowAlwaysEnabled: true);
         builder.AddEmitter<TestEmitter>(ResourceHelper.STANDALONE_SCOPE_NAME);
 
         var collection = builder.Build(new TestEmitterContext());
@@ -63,9 +66,39 @@ public sealed class EmitterBuilderTests : ContextBaseTests
             scope.ConfigureServices(c => c.AddService<IEmitter, CustomEmitter>());
         }
 
-        var collection = new EmitterBuilder(languageScopeSet).Build(new TestEmitterContext());
+        var collection = new EmitterBuilder(languageScopeSet, allowAlwaysEnabled: true).Build(new TestEmitterContext());
 
         Assert.NotNull(collection);
         Assert.NotNull(collection.Emitters.FirstOrDefault(i => i is CustomEmitter));
     }
+
+    #region Helper methods
+
+    protected override PSRuleOption GetOption()
+    {
+        return new PSRuleOption()
+        {
+            Format = new FormatOption
+            {
+                ["yaml"] = new FormatType
+                {
+                    Enabled = true,
+                },
+                ["json"] = new FormatType
+                {
+                    Enabled = true,
+                },
+                ["markdown"] = new FormatType
+                {
+                    Enabled = true,
+                },
+                ["powershell_data"] = new FormatType
+                {
+                    Enabled = true,
+                },
+            }
+        };
+    }
+
+    #endregion Helper methods
 }

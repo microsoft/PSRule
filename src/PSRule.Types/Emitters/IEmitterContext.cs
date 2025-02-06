@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Data;
-using PSRule.Options;
 
 namespace PSRule.Emitters;
 
@@ -14,7 +13,7 @@ public interface IEmitterContext
     /// <summary>
     /// The format that will be used to convert string types.
     /// </summary>
-    InputFormat Format { get; }
+    string? StringFormat { get; }
 
     /// <summary>
     /// Determines if file are emitted for processing.

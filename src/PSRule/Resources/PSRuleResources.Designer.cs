@@ -664,6 +664,24 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PSR0012: Added emitter &apos;{0}&apos; to scope &apos;{1}&apos;..
+        /// </summary>
+        internal static string PSR0012 {
+            get {
+                return ResourceManager.GetString("PSR0012", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSR0013: Completed building chain using &apos;{0}&apos; emitters..
+        /// </summary>
+        internal static string PSR0013 {
+            get {
+                return ResourceManager.GetString("PSR0013", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deserialize the file &apos;{0}&apos;: {1}.
         /// </summary>
         internal static string ReadFileFailed {

@@ -314,6 +314,13 @@
           "title": "YAML",
           "description": "Support for the YAML format.",
           "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enabled",
+              "description": "Configure if the format is enabled. By default, the format is disabled.",
+              "markdownDescription": "Configure if the format is enabled. By default, the format is disabled.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)",
+              "default": false
+            },
             "type": {
               "type": "array",
               "title": "Type",
@@ -326,6 +333,12 @@
                 ".yaml",
                 ".yml"
               ]
+            },
+            "replace": {
+              "type": "object",
+              "title": "Replacement strings",
+              "description": "A set of literal key/ value pairs that identify replacement tokens that will be replaced in source files.",
+              "markdownDescription": "A set of literal key/ value pairs that identify replacement tokens that will be replaced in source files.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)"
             }
           },
           "additionalProperties": false
@@ -335,6 +348,13 @@
           "title": "JSON",
           "description": "Support for the JSON format including support for JSON with comments.",
           "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enabled",
+              "description": "Configure if the format is enabled. By default, the format is disabled.",
+              "markdownDescription": "Configure if the format is enabled. By default, the format is disabled.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)",
+              "default": false
+            },
             "type": {
               "type": "array",
               "title": "Type",
@@ -348,6 +368,12 @@
                 ".jsonc",
                 ".sarif"
               ]
+            },
+            "replace": {
+              "type": "object",
+              "title": "Replacement strings",
+              "description": "A set of literal key/ value pairs that identify replacement tokens that will be replaced in source files.",
+              "markdownDescription": "A set of literal key/ value pairs that identify replacement tokens that will be replaced in source files.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)"
             }
           },
           "additionalProperties": false
@@ -357,6 +383,12 @@
           "title": "Markdown",
           "description": "Support for the Markdown format.",
           "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enabled",
+              "description": "Configure if the format is enabled.",
+              "default": false
+            },
             "type": {
               "type": "array",
               "title": "Type",
@@ -369,6 +401,12 @@
                 ".md",
                 ".markdown"
               ]
+            },
+            "replace": {
+              "type": "object",
+              "title": "Replacement strings",
+              "description": "A set of literal key/ value pairs that identify replacement tokens that will be replaced in source files.",
+              "markdownDescription": "A set of literal key/ value pairs that identify replacement tokens that will be replaced in source files.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)"
             }
           },
           "additionalProperties": false
@@ -378,6 +416,13 @@
           "title": "PowerShell Data",
           "description": "Support for the PowerShell Data format.",
           "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enabled",
+              "description": "Configure if the format is enabled. By default, the format is disabled.",
+              "markdownDescription": "Configure if the format is enabled. By default, the format is disabled.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)",
+              "default": false
+            },
             "type": {
               "type": "array",
               "title": "Type",
@@ -389,6 +434,12 @@
               "default": [
                 ".psd1"
               ]
+            },
+            "replace": {
+              "type": "object",
+              "title": "Replacement strings",
+              "description": "A set of literal key/ value pairs that identify replacement tokens that will be replaced in source files.",
+              "markdownDescription": "A set of literal key/ value pairs that identify replacement tokens that will be replaced in source files.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)"
             }
           },
           "additionalProperties": false
@@ -399,6 +450,13 @@
         "title": "Custom format",
         "description": "Define a custom emitter format.",
         "properties": {
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "description": "Configure if the format is enabled. By default, the format is disabled.",
+            "markdownDescription": "Configure if the format is enabled. By default, the format is disabled.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)",
+            "default": false
+          },
           "type": {
             "oneOf": [
               {
@@ -418,6 +476,12 @@
                 "minLength": 1
               }
             ]
+          },
+          "replace": {
+            "type": "object",
+            "title": "Replacement strings",
+            "description": "A set of literal key/ value pairs that identify replacement tokens that will be replaced in source files.",
+            "markdownDescription": "A set of literal key/ value pairs that identify replacement tokens that will be replaced in source files.\n\n[See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#format)"
           }
         },
         "required": [
@@ -657,21 +721,30 @@
           "markdownDescription": "Determines if file objects are processed by rules. [See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#inputfileobjects)",
           "default": false
         },
-        "format": {
+        "stringFormat": {
           "type": "string",
-          "title": "Input format",
-          "description": "The input string format. The default is Detect, which will try to detect the format when the -InputPath parameter is used.",
-          "markdownDescription": "The input string format. The default is `Detect`, which will try to detect the format when the `-InputPath` parameter is used. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#inputformat)",
-          "enum": [
-            "None",
-            "Yaml",
-            "Json",
-            "Markdown",
-            "PowerShellData",
-            "File",
-            "Detect"
+          "title": "String format",
+          "description": "The structured format to convert input string objects into.",
+          "markdownDescription": "The structured format to convert input string objects into. [See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#inputstringformat)",
+          "defaultSnippets": [
+            {
+              "label": "yaml",
+              "body": "yaml"
+            },
+            {
+              "label": "json",
+              "body": "json"
+            },
+            {
+              "label": "markdown",
+              "body": "markdown"
+            },
+            {
+              "label": "powershell_data",
+              "body": "powershell_data"
+            }
           ],
-          "default": "Detect"
+          "default": null
         },
         "ignoreGitPath": {
           "type": "boolean",

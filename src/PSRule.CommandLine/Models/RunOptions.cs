@@ -27,6 +27,11 @@ public sealed class RunOptions
     public string? Baseline { get; set; }
 
     /// <summary>
+    /// A list of formats to enable.
+    /// </summary>
+    public string[]? Formats { get; set; }
+
+    /// <summary>
     /// Only show output with the specified outcome.
     /// </summary>
     public RuleOutcome? Outcome { get; set; }

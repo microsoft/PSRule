@@ -66,7 +66,7 @@ nav:
       - Concepts:
           - Baselines: concepts/baselines.md
           - Capabilities: concepts/capabilities.md
-          - Emitters: concepts/emitters.md
+          - Formats: concepts/formats.md
           - Functions: expressions/functions.md
           - Grouping rules: concepts/grouping-rules.md
           - Sub-selectors: expressions/sub-selectors.md
@@ -160,6 +160,7 @@ plugins:
         'install.md': 'setup/index.md'
         'changelog.md': 'CHANGELOG-v3.md'
         'upgrade-notes.md': 'deprecations.md'
+        'concepts/emitters.md': 'concepts/formats.md'
 
 hooks:
   - docs/hooks/maml_formatting.py

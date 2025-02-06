@@ -226,6 +226,27 @@ public static class DictionaryExtensions
     }
 
     /// <summary>
+    /// Try to get the value as a dictionary.
+    /// </summary>
+    /// <param name="dictionary"></param>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool TryGetDictionary<T>(this IDictionary<string, object> dictionary, string key, out IDictionary<string, T>? value)
+    {
+        value = null;
+        if (!dictionary.TryGetValue(key, out var o))
+            return false;
+
+        if (TypeConverter.TryDictionary<T>(o, out var d) && d != null)
+        {
+            value = d;
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Add unique keys to the dictionary.
     /// Duplicate keys are ignored.
     /// </summary>

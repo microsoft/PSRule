@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Net;
 using System.Security;
 using System.Text;
+using Newtonsoft.Json;
 using PSRule.Data;
 
 namespace PSRule;
@@ -259,6 +260,29 @@ public static class Environment
         }
         value = map;
         return true;
+    }
+
+    /// <summary>
+    /// Try to get the environment variable as a <see cref="Dictionary{TKey, TValue}"/> by deserializing a JSON object.
+    /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="key">The name of the environment variable.</param>
+    /// <param name="value">The dictionary returned after deserialization.</param>
+    public static bool TryDictionary<T>(string key, out IDictionary<string, T>? value)
+    {
+        value = default;
+        if (!TryVariable(key, out var variable) || variable == null || variable.Length < 5 || variable[0] != '{' || variable[variable.Length - 1] != '}')
+            return false;
+
+        try
+        {
+            value = JsonConvert.DeserializeObject<Dictionary<string, T>>(variable);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     /// <summary>

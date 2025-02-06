@@ -129,7 +129,6 @@
   "[csharp]": {
     "editor.tabSize": 4
   },
-  "omnisharp.organizeImportsOnFormat": true,
   "omnisharp.enableEditorConfigSupport": true,
   "omnisharp.enableRoslynAnalyzers": true,
   "git.branchProtection": [
@@ -138,5 +137,6 @@
   ],
   "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
   "PSRule.options.path": "ps-rule-ci.yaml",
-  "PSRule.lock.restore": true
+  "PSRule.lock.restore": true,
+  "dotnet.formatting.organizeImportsOnFormat": true
 }

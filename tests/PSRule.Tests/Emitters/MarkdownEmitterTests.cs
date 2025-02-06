@@ -1,12 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
+using System.Management.Automation;
+
 namespace PSRule.Emitters;
 
 /// <summary>
 /// Unit tests for <see cref="MarkdownEmitter"/>.
 /// </summary>
-public sealed class MarkdownEmitterTests : BaseTests
+public sealed class MarkdownEmitterTests : EmitterTests
 {
     [Fact]
     public void Accepts_WhenValidType_ShouldReturnTrue()
@@ -46,9 +49,23 @@ public sealed class MarkdownEmitterTests : BaseTests
     }
 
     [Fact]
+    public void Visit_WhenReplacementConfigured_ShouldReplaceTokens()
+    {
+        var context = new TestEmitterContext();
+        var emitter = new MarkdownEmitter(GetEmitterConfiguration(format: [("markdown", default, default, [new KeyValuePair<string, string>("kind: Test", "kind: ReplacementTest")])]));
+
+        Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFile.md")));
+
+        var item = context.Items[0].Value as PSObject;
+        var spec = item.Properties["spec"].Value as PSObject;
+        var properties = spec.Properties["properties"].Value as PSObject;
+        Assert.Equal("ReplacementTest", properties.Properties["kind"].Value);
+    }
+
+    [Fact]
     public void Visit_WhenString_ShouldEmitItems()
     {
-        var context = new TestEmitterContext(format: Options.InputFormat.Markdown);
+        var context = new TestEmitterContext(stringFormat: "markdown");
         var emitter = new MarkdownEmitter(EmptyEmitterConfiguration.Instance);
 
         // With format.
@@ -56,7 +73,7 @@ public sealed class MarkdownEmitterTests : BaseTests
         Assert.Single(context.Items);
 
         // Without format.
-        context = new TestEmitterContext(format: Options.InputFormat.None);
+        context = new TestEmitterContext();
         Assert.False(emitter.Visit(context, ReadFileAsString("ObjectFromFile.md")));
     }
 }

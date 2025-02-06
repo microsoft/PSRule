@@ -1348,36 +1348,36 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
-    Context 'Read Input.Format' {
+    Context 'Read Input.StringFormat' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
-            $option.Input.Format | Should -Be 'None';
+            $option.Input.StringFormat | Should -BeNullOrEmpty;
         }
 
         It 'from Hashtable' {
-            $option = New-PSRuleOption -Option @{ 'Input.Format' = 'Yaml' };
-            $option.Input.Format | Should -Be 'Yaml';
+            $option = New-PSRuleOption -Option @{ 'Input.StringFormat' = 'Yaml' };
+            $option.Input.StringFormat | Should -Be 'Yaml';
         }
 
         It 'from YAML' {
             $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Input.Format | Should -Be 'Yaml';
+            $option.Input.StringFormat | Should -Be 'Yaml';
         }
 
         It 'from Environment' {
             try {
-                $Env:PSRULE_INPUT_FORMAT = 'Yaml';
+                $Env:PSRULE_INPUT_STRINGFORMAT = 'Yaml';
                 $option = New-PSRuleOption;
-                $option.Input.Format | Should -Be 'Yaml';
+                $option.Input.StringFormat | Should -Be 'Yaml';
             }
             finally {
-                Remove-Item 'Env:PSRULE_INPUT_FORMAT' -Force;
+                Remove-Item 'Env:PSRULE_INPUT_STRINGFORMAT' -Force;
             }
         }
 
         It 'from parameter' {
-            $option = New-PSRuleOption -Format 'Yaml' -Path $emptyOptionsFilePath;
-            $option.Input.Format | Should -Be 'Yaml';
+            $option = New-PSRuleOption -InputStringFormat 'Yaml' -Path $emptyOptionsFilePath;
+            $option.Input.StringFormat | Should -Be 'Yaml';
         }
     }
 
@@ -1695,16 +1695,24 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
             try {
                 # With single item
                 $Env:PSRULE_FORMAT_ABC_TYPE = '.yaml';
+                $Env:PSRULE_FORMAT_ABC_ENABLED = '1';
+                $Env:PSRULE_FORMAT_ABC_REPLACE = '{ "abc": "def" }';
                 $option = New-PSRuleOption;
                 $option.Format['abc'].Type | Should -BeExactly '.yaml';
+                $option.Format['abc'].Enabled | Should -BeExactly $True;
+                $option.Format['abc'].Replace["abc"] | Should -BeExactly "def";
 
                 # With array
                 $Env:PSRULE_FORMAT_ABC_TYPE = '.yaml;.yml';
+                $Env:PSRULE_FORMAT_ABC_ENABLED = 'true';
                 $option = New-PSRuleOption;
                 $option.Format['abc'].Type | Should -BeExactly '.yaml', '.yml';
+                $option.Format['abc'].Enabled | Should -BeExactly $True;
             }
             finally {
                 Remove-Item 'Env:PSRULE_FORMAT_ABC_TYPE' -Force;
+                Remove-Item 'Env:PSRULE_FORMAT_ABC_ENABLED' -Force;
+                Remove-Item 'Env:PSRULE_FORMAT_ABC_REPLACE' -Force;
             }
         }
     }
@@ -2588,10 +2596,10 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         }
     }
 
-    Context 'Read Input.Format' {
+    Context 'Read Input.StringFormat' {
         It 'from parameter' {
-            $option = Set-PSRuleOption -Format 'Yaml' @optionParams;
-            $option.Input.Format | Should -Be 'Yaml';
+            $option = Set-PSRuleOption -InputStringFormat 'Yaml' @optionParams;
+            $option.Input.StringFormat | Should -Be 'Yaml';
         }
     }
 

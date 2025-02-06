@@ -307,7 +307,7 @@ The following conceptual topics exist in the `PSRule` module:
   - [Include.Module](https://aka.ms/ps-rule/options#includemodule)
   - [Include.Path](https://aka.ms/ps-rule/options#includepath)
   - [Input.FileObjects](https://aka.ms/ps-rule/options#inputfileobjects)
-  - [Input.Format](https://aka.ms/ps-rule/options#inputformat)
+  - [Input.StringFormat](https://aka.ms/ps-rule/options#inputstringformat)
   - [Input.IgnoreGitPath](https://aka.ms/ps-rule/options#inputignoregitpath)
   - [Input.IgnoreObjectSource](https://aka.ms/ps-rule/options#inputignoreobjectsource)
   - [Input.IgnoreRepositoryCommon](https://aka.ms/ps-rule/options#inputignorerepositorycommon)

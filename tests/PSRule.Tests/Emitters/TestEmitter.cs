@@ -14,6 +14,7 @@ namespace PSRule.Emitters;
 /// <summary>
 /// An emitter for testing.
 /// </summary>
+[EmitterFormat("*")]
 public sealed class TestEmitter : FileEmitter
 {
     private readonly ImmutableHashSet<string>? _Types;
@@ -37,7 +38,7 @@ public sealed class TestEmitter : FileEmitter
 
     protected override bool AcceptsFilePath(IEmitterContext context, IFileInfo info)
     {
-        return info != null && _Types.Contains(info.Extension);
+        return info != null && info.Extension != null && _Types != null && _Types.Contains(info.Extension);
     }
 
     protected override bool VisitFile(IEmitterContext context, IFileStream stream)
