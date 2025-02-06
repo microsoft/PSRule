@@ -23,14 +23,15 @@ Within the root directory of your IaC repository:
         runs-on: ubuntu-latest
         steps:
 
-        - name: Checkout
-          uses: actions/checkout@v4
+          # Checkout the repository
+          - name: Checkout
+            uses: actions/checkout@v4
 
-        # Analyze Azure resources using PSRule for Azure
-        - name: Analyze Azure template files
-          uses: microsoft/ps-rule@v2.9.0
-          with:
-            modules: 'PSRule.Rules.Azure'
+          # Run PSRule
+          - name: Analyze with PSRule
+            uses: microsoft/ps-rule@v3.0.0
+            with:
+              modules: PSRule.Rules.Azure
     ```
 
     This will automatically install compatible versions of all dependencies.
@@ -42,12 +43,14 @@ Within the root directory of your IaC repository:
     ```yaml
     steps:
 
-    # Analyze Azure resources using PSRule for Azure
-    - task: ps-rule-assert@2
-      displayName: Analyze Azure template files
-      inputs:
-        inputType: repository
-        modules: 'PSRule.Rules.Azure'
+      # Checkout the repository
+      - checkout: self
+
+      # Run PSRule
+      - task: ps-rule-assert@3
+        displayName: Analyze with PSRule
+        inputs:
+          modules: PSRule.Rules.Azure
     ```
 
     This will automatically install compatible versions of all dependencies.
@@ -138,6 +141,9 @@ To prevent a rule executing you can either:
     Meaningful comments help during peer review within a Pull Request (PR).
     Also consider including a date if the exclusions or suppressions are temporary.
 
+  [3]: concepts/PSRule/en-US/about_PSRule_Options.md#ruleexclude
+  [4]: concepts/PSRule/en-US/about_PSRule_Options.md#suppression
+  [5]: concepts/PSRule/en-US/about_PSRule_SuppressionGroups.md
   [6]: addon-modules.md
   [7]: authoring/packaging-rules.md
 
@@ -146,6 +152,7 @@ To prevent a rule executing you can either:
 :octicons-milestone-24: v2.5.0 · [:octicons-book-24: Docs][8]
 
 To only process files that have changed within a pull request, set the `Input.IgnoreUnchangedPath` option.
+This option does not work with a shallow or detached checkout, full git history is required for comparison.
 
 === "GitHub Actions"
 
@@ -161,17 +168,26 @@ To only process files that have changed within a pull request, set the `Input.Ig
         runs-on: ubuntu-latest
         steps:
 
-        - name: Checkout
-          uses: actions/checkout@v4
+          # Checkout the repository
+          - name: Checkout
+            uses: actions/checkout@v4
+            with:
+              fetch-depth: 0 # (1)
 
-        # Analyze Azure resources using PSRule for Azure
-        - name: Analyze Azure template files
-          uses: microsoft/ps-rule@v2.9.0
-          with:
-            modules: 'PSRule.Rules.Azure'
-          env:
-            PSRULE_INPUT_IGNOREUNCHANGEDPATH: true
+          # Run PSRule
+          - name: Analyze with PSRule
+            uses: microsoft/ps-rule@v3.0.0
+            with:
+              modules: PSRule.Rules.Azure
+            env:
+              PSRULE_INPUT_IGNOREUNCHANGEDPATH: true # (2)
     ```
+
+    <div class="result" markdown>
+    1.  Checkout the repository with full history. By default, GitHub Actions will only fetch the latest commit.
+    2.  Enable processing of changed files only.
+
+    </div>
 
 === "Azure Pipelines"
 
@@ -180,15 +196,24 @@ To only process files that have changed within a pull request, set the `Input.Ig
     ```yaml title=".azure-pipelines/analyze-arm.yaml"
     steps:
 
-    # Analyze Azure resources using PSRule for Azure
-    - task: ps-rule-assert@2
-      displayName: Analyze Azure template files
-      inputs:
-        inputType: repository
-        modules: 'PSRule.Rules.Azure'
-      env:
-        PSRULE_INPUT_IGNOREUNCHANGEDPATH: true
+      # Checkout the repository
+      - checkout: self
+        fetchDepth: 0 # (1)
+
+      # Run PSRule
+      - task: ps-rule-assert@3
+        displayName: Analyze with PSRule
+        inputs:
+          modules: PSRule.Rules.Azure
+        env:
+          PSRULE_INPUT_IGNOREUNCHANGEDPATH: true # (2)
     ```
+
+    <div class="result" markdown>
+    1.  Checkout the repository with full history. By default, Azure Pipelines will only fetch the latest commit.
+    2.  Enable processing of changed files only.
+
+    </div>
 
 === "Generic with PowerShell"
 

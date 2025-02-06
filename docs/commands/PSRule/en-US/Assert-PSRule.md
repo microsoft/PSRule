@@ -162,39 +162,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Format
-
-Configures the input format for when a string is passed in as a target object.
-
-When the `-InputObject` parameter or pipeline input is used, strings are treated as plain text by default.
-Set this option to either `Yaml`, `Json`, `Markdown`, `PowerShellData` to have PSRule deserialize the object.
-
-When the `-InputPath` parameter is used with a file path or URL.
-If the `Detect` format is used, the file extension will be used to automatically detect the format.
-When `-InputPath` is not used, `Detect` is the same as `None`.
-
-When this option is set to `File` PSRule scans the path and subdirectories specified by `-InputPath`.
-Files are treated as objects instead of being deserialized.
-Additional, PSRule uses the file extension as the object type.
-When files have no extension the whole file name is used.
-
-See `about_PSRule_Options` for details.
-
-This parameter takes precedence over the `Input.Format` option if set.
-
-```yaml
-Type: InputFormat
-Parameter Sets: (All)
-Aliases:
-Accepted values: None, Yaml, Json, Markdown, PowerShellData, File, Detect
-
-Required: False
-Position: Named
-Default value: Detect
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Baseline
 
 Specifies an explicit baseline by name to use for evaluating rules.
