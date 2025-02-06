@@ -7,15 +7,17 @@ using PSRule.Host;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// A pipeline builder for any pipelines that test objects against rules.
 /// </summary>
 internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvokePipelineBuilder
 {
-    protected InputPathBuilder _InputPath;
-    protected string _ResultVariableName;
+    protected InputPathBuilder? _InputPath;
+    protected string? _ResultVariableName;
 
-    private List<string> _TrustedPublishers;
+    private List<string>? _TrustedPublishers;
 
     protected InvokePipelineBuilderBase(Source[] source, IHostContext hostContext)
         : base(source, hostContext)
@@ -23,12 +25,13 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
         _InputPath = null;
     }
 
-    public void InputPath(string[] path)
+    /// <inheritdoc/>
+    public void InputPath(string[]? path)
     {
         if (path == null || path.Length == 0)
             return;
 
-        PathFilter required = null;
+        PathFilter? required = null;
         if (TryChangedFiles(out var files))
         {
             required = PathFilter.Create(Environment.GetWorkingPath(), path, matchResult: true);
@@ -40,11 +43,13 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
         _InputPath = builder;
     }
 
+    /// <inheritdoc/>
     public void ResultVariable(string variableName)
     {
         _ResultVariableName = variableName;
     }
 
+    /// <inheritdoc/>
     public void UnblockPublisher(string publisher)
     {
         if (System.Environment.OSVersion.Platform != PlatformID.Win32NT)
@@ -52,6 +57,12 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
 
         _TrustedPublishers ??= [];
         _TrustedPublishers.Add(publisher);
+    }
+
+    /// <inheritdoc/>
+    public void Formats(string[]? format)
+    {
+        EnableFormatsByName(format);
     }
 
     public override IPipelineBuilder Configure(PSRuleOption option)
@@ -143,6 +154,8 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
 
     protected override PipelineInputStream PrepareReader()
     {
-        return new PipelineInputStream(GetLanguageScopeSet(), _InputPath, GetInputObjectSourceFilter(), Option);
+        return new PipelineInputStream(GetLanguageScopeSet(), _InputPath, GetInputObjectSourceFilter(), Option, _Output);
     }
 }
+
+#nullable restore

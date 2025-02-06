@@ -63,9 +63,10 @@ public sealed class RunCommand
 
         // Build command.
         var builder = CommandLineBuilder.Assert(operationOptions.Module ?? [], clientContext.Option, clientContext.Host, file, clientContext.ResolvedModuleVersions);
-        builder.Baseline(BaselineOption.FromString(operationOptions.Baseline));
+        builder.Baseline(Configuration.BaselineOption.FromString(operationOptions.Baseline));
         builder.InputPath(inputPath);
         builder.UnblockPublisher(PUBLISHER);
+        builder.Formats(operationOptions.Formats);
 
         using var pipeline = builder.Build();
         if (pipeline != null)

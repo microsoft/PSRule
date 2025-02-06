@@ -3,6 +3,8 @@
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// A helper to build a pipeline for executing rules and conventions within a PSRule sandbox.
 /// </summary>
@@ -12,7 +14,7 @@ public interface IInvokePipelineBuilder : IPipelineBuilder
     /// Configures paths that will be scanned for input.
     /// </summary>
     /// <param name="path">An array of relative or absolute path specs to be scanned. Directories will be recursively scanned for all files not excluded matching the file path spec.</param>
-    void InputPath(string[] path);
+    void InputPath(string[]? path);
 
     /// <summary>
     /// Configures a variable that will receive all results in addition to the host context.
@@ -25,4 +27,11 @@ public interface IInvokePipelineBuilder : IPipelineBuilder
     /// </summary>
     /// <param name="publisher">The trusted publisher to unblock.</param>
     void UnblockPublisher(string publisher);
+
+    /// <summary>
+    /// Enables one or more formats to be used when reading input objects.
+    /// </summary>
+    void Formats(string[]? format);
 }
+
+#nullable restore

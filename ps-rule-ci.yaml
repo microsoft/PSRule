@@ -30,7 +30,7 @@ include:
 
 format:
   powershell_data:
-    type: []
+    enabled: false
 
 input:
   fileObjects: true

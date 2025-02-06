@@ -17,80 +17,81 @@ Create options to configure PSRule execution.
 
 ```text
 New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
- [-SuppressTargetName <SuppressionOption>]
- [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
+ [-SuppressTargetName <SuppressionOption>] [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
  [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
- [-Convention <String[]>] [-DuplicateResourceId <ExecutionActionPreference>]
- [-InitialSessionState <SessionState>] [-SuppressionGroupExpired <ExecutionActionPreference>]
- [-ExecutionRuleExcluded <ExecutionActionPreference>] [-ExecutionRuleSuppressed <ExecutionActionPreference>]
- [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-Convention <String[]>] [-ExecutionBreak <BreakLevel>] [-DuplicateResourceId <ExecutionActionPreference>]
+ [-InitialSessionState <SessionState>] [-RestrictScriptSource <RestrictScriptSource>]
+ [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
+ [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
  [-ExecutionRuleInconclusive <ExecutionActionPreference>]
  [-ExecutionInvariantCulture <ExecutionActionPreference>]
  [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
- [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
- [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
+ [-IncludePath <String[]>] [-InputFileObjects <Boolean>] [-InputStringFormat <String>]
+ [-InputIgnoreGitPath <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
  [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
  [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
- [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-RepositoryBaseRef <String>]
- [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-OverrideLevel <Hashtable>]
+ [-RepositoryBaseRef <String>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### FromOption
 
 ```text
 New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
- [-SuppressTargetName <SuppressionOption>]
- [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
+ [-SuppressTargetName <SuppressionOption>] [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
  [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
- [-Convention <String[]>] [-DuplicateResourceId <ExecutionActionPreference>]
- [-InitialSessionState <SessionState>] [-SuppressionGroupExpired <ExecutionActionPreference>]
- [-ExecutionRuleExcluded <ExecutionActionPreference>] [-ExecutionRuleSuppressed <ExecutionActionPreference>]
- [-ExecutionAliasReference <ExecutionActionPreference>]
+ [-Convention <String[]>] [-ExecutionBreak <BreakLevel>] [-DuplicateResourceId <ExecutionActionPreference>]
+ [-InitialSessionState <SessionState>] [-RestrictScriptSource <RestrictScriptSource>]
+ [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
+ [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
  [-ExecutionRuleInconclusive <ExecutionActionPreference>]
  [-ExecutionInvariantCulture <ExecutionActionPreference>]
  [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
- [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
- [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
+ [-IncludePath <String[]>] [-InputFileObjects <Boolean>] [-InputStringFormat <String>]
+ [-InputIgnoreGitPath <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
  [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
  [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
- [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-RepositoryBaseRef <String>]
- [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-OverrideLevel <Hashtable>]
+ [-RepositoryBaseRef <String>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### FromDefault
 
 ```text
 New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTargetName <SuppressionOption>]
- [-BaselineGroup <Hashtable>]
- [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
- [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>] [-TargetType <String[]>]
- [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
- [-DuplicateResourceId <ExecutionActionPreference>] [-InitialSessionState <SessionState>]
+ [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
+ [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
+ [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
+ [-ExecutionBreak <BreakLevel>] [-DuplicateResourceId <ExecutionActionPreference>]
+ [-InitialSessionState <SessionState>] [-RestrictScriptSource <RestrictScriptSource>]
  [-SuppressionGroupExpired <ExecutionActionPreference>] [-ExecutionRuleExcluded <ExecutionActionPreference>]
  [-ExecutionRuleSuppressed <ExecutionActionPreference>] [-ExecutionAliasReference <ExecutionActionPreference>]
  [-ExecutionRuleInconclusive <ExecutionActionPreference>]
  [-ExecutionInvariantCulture <ExecutionActionPreference>]
  [-ExecutionUnprocessedObject <ExecutionActionPreference>] [-IncludeModule <String[]>]
- [-IncludePath <String[]>] [-Format <InputFormat>] [-InputIgnoreGitPath <Boolean>]
- [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
+ [-IncludePath <String[]>] [-InputFileObjects <Boolean>] [-InputStringFormat <String>]
+ [-InputIgnoreGitPath <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
  [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
  [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
  [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
  [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
- [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-RepositoryBaseRef <String>]
- [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>] [<CommonParameters>]
+ [-OutputSarifProblemsOnly <Boolean>] [-OutputStyle <OutputStyle>] [-OverrideLevel <Hashtable>]
+ [-RepositoryBaseRef <String>] [-RepositoryUrl <String>] [-RuleIncludeLocal <Boolean>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -477,24 +478,6 @@ See about_PSRule_Options for more information.
 Type: String[]
 Parameter Sets: (All)
 Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Format
-
-Sets the `Input.Format` option to configure the input format for when a string is passed in as a target object.
-See about_PSRule_Options for more information.
-
-```yaml
-Type: InputFormat
-Parameter Sets: (All)
-Aliases: InputFormat
-Accepted values: None, Yaml, Json, Markdown, PowerShellData, File, Detect
 
 Required: False
 Position: Named
@@ -1038,6 +1021,91 @@ The `Execution.SuppressionGroupExpired` option determines how to handle expired 
 Type: ExecutionActionPreference
 Parameter Sets: (All)
 Aliases: ExecutionSuppressionGroupExpired
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionBreak
+
+Sets the option `Execution.Break`.
+The `Execution.Break` option determines the minimum rule severity level that breaks the pipeline.
+
+```yaml
+Type: BreakLevel
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputFileObjects
+
+Sets the option `Input.FileObjects`.
+The `Input.FileObjects` option determines if file objects are processed by rules.
+
+```yaml
+Type: Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputStringFormat
+
+Sets the option `Input.StringFormat`.
+The `Input.StringFormat` option determines how string input objects are processed.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OverrideLevel
+
+Sets the option `Override.Level`.
+The `Override.Level` option is used to override the severity level of one or more rules.
+
+```yaml
+Type: Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RestrictScriptSource
+
+Sets the option `Execution.RestrictScriptSource`.
+The `Execution.RestrictScriptSource` option configures where PowerShell language features are allowed to run from.
+
+```yaml
+Type: RestrictScriptSource
+Parameter Sets: (All)
+Aliases: ExecutionRestrictScriptSource
 
 Required: False
 Position: Named

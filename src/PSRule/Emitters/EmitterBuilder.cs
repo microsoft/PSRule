@@ -1,9 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using PSRule.Definitions;
 using PSRule.Options;
+using PSRule.Resources;
 using PSRule.Runtime;
 
 namespace PSRule.Emitters;
@@ -15,17 +17,31 @@ namespace PSRule.Emitters;
 /// </summary>
 internal sealed class EmitterBuilder
 {
+    private static readonly EventId PSR0012 = new(12, "PSR0012");
+    private static readonly EventId PSR0013 = new(12, "PSR0013");
+
     private readonly ILanguageScopeSet? _LanguageScopeSet;
     private readonly IFormatOption _FormatOption;
+    private readonly string? _StringFormat;
     private readonly List<KeyValuePair<string, Type>> _EmitterTypes;
     private readonly ServiceCollection _Services;
+    private readonly ILogger? _Logger;
 
-    public EmitterBuilder(ILanguageScopeSet? languageScopeSet = default, IFormatOption? formatOption = default)
+    /// <summary>
+    /// Allow some emitters to always be enabled.
+    /// This is a special case for testing, that's not available for general use.
+    /// </summary>
+    private readonly bool _AllowAlwaysEnabled;
+
+    public EmitterBuilder(ILanguageScopeSet? languageScopeSet = default, IFormatOption? formatOption = default, string? stringFormat = default, ILogger? logger = default, bool allowAlwaysEnabled = false)
     {
         _LanguageScopeSet = languageScopeSet;
         _FormatOption = formatOption ?? new FormatOption();
-        _EmitterTypes = new List<KeyValuePair<string, Type>>(4);
+        _StringFormat = stringFormat;
+        _EmitterTypes = [];
         _Services = new ServiceCollection();
+        _Logger = logger;
+        _AllowAlwaysEnabled = allowAlwaysEnabled;
         AddInternalServices();
         AddInternalEmitters();
         AddEmittersFromLanguageScope();
@@ -40,8 +56,10 @@ internal sealed class EmitterBuilder
     public void AddEmitter<T>(string scope) where T : class, IEmitter
     {
         if (string.IsNullOrEmpty(scope)) throw new ArgumentNullException(nameof(scope));
+        if (!IsEmitterEnabled(typeof(T))) return;
 
         _EmitterTypes.Add(new KeyValuePair<string, Type>(scope, typeof(T)));
+        LogAddedEmitterDiagnostic(typeof(T).FullName, scope);
         _Services.AddScoped(typeof(T));
     }
 
@@ -54,8 +72,11 @@ internal sealed class EmitterBuilder
     public void AddEmitter(string scope, Type type)
     {
         if (string.IsNullOrEmpty(scope)) throw new ArgumentNullException(nameof(scope));
+        if (!typeof(IEmitter).IsAssignableFrom(type)) throw new ArgumentException(nameof(type));
+        if (!IsEmitterEnabled(type)) return;
 
         _EmitterTypes.Add(new KeyValuePair<string, Type>(scope, type));
+        LogAddedEmitterDiagnostic(type.FullName, scope);
         _Services.AddScoped(type);
     }
 
@@ -70,8 +91,10 @@ internal sealed class EmitterBuilder
     {
         if (string.IsNullOrEmpty(scope)) throw new ArgumentNullException(nameof(scope));
         if (instance == null) throw new ArgumentNullException(nameof(instance));
+        if (!IsEmitterEnabled(instance.GetType())) return;
 
         _EmitterTypes.Add(new KeyValuePair<string, Type>(scope, typeof(T)));
+        LogAddedEmitterDiagnostic(typeof(T).FullName, scope);
         _Services.AddScoped(services =>
         {
             return instance;
@@ -109,6 +132,7 @@ internal sealed class EmitterBuilder
             scopes.Add(scope);
         }
 
+        LogCompletedChainDiagnostic(emitters.Count);
         return new EmitterCollection(serviceProvider, [.. emitters], context);
     }
 
@@ -160,6 +184,62 @@ internal sealed class EmitterBuilder
 
         var configuration = languageScope.ToConfiguration();
         return new InternalEmitterConfiguration(configuration, _FormatOption);
+    }
+
+    /// <summary>
+    /// Determine if the specific format is configured as enabled.
+    /// </summary>
+    private bool IsFormatEnabled(string? format)
+    {
+        return format != null && !string.IsNullOrEmpty(format) && _FormatOption != null &&
+            _FormatOption.TryGetValue(format, out var value) && value != null && value.Enabled == true;
+    }
+
+    /// <summary>
+    /// Determine if the specified format is the format for handling string input.
+    /// </summary>
+    private bool IsStringFormat(string? format)
+    {
+        return format != null && _StringFormat != null && string.Equals(_StringFormat, format, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Determine if the format is always enabled.
+    /// </summary>
+    private bool IsAlwaysEnabled(string? format)
+    {
+        return _AllowAlwaysEnabled && format != null && format == "*";
+    }
+
+    /// <summary>
+    /// Determine is the emitter is configured as enabled.
+    /// </summary>
+    private bool IsEmitterEnabled(Type type)
+    {
+        var format = type.GetCustomAttribute<EmitterFormatAttribute>(inherit: false)?.Format;
+        return IsFormatEnabled(format) || IsStringFormat(format) || IsAlwaysEnabled(format);
+    }
+
+    /// <summary>
+    /// PSR0012: Added emitter '{0}' to scope '{1}'.
+    /// </summary>
+    private void LogAddedEmitterDiagnostic(string type, string scope)
+    {
+        if (_Logger == null)
+            return;
+
+        _Logger.LogDebug(PSR0012, PSRuleResources.PSR0012, type, scope);
+    }
+
+    /// <summary>
+    /// PSR0013: Completed building chain using '{0}' emitters.
+    /// </summary>
+    private void LogCompletedChainDiagnostic(int count)
+    {
+        if (_Logger == null)
+            return;
+
+        _Logger.LogDebug(PSR0013, PSRuleResources.PSR0013, count);
     }
 }
 

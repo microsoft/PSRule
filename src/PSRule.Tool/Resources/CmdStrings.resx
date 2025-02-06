@@ -204,4 +204,7 @@
   <data name="Run_NoRestore_Description" xml:space="preserve">
     <value>Do not restore modules before running rules.</value>
   </data>
+  <data name="Run_Formats_Description" xml:space="preserve">
+    <value>A list of formats to enable.</value>
+  </data>
 </root>

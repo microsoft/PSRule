@@ -4,12 +4,13 @@
 using System.Collections.Generic;
 using PSRule.Data;
 using PSRule.Emitters;
-using PSRule.Options;
 
 namespace PSRule;
 
-internal sealed class TestEmitterContext(InputFormat format = InputFormat.None, string objectPath = null)
-    : BaseEmitterContext(format, objectPath, false)
+#nullable enable
+
+internal sealed class TestEmitterContext(string? stringFormat = default, string? objectPath = default)
+    : BaseEmitterContext(stringFormat, objectPath, false)
 {
     public List<ITargetObject> Items = [];
 
@@ -23,3 +24,5 @@ internal sealed class TestEmitterContext(InputFormat format = InputFormat.None, 
         return true;
     }
 }
+
+#nullable restore

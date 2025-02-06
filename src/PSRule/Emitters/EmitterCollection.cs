@@ -18,7 +18,7 @@ internal sealed class EmitterCollection : IDisposable
     private readonly ServiceProvider _ServiceProvider;
 
     private readonly IEmitterContext _Context;
-    private readonly EmitterChain _Chain;
+    private readonly EmitterChain? _Chain;
 
     /// <summary>
     /// Determines if file are emitted for processing.
@@ -69,7 +69,7 @@ internal sealed class EmitterCollection : IDisposable
             return VisitFileInternal(info);
         }
 
-        return GetBaseObject(o) is string s && _Context.Format != Options.InputFormat.None ? VisitString(s) : VisitUnexpanded(o);
+        return GetBaseObject(o) is string s && _Context.StringFormat != null ? VisitString(s) : VisitUnexpanded(o);
     }
 
     private bool VisitString(string s)
@@ -156,10 +156,10 @@ internal sealed class EmitterCollection : IDisposable
     /// </summary>
     /// <param name="emitters">The emitters to include in the chain.</param>
     /// <returns>A chain of emitters.</returns>
-    private static EmitterChain BuildChain(IEmitter[] emitters)
+    private static EmitterChain? BuildChain(IEmitter[]? emitters)
     {
         if (emitters == null || emitters.Length == 0)
-            throw new ArgumentNullException(nameof(emitters));
+            return null;
 
         // Get emitters in reverse order.
         var result = Create(emitters[emitters.Length - 1], null);

@@ -4,7 +4,6 @@
 using System.Collections.Concurrent;
 using PSRule.Configuration;
 using PSRule.Data;
-using PSRule.Options;
 using PSRule.Pipeline;
 
 namespace PSRule.Emitters;
@@ -23,7 +22,7 @@ internal sealed class EmitterContext : BaseEmitterContext
     /// Create an instance containing context for an <see cref="IEmitter"/>.
     /// </summary>
     internal EmitterContext(ConcurrentQueue<ITargetObject> queue, PathFilter? inputFilter, PSRuleOption? option)
-        : base(option?.Input?.Format ?? InputFormat.None, option?.Input?.ObjectPath, option?.Input?.FileObjects ?? false)
+        : base(option?.Input?.StringFormat, option?.Input?.ObjectPath, option?.Input?.FileObjects ?? false)
     {
         _Queue = queue;
         _InputFilter = inputFilter;

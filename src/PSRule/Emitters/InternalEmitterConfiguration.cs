@@ -25,6 +25,14 @@ internal sealed class InternalEmitterConfiguration(IConfiguration configuration,
     }
 
     /// <inheritdoc/>
+    public KeyValuePair<string, string>[]? GetFormatReplacementTokens(string format)
+    {
+        return _FormatOption.TryGetValue(format, out var formatType) &&
+            formatType != null &&
+            formatType.Replace != null ? [.. formatType.Replace] : null;
+    }
+
+    /// <inheritdoc/>
     public object? GetValueOrDefault(string configurationKey, object? defaultValue = null)
     {
         return _Configuration.GetValueOrDefault(configurationKey, defaultValue);

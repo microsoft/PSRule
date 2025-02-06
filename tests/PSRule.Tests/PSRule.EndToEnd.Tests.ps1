@@ -138,7 +138,7 @@ Describe 'Scenarios -- kubernetes-resources' -Tag 'EndToEnd','kubernetes-resourc
         BeforeAll {
             $invokeParams = @{
                 Path = $scenarioPath
-                Format = 'Yaml'
+                InputStringFormat = 'Yaml'
                 Option = (Join-Path -Path $scenarioPath -ChildPath 'ps-rule.yaml')
             }
             $result = @($yamlData | Invoke-PSRule @invokeParams);
@@ -191,7 +191,7 @@ Describe 'Scenarios -- rule-module' -Tag 'EndToEnd', 'rule-module' {
     Context 'Invoke-PSRule' {
         BeforeAll {
             Import-Module (Join-Path -Path $scenarioPath -ChildPath 'Enterprise.Rules') -Force;
-            $result = @(Invoke-PSRule -InputPath $inputPath -Module 'Enterprise.Rules' -WarningAction SilentlyContinue);
+            $result = @(Invoke-PSRule -InputPath $inputPath -Formats json -Module 'Enterprise.Rules' -WarningAction SilentlyContinue);
         }
 
         It 'Binds fields' {

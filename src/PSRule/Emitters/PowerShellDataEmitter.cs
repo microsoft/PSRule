@@ -8,9 +8,12 @@ using PSRule.Pipeline;
 
 namespace PSRule.Emitters;
 
+#nullable enable
+
 /// <summary>
 /// An <seealso cref="IEmitter"/> for processing PowerShell Data.
 /// </summary>
+[EmitterFormat(FORMAT)]
 internal sealed class PowerShellDataEmitter : FileEmitter
 {
     private const string FORMAT = "powershell_data";
@@ -18,12 +21,14 @@ internal sealed class PowerShellDataEmitter : FileEmitter
     private static readonly string[] _DefaultTypes = [".psd1"];
 
     private readonly ImmutableHashSet<string> _Types;
+    private readonly KeyValuePair<string, string>[]? _ReplacementTokens;
 
     public PowerShellDataEmitter(IEmitterConfiguration emitterConfiguration)
     {
         if (emitterConfiguration == null) throw new ArgumentNullException(nameof(emitterConfiguration));
 
-        _Types = emitterConfiguration.GetFormatTypes(FORMAT, _DefaultTypes).ToImmutableHashSet();
+        _Types = emitterConfiguration.GetFormatTypes(FORMAT, _DefaultTypes)!.ToImmutableHashSet();
+        _ReplacementTokens = emitterConfiguration.GetFormatReplacementTokens(FORMAT);
     }
 
     /// <summary>
@@ -31,13 +36,13 @@ internal sealed class PowerShellDataEmitter : FileEmitter
     /// </summary>
     protected override bool AcceptsFilePath(IEmitterContext context, IFileInfo info)
     {
-        return info != null && _Types.Contains(info.Extension);
+        return info != null && info.Extension != null && _Types.Contains(info.Extension);
     }
 
     /// <inheritdoc/>
     protected override bool VisitFile(IEmitterContext context, IFileStream stream)
     {
-        using var reader = stream.AsTextReader();
+        using var reader = GetReader(stream);
         if (reader == null) return false;
 
         var content = reader.ReadToEnd();
@@ -47,7 +52,7 @@ internal sealed class PowerShellDataEmitter : FileEmitter
     /// <inheritdoc/>
     protected override bool AcceptsString(IEmitterContext context)
     {
-        return context.Format == Options.InputFormat.PowerShellData;
+        return string.Equals(context.StringFormat, FORMAT, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <inheritdoc/>
@@ -69,7 +74,7 @@ internal sealed class PowerShellDataEmitter : FileEmitter
         return true;
     }
 
-    private static void VisitItems(IEmitterContext context, IEnumerable<PSObject> items, IFileInfo sourceInfo)
+    private static void VisitItems(IEmitterContext context, IEnumerable<PSObject> items, IFileInfo? sourceInfo)
     {
         if (items == null)
             return;
@@ -86,7 +91,7 @@ internal sealed class PowerShellDataEmitter : FileEmitter
         }
     }
 
-    private static void NoteSource(TargetObject value, IFileInfo source)
+    private static void NoteSource(TargetObject value, IFileInfo? source)
     {
         if (value == null || source == null)
             return;
@@ -96,4 +101,13 @@ internal sealed class PowerShellDataEmitter : FileEmitter
         //value.Source.AddRange(targetInfo.Source.ToArray());
         //value.Issue.AddRange(targetInfo.Issue.ToArray());
     }
+
+    private TextReader GetReader(IFileStream stream)
+    {
+        return _ReplacementTokens == null || _ReplacementTokens.Length == 0
+            ? stream.AsTextReader()
+            : new ReplaceTextReader(stream.AsTextReader(), _ReplacementTokens);
+    }
 }
+
+#nullable restore

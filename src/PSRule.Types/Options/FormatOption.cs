@@ -15,9 +15,13 @@ public sealed class FormatOption : StringMap<FormatType>, IFormatOption
 {
     private const string DICTIONARY_PREFIX = "Format.";
     private const string DICTIONARY_TYPE_SUFFIX = ".Type";
+    private const string DICTIONARY_ENABLED_SUFFIX = ".Enabled";
+    private const string DICTIONARY_REPLACE_SUFFIX = ".Replace";
 
     private const string ENVIRONMENT_PREFIX = "PSRULE_FORMAT_";
     private const string ENVIRONMENT_TYPE_SUFFIX = "_TYPE";
+    private const string ENVIRONMENT_ENABLED_SUFFIX = "_ENABLED";
+    private const string ENVIRONMENT_REPLACE_SUFFIX = "_REPLACE";
 
     internal static readonly FormatOption Default = [];
 
@@ -51,16 +55,47 @@ public sealed class FormatOption : StringMap<FormatType>, IFormatOption
         // Format.<FORMAT>.Type
         ImportFromDictionary(DICTIONARY_PREFIX, dictionary, kv =>
         {
-            if (!kv.Key.EndsWith(DICTIONARY_TYPE_SUFFIX, StringComparison.OrdinalIgnoreCase) ||
-                !dictionary.TryGetStringArray(kv.Key, out var type))
+            FormatType? formatType = null;
+
+            if (TryKeySuffix(kv.Key, DICTIONARY_PREFIX, DICTIONARY_TYPE_SUFFIX, out var formatName) &&
+                dictionary.TryGetStringArray(kv.Key, out var type) &&
+                type != null)
+            {
+                formatType = new FormatType
+                {
+                    Type = type
+                };
+            }
+
+            else if (TryKeySuffix(kv.Key, DICTIONARY_PREFIX, DICTIONARY_ENABLED_SUFFIX, out formatName) &&
+                dictionary.TryGetBool(kv.Key, out var enabled) &&
+                enabled != null)
+            {
+                formatType = new FormatType
+                {
+                    Enabled = enabled
+                };
+            }
+
+            else if (TryKeySuffix(kv.Key, DICTIONARY_PREFIX, DICTIONARY_REPLACE_SUFFIX, out formatName) &&
+                dictionary.TryGetDictionary<string>(kv.Key, out var replace) &&
+                replace != null)
+            {
+                formatType = new FormatType
+                {
+                    Replace = [.. replace]
+                };
+            }
+
+            // Ignore invalid format configurations.
+            if (formatName == null || formatType == null)
                 return default;
 
-            var remaining = kv.Key.Length - DICTIONARY_PREFIX.Length - DICTIONARY_TYPE_SUFFIX.Length;
-            var formatName = kv.Key.Substring(DICTIONARY_PREFIX.Length, remaining).ToLowerInvariant();
-            var formatType = new FormatType
+            // Merge with existing format type.
+            if (TryGetValue(formatName, out var existing))
             {
-                Type = type
-            };
+                formatType = FormatType.Combine(formatType, existing);
+            }
 
             return new KeyValuePair<string, FormatType>
             (
@@ -76,16 +111,47 @@ public sealed class FormatOption : StringMap<FormatType>, IFormatOption
         // PSRULE_FORMAT_<FORMAT>_TYPE='<value>'
         ImportFromEnvironmentVariables(ENVIRONMENT_PREFIX, kv =>
         {
-            if (!kv.Key.EndsWith(ENVIRONMENT_TYPE_SUFFIX, StringComparison.OrdinalIgnoreCase) ||
-                !Environment.TryStringArray(kv.Key, out var type))
+            FormatType? formatType = null;
+
+            if (TryKeySuffix(kv.Key, ENVIRONMENT_PREFIX, ENVIRONMENT_TYPE_SUFFIX, out var formatName) &&
+                Environment.TryStringArray(kv.Key, out var type) &&
+                type != null)
+            {
+                formatType = new FormatType
+                {
+                    Type = type
+                };
+            }
+
+            else if (TryKeySuffix(kv.Key, ENVIRONMENT_PREFIX, ENVIRONMENT_ENABLED_SUFFIX, out formatName) &&
+                Environment.TryBool(kv.Key, out var enabled) &&
+                enabled != null)
+            {
+                formatType = new FormatType
+                {
+                    Enabled = enabled
+                };
+            }
+
+            else if (TryKeySuffix(kv.Key, ENVIRONMENT_PREFIX, ENVIRONMENT_REPLACE_SUFFIX, out formatName) &&
+                Environment.TryDictionary<string>(kv.Key, out var replace) &&
+                replace != null)
+            {
+                formatType = new FormatType
+                {
+                    Replace = [.. replace]
+                };
+            }
+
+            // Ignore invalid format configurations.
+            if (formatName == null || formatType == null)
                 return default;
 
-            var remaining = kv.Key.Length - ENVIRONMENT_PREFIX.Length - ENVIRONMENT_TYPE_SUFFIX.Length;
-            var formatName = kv.Key.Substring(ENVIRONMENT_PREFIX.Length, remaining).ToLowerInvariant();
-            var formatType = new FormatType
+            // Merge with existing format type.
+            if (TryGetValue(formatName, out var existing))
             {
-                Type = type
-            };
+                formatType = FormatType.Combine(formatType, existing);
+            }
 
             return new KeyValuePair<string, FormatType>
             (
@@ -93,5 +159,19 @@ public sealed class FormatOption : StringMap<FormatType>, IFormatOption
                 formatType
             );
         });
+    }
+
+    private static bool TryKeySuffix(string key, string prefix, string suffix, out string? formatName)
+    {
+        formatName = null;
+        if (prefix == null || prefix.Length == 0)
+            return false;
+
+        if (key.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+        {
+            formatName = key.Substring(prefix.Length, key.Length - prefix.Length - suffix.Length).ToLowerInvariant();
+            return true;
+        }
+        return false;
     }
 }

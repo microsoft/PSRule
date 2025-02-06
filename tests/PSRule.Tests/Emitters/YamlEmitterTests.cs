@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
+using System.Management.Automation;
 using PSRule.Runtime;
 
 namespace PSRule.Emitters;
@@ -47,7 +49,7 @@ public sealed class YamlEmitterTests : EmitterTests
     public void Visit_WhenFormatOptionIsSet_ShouldOnlyVisitSpecifiedTypes()
     {
         var context = new TestEmitterContext();
-        var emitter = new YamlEmitter(NullLogger<YamlEmitter>.Instance, GetEmitterConfiguration(format: [("yaml", [".yml"])]));
+        var emitter = new YamlEmitter(NullLogger<YamlEmitter>.Instance, GetEmitterConfiguration(format: [("yaml", [".yml"], default, default)]));
 
         Assert.False(emitter.Visit(context, GetFileInfo("ObjectFromFile.yaml")));
         Assert.True(emitter.Visit(context, GetFileInfo("PSRule.Tests.yml")));
@@ -79,9 +81,23 @@ public sealed class YamlEmitterTests : EmitterTests
     }
 
     [Fact]
+    public void Visit_WhenReplacementConfigured_ShouldReplaceTokens()
+    {
+        var context = new TestEmitterContext();
+        var emitter = new YamlEmitter(NullLogger<YamlEmitter>.Instance, GetEmitterConfiguration(format: [("yaml", default, default, [new KeyValuePair<string, string>("kind: Test", "kind: ReplacementTest")])]));
+
+        Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFile.yaml")));
+
+        var item = context.Items[0].Value as PSObject;
+        var spec = item.Properties["spec"].Value as PSObject;
+        var properties = spec.Properties["properties"].Value as PSObject;
+        Assert.Equal("ReplacementTest", properties.Properties["kind"].Value);
+    }
+
+    [Fact]
     public void Visit_WhenString_ShouldEmitItems()
     {
-        var context = new TestEmitterContext(format: Options.InputFormat.Yaml);
+        var context = new TestEmitterContext(stringFormat: "yaml");
         var emitter = new YamlEmitter(NullLogger<YamlEmitter>.Instance, EmptyEmitterConfiguration.Instance);
 
         // With format.
@@ -89,7 +105,7 @@ public sealed class YamlEmitterTests : EmitterTests
         Assert.Equal(2, context.Items.Count);
 
         // Without format.
-        context = new TestEmitterContext(format: Options.InputFormat.None);
+        context = new TestEmitterContext();
         Assert.False(emitter.Visit(context, ReadFileAsString("ObjectFromFile.yaml")));
     }
 }

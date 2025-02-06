@@ -37,6 +37,7 @@ internal sealed class ClientBuilder
     private readonly Option<string[]> _Run_InputPath;
     private readonly Option<string[]> _Run_Module;
     private readonly Option<string> _Run_Baseline;
+    private readonly Option<string[]> _Run_Formats;
     private readonly Option<string[]> _Run_Outcome;
     private readonly Option<bool> _Run_NoRestore;
     private readonly Option<bool> _Listen_Stdio;
@@ -86,6 +87,11 @@ internal sealed class ClientBuilder
             ["--baseline"],
             description: CmdStrings.Run_Baseline_Description
         );
+        _Run_Formats = new Option<string[]>(
+            ["--formats"],
+            description: CmdStrings.Run_Formats_Description
+        );
+        _Run_Formats.AllowMultipleArgumentsPerToken = true;
         _Run_Outcome = new Option<string[]>(
             ["--outcome"],
             description: CmdStrings.Run_Outcome_Description
@@ -163,6 +169,7 @@ internal sealed class ClientBuilder
         cmd.AddOption(_Run_InputPath);
         cmd.AddOption(_Run_Module);
         cmd.AddOption(_Run_Baseline);
+        cmd.AddOption(_Run_Formats);
         cmd.AddOption(_Run_Outcome);
         cmd.AddOption(_Run_NoRestore);
         cmd.SetHandler(async (invocation) =>
@@ -173,6 +180,7 @@ internal sealed class ClientBuilder
                 InputPath = invocation.ParseResult.GetValueForOption(_Run_InputPath),
                 Module = invocation.ParseResult.GetValueForOption(_Run_Module),
                 Baseline = invocation.ParseResult.GetValueForOption(_Run_Baseline),
+                Formats = invocation.ParseResult.GetValueForOption(_Run_Formats),
                 Outcome = invocation.ParseResult.GetValueForOption(_Run_Outcome).ToRuleOutcome(),
                 OutputPath = invocation.ParseResult.GetValueForOption(_Run_OutputPath),
                 OutputFormat = invocation.ParseResult.GetValueForOption(_Run_OutputFormat).ToOutputFormat(),

@@ -4,24 +4,25 @@
 using System.Collections;
 using System.Management.Automation;
 using PSRule.Data;
-using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 
 namespace PSRule.Emitters;
 
+#nullable enable
+
 /// <summary>
-/// 
+/// A base implementation of <see cref="IEmitterContext"/>.
 /// </summary>
-/// <param name="format"></param>
-/// <param name="objectPath"></param>
-/// <param name="shouldEmitFile"></param>
-internal abstract class BaseEmitterContext(InputFormat format, string objectPath, bool shouldEmitFile) : IEmitterContext
+/// <param name="stringFormat">A configured format for string objects.</param>
+/// <param name="objectPath">An object path to use.</param>
+/// <param name="shouldEmitFile">Determines if files should be emitted as objects.</param>
+internal abstract class BaseEmitterContext(string? stringFormat, string? objectPath, bool shouldEmitFile) : IEmitterContext
 {
     /// <inheritdoc/>
-    public InputFormat Format { get; } = format;
+    public string? StringFormat { get; } = NormalizeStringFormat(stringFormat);
 
-    public string ObjectPath { get; } = objectPath;
+    public string? ObjectPath { get; } = objectPath;
 
     /// <inheritdoc/>
     public bool ShouldEmitFile { get; } = shouldEmitFile;
@@ -56,10 +57,10 @@ internal abstract class BaseEmitterContext(InputFormat format, string objectPath
             return [];
 
         var nestedType = nestedObject.GetType();
-        if (typeof(IEnumerable).IsAssignableFrom(nestedType))
+        if (typeof(IEnumerable).IsAssignableFrom(nestedType) && nestedObject is IEnumerable items)
         {
             var result = new List<TargetObject>();
-            foreach (var item in nestedObject as IEnumerable)
+            foreach (var item in items)
                 result.Add(new TargetObject(PSObject.AsPSObject(item)));
 
             return [.. result];
@@ -69,4 +70,11 @@ internal abstract class BaseEmitterContext(InputFormat format, string objectPath
             return new TargetObject[] { new(PSObject.AsPSObject(nestedObject), new TargetSourceCollection(targetObject.Source)) };
         }
     }
+
+    private static string? NormalizeStringFormat(string? format)
+    {
+        return format == null || string.IsNullOrWhiteSpace(format) ? null : format.ToLowerInvariant();
+    }
 }
+
+#nullable restore

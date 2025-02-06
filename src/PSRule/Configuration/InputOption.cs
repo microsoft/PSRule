@@ -2,9 +2,10 @@
 // Licensed under the MIT License.
 
 using System.ComponentModel;
-using PSRule.Options;
 
 namespace PSRule.Configuration;
+
+#nullable enable
 
 /// <summary>
 /// Options that affect how input types are processed.
@@ -12,7 +13,7 @@ namespace PSRule.Configuration;
 public sealed class InputOption : IEquatable<InputOption>
 {
     private const bool DEFAULT_FILEOBJECTS = false;
-    private const InputFormat DEFAULT_FORMAT = InputFormat.None;
+    private const string DEFAULT_STRINGFORMAT = null;
     private const bool DEFAULT_IGNOREGITPATH = true;
     private const bool DEFAULT_IGNOREOBJECTSOURCE = false;
     private const bool DEFAULT_IGNOREREPOSITORYCOMMON = true;
@@ -24,7 +25,7 @@ public sealed class InputOption : IEquatable<InputOption>
     internal static readonly InputOption Default = new()
     {
         FileObjects = DEFAULT_FILEOBJECTS,
-        Format = DEFAULT_FORMAT,
+        StringFormat = DEFAULT_STRINGFORMAT,
         IgnoreGitPath = DEFAULT_IGNOREGITPATH,
         IgnoreObjectSource = DEFAULT_IGNOREOBJECTSOURCE,
         IgnoreRepositoryCommon = DEFAULT_IGNOREREPOSITORYCOMMON,
@@ -40,7 +41,7 @@ public sealed class InputOption : IEquatable<InputOption>
     public InputOption()
     {
         FileObjects = null;
-        Format = null;
+        StringFormat = null;
         IgnoreGitPath = null;
         IgnoreObjectSource = null;
         IgnoreRepositoryCommon = null;
@@ -60,7 +61,7 @@ public sealed class InputOption : IEquatable<InputOption>
             return;
 
         FileObjects = option.FileObjects;
-        Format = option.Format;
+        StringFormat = option.StringFormat;
         IgnoreGitPath = option.IgnoreGitPath;
         IgnoreObjectSource = option.IgnoreObjectSource;
         IgnoreRepositoryCommon = option.IgnoreRepositoryCommon;
@@ -81,7 +82,7 @@ public sealed class InputOption : IEquatable<InputOption>
     {
         return other != null &&
             FileObjects == other.FileObjects &&
-            Format == other.Format &&
+            StringFormat == other.StringFormat &&
             IgnoreGitPath == other.IgnoreGitPath &&
             IgnoreObjectSource == other.IgnoreObjectSource &&
             IgnoreRepositoryCommon == other.IgnoreRepositoryCommon &&
@@ -98,7 +99,7 @@ public sealed class InputOption : IEquatable<InputOption>
         {
             var hash = 17;
             hash = hash * 23 + (FileObjects.HasValue ? FileObjects.Value.GetHashCode() : 0);
-            hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
+            hash = hash * 23 + (StringFormat != null ? StringFormat.GetHashCode() : 0);
             hash = hash * 23 + (IgnoreGitPath.HasValue ? IgnoreGitPath.Value.GetHashCode() : 0);
             hash = hash * 23 + (IgnoreObjectSource.HasValue ? IgnoreObjectSource.Value.GetHashCode() : 0);
             hash = hash * 23 + (IgnoreRepositoryCommon.HasValue ? IgnoreRepositoryCommon.Value.GetHashCode() : 0);
@@ -119,7 +120,7 @@ public sealed class InputOption : IEquatable<InputOption>
         var result = new InputOption(o1)
         {
             FileObjects = o1?.FileObjects ?? o2?.FileObjects,
-            Format = o1?.Format ?? o2?.Format,
+            StringFormat = o1?.StringFormat ?? o2?.StringFormat,
             IgnoreGitPath = o1?.IgnoreGitPath ?? o2?.IgnoreGitPath,
             IgnoreObjectSource = o1?.IgnoreObjectSource ?? o2?.IgnoreObjectSource,
             IgnoreRepositoryCommon = o1?.IgnoreRepositoryCommon ?? o2?.IgnoreRepositoryCommon,
@@ -141,7 +142,7 @@ public sealed class InputOption : IEquatable<InputOption>
     /// The input string format.
     /// </summary>
     [DefaultValue(null)]
-    public InputFormat? Format { get; set; }
+    public string? StringFormat { get; set; }
 
     /// <summary>
     /// Determine if files within the .git path are ignored.
@@ -171,27 +172,27 @@ public sealed class InputOption : IEquatable<InputOption>
     /// The object path to a property to use instead of the pipeline object.
     /// </summary>
     [DefaultValue(null)]
-    public string ObjectPath { get; set; }
+    public string? ObjectPath { get; set; }
 
     /// <summary>
     /// Ignores input files that match the path spec.
     /// </summary>
     [DefaultValue(null)]
-    public string[] PathIgnore { get; set; }
+    public string[]? PathIgnore { get; set; }
 
     /// <summary>
     /// Only process objects that match one of the included types.
     /// </summary>
     [DefaultValue(null)]
-    public string[] TargetType { get; set; }
+    public string[]? TargetType { get; set; }
 
     internal void Load()
     {
         if (Environment.TryBool("PSRULE_INPUT_FILEOBJECTS", out var fileObjects))
             FileObjects = fileObjects;
 
-        if (Environment.TryEnum("PSRULE_INPUT_FORMAT", out InputFormat format))
-            Format = format;
+        if (Environment.TryString("PSRULE_INPUT_STRINGFORMAT", out var stringFormat))
+            StringFormat = stringFormat;
 
         if (Environment.TryBool("PSRULE_INPUT_IGNOREGITPATH", out var ignoreGitPath))
             IgnoreGitPath = ignoreGitPath;
@@ -220,8 +221,8 @@ public sealed class InputOption : IEquatable<InputOption>
         if (index.TryPopBool("Input.FileObjects", out var fileObjects))
             FileObjects = fileObjects;
 
-        if (index.TryPopEnum("Input.Format", out InputFormat format))
-            Format = format;
+        if (index.TryPopString("Input.StringFormat", out var stringFormat))
+            StringFormat = stringFormat;
 
         if (index.TryPopBool("Input.IgnoreGitPath", out var ignoreGitPath))
             IgnoreGitPath = ignoreGitPath;
@@ -245,3 +246,5 @@ public sealed class InputOption : IEquatable<InputOption>
             TargetType = targetType;
     }
 }
+
+#nullable restore

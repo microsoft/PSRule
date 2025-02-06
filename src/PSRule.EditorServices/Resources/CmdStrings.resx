@@ -204,4 +204,7 @@
   <data name="Listen_Description" xml:space="preserve">
     <value>Run the language server.</value>
   </data>
+  <data name="Run_Formats_Description" xml:space="preserve">
+    <value>A list of formats to enable.</value>
+  </data>
 </root>

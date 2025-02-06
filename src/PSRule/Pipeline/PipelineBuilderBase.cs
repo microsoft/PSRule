@@ -37,7 +37,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     private ILanguageScopeSet? _LanguageScopeSet;
     private CapabilitySet? _CapabilitySet;
 
-    private readonly HostPipelineWriter _Output;
+    protected readonly HostPipelineWriter _Output;
 
     private const int MIN_JSON_INDENT = 0;
     private const int MAX_JSON_INDENT = 4;
@@ -95,7 +95,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         Option.Execution = GetExecutionOption(option.Execution);
         Option.Format = new FormatOption(option.Format);
         Option.Input = new InputOption(option.Input);
-        Option.Input.Format ??= InputOption.Default.Format;
+        Option.Input.StringFormat ??= InputOption.Default.StringFormat;
         Option.Output = new OutputOption(option.Output);
         Option.Output.Outcome ??= OutputOption.Default.Outcome;
         Option.Output.Banner ??= OutputOption.Default.Banner;
@@ -324,7 +324,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
 
     protected virtual PipelineInputStream PrepareReader()
     {
-        return new PipelineInputStream(GetLanguageScopeSet(), null, GetInputObjectSourceFilter(), Option);
+        return new PipelineInputStream(GetLanguageScopeSet(), null, GetInputObjectSourceFilter(), Option, _Output);
     }
 
     protected virtual PipelineWriter PrepareWriter()
@@ -450,6 +450,22 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     private ResourceCache GetResourceCache(List<ResourceRef> unresolved, ILanguageScopeSet languageScopeSet)
     {
         return new ResourceCacheBuilder(_Writer, languageScopeSet).Import(Source).Build(unresolved);
+    }
+
+    protected void EnableFormatsByName(string[]? format)
+    {
+        if (format == null || format.Length == 0)
+            return;
+
+        Option.Format ??= [];
+        foreach (var f in format)
+        {
+            if (string.IsNullOrWhiteSpace(f))
+                continue;
+
+            Option.Format[f] ??= new FormatType();
+            Option.Format[f]!.Enabled = true;
+        }
     }
 
     protected void ConfigureBinding(PSRuleOption option)

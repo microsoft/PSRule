@@ -21,7 +21,7 @@ public abstract class BaseEmitter : IEmitter
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>
-    /// <param name="disposing">Determines if a dispose is occuring.</param>
+    /// <param name="disposing">Determines if a dispose is occurring.</param>
     protected virtual void Dispose(bool disposing)
     {
         if (!_Disposed)

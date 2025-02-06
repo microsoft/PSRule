@@ -226,6 +226,10 @@ public sealed partial class PipelineTests : ContextBaseTests
     public void PipelineWithSource()
     {
         var option = GetOption();
+        option.Format["json"] = new FormatType
+        {
+            Enabled = true,
+        };
         option.Rule.Include = ["FromFile1"];
         option.Input.PathIgnore =
         [

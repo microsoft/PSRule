@@ -7,6 +7,10 @@ namespace PSRule.Emitters;
 
 #nullable enable
 
+/// <summary>
+/// An emitter for testing.
+/// </summary>
+[EmitterFormat("*")]
 internal sealed class CustomEmitter : IEmitter
 {
     public bool Accepts(IEmitterContext context, Type type)

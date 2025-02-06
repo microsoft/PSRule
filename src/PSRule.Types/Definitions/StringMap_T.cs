@@ -51,12 +51,24 @@ public abstract class StringMap<TValue> : IStringMap<TValue>, IEnumerable<KeyVal
         {
             return _Items.TryGetValue(key, out var value) ? value : default;
         }
+        set
+        {
+            if (value == null) throw new ArgumentNullException(nameof(value));
+
+            _Items[key] = value;
+        }
     }
 
     /// <inheritdoc/>
     public void Add(string key, TValue value)
     {
         _Items.Add(key, value);
+    }
+
+    /// <inheritdoc/>
+    public void Add(KeyValuePair<string, TValue> item)
+    {
+        _Items.Add(item.Key, item.Value);
     }
 
     /// <inheritdoc/>

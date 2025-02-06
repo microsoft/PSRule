@@ -450,10 +450,10 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         }
     }
 
-    Context 'Using -Format' {
+    Context 'Using -InputStringFormat' {
         It 'Yaml String' {
             $yaml = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.yaml') -Raw;
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $yaml -Format Yaml);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $yaml -InputStringFormat Yaml);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
@@ -463,7 +463,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'Yaml FileInfo' {
             $file = Get-ChildItem -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.yaml') -File;
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $file -Format Yaml);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $file -InputStringFormat Yaml);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
@@ -473,7 +473,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'Json String' {
             $json = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.json') -Raw;
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $json -Format Json);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $json -InputStringFormat Json);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
@@ -483,7 +483,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'Json FileInfo' {
             $file = Get-ChildItem -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.json') -File;
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $file -Format Json);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $file -InputStringFormat Json);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
@@ -493,7 +493,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'Markdown String' {
             $markdown = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.md') -Raw;
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $markdown -Format Markdown);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $markdown -InputStringFormat Markdown);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
@@ -503,7 +503,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'Markdown FileInfo' {
             $file = Get-ChildItem -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.md') -File;
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $file -Format Markdown);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $file -InputStringFormat Markdown);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
@@ -513,7 +513,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'PowerShellData String' {
             $data = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.psd1') -Raw;
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $data -Format PowerShellData);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $data -InputStringFormat powershell_data);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
@@ -523,7 +523,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'PowerShellData FileInfo' {
             $file = Get-ChildItem -Path (Join-Path -Path $here -ChildPath 'ObjectFromFile.psd1') -File;
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $file -Format PowerShellData);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $file -InputStringFormat powershell_data);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 1;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
@@ -681,7 +681,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 Path = $ruleFilePath
                 Name = 'WithFormat'
                 InputPath = $testInputPath
-                Format = 'Yaml'
+                Formats = 'yaml'
                 Option = (New-PSRuleOption -OutputEncoding UTF7)
             }
             $Null = Invoke-PSRule @testOptions -OutputFormat Json -OutputPath $testOutputPath;
@@ -698,6 +698,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 Path = $ruleFilePath
                 Name = 'WithFormat'
                 InputPath = $testInputPath
+                Formats = 'yaml'
                 Option = (New-PSRuleOption -OutputSarifProblemsOnly $False)
             }
             $Null = Invoke-PSRule @testOptions -OutputFormat Sarif -OutputPath $testOutputPath;
@@ -824,7 +825,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             )
 
             # Single file
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles[0]);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles[0] -Formats yaml);
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -BeIn $True;
             $result.Length | Should -Be 2;
@@ -832,7 +833,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result.TargetName | Should -BeIn 'TestObject1', 'TestObject2';
 
             # Multiple files, check that there are no duplicates
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles -Formats yaml);
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -BeIn $True;
             $result.Length | Should -Be 3;
@@ -847,7 +848,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             )
 
             # Single file
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles[0]);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles[0] -Formats json);
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -BeIn $True;
             $result.Length | Should -Be 2;
@@ -859,7 +860,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result[1].Source[0].Line | Should -Be 70;
 
             # Multiple file
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles -Formats json);
             $result | Should -Not -BeNullOrEmpty;
             $result.IsSuccess() | Should -BeIn $True;
             $result.Length | Should -Be 4;
@@ -892,7 +893,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
         It 'Globbing processes paths' {
             # Wildcards capture both files
             $inputFiles = Join-Path -Path $here -ChildPath 'ObjectFromFile*.yaml';
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -InputPath $inputFiles);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'FromFile1' -InputPath $inputFiles -Formats yaml);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 5;
         }
@@ -902,7 +903,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
                 (Join-Path -Path $rootPath -ChildPath 'ps-rule.yaml')
                 (Join-Path -Path $here -ChildPath 'ObjectFromFile2.yaml')
             )
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'SourceTest' -InputPath $inputFiles);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'SourceTest' -InputPath $inputFiles -Formats yaml);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
 
@@ -944,7 +945,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
     Context 'Using -ObjectPath' {
         It 'Processes nested objects' {
             $yaml = Get-Content -Path (Join-Path -Path $here -ChildPath 'ObjectFromNestedFile.yaml') -Raw;
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $yaml -Format Yaml -ObjectPath items);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputObject $yaml -InputStringFormat yaml -ObjectPath items);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
             $result | Should -BeOfType PSRule.Rules.RuleRecord;
@@ -1038,7 +1039,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $inputFiles = @(
                 (Join-Path -Path $here -ChildPath 'ObjectFromFile.json')
             )
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'IssueGetTest' -InputPath $inputFiles);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'IssueGetTest' -InputPath $inputFiles -Formats json);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
 
@@ -1052,7 +1053,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $inputFiles = @(
                 (Join-Path -Path $here -ChildPath 'ObjectFromFile.json')
             )
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'IssueReportTest' -InputPath $inputFiles);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'IssueReportTest' -InputPath $inputFiles -Formats json);
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 2;
 
@@ -1547,21 +1548,21 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
 Describe 'Get-PSRuleTarget' -Tag 'Get-PSRuleTarget','Common' {
     Context 'With defaults' {
         It 'Yaml' {
-            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $rootPath -ChildPath 'GitVersion.yml'));
+            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $rootPath -ChildPath 'GitVersion.yml') -Formats yaml);
             $result.Length | Should -Be 1;
             $result[0].increment | Should -Be 'Inherit';
 
-            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml'));
+            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml') -Formats yaml);
             $result.Length | Should -Be 1;
-            $result[0].input.format | Should -Be 'Yaml';
+            $result[0].input.StringFormat | Should -Be 'Yaml';
         }
 
         It 'Json' {
-            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFileSingle.json'));
+            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFileSingle.json') -Formats json);
             $result.Length | Should -Be 1;
             $result[0].TargetName | Should -Be 'TestObject1';
 
-            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFileSingle.jsonc'));
+            $result = @(Get-PSRuleTarget -InputPath (Join-Path -Path $here -ChildPath 'ObjectFromFileSingle.jsonc') -Formats json);
             $result.Length | Should -Be 1;
             $result[0].TargetName | Should -Be 'TestObject1';
         }

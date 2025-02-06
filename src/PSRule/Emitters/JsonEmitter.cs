@@ -10,9 +10,12 @@ using PSRule.Runtime;
 
 namespace PSRule.Emitters;
 
+#nullable enable
+
 /// <summary>
 /// An <seealso cref="IEmitter"/> for processing JSON.
 /// </summary>
+[EmitterFormat(FORMAT)]
 internal sealed class JsonEmitter : FileEmitter
 {
     private const string FORMAT = "json";
@@ -23,6 +26,7 @@ internal sealed class JsonEmitter : FileEmitter
     private readonly JsonSerializerSettings _Settings;
     private readonly JsonSerializer _Deserializer;
     private readonly ImmutableHashSet<string> _Types;
+    private readonly KeyValuePair<string, string>[]? _ReplacementTokens;
 
     public JsonEmitter(ILogger<JsonEmitter> logger, IEmitterConfiguration emitterConfiguration)
     {
@@ -35,7 +39,8 @@ internal sealed class JsonEmitter : FileEmitter
         };
         _Deserializer = JsonSerializer.CreateDefault(_Settings); // Think about caching this.
         _Deserializer.Converters.Add(new PSObjectArrayJsonConverter(null));
-        _Types = emitterConfiguration.GetFormatTypes(FORMAT, _DefaultTypes).ToImmutableHashSet();
+        _Types = emitterConfiguration.GetFormatTypes(FORMAT, _DefaultTypes)!.ToImmutableHashSet();
+        _ReplacementTokens = emitterConfiguration.GetFormatReplacementTokens(FORMAT);
     }
 
     /// <summary>
@@ -43,13 +48,13 @@ internal sealed class JsonEmitter : FileEmitter
     /// </summary>
     protected override bool AcceptsFilePath(IEmitterContext context, IFileInfo info)
     {
-        return info != null && _Types.Contains(info.Extension);
+        return info != null && info.Extension != null && _Types.Contains(info.Extension);
     }
 
     /// <inheritdoc/>
     protected override bool VisitFile(IEmitterContext context, IFileStream stream)
     {
-        using var reader = stream.AsTextReader();
+        using var reader = GetReader(stream);
         if (reader == null) return false;
 
         using var jsonReader = new JsonEmitterParser(reader, stream.Info);
@@ -99,10 +104,17 @@ internal sealed class JsonEmitter : FileEmitter
 
     protected override bool AcceptsString(IEmitterContext context)
     {
-        return context.Format == Options.InputFormat.Json;
+        return string.Equals(context.StringFormat, FORMAT, StringComparison.OrdinalIgnoreCase);
     }
 
-    private static void VisitItems(IEmitterContext context, IEnumerable<PSObject> items, IFileInfo sourceInfo)
+    private TextReader GetReader(IFileStream stream)
+    {
+        return _ReplacementTokens == null || _ReplacementTokens.Length == 0
+            ? stream.AsTextReader()
+            : new ReplaceTextReader(stream.AsTextReader(), _ReplacementTokens);
+    }
+
+    private static void VisitItems(IEmitterContext context, IEnumerable<PSObject>? items, IFileInfo? sourceInfo)
     {
         if (items == null)
             return;
@@ -117,3 +129,5 @@ internal sealed class JsonEmitter : FileEmitter
         }
     }
 }
+
+#nullable restore

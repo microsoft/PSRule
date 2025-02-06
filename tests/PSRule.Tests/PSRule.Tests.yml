@@ -96,7 +96,7 @@ execution:
 
 # Configure input options
 input:
-  format: Yaml
+  stringFormat: Yaml
   ignoreGitPath: false
   ignoreObjectSource: true
   ignoreRepositoryCommon: false

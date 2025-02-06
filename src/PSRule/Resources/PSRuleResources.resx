@@ -433,4 +433,10 @@
   <data name="PSR0011" xml:space="preserve">
     <value>PSR0011: The capability '{0}' requested by the module '{1}' is not supported.</value>
   </data>
+  <data name="PSR0012" xml:space="preserve">
+    <value>PSR0012: Added emitter '{0}' to scope '{1}'.</value>
+  </data>
+  <data name="PSR0013" xml:space="preserve">
+    <value>PSR0013: Completed building chain using '{0}' emitters.</value>
+  </data>
 </root>

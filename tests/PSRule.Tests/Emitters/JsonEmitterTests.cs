@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
+using System.Management.Automation;
 using PSRule.Runtime;
 
 namespace PSRule.Emitters;
@@ -55,7 +57,7 @@ public sealed class JsonEmitterTests : EmitterTests
     public void Visit_WhenFormatOptionIsSet_ShouldOnlyVisitSpecifiedTypes()
     {
         var context = new TestEmitterContext();
-        var emitter = new JsonEmitter(NullLogger<JsonEmitter>.Instance, GetEmitterConfiguration(format: [("json", [".sarif"])]));
+        var emitter = new JsonEmitter(NullLogger<JsonEmitter>.Instance, GetEmitterConfiguration(format: [("json", [".sarif"], default, default)]));
 
         Assert.False(emitter.Visit(context, GetFileInfo("ObjectFromFile.json")));
         Assert.False(emitter.Visit(context, GetFileInfo("ObjectFromFileSingle.jsonc")));
@@ -77,9 +79,23 @@ public sealed class JsonEmitterTests : EmitterTests
     }
 
     [Fact]
+    public void Visit_WhenReplacementConfigured_ShouldReplaceTokens()
+    {
+        var context = new TestEmitterContext();
+        var emitter = new JsonEmitter(NullLogger<JsonEmitter>.Instance, GetEmitterConfiguration(format: [("json", default, default, [new KeyValuePair<string, string>("\"Kind\": \"Test\"", "\"Kind\": \"ReplacementTest\"")])]));
+
+        Assert.True(emitter.Visit(context, GetFileInfo("ObjectFromFile.json")));
+
+        var item = context.Items[0].Value as PSObject;
+        var spec = item.Properties["spec"].Value as PSObject;
+        var properties = spec.Properties["properties"].Value as PSObject;
+        Assert.Equal("ReplacementTest", properties.Properties["kind"].Value);
+    }
+
+    [Fact]
     public void Visit_WhenString_ShouldEmitItems()
     {
-        var context = new TestEmitterContext(format: Options.InputFormat.Json);
+        var context = new TestEmitterContext(stringFormat: "json");
         var emitter = new JsonEmitter(NullLogger<JsonEmitter>.Instance, EmptyEmitterConfiguration.Instance);
 
         // With format.
@@ -87,7 +103,7 @@ public sealed class JsonEmitterTests : EmitterTests
         Assert.Equal(2, context.Items.Count);
 
         // Without format.
-        context = new TestEmitterContext(format: Options.InputFormat.None);
+        context = new TestEmitterContext();
         Assert.False(emitter.Visit(context, ReadFileAsString("ObjectFromFile.json")));
     }
 }
