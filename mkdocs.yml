@@ -79,7 +79,7 @@ nav:
       - Related projects: related-projects.md
       - Support: support.md
   - Updates:
-      - vNEXT: updates/v3.0.md
+      - What's new in v3: updates/v3.0.md
       - Change log: CHANGELOG-v3.md
       - Deprecations: deprecations.md
       - Changes and versioning: versioning.md
