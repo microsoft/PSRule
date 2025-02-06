@@ -44,6 +44,7 @@ nav:
       - Overview:
           - About: about.md
           - Features: features.md
+      - What's new in v3: updates/v3.0.md
       - Setup:
           - Index: setup/index.md
           - Visual Studio Code: setup/vscode.md
@@ -78,8 +79,8 @@ nav:
       - Related projects: related-projects.md
       - Support: support.md
   - Updates:
-      # - January 2025: updates/v3.0.md
-      - Change log: 'CHANGELOG-v3.md'
+      - vNEXT: updates/v3.0.md
+      - Change log: CHANGELOG-v3.md
       - Deprecations: deprecations.md
       - Changes and versioning: versioning.md
   - Reference:

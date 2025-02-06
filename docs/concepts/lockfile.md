@@ -1,5 +1,6 @@
 ---
 description: PSRule v3 and later uses a lock file to define the modules and versions used to run analysis. This article describes the lock file and how to manage it.
+version: 3.0
 ---
 
 # Lock file
