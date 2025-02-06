@@ -11,8 +11,6 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 **Experimental features**:
 
-- Baseline groups allow you to use a friendly name to reference baselines.
-  See [baselines][6] for more information.
 - Functions within YAML and JSON expressions can be used to perform manipulation prior to testing a condition.
   See [functions][3] for more information.
 - Sub-selectors within YAML and JSON expressions can be used to filter rules and list properties.
@@ -23,7 +21,6 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
   [3]: expressions/functions.md
   [4]: expressions/sub-selectors.md
   [5]: creating-your-pipeline.md#processing-changed-files-only
-  [6]: concepts/baselines.md
 
 ## Unreleased
 

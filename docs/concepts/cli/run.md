@@ -24,6 +24,17 @@ By default, this is the current working path.
 
 The name of one or more modules that contain rules or resources to use during a run.
 
+### `--formats`
+
+Enables one or more formats by name to process files and deserialized objects.
+All formats are disabled by default.
+
+For example, to enable JSON and YAML formats:
+
+```bash
+--formats json yaml
+```
+
 ### `--baseline`
 
 The name of a specific baseline to use.
