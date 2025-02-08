@@ -528,7 +528,7 @@
     "build:esbuild": "node esbuild.mjs",
     "package": "npm run package:dotnet && npm run package:esbuild && npm run package:pack",
     "package:dotnet": "dotnet build ./src/PSRule.EditorServices/ --output server/",
-    "package:pack": "vsce package --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/ --readme-path src/vscode-ps-rule/README.md --changelog-path docs/CHANGELOG-v3.md --baseImagesUrl https://raw.githubusercontent.com/microsoft/PSRule/refs/heads/main/",
+    "package:pack": "vsce package --dependencies --pre-release --no-git-tag-version --no-update-package-json --githubBranch main --out out/package/ --readme-path src/vscode-ps-rule/README.md --changelog-path docs/changelog.md --baseImagesUrl https://raw.githubusercontent.com/microsoft/PSRule/refs/heads/main/",
     "package:esbuild": "node esbuild.mjs",
     "test": "npm run build:dotnet && npm run build:esbuild && vscode-test"
   },
