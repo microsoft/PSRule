@@ -282,7 +282,5 @@ After downloading the modules, copy the module directories to devices with restr
     The NuGet package provider is not installed in Windows PowerShell be default.
     For instructions see [Bootstrapping NuGet][6].
 
-*[CI]: continuous integration
-
 [module]: https://www.powershellgallery.com/packages/PSRule
 [dotnet]: https://dotnet.microsoft.com/download/dotnet/8.0

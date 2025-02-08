@@ -19,5 +19,3 @@ While this has some similarities to traditional testing frameworks it extends on
 - **Incremental adoption** &mdash; with baselines allows you to keep moving forward.
 - **Handle exceptions** &mdash; and keep exceptions auditable in git history.
 - **Documentation** &mdash; provides recommendations and examples instead of just pass or fail.
-
-*[IaC]: Infrastructure as Code
