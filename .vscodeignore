@@ -16,7 +16,7 @@ bin/
 obj/
 out/
 !out/dist/
-!docs/CHANGELOG-v3.md
+!docs/changelog.md
 
 .eslintignore
 .gitignore

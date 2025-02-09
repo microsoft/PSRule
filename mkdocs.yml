@@ -80,7 +80,7 @@ nav:
       - Support: support.md
   - Updates:
       - What's new in v3: updates/v3.0.md
-      - Change log: CHANGELOG-v3.md
+      - Change log: changelog.md
       - Deprecations: deprecations.md
       - Changes and versioning: versioning.md
   - Reference:
@@ -125,7 +125,9 @@ markdown_extensions:
   - footnotes
   - meta
   - md_in_html
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      auto_append:
+        - includes/en/abbreviations.md
   - pymdownx.highlight:
       auto_title: false
       anchor_linenums: false
@@ -159,18 +161,21 @@ plugins:
         'authoring/writing-rules.md': 'authoring/testing-infrastructure.md'
         'install-instructions.md': 'setup/index.md'
         'install.md': 'setup/index.md'
-        'changelog.md': 'CHANGELOG-v3.md'
+        'CHANGELOG-v3.md': 'changelog.md'
         'upgrade-notes.md': 'deprecations.md'
         'concepts/emitters.md': 'concepts/formats.md'
 
 hooks:
   - docs/hooks/maml_formatting.py
+  - docs/hooks/updates.py
+  - docs/hooks/shortcodes.py
 
-# watch:
-#   - includes
+watch:
+  - includes
 
 exclude_docs: |
   specs/
+  benchmark/
 
 extra:
   version:
