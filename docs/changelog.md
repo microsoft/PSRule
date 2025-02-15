@@ -24,6 +24,16 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0416:
+
+- Engineering:
+  - Bump System.Drawing.Common to v9.0.2.
+    [#2769](https://github.com/microsoft/PSRule/pull/2769)
+  - Bump NuGet.Protocol to v6.13.1.
+    [#2768](https://github.com/microsoft/PSRule/pull/2768)
+  - Bump vscode engine to v1.97.0.
+    [#2759](https://github.com/microsoft/PSRule/pull/2759)
+
 ## v3.0.0-B0416 (pre-release)
 
 What's changed since pre-release v3.0.0-B0390:
@@ -236,7 +246,7 @@ What's changed since pre-release v3.0.0-B0153:
 - Engineering:
   - Bump System.Drawing.Common to v8.0.5.
     [#1817](https://github.com/microsoft/PSRule/pull/1817)
-  - Bump Bump xunit to v2.8.0.
+  - Bump xunit to v2.8.0.
     [#1809](https://github.com/microsoft/PSRule/pull/1809)
   - Bump xunit.runner.visualstudio to v2.8.0.
     [#1808](https://github.com/microsoft/PSRule/pull/1808)
