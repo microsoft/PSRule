@@ -682,6 +682,15 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to create runtime factory &apos;{0}&apos; from &apos;{1}&apos;. {2}.
+        /// </summary>
+        internal static string PSR0014 {
+            get {
+                return ResourceManager.GetString("PSR0014", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deserialize the file &apos;{0}&apos;: {1}.
         /// </summary>
         internal static string ReadFileFailed {

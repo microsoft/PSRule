@@ -18,7 +18,7 @@ namespace PSRule.Emitters;
 internal sealed class EmitterBuilder
 {
     private static readonly EventId PSR0012 = new(12, "PSR0012");
-    private static readonly EventId PSR0013 = new(12, "PSR0013");
+    private static readonly EventId PSR0013 = new(13, "PSR0013");
 
     private readonly ILanguageScopeSet? _LanguageScopeSet;
     private readonly IFormatOption _FormatOption;

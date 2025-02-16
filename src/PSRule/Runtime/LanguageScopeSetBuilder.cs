@@ -11,13 +11,15 @@ namespace PSRule.Runtime;
 internal sealed class LanguageScopeSetBuilder
 {
     private readonly Dictionary<string, ILanguageScope> _Scopes;
+    private readonly RuntimeFactoryBuilder _RuntimeFactoryBuilder;
 
     public LanguageScopeSetBuilder()
     {
         _Scopes = new Dictionary<string, ILanguageScope>(StringComparer.OrdinalIgnoreCase)
         {
-            { ResourceHelper.NormalizeScope(null), new LanguageScope(ResourceHelper.NormalizeScope(null)) }
+            { ResourceHelper.NormalizeScope(null), new LanguageScope(ResourceHelper.NormalizeScope(null), null) }
         };
+        _RuntimeFactoryBuilder = new RuntimeFactoryBuilder(null);
     }
 
     /// <summary>
@@ -33,12 +35,16 @@ internal sealed class LanguageScopeSetBuilder
     /// Create a scope for a module.
     /// </summary>
     /// <param name="name">The name of the module. This must be a unique non-empty string.</param>
-    public void CreateModuleScope(string name)
+    /// <param name="module">Information about the module.</param>
+    public void CreateModuleScope(string name, Source.ModuleInfo? module)
     {
         if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
         if (_Scopes.ContainsKey(name)) throw new ArgumentException(nameof(name));
 
-        _Scopes.Add(name, new LanguageScope(name));
+        var container = module == null || module.Assemblies == null || module.Assemblies.Length == 0 ? null : _RuntimeFactoryBuilder.BuildFromAssembly(name, module.Assemblies);
+        var scope = new LanguageScope(name, container);
+
+        _Scopes.Add(name, scope);
     }
 
     /// <summary>
@@ -64,7 +70,7 @@ internal sealed class LanguageScopeSetBuilder
         {
             if (!moduleNames.Contains(source.Scope))
             {
-                CreateModuleScope(source.Scope);
+                CreateModuleScope(source.Scope, source.Module);
                 moduleNames.Add(source.Scope);
             }
         }

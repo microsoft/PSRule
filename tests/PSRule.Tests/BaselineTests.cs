@@ -211,7 +211,7 @@ public sealed class BaselineTests : ContextBaseTests
     {
         var file = new SourceFile(GetSourcePath(path), moduleName, type, null);
         var source = new Source(
-            module: new Source.ModuleInfo(AppDomain.CurrentDomain.BaseDirectory, moduleName, "1.0.0", null, "4de0fd26-6aae-401f-a943-b49f082f141e", "Microsoft", null),
+            module: new Source.ModuleInfo(AppDomain.CurrentDomain.BaseDirectory, moduleName, "1.0.0", null, "4de0fd26-6aae-401f-a943-b49f082f141e", "Microsoft", null, []),
             file: [file],
             dependency: false
         );

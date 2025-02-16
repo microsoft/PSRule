@@ -132,9 +132,9 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         }
         for (var i = 0; Source != null && i < Source.Length; i++)
         {
-            if (Source[i].Module != null && Option.Requires.TryGetValue(Source[i].Module.Name, out requiredVersion))
+            if (Source[i].Module != null && Option.Requires.TryGetValue(Source[i].Module!.Name, out requiredVersion))
             {
-                if (GuardModuleVersion(Source[i].Module.Name, Source[i].Module.Version, requiredVersion))
+                if (GuardModuleVersion(Source[i].Module!.Name, Source[i].Module!.FullVersion, requiredVersion))
                     result = false;
             }
         }

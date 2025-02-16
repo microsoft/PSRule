@@ -514,24 +514,25 @@ internal sealed class SarifBuilder
         var result = new List<ToolComponent>();
         for (var i = 0; i < source.Length; i++)
         {
-            if (source[i].Module != null && !_Extensions.ContainsKey(source[i].Module.Name))
+            var module = source[i].Module;
+            if (module == null || _Extensions.ContainsKey(module.Name))
+                continue;
+
+            var extension = new ToolComponent
             {
-                var extension = new ToolComponent
+                Name = module.Name,
+                Version = module.FullVersion,
+                Guid = module.Guid,
+                AssociatedComponent = new ToolComponentReference
                 {
-                    Name = source[i].Module.Name,
-                    Version = source[i].Module.Version,
-                    Guid = source[i].Module.Guid,
-                    AssociatedComponent = new ToolComponentReference
-                    {
-                        Name = TOOL_NAME,
-                    },
-                    InformationUri = new Uri(source[i].Module.ProjectUri, UriKind.Absolute),
-                    Organization = source[i].Module.CompanyName,
-                    Rules = new List<ReportingDescriptor>(),
-                };
-                _Extensions.Add(extension.Name, extension);
-                result.Add(extension);
-            }
+                    Name = TOOL_NAME,
+                },
+                InformationUri = new Uri(module.ProjectUri, UriKind.Absolute),
+                Organization = module.CompanyName,
+                Rules = [],
+            };
+            _Extensions.Add(extension.Name, extension);
+            result.Add(extension);
         }
         return result.Count > 0 ? result : null;
     }

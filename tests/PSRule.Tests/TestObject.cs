@@ -3,7 +3,7 @@
 
 namespace PSRule.Pipeline;
 
-internal sealed class TestObject
+public sealed class TestObject
 {
     public string Name { get; set; }
 }

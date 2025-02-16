@@ -1,11 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Collections;
-using System.Management.Automation;
+using System.Reflection;
 using PSRule.Definitions;
 
 namespace PSRule.Pipeline;
+
+#nullable enable
 
 /// <summary>
 /// A PSRule source containing one or more source files.
@@ -14,7 +15,7 @@ public sealed class Source
 {
     internal bool Dependency;
 
-    internal readonly ModuleInfo Module;
+    internal readonly ModuleInfo? Module;
 
     internal Source(string path, SourceFile[] file)
     {
@@ -34,53 +35,20 @@ public sealed class Source
         SetSource();
     }
 
-    internal sealed class ModuleInfo
+    internal sealed class ModuleInfo(string path, string name, string version, string? projectUri, string? guid, string? companyName, string? prerelease, Assembly[] assemblies)
     {
-        private const string FIELD_PRERELEASE = "Prerelease";
-        private const string FIELD_PSDATA = "PSData";
         private const string PRERELEASE_SEPARATOR = "-";
 
-        public readonly string Path;
-        public readonly string Name;
-        public readonly string Version;
-        public readonly string ProjectUri;
-        public readonly string Guid;
-        public readonly string CompanyName;
+        public readonly string Path = path;
+        public readonly string Name = name;
+        public readonly string Version = version;
+        public readonly string FullVersion = string.IsNullOrEmpty(prerelease) ? version : string.Concat(version, PRERELEASE_SEPARATOR, prerelease);
 
-        public ModuleInfo(PSModuleInfo info)
-        {
-            Path = info.ModuleBase;
-            Name = info.Name;
-            Version = info.Version?.ToString();
-            ProjectUri = info.ProjectUri?.ToString();
-            Guid = info.Guid.ToString();
-            CompanyName = info.CompanyName;
-            if (TryPrivateData(info, FIELD_PSDATA, out var psData) && psData.ContainsKey(FIELD_PRERELEASE))
-                Version = string.Concat(Version, PRERELEASE_SEPARATOR, psData[FIELD_PRERELEASE].ToString());
-        }
+        public readonly Assembly[] Assemblies = assemblies;
 
-        public ModuleInfo(string path, string name, string version, string projectUri, string guid, string companyName, string prerelease)
-        {
-            Path = path;
-            Name = name;
-            Version = version;
-            ProjectUri = projectUri;
-            Guid = guid;
-            CompanyName = companyName;
-            if (!string.IsNullOrEmpty(prerelease))
-                Version = string.Concat(version, PRERELEASE_SEPARATOR, prerelease);
-        }
-
-        private static bool TryPrivateData(PSModuleInfo info, string propertyName, out Hashtable value)
-        {
-            value = null;
-            if (info.PrivateData is Hashtable privateData && privateData.ContainsKey(propertyName) && privateData[propertyName] is Hashtable data)
-            {
-                value = data;
-                return true;
-            }
-            return false;
-        }
+        public readonly string? ProjectUri = projectUri;
+        public readonly string? Guid = guid;
+        public readonly string? CompanyName = companyName;
     }
 
     /// <summary>
@@ -107,3 +75,5 @@ public sealed class Source
             File[i].Source = this;
     }
 }
+
+#nullable restore

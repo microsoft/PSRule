@@ -11,20 +11,22 @@ using PSRule.Data;
 
 namespace PSRule;
 
+#nullable enable
+
 /// <summary>
 /// A helper for accessing environment and runtime variables.
 /// </summary>
 public static class Environment
 {
-    private static readonly char[] STRINGARRAYMAP_ITEMSEPARATOR = new char[] { ',' };
-    private static readonly char[] STRINGARRAY_SEPARATOR = new char[] { ';' };
-    private static readonly char[] LINUX_PATH_ENV_SEPARATOR = new char[] { ':' };
-    private static readonly char[] WINDOWS_PATH_ENV_SEPARATOR = new char[] { ';' };
+    private static readonly char[] STRING_ARRAY_MAP_ITEM_SEPARATOR = [','];
+    private static readonly char[] STRINGARRAY_SEPARATOR = [';'];
+    private static readonly char[] LINUX_PATH_ENV_SEPARATOR = [':'];
+    private static readonly char[] WINDOWS_PATH_ENV_SEPARATOR = [';'];
 
     private const char BACKSLASH = '\\';
     private const char SLASH = '/';
 
-    private const char STRINGARRYAMAP_PAIRSEPARATOR = '=';
+    private const char STRING_ARRAY_MAP_PAIR_SEPARATOR = '=';
     private const string PATH_ENV = "PATH";
     private const string DEFAULT_CREDENTIAL_USERNAME = "na";
     private const string TF_BUILD = "TF_BUILD";
@@ -127,7 +129,7 @@ public static class Environment
     /// <remarks>
     /// A base path always includes a trailing <c>/</c>.
     /// </remarks>
-    public static string GetRootedBasePath(string path, bool normalize = false, string? basePath = null)
+    public static string GetRootedBasePath(string? path, bool normalize = false, string? basePath = null)
     {
         if (string.IsNullOrEmpty(path))
             path = string.Empty;
@@ -250,12 +252,12 @@ public static class Environment
         var map = new StringArrayMap();
         for (var i = 0; i < pairs.Length; i++)
         {
-            var index = pairs[i].IndexOf(STRINGARRYAMAP_PAIRSEPARATOR);
+            var index = pairs[i].IndexOf(STRING_ARRAY_MAP_PAIR_SEPARATOR);
             if (index < 1 || index + 1 >= pairs[i].Length) continue;
 
             var left = pairs[i].Substring(0, index);
             var right = pairs[i].Substring(index + 1);
-            var pair = right.Split(STRINGARRAYMAP_ITEMSEPARATOR, StringSplitOptions.RemoveEmptyEntries);
+            var pair = right.Split(STRING_ARRAY_MAP_ITEM_SEPARATOR, StringSplitOptions.RemoveEmptyEntries);
             map[left] = pair;
         }
         value = map;
@@ -380,3 +382,5 @@ public static class Environment
         return c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar || c == SLASH || c == BACKSLASH;
     }
 }
+
+#nullable restore
