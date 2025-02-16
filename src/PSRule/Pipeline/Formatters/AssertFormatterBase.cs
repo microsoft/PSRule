@@ -264,7 +264,7 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
         {
             if (source[i].Module != null && !list.Contains(source[i].Module.Name))
             {
-                WriteLineFormat(FormatterStrings.ModuleVersion, source[i].Module.Name, source[i].Module.Version);
+                WriteLineFormat(FormatterStrings.ModuleVersion, source[i].Module.Name, source[i].Module.FullVersion);
                 list.Add(source[i].Module.Name);
             }
         }

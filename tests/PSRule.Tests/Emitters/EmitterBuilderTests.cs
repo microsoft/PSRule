@@ -59,7 +59,7 @@ public sealed class EmitterBuilderTests : ContextBaseTests
     public void Build_WhenLanguageScopeIncludedEmitter_ShouldAddCustomEmitter()
     {
         var builder = new LanguageScopeSetBuilder();
-        builder.CreateModuleScope("test");
+        builder.CreateModuleScope("test", null);
         var languageScopeSet = builder.Build();
         if (languageScopeSet.TryScope("test", out var scope))
         {

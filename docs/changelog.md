@@ -33,6 +33,9 @@ What's changed since pre-release v3.0.0-B0416:
     [#2768](https://github.com/microsoft/PSRule/pull/2768)
   - Bump vscode engine to v1.97.0.
     [#2759](https://github.com/microsoft/PSRule/pull/2759)
+- Bug fix:
+  - Fixed custom emitter loaded too late by @BernieWhite.
+    [#2775](https://github.com/microsoft/PSRule/issues/2775)
 
 ## v3.0.0-B0416 (pre-release)
 

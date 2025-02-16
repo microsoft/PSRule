@@ -16,17 +16,20 @@ namespace PSRule.Runtime;
 #nullable enable
 
 [DebuggerDisplay("{Name}")]
-internal sealed class LanguageScope(string name) : ILanguageScope, IRuntimeServiceCollection
+internal sealed class LanguageScope(string name, RuntimeFactoryContainer? container) : ILanguageScope, IRuntimeServiceCollection
 {
+    private readonly RuntimeFactoryContainer? _Container = container;
+    private readonly Dictionary<string, object> _Service = [];
+    private readonly List<Type> _EmitterTypes = [];
+    private readonly Dictionary<ResourceKind, IResourceFilter> _Filter = [];
+
     private IDictionary<string, object>? _Configuration = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
     private WildcardMap<RuleOverride>? _Override;
-    private readonly Dictionary<string, object> _Service = [];
-    private readonly List<Type> _Emitters = [];
-    private readonly Dictionary<ResourceKind, IResourceFilter> _Filter = [];
     private ITargetBinder? _TargetBinder;
     private StringComparer? _BindingComparer;
 
     private bool _Disposed;
+    private bool _RunOnce;
 
     /// <inheritdoc/>
     public string Name { [DebuggerStepThrough] get; } = ResourceHelper.NormalizeScope(name);
@@ -51,6 +54,12 @@ internal sealed class LanguageScope(string name) : ILanguageScope, IRuntimeServi
         var builder = new TargetBinderBuilder(context.BindTargetName, context.BindTargetType, context.BindField, context.InputTargetType);
         _TargetBinder = builder.Build(context.Binding);
         _Override = WithOverride(context.Override);
+
+        if (_Container != null && !_RunOnce)
+        {
+            _RunOnce = true;
+            _Container.Configure(new RuntimeFactoryContext(this));
+        }
     }
 
     private static WildcardMap<RuleOverride>? WithOverride(OverrideOption? option)
@@ -128,7 +137,7 @@ internal sealed class LanguageScope(string name) : ILanguageScope, IRuntimeServi
     /// <inheritdoc/>
     public IEnumerable<Type> GetEmitters()
     {
-        return _Emitters;
+        return _EmitterTypes;
     }
 
     public ITargetBindingResult? Bind(ITargetObject targetObject)
@@ -216,7 +225,7 @@ internal sealed class LanguageScope(string name) : ILanguageScope, IRuntimeServi
     {
         // Add any emitter.
         if (typeof(TInterface) == typeof(IEmitter))
-            _Emitters.Add(typeof(TService));
+            _EmitterTypes.Add(typeof(TService));
     }
 
     #endregion IRuntimeServiceCollection

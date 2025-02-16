@@ -12,6 +12,8 @@ using PSRule.Resources;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// A helper to build a list of rule sources for discovery.
 /// </summary>
@@ -26,15 +28,18 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     private const string RULE_MODULE_TAG = "PSRule-rules";
     private const string DEFAULT_RULE_PATH = ".ps-rule/";
 
+    private const string PROPERTY_PRERELEASE = "Prerelease";
+    private const string PROPERTY_PSDATA = "PSData";
+
     private readonly Dictionary<string, Source> _Source;
     private readonly IHostContext _HostContext;
     private readonly HostPipelineWriter _Writer;
     private readonly bool _UseDefaultPath;
-    private readonly string _CachePath;
+    private readonly string? _CachePath;
     private readonly RestrictScriptSource _RestrictScriptSource;
     private readonly string _WorkspacePath;
 
-    internal SourcePipelineBuilder(IHostContext hostContext, PSRuleOption option, string cachePath = null)
+    internal SourcePipelineBuilder(IHostContext hostContext, PSRuleOption option, string? cachePath = null)
     {
         _Source = new Dictionary<string, Source>(StringComparer.OrdinalIgnoreCase);
         _HostContext = hostContext;
@@ -42,12 +47,14 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         _Writer.EnterScope("[Discovery.Source]");
         _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
         _CachePath = cachePath;
-        _RestrictScriptSource = option?.Execution?.RestrictScriptSource ?? ExecutionOption.Default.RestrictScriptSource.Value;
+        _RestrictScriptSource = option?.Execution?.RestrictScriptSource ?? ExecutionOption.Default.RestrictScriptSource!.Value;
         _WorkspacePath = Environment.GetRootedBasePath(null);
 
         // Include paths from options
         if (!_UseDefaultPath)
+        {
             Directory(option.Include.Path);
+        }
     }
 
     /// <inheritdoc/>
@@ -133,7 +140,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     }
 
     /// <inheritdoc/>
-    public void ModuleByName(string name, string version = null)
+    public void ModuleByName(string name, string? version = null)
     {
         Log($"[PSRule][S] -- Looking for module by name: {name}@{version}");
 
@@ -160,7 +167,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         //    Module(module.RequiredModules[i], dependency: true);
     }
 
-    private string FindModule(string name, string version)
+    private string? FindModule(string name, string? version)
     {
         return TryPackagedModuleFromCache(name, version, out var path) ||
             TryInstalledModule(name, version, out path) ? path : null;
@@ -169,7 +176,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     /// <summary>
     /// Try to find a packaged module found relative to the tool.
     /// </summary>
-    private bool TryPackagedModuleFromCache(string name, string version, out string path)
+    private bool TryPackagedModuleFromCache(string name, string? version, out string? path)
     {
         path = null;
         if (_CachePath == null)
@@ -190,10 +197,10 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     /// <summary>
     /// Try to find a module installed into PowerShell.
     /// </summary>
-    private bool TryInstalledModule(string name, string version, out string path)
+    private bool TryInstalledModule(string name, string? version, out string? path)
     {
         path = null;
-        if (!Environment.TryPathEnvironmentVariable("PSModulePath", out var searchPaths))
+        if (!Environment.TryPathEnvironmentVariable("PSModulePath", out var searchPaths) || searchPaths == null)
             return false;
 
         var unsorted = new List<string>();
@@ -247,7 +254,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         return results;
     }
 
-    private Source.ModuleInfo LoadManifest(string basePath, string name)
+    private Source.ModuleInfo? LoadManifest(string basePath, string name)
     {
         var path = Path.Combine(basePath, GetManifestName(name));
         Log("[PSRule][S] -- Loading manifest from: {0}", path);
@@ -265,34 +272,44 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         var guid = manifest["GUID"] as string;
         var companyName = manifest["CompanyName"] as string;
         var privateData = manifest["PrivateData"] as Hashtable;
-        var psData = privateData["PSData"] as Hashtable;
-        var projectUri = psData["ProjectUri"] as string;
-        var prerelease = psData["Prerelease"] as string;
+        var psData = privateData?[PROPERTY_PSDATA] as Hashtable;
+        var projectUri = psData?["ProjectUri"] as string;
+        var prerelease = psData?[PROPERTY_PRERELEASE] as string;
+        var requiredAssemblies = TryRequiredAssemblies(manifest, out var a) ? LoadRequiredAssemblies(basePath, a) : [];
 
-        if (TryRequiredAssemblies(manifest["RequiredAssemblies"], out var requiredAssemblies))
-        {
-            foreach (var a in requiredAssemblies)
-            {
-                var assemblyPath = Path.Combine(basePath, a);
-                Log("Loading assembly: {0}", assemblyPath);
-                Assembly.LoadFile(assemblyPath);
-            }
-        }
-        return new Source.ModuleInfo(basePath, name, version, projectUri, guid, companyName, prerelease);
+        return new Source.ModuleInfo(basePath, name, version, projectUri, guid, companyName, prerelease, [.. requiredAssemblies]);
     }
 
-    private static bool TryRequiredAssemblies(object value, out IEnumerable<string> requiredAssemblies)
+    private static bool TryRequiredAssemblies(Hashtable manifest, out IEnumerable<string>? requiredAssemblies)
     {
         requiredAssemblies = null;
-        if (value == null) return false;
+        if (manifest == null || !manifest.TryGetStringArray("RequiredAssemblies", out var s))
+            return false;
 
-        if (value is string s)
-            requiredAssemblies = [s];
-
-        if (value is Array array)
-            requiredAssemblies = array.OfType<string>().ToArray();
-
+        requiredAssemblies = s;
         return requiredAssemblies != null;
+    }
+
+    /// <summary>
+    /// Load an assemblies required by a module.
+    /// </summary>
+    private Assembly[] LoadRequiredAssemblies(string basePath, IEnumerable<string>? requiredAssemblies)
+    {
+        if (requiredAssemblies == null)
+            return [];
+
+        var assemblies = new List<Assembly>();
+        foreach (var a in requiredAssemblies)
+        {
+            var assemblyPath = Path.Combine(basePath, a);
+            Log("Loading assembly: {0}", assemblyPath);
+            var assembly = Assembly.LoadFile(assemblyPath);
+            if (assembly != null)
+            {
+                assemblies.Add(assembly);
+            }
+        }
+        return [.. assemblies];
     }
 
     private static string GetManifestName(string name)
@@ -315,11 +332,39 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         if (files == null || files.Length == 0)
             return;
 
-        Source(new Source(new Source.ModuleInfo(module), files, dependency));
+
+        var path = module.ModuleBase;
+        var name = module.Name;
+        var version = module.Version?.ToString();
+        var projectUri = module.ProjectUri?.ToString();
+        var guid = module.Guid.ToString();
+        var companyName = module.CompanyName;
+
+        var prerelease = TryPSData(module.PrivateData, out var psData) &&
+            psData != null &&
+            psData.TryGetValue(PROPERTY_PRERELEASE, out var v) &&
+            v is string s ? s : null;
+
+        var requiredAssemblies = LoadRequiredAssemblies(Environment.GetRootedPath(module.ModuleBase), module.RequiredAssemblies);
+        Source(new Source(new Source.ModuleInfo(path, name, version, projectUri, guid, companyName, prerelease, requiredAssemblies), files, dependency));
 
         // Import dependencies
         for (var i = 0; module.RequiredModules != null && i < module.RequiredModules.Count; i++)
             Module(module.RequiredModules[i], dependency: true);
+    }
+
+    /// <summary>
+    /// Accepts a PrivateData hashtable and attempts to extract a nested hashtable with the key 'PSData'.
+    /// </summary>
+    private static bool TryPSData(object o, out Hashtable? value)
+    {
+        value = null;
+        if (o is Hashtable privateData && privateData.TryGetValue(PROPERTY_PSDATA, out var hashtable) && hashtable is Hashtable psData)
+        {
+            value = psData;
+            return true;
+        }
+        return false;
     }
 
     private static bool IsRuleModule(PSModuleInfo module)
@@ -361,7 +406,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         _Source[key] = source;
     }
 
-    private static SourceFile[] GetFiles(string path, string helpPath, bool excludeDefaultRulePath, RestrictScriptSource restrictScriptSource, string workspacePath, string moduleName = null)
+    private static SourceFile[]? GetFiles(string path, string? helpPath, bool excludeDefaultRulePath, RestrictScriptSource restrictScriptSource, string workspacePath, string? moduleName = null)
     {
         var rootedPath = Environment.GetRootedPath(path);
         var extension = Path.GetExtension(rootedPath);
@@ -385,7 +430,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
             path.EndsWith(".rule.jsonc", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static SourceFile[] IncludeFile(string path, string helpPath, RestrictScriptSource restrictScriptSource, string workspacePath)
+    private static SourceFile[]? IncludeFile(string path, string? helpPath, RestrictScriptSource restrictScriptSource, string workspacePath)
     {
         if (!File.Exists(path))
             throw new FileNotFoundException(PSRuleResources.SourceNotFound, path);
@@ -398,7 +443,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         return [new(path, null, sourceType, helpPath)];
     }
 
-    private static SourceFile[] IncludePath(string path, string helpPath, string moduleName, bool excludeDefaultRulePath, RestrictScriptSource restrictScriptSource, string workspacePath)
+    private static SourceFile[] IncludePath(string path, string? helpPath, string? moduleName, bool excludeDefaultRulePath, RestrictScriptSource restrictScriptSource, string workspacePath)
     {
         if (!excludeDefaultRulePath)
         {
@@ -414,7 +459,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         return path.Contains(DEFAULT_RULE_PATH.TrimEnd(Path.AltDirectorySeparatorChar), StringComparison.OrdinalIgnoreCase);
     }
 
-    private static SourceFile[] GetSourceFiles(IEnumerable<string> files, string helpPath, string moduleName, RestrictScriptSource restrictScriptSource, string workspacePath)
+    private static SourceFile[] GetSourceFiles(IEnumerable<string> files, string? helpPath, string? moduleName, RestrictScriptSource restrictScriptSource, string workspacePath)
     {
         var result = new List<SourceFile>();
         foreach (var file in files)
@@ -491,8 +536,10 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         return _HostContext == null || _HostContext.ShouldProcess(target, action);
     }
 
-    private static PipelineBuilderException ModuleNotFound(string name, string version)
+    private static PipelineBuilderException ModuleNotFound(string name, string? version)
     {
         return new PipelineBuilderException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.ModuleNotFound, name, version));
     }
 }
+
+#nullable restore

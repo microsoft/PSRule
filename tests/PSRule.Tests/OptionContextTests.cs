@@ -22,7 +22,7 @@ public sealed class OptionContextTests : BaseTests
         var builder = new OptionContextBuilder(GetOption());
 
         // Check empty scope
-        var languageScope = new LanguageScope(".");
+        var languageScope = new LanguageScope(".", null);
         languageScope.Configure(builder.Build(languageScope.Name));
         Assert.Equal(new string[] { "en-ZZ" }, languageScope.Culture);
     }
@@ -33,7 +33,7 @@ public sealed class OptionContextTests : BaseTests
         // Create option context
         var builder = new OptionContextBuilder(GetOption());
 
-        var languageScope = new LanguageScope(".");
+        var languageScope = new LanguageScope(".", null);
         languageScope.Configure(builder.Build(null));
 
         var ruleFilter = languageScope.GetFilter(ResourceKind.Rule) as RuleFilter;

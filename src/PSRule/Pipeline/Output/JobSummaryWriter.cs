@@ -86,7 +86,7 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
             if (_Source[i].Module != null && !list.Contains(_Source[i].Module.Name))
             {
                 var projectLink = string.IsNullOrEmpty(_Source[i].Module.ProjectUri) ? _Source[i].Module.Name : $"[{_Source[i].Module.Name}]({_Source[i].Module.ProjectUri})";
-                WriteLine($"{projectLink} | v{_Source[i].Module.Version}");
+                WriteLine($"{projectLink} | v{_Source[i].Module.FullVersion}");
                 list.Add(_Source[i].Module.Name);
             }
         }
