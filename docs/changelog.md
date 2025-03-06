@@ -31,8 +31,8 @@ What's changed since pre-release v3.0.0-B0416:
     [#2769](https://github.com/microsoft/PSRule/pull/2769)
   - Bump NuGet.Protocol to v6.13.2.
     [#2788](https://github.com/microsoft/PSRule/pull/2788)
-  - Bump vscode engine to v1.97.0.
-    [#2759](https://github.com/microsoft/PSRule/pull/2759)
+  - Bump vscode engine to v1.98.0.
+    [#2796](https://github.com/microsoft/PSRule/pull/2796)
 - Bug fix:
   - Fixed custom emitter loaded too late by @BernieWhite.
     [#2775](https://github.com/microsoft/PSRule/issues/2775)
