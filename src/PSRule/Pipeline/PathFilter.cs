@@ -8,7 +8,7 @@ namespace PSRule.Pipeline;
 /// <summary>
 /// Filters paths based on predefined rules.
 /// </summary>
-internal sealed class PathFilter
+internal sealed class PathFilter : IPathFilter
 {
     // Path separators
     private const char SLASH = '/';

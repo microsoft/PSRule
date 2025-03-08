@@ -43,14 +43,16 @@ internal sealed class GetTargetPipelineBuilder : PipelineBuilderBase, IGetTarget
         if (path == null || path.Length == 0)
             return;
 
-        PathFilter? required = null;
-        if (TryChangedFiles(out var files))
+        var basePath = Environment.GetWorkingPath();
+        var filter = GetInputFilter();
+
+        // Wrap with a filter that only allows files that have changed.
+        if (TryChangedFiles(out var files) && files != null)
         {
-            required = PathFilter.Create(Environment.GetWorkingPath(), path);
-            path = files;
+            filter = new ChangedFilesPathFilter(filter, basePath, files);
         }
 
-        var builder = new InputPathBuilder(GetOutput(), Environment.GetWorkingPath(), "*", GetInputFilter(), required);
+        var builder = new InputPathBuilder(PrepareWriter(), basePath, "*", filter, null);
         builder.Add(path);
         _InputPath = builder;
     }

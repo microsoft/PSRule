@@ -53,7 +53,6 @@ public sealed partial class PipelineTests : ContextBaseTests
 
         var option = GetOption();
         option.Rule.Include = ["ScriptReasonTest"];
-        //option.Input.Format = InputFormat.File;
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
         var writer = new TestWriter(option);
         var pipeline = builder.Build(writer);

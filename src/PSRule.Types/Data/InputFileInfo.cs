@@ -27,9 +27,9 @@ public sealed class InputFileInfo : ITargetInfo
         BasePath = basePath;
         Name = System.IO.Path.GetFileName(path);
         Extension = System.IO.Path.GetExtension(path);
-        DirectoryName = System.IO.Path.GetDirectoryName(path);
-        DisplayName = Helpers.NormalizePath(basePath, FullName);
-        Path = Helpers.NormalizePath(basePath, FullName);
+        DirectoryName = System.IO.Path.GetDirectoryName(Environment.GetRootedPath(path, normalize: false, basePath: basePath));
+        DisplayName = PathHelpers.NormalizePath(basePath, FullName);
+        Path = PathHelpers.NormalizePath(basePath, FullName);
         _TargetType = string.IsNullOrEmpty(Extension) ? System.IO.Path.GetFileNameWithoutExtension(path) : Extension;
     }
 
@@ -39,9 +39,14 @@ public sealed class InputFileInfo : ITargetInfo
     public string? FullName { get; }
 
     /// <summary>
-    /// The path to the parent directory containing the file.
+    /// The base path containing the file.
     /// </summary>
     public string? BasePath { get; }
+
+    /// <summary>
+    /// The parent path to the file.
+    /// </summary>
+    public string? ParentPath { get; }
 
     /// <summary>
     /// The file name.

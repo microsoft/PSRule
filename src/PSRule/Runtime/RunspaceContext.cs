@@ -257,12 +257,12 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
         Writer.WriteVerbose($"[PSRule][D] -- Found {m}\\{name} in {scriptName}");
     }
 
-    public void VerboseObjectStart()
+    public void LogObjectStart()
     {
-        if (Writer == null || !Writer.ShouldWriteVerbose())
+        if (Writer == null || !Writer.ShouldWriteDebug())
             return;
 
-        Writer.WriteVerbose(string.Concat(GetLogPrefix(), " :: ", Binding?.TargetName));
+        Writer.WriteDebug(string.Concat(GetLogPrefix(), " :: ", Binding?.TargetName));
     }
 
     public void VerboseConditionMessage(string condition, string message, params object[] args)

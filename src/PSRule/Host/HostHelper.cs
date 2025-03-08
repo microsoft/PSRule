@@ -371,7 +371,7 @@ internal static class HostHelper
     {
         RunspaceContext.CurrentThread = context;
         var condition = ruleBlock.Condition;
-        context.VerboseObjectStart();
+        context.LogObjectStart();
 
         try
         {

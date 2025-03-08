@@ -4,10 +4,11 @@
 using System.Diagnostics;
 using System.Management.Automation;
 using PSRule.Data;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
-internal abstract class PathBuilder(IPipelineWriter logger, string basePath, string searchPattern, PathFilter filter, PathFilter required)
+internal abstract class PathBuilder(IPipelineWriter logger, string basePath, string searchPattern, IPathFilter filter, IPathFilter required)
 {
     // Path separators
     private const char Slash = '/';
@@ -25,8 +26,8 @@ internal abstract class PathBuilder(IPipelineWriter logger, string basePath, str
     private readonly HashSet<string> _Paths = [];
     private readonly string _BasePath = NormalizePath(Environment.GetRootedBasePath(basePath));
     private readonly string _DefaultSearchPattern = searchPattern;
-    private readonly PathFilter _GlobalFilter = filter;
-    private readonly PathFilter _Required = required;
+    private readonly IPathFilter _GlobalFilter = filter;
+    private readonly IPathFilter _Required = required;
 
     /// <summary>
     /// The number of files found.
@@ -48,14 +49,16 @@ internal abstract class PathBuilder(IPipelineWriter logger, string basePath, str
     /// <summary>
     /// Add a path to the builder.
     /// </summary>
-    public void Add(string path)
+    /// <param name="path">The path to add.</param>
+    /// <param name="useGlobalFilter">When <c>true</c> the global filter will be used to limit the included paths.</param>
+    public void Add(string path, bool useGlobalFilter = true)
     {
         if (string.IsNullOrEmpty(path))
             return;
 
         try
         {
-            FindFiles(path);
+            FindFiles(path, useGlobalFilter);
         }
         catch (Exception ex)
         {
@@ -65,20 +68,23 @@ internal abstract class PathBuilder(IPipelineWriter logger, string basePath, str
 
     public InputFileInfo[] Build()
     {
-        try
+        LogFilesDiagnostic(_Files);
+        return [.. _Files];
+    }
+
+    private void LogFilesDiagnostic(List<InputFileInfo> files)
+    {
+        if (_Logger == null || files.Count == 0) return;
+
+        foreach (var file in _Files)
         {
-            return [.. _Files];
-        }
-        finally
-        {
-            _Files.Clear();
-            _Paths.Clear();
+            _Logger.LogDebug(new EventId(0), "Included file path: {0}", file.Path);
         }
     }
 
-    private void FindFiles(string path)
+    private void FindFiles(string path, bool useGlobalFilter)
     {
-        if (TryUrl(path) || TryPath(path, out path))
+        if (TryUrl(path) || TryLiteralPath(path, out path))
             return;
 
         var pathLiteral = GetSearchParameters(path, out var searchPattern, out var searchOption, out var filter);
@@ -86,7 +92,7 @@ internal abstract class PathBuilder(IPipelineWriter logger, string basePath, str
 
         foreach (var file in files)
         {
-            if (ShouldInclude(file, filter))
+            if (ShouldInclude(file, filter, useGlobalFilter))
             {
                 AddFile(file);
             }
@@ -102,7 +108,12 @@ internal abstract class PathBuilder(IPipelineWriter logger, string basePath, str
         return true;
     }
 
-    private bool TryPath(string path, out string normalPath)
+    /// <summary>
+    /// Determine if the specified path is a specific file or directory.
+    /// If the path is an existing file, add it to the result set.
+    /// If the path is an existing directory, normalize the path and return false.
+    /// </summary>
+    private bool TryLiteralPath(string path, out string normalPath)
     {
         normalPath = path;
         if (path.IndexOfAny(PathLiteralStopCharacters) > -1)
@@ -136,6 +147,9 @@ internal abstract class PathBuilder(IPipelineWriter logger, string basePath, str
         _Logger.WriteError(new ErrorRecord(new FileNotFoundException(), "PSRule.PathBuilder.ErrorNotFound", ErrorCategory.ObjectNotFound, path));
     }
 
+    /// <summary>
+    /// Add a file to the result set that will be returned.
+    /// </summary>
     private void AddFile(string path)
     {
         if (_Paths.Contains(path))
@@ -212,11 +226,11 @@ internal abstract class PathBuilder(IPipelineWriter logger, string basePath, str
         return path;
     }
 
-    private bool ShouldInclude(string file, PathFilter filter)
+    private bool ShouldInclude(string file, PathFilter filter, bool useGlobalFilter)
     {
         return (filter == null || filter.Match(file)) &&
             (_Required == null || _Required.Match(file)) &&
-            (_GlobalFilter == null || _GlobalFilter.Match(file));
+            (_GlobalFilter == null || useGlobalFilter == false || _GlobalFilter.Match(file));
     }
 
     [DebuggerStepThrough]

@@ -36,6 +36,10 @@ What's changed since pre-release v3.0.0-B0416:
 - Bug fix:
   - Fixed custom emitter loaded too late by @BernieWhite.
     [#2775](https://github.com/microsoft/PSRule/issues/2775)
+  - Fixed Changed files includes excluded paths by @BernieWhite.
+    [#1465](https://github.com/microsoft/PSRule/issues/1465)
+  - Fixed branch ref for working with changes files only examples by @BernieWhite.
+    [#2777](https://github.com/microsoft/PSRule/issues/2777)
 
 ## v3.0.0-B0416 (pre-release)
 

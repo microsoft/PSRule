@@ -60,7 +60,6 @@ internal sealed class PathFilterBuilder
     /// </summary>
     internal void UseGitIgnore(string basePath = null)
     {
-        _Expressions.Add("!.git/HEAD");
         ReadFile(Path.Combine(basePath ?? _BasePath, GitIgnoreFileName));
     }
 

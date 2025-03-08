@@ -3,7 +3,7 @@
 
 namespace PSRule.Expressions;
 
-internal static class Helpers
+internal static class PathHelpers
 {
     private const char Backslash = '\\';
     private const char Slash = '/';

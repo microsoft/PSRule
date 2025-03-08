@@ -83,14 +83,6 @@ public static class PipelineWriterExtensions
         );
     }
 
-    internal static void VerboseInputAdded(this IPipelineWriter writer, string path)
-    {
-        if (writer == null || !writer.ShouldWriteVerbose() || string.IsNullOrEmpty(path))
-            return;
-
-        writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InputAdded, path));
-    }
-
     internal static void WriteError(this IPipelineWriter writer, PipelineException exception, string errorId, ErrorCategory errorCategory)
     {
         if (writer == null)
