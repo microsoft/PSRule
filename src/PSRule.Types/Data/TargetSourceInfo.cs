@@ -132,6 +132,6 @@ public sealed class TargetSourceInfo : IEquatable<TargetSourceInfo>, IFileInfo
 
     internal string? GetPath(bool useRelativePath)
     {
-        return useRelativePath ? Helpers.NormalizePath(Environment.GetWorkingPath(), File) : File;
+        return useRelativePath ? PathHelpers.NormalizePath(Environment.GetWorkingPath(), File) : File;
     }
 }

@@ -228,8 +228,23 @@ This option does not work with a shallow or detached checkout, full git history 
     Assert-PSRule -Options $options -InputPath '.' -Module $modules -Format File -ErrorAction Stop;
     ```
 
-!!! Tip
-    In some cases it may be necessary to set `Repository.BaseRef` to the default branch of your repository.
-    By default, PSRule will detect the default branch of the repository from the build system environment variables.
-
   [8]: concepts/PSRule/en-US/about_PSRule_Options.md#inputignoreunchangedpath
+
+### Setting the base branch
+
+In some cases it may be necessary to set `Repository.BaseRef` to the default branch of your repository for comparison.
+This option can also be set by using the `PSRULE_REPOSITORY_BASEREF` environment variable.
+By default, PSRule will attempt to detect the default branch of the repository.
+
+```yaml title="ps-rule.yaml"
+repository:
+  baseRef: main
+```
+
+For CI pipelines, the default branch is usually `main` or `master` or an integration branch.
+However, because these branches are not checked out locally by default, you should prepend the remote to the branch name.
+
+```yaml title="ps-rule.yaml"
+repository:
+  baseRef: origin/main
+```

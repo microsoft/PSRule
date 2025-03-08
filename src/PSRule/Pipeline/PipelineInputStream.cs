@@ -6,6 +6,7 @@ using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Data;
 using PSRule.Emitters;
+using PSRule.Resources;
 using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
@@ -18,15 +19,17 @@ namespace PSRule.Pipeline;
 internal sealed class PipelineInputStream : IPipelineReader
 {
     private readonly InputPathBuilder? _InputPath;
-    private readonly PathFilter? _InputFilter;
+    private readonly IPathFilter? _InputFilter;
     private readonly ConcurrentQueue<ITargetObject> _Queue;
+    private readonly ILogger? _Logger;
     private readonly EmitterCollection _EmitterCollection;
 
-    public PipelineInputStream(ILanguageScopeSet? languageScopeSet, InputPathBuilder? inputPath, PathFilter? inputFilter, PSRuleOption? option, ILogger? logger)
+    public PipelineInputStream(ILanguageScopeSet? languageScopeSet, InputPathBuilder? inputPath, IPathFilter? inputFilter, PSRuleOption? option, ILogger? logger)
     {
         _InputPath = inputPath;
         _InputFilter = inputFilter;
         _Queue = new ConcurrentQueue<ITargetObject>();
+        _Logger = logger;
         _EmitterCollection = new EmitterBuilder(languageScopeSet, option?.Format, option?.Input?.StringFormat, logger).Build(new EmitterContext(_Queue, inputFilter, option));
     }
 
@@ -58,6 +61,7 @@ internal sealed class PipelineInputStream : IPipelineReader
     /// <inheritdoc/>
     public void Open()
     {
+        _Logger?.LogDebug(new EventId(0), "Opening input stream.");
         if (_InputPath == null || _InputPath.Count == 0)
             return;
 
@@ -65,14 +69,8 @@ internal sealed class PipelineInputStream : IPipelineReader
         var files = _InputPath.Build();
         for (var i = 0; i < files.Length; i++)
         {
-            if (files[i].IsUrl)
-            {
-                Enqueue(PSObject.AsPSObject(new Uri(files[i].FullName)));
-            }
-            else
-            {
-                Enqueue(files[i]);
-            }
+            _Logger?.LogDebug(new EventId(0), "opening with: {0}", files[i].Path);
+            EnqueueFile(files[i]);
         }
     }
 
@@ -96,7 +94,27 @@ internal sealed class PipelineInputStream : IPipelineReader
     /// <inheritdoc/>
     public void Add(string path)
     {
-        _InputPath.Add(path);
+        if (string.IsNullOrEmpty(path) || _InputPath == null)
+            return;
+
+        path = Environment.GetRootedPath(path, normalize: true);
+        var basePath = Environment.GetRootedBasePath(null, normalize: true);
+
+        _Logger?.Log(LogLevel.Debug, new EventId(0), null, PSRuleResources.InputAdded, path);
+
+        _InputPath.Add(path, useGlobalFilter: false);
+    }
+
+    private void EnqueueFile(InputFileInfo file)
+    {
+        if (file.IsUrl)
+        {
+            Enqueue(PSObject.AsPSObject(new Uri(file.FullName)));
+        }
+        else
+        {
+            Enqueue(file);
+        }
     }
 }
 

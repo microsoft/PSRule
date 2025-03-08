@@ -16,12 +16,12 @@ namespace PSRule.Emitters;
 internal sealed class EmitterContext : BaseEmitterContext
 {
     private readonly ConcurrentQueue<ITargetObject> _Queue;
-    private readonly PathFilter? _InputFilter;
+    private readonly IPathFilter? _InputFilter;
 
     /// <summary>
     /// Create an instance containing context for an <see cref="IEmitter"/>.
     /// </summary>
-    internal EmitterContext(ConcurrentQueue<ITargetObject> queue, PathFilter? inputFilter, PSRuleOption? option)
+    internal EmitterContext(ConcurrentQueue<ITargetObject> queue, IPathFilter? inputFilter, PSRuleOption? option)
         : base(option?.Input?.StringFormat, option?.Input?.ObjectPath, option?.Input?.FileObjects ?? false)
     {
         _Queue = queue;

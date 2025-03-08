@@ -69,8 +69,10 @@ public sealed class PSRule : ScopedItem
         public void Add(string path)
         {
             var context = GetContext();
-            context.Writer.VerboseInputAdded(path);
-            context.Pipeline.Reader?.Add(path);
+            if (string.IsNullOrEmpty(path) || context.Pipeline.Reader == null)
+                return;
+
+            context.Pipeline.Reader.Add(path);
         }
     }
 

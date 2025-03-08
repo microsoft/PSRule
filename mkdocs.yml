@@ -130,7 +130,9 @@ markdown_extensions:
         - includes/en/abbreviations.md
   - pymdownx.highlight:
       auto_title: false
-      anchor_linenums: false
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.superfences
   - pymdownx.pathconverter
   - pymdownx.tabbed:

@@ -427,12 +427,12 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         return result;
     }
 
-    protected PathFilter? GetInputObjectSourceFilter()
+    protected IPathFilter? GetInputObjectSourceFilter()
     {
         return Option.Input.IgnoreObjectSource.GetValueOrDefault(InputOption.Default.IgnoreObjectSource!.Value) ? GetInputFilter() : null;
     }
 
-    protected PathFilter GetInputFilter()
+    protected IPathFilter GetInputFilter()
     {
         if (_InputFilter == null)
         {
@@ -517,8 +517,9 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             return false;
 
         for (var i = 0; i < files.Length; i++)
+        {
             HostContext.Verbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.UsingChangedFile, files[i]));
-
+        }
         return true;
     }
 
