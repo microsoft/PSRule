@@ -2,13 +2,13 @@
   "dependencies": {},
   "devDependencies": {
     "Pester": {
-      "version": "5.6.1"
+      "version": "5.7.1"
     },
     "platyPS": {
       "version": "0.14.2"
     },
     "PSScriptAnalyzer": {
-      "version": "1.22.0"
+      "version": "1.23.0"
     }
   }
 }
