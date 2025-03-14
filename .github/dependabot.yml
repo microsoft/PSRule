@@ -31,7 +31,7 @@ updates:
     schedule:
       interval: daily
     labels:
-      - ci-quality
+      - dependencies
     reviewers:
       - microsoft/psrule
 
@@ -41,7 +41,7 @@ updates:
     schedule:
       interval: daily
     labels:
-      - ci-quality
+      - dependencies
     reviewers:
       - microsoft/psrule
 
@@ -73,6 +73,16 @@ updates:
     schedule:
       interval: weekly
     labels:
-      - ci-quality
+      - dependencies
+    reviewers:
+      - microsoft/psrule
+
+  # Maintain dependencies for Docker
+  - package-ecosystem: docker
+    directory: '/'
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
     reviewers:
       - microsoft/psrule

@@ -130,7 +130,7 @@ jobs:
         run: ./scripts/pipeline-deps.ps1
 
       - name: Download module
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: Module
           path: ./out/modules/PSRule
@@ -280,7 +280,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Run PSRule analysis
-        uses: microsoft/ps-rule@v2.9.0
+        uses: microsoft/ps-rule@46451b8f5258c41beb5ae69ed7190ccbba84112c # v2.9.0
         with:
           modules: PSRule.Rules.MSFT.OSS
           prerelease: true
@@ -365,4 +365,3 @@ jobs:
           path: ${{ steps.codeql-analyze.outputs.sarif-output }}
           retention-days: 1
           if-no-files-found: error
-      
