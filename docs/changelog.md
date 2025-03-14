@@ -27,8 +27,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 What's changed since pre-release v3.0.0-B0416:
 
 - Engineering:
-  - Bump System.Drawing.Common to v9.0.2.
-    [#2769](https://github.com/microsoft/PSRule/pull/2769)
+  - Bump System.Drawing.Common to v9.0.3.
+    [#2808](https://github.com/microsoft/PSRule/pull/2808)
   - Bump NuGet.Protocol to v6.13.2.
     [#2788](https://github.com/microsoft/PSRule/pull/2788)
   - Bump vscode engine to v1.98.0.
