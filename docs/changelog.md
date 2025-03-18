@@ -24,6 +24,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v3.0.0-B0453 (pre-release)
+
 What's changed since pre-release v3.0.0-B0416:
 
 - Engineering:
@@ -33,10 +35,10 @@ What's changed since pre-release v3.0.0-B0416:
     [#2788](https://github.com/microsoft/PSRule/pull/2788)
   - Bump vscode engine to v1.98.0.
     [#2796](https://github.com/microsoft/PSRule/pull/2796)
-- Bug fix:
+- Bug fixes:
   - Fixed custom emitter loaded too late by @BernieWhite.
     [#2775](https://github.com/microsoft/PSRule/issues/2775)
-  - Fixed Changed files includes excluded paths by @BernieWhite.
+  - Fixed changed files includes excluded paths by @BernieWhite.
     [#1465](https://github.com/microsoft/PSRule/issues/1465)
   - Fixed branch ref for working with changes files only examples by @BernieWhite.
     [#2777](https://github.com/microsoft/PSRule/issues/2777)
