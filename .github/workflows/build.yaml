@@ -60,7 +60,7 @@ jobs:
         run: dotnet format --verify-no-changes
 
       - name: Upload module
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: Module
           path: ./out/modules/PSRule/*
@@ -68,7 +68,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload PSRule Results
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: Results-PSRule
@@ -183,7 +183,7 @@ jobs:
           npm run package -- 0.0.1
 
       - name: Upload extension
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: Extension
           path: out/package/vscode-ps-rule-*.vsix
@@ -295,7 +295,7 @@ jobs:
           sarif_file: reports/ps-rule-results.sarif
 
       - name: Upload results
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: PSRule-Sarif
@@ -326,7 +326,7 @@ jobs:
           sarif_file: devskim-results.sarif
 
       - name: Upload results
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: DevSkim-Sarif
@@ -358,7 +358,7 @@ jobs:
         id: codeql-analyze
 
       - name: Upload results
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: CodeQL-Sarif
