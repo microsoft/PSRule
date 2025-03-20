@@ -4,6 +4,7 @@
 using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.Management.Automation;
+using PSRule.Tool.Adapters;
 
 namespace PSRule.Tool;
 
@@ -30,7 +31,22 @@ static class Program
 
         System.Environment.SetEnvironmentVariable("PSModulePath", modulePath, EnvironmentVariableTarget.Process);
 
-        if (ShouldWaitForDebugger(args))
+        var execute = async (string[] args) =>
+        {
+            return await ClientBuilder.New().InvokeAsync(args);
+        };
+
+        if (ShouldUseGitHubActionAdapter(args))
+        {
+            var adapter = new GitHubActionsAdapter();
+            args = adapter.BuildArgs(args);
+
+            execute = async (string[] args) =>
+            {
+                return await ClientBuilder.New().InvokeAsync(args);
+            };
+        }
+        else if (ShouldWaitForDebugger(args))
         {
             if (!await WaitForDebuggerAsync())
                 return ERROR_DEBUGGER_ATTACH_TIMEOUT;
@@ -38,7 +54,20 @@ static class Program
             System.Diagnostics.Debugger.Break();
         }
 
-        return await ClientBuilder.New().InvokeAsync(args);
+        return await execute(args);
+    }
+
+    private static bool ShouldUseGitHubActionAdapter(string[] args)
+    {
+        if (args == null || args.Length == 0)
+            return false;
+
+        foreach (var arg in args)
+        {
+            if (arg.Equals("--in-github-actions", StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+        return false;
     }
 
     private static bool ShouldWaitForDebugger(string[] args)

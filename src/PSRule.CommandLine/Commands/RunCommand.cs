@@ -51,6 +51,11 @@ public sealed class RunCommand
             clientContext.Option.Output.Format = operationOptions.OutputFormat.Value;
         }
 
+        if (operationOptions.JobSummaryPath != null)
+        {
+            clientContext.Option.Output.JobSummaryPath = operationOptions.JobSummaryPath;
+        }
+
         // Run restore command.
         if (!operationOptions.NoRestore)
         {

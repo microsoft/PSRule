@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -206,5 +206,8 @@
   </data>
   <data name="Run_Formats_Description" xml:space="preserve">
     <value>A list of formats to enable.</value>
+  </data>
+  <data name="Run_JobSummaryPath_Description" xml:space="preserve">
+    <value>The file path to write a job summary.</value>
   </data>
 </root>

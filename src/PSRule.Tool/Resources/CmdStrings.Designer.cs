@@ -286,6 +286,15 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file path to write a job summary..
+        /// </summary>
+        internal static string Run_JobSummaryPath_Description {
+            get {
+                return ResourceManager.GetString("Run_JobSummaryPath_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The name of one or more modules that contain rules or resources to use during a run..
         /// </summary>
         internal static string Run_Module_Description {
