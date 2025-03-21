@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Text;
 using PSRule.Configuration;
 using PSRule.Resources;
 using PSRule.Rules;
@@ -20,11 +19,9 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
     private const string HEADER_H2 = "## ";
 
     private readonly string _OutputPath;
-    private readonly Encoding _Encoding;
     private readonly JobSummaryFormat _JobSummary;
     private readonly Source[] _Source;
 
-    private Stream _Stream;
     private StreamWriter _Writer;
     private bool _IsDisposed;
 
@@ -32,9 +29,7 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
         : base(inner, option, shouldProcess)
     {
         _OutputPath = outputPath ?? Environment.GetRootedPath(Option.Output.JobSummaryPath);
-        _Encoding = option.Output.GetEncoding();
         _JobSummary = JobSummaryFormat.Default;
-        _Stream = stream;
         _Source = source;
 
         if (Option.Output.As == ResultFormat.Summary && inner != null)
@@ -60,8 +55,7 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
         if (string.IsNullOrEmpty(_OutputPath) || _IsDisposed || !CreateFile(_OutputPath))
             return;
 
-        _Stream ??= new FileStream(_OutputPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
-        _Writer = new StreamWriter(_Stream, _Encoding, 2048, false);
+        _Writer ??= File.AppendText(_OutputPath);
     }
 
     private void Source()
@@ -228,7 +222,6 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
             if (disposing)
             {
                 _Writer?.Dispose();
-                _Stream?.Dispose();
             }
             _IsDisposed = true;
         }
