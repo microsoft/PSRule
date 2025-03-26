@@ -18,12 +18,13 @@ internal sealed class ClientBuilder
 {
     private const string ARG_FORCE = "--force";
 
-    private static readonly string? _Version = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+    internal static readonly string? Version = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
 
     private readonly Option<string> _Global_Option;
     private readonly Option<bool> _Global_Verbose;
     private readonly Option<bool> _Global_Debug;
     private readonly Option<bool> _Global_WaitForDebugger;
+    private readonly Option<bool> _Global_InGitHubActions;
     private readonly Option<bool> _Module_Restore_Force;
     private readonly Option<bool> _Module_Init_Force;
     private readonly Option<string> _Module_Add_Version;
@@ -39,6 +40,7 @@ internal sealed class ClientBuilder
     private readonly Option<string[]> _Run_Formats;
     private readonly Option<string[]> _Run_Outcome;
     private readonly Option<bool> _Run_NoRestore;
+    private readonly Option<string> _Run_JobSummaryPath;
 
     private ClientBuilder(RootCommand cmd)
     {
@@ -58,17 +60,22 @@ internal sealed class ClientBuilder
             ["--debug"],
             description: CmdStrings.Global_Debug_Description
         );
-        _Global_WaitForDebugger = new Option<bool>(
-            ["--wait-for-debugger"],
-            description: ""
-        //CmdStrings.Global_WaitForDebugger_Description
-        );
-        _Global_WaitForDebugger.IsHidden = true;
-
         _Global_Path = new Option<string[]>(
             ["-p", "--path"],
             description: CmdStrings.Global_Path_Description
         );
+
+        // Arguments that are hidden because they are intercepted early in the process.
+        _Global_WaitForDebugger = new Option<bool>(
+            ["--wait-for-debugger"],
+            description: string.Empty
+        );
+        _Global_WaitForDebugger.IsHidden = true;
+        _Global_InGitHubActions = new Option<bool>(
+            ["--in-github-actions"],
+            description: string.Empty
+        );
+        _Global_InGitHubActions.IsHidden = true;
 
         // Options for the run command.
         _Run_OutputPath = new Option<string>(
@@ -105,6 +112,10 @@ internal sealed class ClientBuilder
             "--no-restore",
             description: CmdStrings.Run_NoRestore_Description
         );
+        _Run_JobSummaryPath = new Option<string>(
+            ["--job-summary-path"],
+            description: CmdStrings.Run_JobSummaryPath_Description
+        );
 
         // Options for the module command.
         _Module_Init_Force = new Option<bool>(
@@ -137,13 +148,14 @@ internal sealed class ClientBuilder
         cmd.AddGlobalOption(_Global_Verbose);
         cmd.AddGlobalOption(_Global_Debug);
         cmd.AddGlobalOption(_Global_WaitForDebugger);
+        cmd.AddGlobalOption(_Global_InGitHubActions);
     }
 
     public RootCommand Command { get; }
 
     public static Command New()
     {
-        var cmd = new RootCommand(string.Concat(CmdStrings.Cmd_Description, " v", _Version))
+        var cmd = new RootCommand(string.Concat(CmdStrings.Cmd_Description, " v", Version))
         {
             Name = "ps-rule"
         };
@@ -169,6 +181,7 @@ internal sealed class ClientBuilder
         cmd.AddOption(_Run_Formats);
         cmd.AddOption(_Run_Outcome);
         cmd.AddOption(_Run_NoRestore);
+        cmd.AddOption(_Run_JobSummaryPath);
         cmd.SetHandler(async (invocation) =>
         {
             var option = new RunOptions
@@ -182,6 +195,7 @@ internal sealed class ClientBuilder
                 OutputPath = invocation.ParseResult.GetValueForOption(_Run_OutputPath),
                 OutputFormat = invocation.ParseResult.GetValueForOption(_Run_OutputFormat).ToOutputFormat(),
                 NoRestore = invocation.ParseResult.GetValueForOption(_Run_NoRestore),
+                JobSummaryPath = invocation.ParseResult.GetValueForOption(_Run_JobSummaryPath),
             };
 
             var client = GetClientContext(invocation);
