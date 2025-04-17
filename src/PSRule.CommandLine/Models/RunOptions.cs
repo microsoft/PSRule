@@ -55,4 +55,9 @@ public sealed class RunOptions
     /// Do not restore modules before running rules.
     /// </summary>
     public bool NoRestore { get; set; }
+
+    /// <summary>
+    /// The path to write the job summary file.
+    /// </summary>
+    public string? JobSummaryPath { get; set; }
 }

@@ -8,6 +8,8 @@ using PSRule.Rules;
 
 namespace PSRule.Pipeline.Output;
 
+#nullable enable
+
 /// <summary>
 /// Define an pipeline writer to write a job summary to disk.
 /// </summary>
@@ -24,7 +26,7 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
     private readonly JobSummaryFormat _JobSummary;
     private readonly Source[] _Source;
 
-    private Stream _Stream;
+    private Stream? _Stream;
     private StreamWriter _Writer;
     private bool _IsDisposed;
 
@@ -60,8 +62,9 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
         if (string.IsNullOrEmpty(_OutputPath) || _IsDisposed || !CreateFile(_OutputPath))
             return;
 
-        _Stream ??= new FileStream(_OutputPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
+        _Stream ??= new FileStream(_OutputPath, FileMode.Append, FileAccess.ReadWrite, FileShare.Read);
         _Writer = new StreamWriter(_Stream, _Encoding, 2048, false);
+        _Writer ??= File.AppendText(_OutputPath);
     }
 
     private void Source()
@@ -228,7 +231,6 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
             if (disposing)
             {
                 _Writer?.Dispose();
-                _Stream?.Dispose();
             }
             _IsDisposed = true;
         }
@@ -237,3 +239,5 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
 
     #endregion IDisposable
 }
+
+#nullable restore
