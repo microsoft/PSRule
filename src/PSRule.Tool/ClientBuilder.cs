@@ -36,6 +36,7 @@ internal sealed class ClientBuilder
     private readonly Option<string> _Run_OutputFormat;
     private readonly Option<string[]> _Run_InputPath;
     private readonly Option<string[]> _Run_Module;
+    private readonly Option<string[]> _Run_Name;
     private readonly Option<string> _Run_Baseline;
     private readonly Option<string[]> _Run_Formats;
     private readonly Option<string[]> _Run_Outcome;
@@ -93,6 +94,10 @@ internal sealed class ClientBuilder
         _Run_Module = new Option<string[]>(
             ["-m", "--module"],
             description: CmdStrings.Run_Module_Description
+        );
+        _Run_Name = new Option<string[]>(
+            ["--name"],
+            description: CmdStrings.Run_Name_Description
         );
         _Run_Baseline = new Option<string>(
             ["--baseline"],
@@ -177,6 +182,7 @@ internal sealed class ClientBuilder
         cmd.AddOption(_Run_OutputFormat);
         cmd.AddOption(_Run_InputPath);
         cmd.AddOption(_Run_Module);
+        cmd.AddOption(_Run_Name);
         cmd.AddOption(_Run_Baseline);
         cmd.AddOption(_Run_Formats);
         cmd.AddOption(_Run_Outcome);
@@ -189,6 +195,7 @@ internal sealed class ClientBuilder
                 Path = invocation.ParseResult.GetValueForOption(_Global_Path),
                 InputPath = invocation.ParseResult.GetValueForOption(_Run_InputPath),
                 Module = invocation.ParseResult.GetValueForOption(_Run_Module),
+                Name = invocation.ParseResult.GetValueForOption(_Run_Name),
                 Baseline = invocation.ParseResult.GetValueForOption(_Run_Baseline),
                 Formats = invocation.ParseResult.GetValueForOption(_Run_Formats),
                 Outcome = invocation.ParseResult.GetValueForOption(_Run_Outcome).ToRuleOutcome(),

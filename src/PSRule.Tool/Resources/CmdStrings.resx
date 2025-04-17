@@ -210,4 +210,7 @@
   <data name="Run_JobSummaryPath_Description" xml:space="preserve">
     <value>The file path to write a job summary.</value>
   </data>
+  <data name="Run_Name_Description" xml:space="preserve">
+    <value>The name of one or more specific rules to run instead of all rules. By default, all rules are evaluated.</value>
+  </data>
 </root>

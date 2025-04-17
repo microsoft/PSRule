@@ -11,6 +11,11 @@ namespace PSRule.Pipeline;
 public interface IInvokePipelineBuilder : IPipelineBuilder
 {
     /// <summary>
+    /// Configures the name of the rules to run.
+    /// </summary>
+    void Name(string[]? name);
+
+    /// <summary>
     /// Configures paths that will be scanned for input.
     /// </summary>
     /// <param name="path">An array of relative or absolute path specs to be scanned. Directories will be recursively scanned for all files not excluded matching the file path spec.</param>

@@ -304,6 +304,15 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The name of one or more specific rules to run instead of all rules. By default, all rules are evaluated..
+        /// </summary>
+        internal static string Run_Name_Description {
+            get {
+                return ResourceManager.GetString("Run_Name_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do not restore modules before running rules..
         /// </summary>
         internal static string Run_NoRestore_Description {

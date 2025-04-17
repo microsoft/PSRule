@@ -56,7 +56,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     public bool InSession => HostContext != null && HostContext.InSession;
 
     /// <inheritdoc/>
-    public void Name(string[] name)
+    public void Name(string[]? name)
     {
         if (name == null || name.Length == 0)
             return;
@@ -148,7 +148,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     {
         if (Source == null || Source.Length == 0)
         {
-            PrepareWriter().WarnRulePathNotFound();
+            PrepareWriter().LogNoValidSources(Option.Execution?.NoValidSources ?? ExecutionOption.Default.NoValidSources!.Value);
             return false;
         }
         return true;
@@ -419,6 +419,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         result.AliasReference = result.AliasReference == ExecutionActionPreference.None ? ExecutionOption.Default.AliasReference!.Value : result.AliasReference;
         result.DuplicateResourceId = result.DuplicateResourceId == ExecutionActionPreference.None ? ExecutionOption.Default.DuplicateResourceId!.Value : result.DuplicateResourceId;
         result.InvariantCulture = result.InvariantCulture == ExecutionActionPreference.None ? ExecutionOption.Default.InvariantCulture!.Value : result.InvariantCulture;
+        result.NoValidSources = result.NoValidSources == ExecutionActionPreference.None ? ExecutionOption.Default.NoValidSources!.Value : result.NoValidSources;
         result.RuleExcluded = result.RuleExcluded == ExecutionActionPreference.None ? ExecutionOption.Default.RuleExcluded!.Value : result.RuleExcluded;
         result.RuleInconclusive = result.RuleInconclusive == ExecutionActionPreference.None ? ExecutionOption.Default.RuleInconclusive!.Value : result.RuleInconclusive;
         result.RuleSuppressed = result.RuleSuppressed == ExecutionActionPreference.None ? ExecutionOption.Default.RuleSuppressed!.Value : result.RuleSuppressed;

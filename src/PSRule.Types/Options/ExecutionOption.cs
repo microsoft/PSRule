@@ -14,18 +14,21 @@ namespace PSRule.Options;
 public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOption
 {
     private const BreakLevel DEFAULT_BREAK = BreakLevel.OnError;
-    private const LanguageMode DEFAULT_LANGUAGEMODE = Options.LanguageMode.FullLanguage;
-    private const ExecutionActionPreference DEFAULT_DUPLICATERESOURCEID = ExecutionActionPreference.Error;
-    private const SessionState DEFAULT_INITIALSESSIONSTATE = SessionState.BuiltIn;
-    private const RestrictScriptSource DEFAULT_RESTRICTSCRIPTSOURCE = Options.RestrictScriptSource.Unrestricted;
-    private const ExecutionActionPreference DEFAULT_SUPPRESSIONGROUPEXPIRED = ExecutionActionPreference.Warn;
-    private const ExecutionActionPreference DEFAULT_RULEEXCLUDED = ExecutionActionPreference.Ignore;
-    private const ExecutionActionPreference DEFAULT_RULESUPPRESSED = ExecutionActionPreference.Warn;
-    private const ExecutionActionPreference DEFAULT_ALIASREFERENCE = ExecutionActionPreference.Warn;
-    private const ExecutionActionPreference DEFAULT_RULEINCONCLUSIVE = ExecutionActionPreference.Warn;
-    private const ExecutionActionPreference DEFAULT_INVARIANTCULTURE = ExecutionActionPreference.Warn;
-    private const ExecutionActionPreference DEFAULT_UNPROCESSEDOBJECT = ExecutionActionPreference.Warn;
-    private const HashAlgorithm DEFAULT_HASHALGORITHM = Options.HashAlgorithm.SHA512;
+    private const LanguageMode DEFAULT_LANGUAGE_MODE = Options.LanguageMode.FullLanguage;
+    private const ExecutionActionPreference DEFAULT_DUPLICATE_RESOURCE_ID = ExecutionActionPreference.Error;
+    private const SessionState DEFAULT_INITIAL_SESSION_STATE = SessionState.BuiltIn;
+    private const ExecutionActionPreference DEFAULT_NO_MATCHING_RULES = ExecutionActionPreference.Error;
+    private const ExecutionActionPreference DEFAULT_NO_VALID_INPUT = ExecutionActionPreference.Error;
+    private const ExecutionActionPreference DEFAULT_NO_VALID_SOURCES = ExecutionActionPreference.Error;
+    private const RestrictScriptSource DEFAULT_RESTRICT_SCRIPT_SOURCE = Options.RestrictScriptSource.Unrestricted;
+    private const ExecutionActionPreference DEFAULT_SUPPRESSION_GROUP_EXPIRED = ExecutionActionPreference.Warn;
+    private const ExecutionActionPreference DEFAULT_RULE_EXCLUDED = ExecutionActionPreference.Ignore;
+    private const ExecutionActionPreference DEFAULT_RULE_SUPPRESSED = ExecutionActionPreference.Warn;
+    private const ExecutionActionPreference DEFAULT_ALIAS_REFERENCE = ExecutionActionPreference.Warn;
+    private const ExecutionActionPreference DEFAULT_RULE_INCONCLUSIVE = ExecutionActionPreference.Warn;
+    private const ExecutionActionPreference DEFAULT_INVARIANT_CULTURE = ExecutionActionPreference.Warn;
+    private const ExecutionActionPreference DEFAULT_UNPROCESSED_OBJECT = ExecutionActionPreference.Warn;
+    private const HashAlgorithm DEFAULT_HASH_ALGORITHM = Options.HashAlgorithm.SHA512;
 
     /// <summary>
     /// The default execution option.
@@ -33,18 +36,21 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     public static readonly ExecutionOption Default = new()
     {
         Break = DEFAULT_BREAK,
-        DuplicateResourceId = DEFAULT_DUPLICATERESOURCEID,
-        HashAlgorithm = DEFAULT_HASHALGORITHM,
-        LanguageMode = DEFAULT_LANGUAGEMODE,
-        InitialSessionState = DEFAULT_INITIALSESSIONSTATE,
-        RestrictScriptSource = DEFAULT_RESTRICTSCRIPTSOURCE,
-        SuppressionGroupExpired = DEFAULT_SUPPRESSIONGROUPEXPIRED,
-        RuleExcluded = DEFAULT_RULEEXCLUDED,
-        RuleSuppressed = DEFAULT_RULESUPPRESSED,
-        AliasReference = DEFAULT_ALIASREFERENCE,
-        RuleInconclusive = DEFAULT_RULEINCONCLUSIVE,
-        InvariantCulture = DEFAULT_INVARIANTCULTURE,
-        UnprocessedObject = DEFAULT_UNPROCESSEDOBJECT,
+        DuplicateResourceId = DEFAULT_DUPLICATE_RESOURCE_ID,
+        HashAlgorithm = DEFAULT_HASH_ALGORITHM,
+        LanguageMode = DEFAULT_LANGUAGE_MODE,
+        InitialSessionState = DEFAULT_INITIAL_SESSION_STATE,
+        NoMatchingRules = DEFAULT_NO_MATCHING_RULES,
+        NoValidInput = DEFAULT_NO_VALID_INPUT,
+        NoValidSources = DEFAULT_NO_VALID_SOURCES,
+        RestrictScriptSource = DEFAULT_RESTRICT_SCRIPT_SOURCE,
+        SuppressionGroupExpired = DEFAULT_SUPPRESSION_GROUP_EXPIRED,
+        RuleExcluded = DEFAULT_RULE_EXCLUDED,
+        RuleSuppressed = DEFAULT_RULE_SUPPRESSED,
+        AliasReference = DEFAULT_ALIAS_REFERENCE,
+        RuleInconclusive = DEFAULT_RULE_INCONCLUSIVE,
+        InvariantCulture = DEFAULT_INVARIANT_CULTURE,
+        UnprocessedObject = DEFAULT_UNPROCESSED_OBJECT,
     };
 
     /// <summary>
@@ -57,6 +63,9 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
         HashAlgorithm = null;
         LanguageMode = null;
         InitialSessionState = null;
+        NoMatchingRules = null;
+        NoValidInput = null;
+        NoValidSources = null;
         RestrictScriptSource = null;
         SuppressionGroupExpired = null;
         RuleExcluded = null;
@@ -81,6 +90,9 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
         HashAlgorithm = option.HashAlgorithm;
         LanguageMode = option.LanguageMode;
         InitialSessionState = option.InitialSessionState;
+        NoMatchingRules = option.NoMatchingRules;
+        NoValidInput = option.NoValidInput;
+        NoValidSources = option.NoValidSources;
         RestrictScriptSource = option.RestrictScriptSource;
         SuppressionGroupExpired = option.SuppressionGroupExpired;
         RuleExcluded = option.RuleExcluded;
@@ -106,6 +118,9 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
             HashAlgorithm == other.HashAlgorithm &&
             LanguageMode == other.LanguageMode &&
             InitialSessionState == other.InitialSessionState &&
+            NoMatchingRules == other.NoMatchingRules &&
+            NoValidInput == other.NoValidInput &&
+            NoValidSources == other.NoValidSources &&
             RestrictScriptSource == other.RestrictScriptSource &&
             SuppressionGroupExpired == other.SuppressionGroupExpired &&
             RuleExcluded == other.RuleExcluded &&
@@ -127,6 +142,9 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
             hash = hash * 23 + (HashAlgorithm.HasValue ? HashAlgorithm.Value.GetHashCode() : 0);
             hash = hash * 23 + (LanguageMode.HasValue ? LanguageMode.Value.GetHashCode() : 0);
             hash = hash * 23 + (InitialSessionState.HasValue ? InitialSessionState.Value.GetHashCode() : 0);
+            hash = hash * 23 + (NoMatchingRules.HasValue ? NoMatchingRules.Value.GetHashCode() : 0);
+            hash = hash * 23 + (NoValidInput.HasValue ? NoValidInput.Value.GetHashCode() : 0);
+            hash = hash * 23 + (NoValidSources.HasValue ? NoValidSources.Value.GetHashCode() : 0);
             hash = hash * 23 + (RestrictScriptSource.HasValue ? RestrictScriptSource.Value.GetHashCode() : 0);
             hash = hash * 23 + (SuppressionGroupExpired.HasValue ? SuppressionGroupExpired.Value.GetHashCode() : 0);
             hash = hash * 23 + (RuleExcluded.HasValue ? RuleExcluded.Value.GetHashCode() : 0);
@@ -152,6 +170,9 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
             HashAlgorithm = o1?.HashAlgorithm ?? o2?.HashAlgorithm,
             LanguageMode = o1?.LanguageMode ?? o2?.LanguageMode,
             InitialSessionState = o1?.InitialSessionState ?? o2?.InitialSessionState,
+            NoMatchingRules = o1?.NoMatchingRules ?? o2?.NoMatchingRules,
+            NoValidInput = o1?.NoValidInput ?? o2?.NoValidInput,
+            NoValidSources = o1?.NoValidSources ?? o2?.NoValidSources,
             RestrictScriptSource = o1?.RestrictScriptSource ?? o2?.RestrictScriptSource,
             SuppressionGroupExpired = o1?.SuppressionGroupExpired ?? o2?.SuppressionGroupExpired,
             RuleExcluded = o1?.RuleExcluded ?? o2?.RuleExcluded,
@@ -200,6 +221,36 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
     /// </summary>
     [DefaultValue(null)]
     public SessionState? InitialSessionState { get; set; }
+
+    /// <summary>
+    /// Determines how to report cases when no rules are found.
+    /// By default, an error is generated.
+    /// When set to Warn, a warning is generated.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    [DefaultValue(null)]
+    public ExecutionActionPreference? NoMatchingRules { get; set; }
+
+    /// <summary>
+    /// Determines how to report cases when no valid input is found.
+    /// By default, an error is generated.
+    /// When set to Warn, a warning is generated.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    [DefaultValue(null)]
+    public ExecutionActionPreference? NoValidInput { get; set; }
+
+    /// <summary>
+    /// Determines how to report cases when no valid sources are found.
+    /// By default, an error is generated.
+    /// When set to Warn, a warning is generated.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    [DefaultValue(null)]
+    public ExecutionActionPreference? NoValidSources { get; set; }
 
     /// <summary>
     /// Configures where to allow PowerShell language features (such as rules and conventions) to run from.
@@ -283,29 +334,35 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
 
     BreakLevel IExecutionOption.Break => Break ?? DEFAULT_BREAK;
 
-    ExecutionActionPreference IExecutionOption.DuplicateResourceId => DuplicateResourceId ?? DEFAULT_DUPLICATERESOURCEID;
+    ExecutionActionPreference IExecutionOption.DuplicateResourceId => DuplicateResourceId ?? DEFAULT_DUPLICATE_RESOURCE_ID;
 
-    HashAlgorithm IExecutionOption.HashAlgorithm => HashAlgorithm ?? DEFAULT_HASHALGORITHM;
+    HashAlgorithm IExecutionOption.HashAlgorithm => HashAlgorithm ?? DEFAULT_HASH_ALGORITHM;
 
-    LanguageMode IExecutionOption.LanguageMode => LanguageMode ?? DEFAULT_LANGUAGEMODE;
+    LanguageMode IExecutionOption.LanguageMode => LanguageMode ?? DEFAULT_LANGUAGE_MODE;
 
-    SessionState IExecutionOption.InitialSessionState => InitialSessionState ?? DEFAULT_INITIALSESSIONSTATE;
+    SessionState IExecutionOption.InitialSessionState => InitialSessionState ?? DEFAULT_INITIAL_SESSION_STATE;
 
-    RestrictScriptSource IExecutionOption.RestrictScriptSource => RestrictScriptSource ?? DEFAULT_RESTRICTSCRIPTSOURCE;
+    ExecutionActionPreference IExecutionOption.NoMatchingRules => NoMatchingRules ?? DEFAULT_NO_MATCHING_RULES;
 
-    ExecutionActionPreference IExecutionOption.SuppressionGroupExpired => SuppressionGroupExpired ?? DEFAULT_SUPPRESSIONGROUPEXPIRED;
+    ExecutionActionPreference IExecutionOption.NoValidInput => NoValidInput ?? DEFAULT_NO_VALID_INPUT;
 
-    ExecutionActionPreference IExecutionOption.RuleExcluded => RuleExcluded ?? DEFAULT_RULEEXCLUDED;
+    ExecutionActionPreference IExecutionOption.NoValidSources => NoValidSources ?? DEFAULT_NO_VALID_SOURCES;
 
-    ExecutionActionPreference IExecutionOption.RuleSuppressed => RuleSuppressed ?? DEFAULT_RULESUPPRESSED;
+    RestrictScriptSource IExecutionOption.RestrictScriptSource => RestrictScriptSource ?? DEFAULT_RESTRICT_SCRIPT_SOURCE;
 
-    ExecutionActionPreference IExecutionOption.AliasReference => AliasReference ?? DEFAULT_ALIASREFERENCE;
+    ExecutionActionPreference IExecutionOption.SuppressionGroupExpired => SuppressionGroupExpired ?? DEFAULT_SUPPRESSION_GROUP_EXPIRED;
 
-    ExecutionActionPreference IExecutionOption.RuleInconclusive => RuleInconclusive ?? DEFAULT_RULEINCONCLUSIVE;
+    ExecutionActionPreference IExecutionOption.RuleExcluded => RuleExcluded ?? DEFAULT_RULE_EXCLUDED;
 
-    ExecutionActionPreference IExecutionOption.InvariantCulture => InvariantCulture ?? DEFAULT_INVARIANTCULTURE;
+    ExecutionActionPreference IExecutionOption.RuleSuppressed => RuleSuppressed ?? DEFAULT_RULE_SUPPRESSED;
 
-    ExecutionActionPreference IExecutionOption.UnprocessedObject => UnprocessedObject ?? DEFAULT_UNPROCESSEDOBJECT;
+    ExecutionActionPreference IExecutionOption.AliasReference => AliasReference ?? DEFAULT_ALIAS_REFERENCE;
+
+    ExecutionActionPreference IExecutionOption.RuleInconclusive => RuleInconclusive ?? DEFAULT_RULE_INCONCLUSIVE;
+
+    ExecutionActionPreference IExecutionOption.InvariantCulture => InvariantCulture ?? DEFAULT_INVARIANT_CULTURE;
+
+    ExecutionActionPreference IExecutionOption.UnprocessedObject => UnprocessedObject ?? DEFAULT_UNPROCESSED_OBJECT;
 
     #endregion IExecutionOption
 
@@ -328,6 +385,15 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
 
         if (Environment.TryEnum("PSRULE_EXECUTION_INITIALSESSIONSTATE", out SessionState initialSessionState))
             InitialSessionState = initialSessionState;
+
+        if (Environment.TryEnum("PSRULE_EXECUTION_NOMATCHINGRULES", out ExecutionActionPreference noMatchingRules))
+            NoMatchingRules = noMatchingRules;
+
+        if (Environment.TryEnum("PSRULE_EXECUTION_NOVALIDINPUT", out ExecutionActionPreference noValidInput))
+            NoValidInput = noValidInput;
+
+        if (Environment.TryEnum("PSRULE_EXECUTION_NOVALIDSOURCES", out ExecutionActionPreference noValidSources))
+            NoValidSources = noValidSources;
 
         if (Environment.TryEnum("PSRULE_EXECUTION_RESTRICTSCRIPTSOURCE", out RestrictScriptSource restrictScriptSource))
             RestrictScriptSource = restrictScriptSource;
@@ -371,6 +437,15 @@ public sealed class ExecutionOption : IEquatable<ExecutionOption>, IExecutionOpt
 
         if (dictionary.TryPopEnum("Execution.InitialSessionState", out SessionState initialSessionState))
             InitialSessionState = initialSessionState;
+
+        if (dictionary.TryPopEnum("Execution.NoMatchingRules", out ExecutionActionPreference noMatchingRules))
+            NoMatchingRules = noMatchingRules;
+
+        if (dictionary.TryPopEnum("Execution.NoValidInput", out ExecutionActionPreference noValidInput))
+            NoValidInput = noValidInput;
+
+        if (dictionary.TryPopEnum("Execution.NoValidSources", out ExecutionActionPreference noValidSources))
+            NoValidSources = noValidSources;
 
         if (dictionary.TryPopEnum("Execution.RestrictScriptSource", out RestrictScriptSource restrictScriptSource))
             RestrictScriptSource = restrictScriptSource;

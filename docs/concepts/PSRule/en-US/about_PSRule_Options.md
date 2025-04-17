@@ -29,6 +29,9 @@ The following workspace options are available for use:
 - [Execution.LanguageMode](#executionlanguagemode)
 - [Execution.InvariantCulture](#executioninvariantculture)
 - [Execution.InitialSessionState](#executioninitialsessionstate)
+- [Execution.NoMatchingRules](#executionnomatchingrules)
+- [Execution.NoValidInput](#executionnovalidinput)
+- [Execution.NoValidSources](#executionnovalidsources)
 - [Execution.RestrictScriptSource](#executionrestrictscriptsource)
 - [Execution.RuleInconclusive](#executionruleinconclusive)
 - [Execution.SuppressionGroupExpired](#executionsuppressiongroupexpired)
@@ -177,6 +180,8 @@ Boolean values are case-insensitive.
 For example `PSRULE_INPUT_TARGETTYPE` could be set to `virtualMachine;virtualNetwork`.
 
 ### Baseline.Group
+
+<!-- module:version 2.9.0 -->
 
 You can use a baseline group to provide a friendly name to an existing baseline.
 When you run PSRule you can opt to use the baseline group name as an alternative name for the baseline.
@@ -654,6 +659,8 @@ variables:
 
 ### Configuration
 
+<!-- module:version 1.0.0 -->
+
 Configures a set of baseline configuration values that can be used in rule definitions.
 Configuration values can be overridden at different scopes.
 
@@ -784,7 +791,7 @@ variables:
 
 ### Execution.AliasReference
 
-:octicons-milestone-24: v2.9.0
+<!-- module:version 2.9.0 -->
 
 Determines how to handle when an alias to a resource is used.
 By default, a warning is generated, however this behavior can be modified by this option.
@@ -842,7 +849,7 @@ variables:
 
 ### Execution.Break
 
-:octicons-milestone-24: v3.0.0
+<!-- module:version 3.0.0 -->
 
 Determines the minimum rule severity level that breaks the pipeline.
 By default, the pipeline will break if a rule of error severity level fails.
@@ -904,7 +911,7 @@ variables:
 
 ### Execution.DuplicateResourceId
 
-:octicons-milestone-24: v2.4.0
+<!-- module:version 2.4.0 -->
 
 Determines how to handle duplicate resources identifiers during execution.
 A duplicate resource identifier may exist if two resources are defined with the same name, ref, or alias.
@@ -966,7 +973,7 @@ variables:
 
 ### Execution.HashAlgorithm
 
-:octicons-milestone-24: v3.0.0
+<!-- module:version 3.0.0 -->
 
 Specifies the hashing algorithm used by the PSRule runtime.
 This hash algorithm is used when generating a resource identifier for an object that does not have a bound name.
@@ -1012,6 +1019,8 @@ variables:
 
 ### Execution.LanguageMode
 
+<!-- module:version 1.0.0 -->
+
 Unless PowerShell has been constrained, full language features of PowerShell are available to use within rule definitions.
 In locked down environments, a reduced set of language features may be desired.
 
@@ -1056,7 +1065,7 @@ variables:
 
 ### Execution.InvariantCulture
 
-:octicons-milestone-24: v2.9.0
+<!-- module:version 2.9.0 -->
 
 Determines how to report when an invariant culture is used.
 By default, a warning is generated, however this behavior can be modified by this option.
@@ -1114,7 +1123,7 @@ variables:
 
 ### Execution.InitialSessionState
 
-:octicons-milestone-24: v2.5.0
+<!-- module:version 2.5.0 -->
 
 Determines how the initial session state for executing PowerShell code is created.
 
@@ -1165,9 +1174,156 @@ variables:
   value: Minimal
 ```
 
+### Execution.NoMatchingRules
+
+<!-- module:version 3.0.0 -->
+
+Determines how to report cases when no rules are found.
+If no sources are found this is probably a configuration error, since PSRule requires at least one rule to execute.
+By default, an error is generated and the pipeline will be stopped, however this behavior can be modified by this option.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Error`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+- `Error` (3) - Abort and throw an error.
+  This is the default.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Execution.NoMatchingRules hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.NoMatchingRules' = 'Error' };
+```
+
+```yaml
+# YAML: Using the execution/noMatchingRules property
+execution:
+  noMatchingRules: Warn
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_NOMATCHINGRULES=Warn
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_NOMATCHINGRULES: Warn
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_NOMATCHINGRULES
+  value: Warn
+```
+
+### Execution.NoValidInput
+
+<!-- module:version 3.0.0 -->
+
+Determines how to report cases when no valid input is found.
+If no input is found this is probably a configuration error, since PSRule requires at least one input to execute rules.
+By default, an error is generated and the pipeline will be stopped, however this behavior can be modified by this option.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Error`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+- `Error` (3) - Abort and throw an error.
+  This is the default.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Execution.NoValidInput hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.NoValidInput' = 'Error' };
+```
+
+```yaml
+# YAML: Using the execution/noValidInput property
+execution:
+  noValidInput: Warn
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_NOVALIDINPUT=Warn
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_NOVALIDINPUT: Warn
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_NOVALIDINPUT
+  value: Warn
+```
+
+### Execution.NoValidSources
+
+<!-- module:version 3.0.0 -->
+
+Determines how to report cases when no valid sources are found.
+If no rules are found this is probably a configuration error, since PSRule requires at least one rule to execute.
+By default, an error is generated and the pipeline will be stopped, however this behavior can be modified by this option.
+
+The following preferences are available:
+
+- `None` (0) - No preference.
+  Inherits the default of `Error`.
+- `Ignore` (1) - Continue to execute silently.
+- `Warn` (2) - Continue to execute but log a warning.
+- `Error` (3) - Abort and throw an error.
+  This is the default.
+- `Debug` (4) - Continue to execute but log a debug message.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the Execution.NoValidSources hashtable key
+$option = New-PSRuleOption -Option @{ 'Execution.NoValidSources' = 'Error' };
+```
+
+```yaml
+# YAML: Using the execution/noValidSources property
+execution:
+  noValidSources: Warn
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_EXECUTION_NOVALIDSOURCES=Warn
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_EXECUTION_NOVALIDSOURCES: Warn
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_EXECUTION_NOVALIDSOURCES
+  value: Warn
+```
+
 ### Execution.RestrictScriptSource
 
-:octicons-milestone-24: v3.0.0
+<!-- module:version 3.0.0 -->
 
 Configures where PowerShell language features (such as rules and conventions) are allowed to run from.
 In locked down environments, running PowerShell scripts from the workspace may not be allowed.
@@ -1228,7 +1384,7 @@ variables:
 
 ### Execution.RuleInconclusive
 
-:octicons-milestone-24: v2.9.0
+<!-- module:version 2.9.0 -->
 
 Determines how to handle rules that generate inconclusive results.
 By default, a warning is generated, however this behavior can be modified by this option.
@@ -1286,7 +1442,7 @@ variables:
 
 ### Execution.SuppressionGroupExpired
 
-:octicons-milestone-24: v2.6.0
+<!-- module:version 2.6.0 -->
 
 Determines how to handle expired suppression groups.
 Regardless of the value, an expired suppression group will be ignored.
@@ -1345,7 +1501,7 @@ variables:
 
 ### Execution.RuleExcluded
 
-:octicons-milestone-24: v2.8.0
+<!-- module:version 2.8.0 -->
 
 Determines how to handle excluded rules.
 Regardless of the value, excluded rules are ignored.
@@ -1404,7 +1560,7 @@ variables:
 
 ### Execution.RuleSuppressed
 
-:octicons-milestone-24: v2.8.0
+<!-- module:version 2.8.0 -->
 
 Determines how to handle suppressed rules.
 Regardless of the value, a suppressed rule is ignored.
@@ -1461,7 +1617,7 @@ variables:
 
 ### Execution.UnprocessedObject
 
-:octicons-milestone-24: v2.9.0
+<!-- module:version 2.9.0 -->
 
 Determines how to report objects that are not processed by any rule.
 By default, a warning is generated, however this behavior can be modified by this option.
@@ -1519,7 +1675,7 @@ variables:
 
 ### Format
 
-:octicons-milestone-24: v3.0.0
+<!-- module:version 3.0.0 -->
 
 Configures each format by setting the following common properties:
 
@@ -1711,7 +1867,7 @@ variables:
 
 ### Input.FileObjects
 
-:octicons-milestone-24: v3.0.0
+<!-- module:version 3.0.0 -->
 
 Determines if file objects are processed by rules.
 This option is for backwards compatibility with PSRule v2.x in cases where file objects are used as input.
@@ -1984,7 +2140,7 @@ variables:
 
 ### Input.IgnoreUnchangedPath
 
-:octicons-milestone-24: v2.5.0
+<!-- module:version 2.5.0 -->
 
 By default, PSRule will process all files within an input path.
 For large repositories, this can result in a large number of files being processed.
@@ -3002,7 +3158,7 @@ variables:
 
 ### Output.JobSummaryPath
 
-:octicons-milestone-24: v2.6.0
+<!-- module:version 2.6.0 -->
 
 Configures the file path a job summary will be written to when using `Assert-PSRule`.
 A job summary is a markdown file that summarizes the results of a job.
@@ -3782,6 +3938,8 @@ execution:
   invariantCulture: Warn
   languageMode: FullLanguage
   initialSessionState: BuiltIn
+  noMatchingRules: Error
+  noValidSources: Error
   restrictScriptSource: Unrestricted
   ruleInconclusive: Warn
   ruleSuppressed: Warn

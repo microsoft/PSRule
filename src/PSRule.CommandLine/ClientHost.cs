@@ -58,6 +58,12 @@ public sealed class ClientHost : HostContext
     /// <param name="errorRecord"></param>
     public override void Error(ErrorRecord errorRecord)
     {
+        if (errorRecord.Exception is PipelineException pipelineException)
+        {
+            // If the error is a pipeline exception, set the last error code.
+            _Context.SetLastErrorCode(pipelineException.EventId);
+        }
+
         _Context.LogError(errorRecord.Exception.Message);
         base.Error(errorRecord);
     }

@@ -40,6 +40,11 @@ For example, to enable JSON and YAML formats:
 The name of a specific baseline to use.
 Currently, only a single baseline can be used during a run.
 
+### `--name`
+
+The name of one or more specific rules to run instead of all rules.
+By default, all rules are evaluated.
+
 ### `--no-restore`
 
 Do not restore modules before running rules.

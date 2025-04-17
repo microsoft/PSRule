@@ -78,6 +78,7 @@ public sealed class RunCommand
             WorkingPath = workingPath,
         };
         var builder = CommandLineBuilder.Assert(operationOptions.Module ?? [], clientContext.Option, sessionContext, file, clientContext.ResolvedModuleVersions);
+        builder.Name(operationOptions.Name);
         builder.Baseline(BaselineOption.FromString(operationOptions.Baseline));
         builder.InputPath(inputPath);
         builder.UnblockPublisher(PUBLISHER);
@@ -92,7 +93,13 @@ public sealed class RunCommand
             if (pipeline.Result.ShouldBreakFromFailure)
                 exitCode = ERROR_BREAK_ON_FAILURE;
         }
+
         exitCode = clientContext.Host.HadErrors || pipeline == null ? ERROR_GENERIC : exitCode;
+        if (clientContext.LastErrorCode.HasValue && clientContext.LastErrorCode.Value != 0)
+        {
+            exitCode = clientContext.LastErrorCode.Value;
+        }
+
         clientContext.LogVerbose("[PSRule][R] -- Completed run with exit code {0}.", exitCode);
         return await Task.FromResult(new RunCommandOutput(exitCode));
     }

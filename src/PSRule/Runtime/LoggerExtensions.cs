@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Definitions;
+using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Resources;
 
@@ -20,6 +21,9 @@ internal static class LoggerExtensions
     private static readonly EventId PSR0009 = new(9, "PSR0009");
     private static readonly EventId PSR0010 = new(10, "PSR0010");
     private static readonly EventId PSR0011 = new(11, "PSR0011");
+    private static readonly EventId PSR0015 = new(15, "PSR0015");
+    private static readonly EventId PSR0016 = new(16, "PSR0016");
+    private static readonly EventId PSR0017 = new(17, "PSR0017");
 
 
     /// <summary>
@@ -188,6 +192,48 @@ internal static class LoggerExtensions
             PSRuleResources.PSR0011,
             capability,
             module
+        );
+    }
+
+    /// <summary>
+    /// PSR0015: No valid sources were found. Please check your working path and configured options.
+    /// </summary>
+    internal static void LogNoValidSources(this ILogger logger, ExecutionActionPreference actionPreference)
+    {
+        logger.Log
+        (
+            actionPreference,
+            PSR0015,
+            new PipelineBuilderException(PSR0015, PSRuleResources.PSR0015),
+            PSRuleResources.PSR0015
+        );
+    }
+
+    /// <summary>
+    /// PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct.
+    /// </summary>
+    internal static void LogNoMatchingRules(this ILogger logger, ExecutionActionPreference actionPreference)
+    {
+        logger.Log
+        (
+            actionPreference,
+            PSR0016,
+            new PipelineBuilderException(PSR0016, PSRuleResources.PSR0016),
+            PSRuleResources.PSR0016
+        );
+    }
+
+    /// <summary>
+    /// PSR0017: No valid input objects or files were found. Please check your working path and configured options.
+    /// </summary>
+    internal static void LogNoValidInput(this ILogger logger, ExecutionActionPreference actionPreference)
+    {
+        logger.Log
+        (
+            actionPreference,
+            PSR0017,
+            new PipelineBuilderException(PSR0017, PSRuleResources.PSR0017),
+            PSRuleResources.PSR0017
         );
     }
 }
