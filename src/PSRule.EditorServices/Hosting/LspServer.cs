@@ -23,9 +23,9 @@ internal sealed class LspServer : IDisposable
     {
         _Server = LanguageServer.PreInit(options =>
         {
+            WithServices(options);
             WithHandlers(options);
             WithEvents(options);
-            WithServices(options);
 
             configure(options);
         });
@@ -72,6 +72,7 @@ internal sealed class LspServer : IDisposable
     private static void WithHandlers(LanguageServerOptions options)
     {
         options.WithHandler<UpgradeDependencyCommandHandler>();
+        options.WithHandler<RunAnalysisCommandHandler>();
     }
 
     /// <summary>

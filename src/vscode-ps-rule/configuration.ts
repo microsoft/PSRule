@@ -46,6 +46,11 @@ export enum TraceLevelPreference {
      * Output verbose information.
      */
     Verbose = 'Verbose',
+
+    /**
+     * Output debug information.
+     */
+    Debug = 'Debug',
 }
 
 /**
@@ -129,9 +134,14 @@ export interface ISetting {
     // languageServerPath: string | undefined;
 
     /**
-     * Determines if verbose logging is enabled for task output.
+     * Determines if diagnostic logging is enabled for task output.
      */
     traceTask: TraceLevelPreference;
+
+    /**
+     * Determines if diagnostic logging is enabled for language server.
+     */
+    traceServer: TraceLevelPreference;
 }
 
 /**
@@ -157,6 +167,7 @@ const globalDefaults: ISetting = {
     ruleBaseline: undefined,
     // languageServerPath: undefined,
     traceTask: TraceLevelPreference.Off,
+    traceServer: TraceLevelPreference.Off,
 };
 
 /**
@@ -272,6 +283,11 @@ export class ConfigurationManager {
         this.current.traceTask = config.get<TraceLevelPreference>(
             'trace.task',
             this.default.traceTask
+        );
+
+        this.current.traceServer = config.get<TraceLevelPreference>(
+            'trace.server',
+            this.default.traceServer
         );
 
         // Clear dirty settings flag

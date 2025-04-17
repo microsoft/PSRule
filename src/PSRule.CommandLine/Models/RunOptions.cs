@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Options;
 using PSRule.Rules;
 
 namespace PSRule.CommandLine.Models;
@@ -11,6 +12,11 @@ namespace PSRule.CommandLine.Models;
 /// </summary>
 public sealed class RunOptions
 {
+    /// <summary>
+    /// An optional workspace path to use with this command.
+    /// </summary>
+    public string? WorkspacePath { get; set; }
+
     /// <summary>
     /// The path to search for rules.
     /// </summary>
@@ -60,4 +66,9 @@ public sealed class RunOptions
     /// The path to write the job summary file.
     /// </summary>
     public string? JobSummaryPath { get; set; }
+
+    /// <summary>
+    /// Determine the rule severity level at which to break the pipeline.
+    /// </summary>
+    public BreakLevel? BreakLevel { get; set; }
 }

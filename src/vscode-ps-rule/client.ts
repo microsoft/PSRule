@@ -8,6 +8,7 @@ import * as lsp from 'vscode-languageclient/node';
 import { logger } from './logger';
 import { ext } from './extension';
 import { getActiveOrFirstWorkspace } from './utils';
+import { configuration, TraceLevelPreference } from './configuration';
 
 export const StartProgressNotificationType = new lsp.ProgressType<string>();
 
@@ -103,10 +104,19 @@ export class PSRuleClient implements vscode.Disposable {
             return undefined;
         }
 
+        // Start the language server with additional arguments based on the configuration.
+        let additionalArgs: string[] = [];
+        if (configuration.get().traceServer === TraceLevelPreference.Verbose) {
+            additionalArgs = ['--verbose'];
+        }
+        else if (configuration.get().traceServer === TraceLevelPreference.Debug) {
+            additionalArgs = ['--verbose', '--debug'];
+        }
+
         const cwd = getActiveOrFirstWorkspace()?.uri.fsPath;
         const serverExecutable: lsp.Executable = {
             command: binPath,
-            args: [languageServerPath, 'listen'],
+            args: [languageServerPath, 'listen', ...additionalArgs],
             options: { cwd },
             transport: lsp.TransportKind.pipe,
         };

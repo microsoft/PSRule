@@ -26,6 +26,11 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 What's changed since pre-release v3.0.0-B0453:
 
+- New features:
+  - **Experimental**: Added support for target scanning in Visual Studio Code by @BernieWhite.
+    [#2641](https://github.com/microsoft/PSRule/issues/2641)
+    - To scan a single file, right-click on the file in explorer or an open editor tab and select `Run scan on path`.
+    - To scan a folder, right-click on the folder in explorer and select `Run scan on path`.
 - Engineering:
   - Added GitHub Actions support to CLI by @BernieWhite.
     [#2824](https://github.com/microsoft/PSRule/issues/2824)

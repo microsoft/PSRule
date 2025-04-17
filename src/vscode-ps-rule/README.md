@@ -69,9 +69,9 @@ Name                                            | Description
 ----                                            | -----------
 `PSRule.codeLens.dependencyManagement`          | Enables Code Lens that displays links to manage dependencies.
 `PSRule.codeLens.ruleDocumentationLinks`        | Enables Code Lens that displays links to rule documentation.
-`PSRule.documentation.path`                     | The path to look for rule documentation. When not set, the path containing rules will be used.
-`PSRule.documentation.localePath`               | The locale path to use for locating rule documentation. The VS Code locale will be used by default.
 `PSRule.documentation.customSnippetPath`        | The path to a file containing a rule documentation snippet. When not set, built-in PSRule snippets will be used.
+`PSRule.documentation.localePath`               | The locale path to use for locating rule documentation. The VS Code locale will be used by default.
+`PSRule.documentation.path`                     | The path to look for rule documentation. When not set, the path containing rules will be used.
 `PSRule.documentation.snippet`                  | The name of a snippet to use when creating new rule documentation. By default, the built-in `Rule Doc` snippet will be used.
 `PSRule.execution.ruleExcluded`                 | Determines how to handle excluded rules. When set to `None`, PSRule will use the default (`Ignore`), unless set by PSRule options.
 `PSRule.execution.ruleSuppressed`               | Determines how to handle suppressed rules. When set to `None`, PSRule will use the default (`Warn`), unless set by PSRule options.
@@ -84,6 +84,7 @@ Name                                            | Description
 `PSRule.options.path`                           | The path specifying a PSRule option file. When not set, the default `ps-rule.yaml` will be used from the current workspace.
 `PSRule.output.as`                              | Configures the output of analysis tasks, either summary or detailed.
 `PSRule.rule.baseline`                          | The name of the default baseline to use for executing rules. This setting can be overridden on individual PSRule tasks.
-`PSRule.trace.task`                             | Determines the level of trace information to output for PSRule tasks.
+`PSRule.trace.task`                             | Determines if diagnostic logging is enabled for task output.
+`PSRule.trace.server`                            | Determines if diagnostic logging is enabled for language server.
 
 [ps-rule.yaml]: https://aka.ms/ps-rule/options

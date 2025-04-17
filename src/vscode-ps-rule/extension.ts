@@ -24,6 +24,7 @@ import { client } from './client';
 import { LanguageClient } from 'vscode-languageclient/node';
 import { DependencyLensProvider } from './dependencyLens';
 import { upgradeDependency } from './commands/upgradeDependency';
+import { runAnalysisForPath } from './commands/runAnalysisForPath';
 
 export let taskManager: PSRuleTaskProvider | undefined;
 export let docLensProvider: DocumentationLensProvider | undefined;
@@ -140,6 +141,11 @@ export class ExtensionManager implements vscode.Disposable {
             this._context.subscriptions.push(
                 vscode.commands.registerCommand('PSRule.runAnalysisTask', () => {
                     runAnalysisTask();
+                })
+            );
+            this._context.subscriptions.push(
+                vscode.commands.registerCommand('PSRule.runAnalysisForPath', (path: vscode.Uri | undefined) => {
+                    runAnalysisForPath(path?.fsPath);
                 })
             );
             this._context.subscriptions.push(
