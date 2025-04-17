@@ -156,7 +156,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'Propagates PowerShell exceptions' {
             $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithException.Rule.ps1') -ErrorVariable outErrors -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
-            $outErrors | Should -Be 'You cannot call a method on a null-valued expression.', 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See http://aka.ms/ps-rule/troubleshooting';
+            $outErrors | Should -Be 'You cannot call a method on a null-valued expression.', 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
         }
 
         It 'Processes rule tags' {
@@ -389,7 +389,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $errorMessages = @($outErrors);
             $errorMessages.Length | Should -Be 1;
             $errorMessages[0] | Should -BeOfType [System.Management.Automation.ErrorRecord];
-            $errorMessages[0].Exception.Message | Should -Be 'PSR0015: No valid sources were found. Please check your working path and configured options. See http://aka.ms/ps-rule/troubleshooting';
+            $errorMessages[0].Exception.Message | Should -Be 'PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting';
         }
     }
 
@@ -1437,19 +1437,19 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             # Check result with no matching rules
             $result = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'NotARule' -ErrorVariable outErrors -ErrorAction SilentlyContinue;
             $result | Should -BeNullOrEmpty;
-            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See http://aka.ms/ps-rule/troubleshooting';
+            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
 
             # Json
             $jsonRuleFilePath = Join-Path -Path $here -ChildPath 'FromFileEmpty.Rule.jsonc'
             $result = $testObject | Invoke-PSRule -Path $jsonRuleFilePath -ErrorVariable outErrors -ErrorAction SilentlyContinue;
             $result | Should -BeNullOrEmpty;
-            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See http://aka.ms/ps-rule/troubleshooting';
+            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
 
             # Yaml
             $yamlRuleFilePath = Join-Path -Path $here -ChildPath 'FromFileEmpty.Rule.yaml'
             $result = $testObject | Invoke-PSRule -Path $yamlRuleFilePath -ErrorVariable outErrors -ErrorAction SilentlyContinue;
             $result | Should -BeNullOrEmpty;
-            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See http://aka.ms/ps-rule/troubleshooting';
+            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
         }
 
         It 'Returns warning with empty path' {
@@ -1461,7 +1461,7 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             $errorMessages = @($outErrors);
             $errorMessages.Length | Should -Be 1;
             $errorMessages[0] | Should -BeOfType [System.Management.Automation.ErrorRecord];
-            $errorMessages[0].Exception.Message | Should -Be 'PSR0015: No valid sources were found. Please check your working path and configured options. See http://aka.ms/ps-rule/troubleshooting';
+            $errorMessages[0].Exception.Message | Should -Be 'PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting';
         }
 
         It 'Returns warning when not processed' {

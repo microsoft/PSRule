@@ -691,7 +691,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PSR0015: No valid sources were found. Please check your working path and configured options. See http://aka.ms/ps-rule/troubleshooting.
+        ///   Looks up a localized string similar to PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting.
         /// </summary>
         internal static string PSR0015 {
             get {
@@ -700,7 +700,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See http://aka.ms/ps-rule/troubleshooting.
+        ///   Looks up a localized string similar to PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting.
         /// </summary>
         internal static string PSR0016 {
             get {
@@ -709,7 +709,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PSR0017: No valid input objects or files were found. Please check your working path and configured options. See http://aka.ms/ps-rule/troubleshooting.
+        ///   Looks up a localized string similar to PSR0017: No valid input objects or files were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting.
         /// </summary>
         internal static string PSR0017 {
             get {
