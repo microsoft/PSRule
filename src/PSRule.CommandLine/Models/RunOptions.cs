@@ -28,6 +28,11 @@ public sealed class RunOptions
     public string[]? Module { get; set; }
 
     /// <summary>
+    /// The name of the rules to run.
+    /// </summary>
+    public string[]? Name { get; set; }
+
+    /// <summary>
     /// A baseline to use.
     /// </summary>
     public string? Baseline { get; set; }

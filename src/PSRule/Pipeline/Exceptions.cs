@@ -4,6 +4,7 @@
 using System.Management.Automation;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
@@ -79,10 +80,27 @@ public sealed class PipelineBuilderException : PipelineException
     /// <summary>
     /// Creates a pipeline builder exception.
     /// </summary>
+    /// <param name="eventId">An event identifier for the exception.</param>
+    /// <param name="message">The detail of the exception.</param>
+    public PipelineBuilderException(EventId eventId, string message)
+        : base(eventId, message) { }
+
+    /// <summary>
+    /// Creates a pipeline builder exception.
+    /// </summary>
     /// <param name="message">The detail of the exception.</param>
     /// <param name="innerException">A nested exception that caused the issue.</param>
     public PipelineBuilderException(string message, Exception innerException)
         : base(message, innerException) { }
+
+    /// <summary>
+    /// Creates a pipeline builder exception.
+    /// </summary>
+    /// <param name="eventId">An event identifier for the exception.</param>
+    /// <param name="message">The detail of the exception.</param>
+    /// <param name="innerException">A nested exception that caused the issue.</param>
+    public PipelineBuilderException(EventId eventId, string message, Exception innerException)
+        : base(eventId, message, innerException) { }
 
     private PipelineBuilderException(SerializationInfo info, StreamingContext context)
         : base(info, context) { }

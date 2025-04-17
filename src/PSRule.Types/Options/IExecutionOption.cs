@@ -46,6 +46,33 @@ public interface IExecutionOption : IOption
     SessionState InitialSessionState { get; }
 
     /// <summary>
+    /// Determines how to report cases when no rules are found.
+    /// By default, an error is generated.
+    /// When set to Warn, a warning is generated.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    ExecutionActionPreference NoMatchingRules { get; }
+
+    /// <summary>
+    /// Determines how to report cases when no valid input is found.
+    /// By default, an error is generated.
+    /// When set to Warn, a warning is generated.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    ExecutionActionPreference NoValidInput { get; }
+
+    /// <summary>
+    /// Determines how to report cases when no valid sources are found.
+    /// By default, an error is generated.
+    /// When set to Warn, a warning is generated.
+    /// When set to Debug, a message is written to the debug log.
+    /// When set to Ignore, no output will be displayed.
+    /// </summary>
+    ExecutionActionPreference NoValidSources { get; }
+
+    /// <summary>
     /// Configures where to allow PowerShell language features (such as rules and conventions) to run from.
     /// The default is <see cref="RestrictScriptSource.Unrestricted"/>.
     /// </summary>

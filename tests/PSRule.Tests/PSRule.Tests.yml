@@ -88,6 +88,9 @@ execution:
   restrictScriptSource: ModuleOnly
   invariantCulture: Ignore
   initialSessionState: Minimal
+  noMatchingRules: Warn
+  noValidInput: Warn
+  noValidSources: Warn
   suppressionGroupExpired: Debug
   ruleExcluded: Warn
   ruleInconclusive: Ignore

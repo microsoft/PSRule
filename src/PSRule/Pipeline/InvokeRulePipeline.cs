@@ -5,8 +5,10 @@ using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Host;
+using PSRule.Options;
 using PSRule.Pipeline.Runs;
 using PSRule.Rules;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
@@ -22,6 +24,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     private SuppressionFilter _SuppressionFilter;
     private SuppressionFilter _SuppressionGroupFilter;
     private readonly List<InvokeResult> _Completed;
+    private readonly ExecutionActionPreference _ExecutionNoValidInputOption;
 
     // Track whether Dispose has been called.
     private bool _Disposed;
@@ -32,12 +35,15 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
         _RuleGraph = HostHelper.GetRuleBlockGraph(Context);
         RuleCount = _RuleGraph.Count;
         if (RuleCount == 0)
-            Context.WarnRuleNotFound();
+        {
+            context.Writer.LogNoMatchingRules(context.Option.Execution?.NoMatchingRules ?? ExecutionOption.Default.NoMatchingRules!.Value);
+        }
 
         _Outcome = outcome;
         _IsSummary = context.Option.Output.As.Value == ResultFormat.Summary;
         _Summary = _IsSummary ? [] : null;
         _Completed = [];
+        _ExecutionNoValidInputOption = context.Option.Execution?.NoValidInput ?? ExecutionOption.Default.NoValidInput!.Value;
     }
 
     public int RuleCount { get; private set; }
@@ -84,6 +90,11 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     /// <inheritdoc/>
     public override void End()
     {
+        if (_Completed.Count == 0)
+        {
+            Context.Writer.LogNoValidInput(_ExecutionNoValidInputOption);
+        }
+
         if (_Completed.Count > 0)
         {
             var completed = _Completed.ToArray();

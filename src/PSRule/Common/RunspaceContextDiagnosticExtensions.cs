@@ -22,14 +22,6 @@ internal static class RunspaceContextDiagnosticExtensions
         context.Writer.WriteWarning(PSRuleResources.PropertyObsolete, variableName, propertyName);
     }
 
-    internal static void WarnRuleNotFound(this RunspaceContext context)
-    {
-        if (context.Writer == null || !context.Writer.ShouldWriteWarning())
-            return;
-
-        context.Writer.WriteWarning(PSRuleResources.RuleNotFound);
-    }
-
     /// <summary>
     /// The option '{0}' is deprecated and will be removed with PSRule v3. See http://aka.ms/ps-rule/deprecations for more detail.
     /// </summary>

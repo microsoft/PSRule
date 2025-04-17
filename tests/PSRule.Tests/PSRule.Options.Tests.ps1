@@ -1106,6 +1106,129 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
+    Context 'Read Execution.NoMatchingRules' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.NoMatchingRules | Should -Be 'Error'
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.NoMatchingRules' = 'warn' };
+            $option.Execution.NoMatchingRules | Should -Be 'Warn';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.NoMatchingRules' = 'Warn' };
+            $option.Execution.NoMatchingRules | Should -Be 'Warn';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.NoMatchingRules | Should -Be 'Warn';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_NOMATCHINGRULES = 'warn';
+                $option = New-PSRuleOption;
+                $option.Execution.NoMatchingRules | Should -Be 'Warn';
+
+                $Env:PSRULE_EXECUTION_NOMATCHINGRULES = 'Warn';
+                $option = New-PSRuleOption;
+                $option.Execution.NoMatchingRules | Should -Be 'Warn';
+
+                # With int
+                $Env:PSRULE_EXECUTION_NOMATCHINGRULES = '2';
+                $option = New-PSRuleOption;
+                $option.Execution.NoMatchingRules | Should -Be 'Warn';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_NOMATCHINGRULES' -Force;
+            }
+        }
+    }
+
+    Context 'Read Execution.NoValidInput' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.NoValidInput | Should -Be 'Error'
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.NoValidInput' = 'warn' };
+            $option.Execution.NoValidInput | Should -Be 'Warn';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.NoValidInput' = 'Warn' };
+            $option.Execution.NoValidInput | Should -Be 'Warn';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.NoValidInput | Should -Be 'Warn';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_NOVALIDINPUT = 'warn';
+                $option = New-PSRuleOption;
+                $option.Execution.NoValidInput | Should -Be 'Warn';
+
+                $Env:PSRULE_EXECUTION_NOVALIDINPUT = 'Warn';
+                $option = New-PSRuleOption;
+                $option.Execution.NoValidInput | Should -Be 'Warn';
+
+                # With int
+                $Env:PSRULE_EXECUTION_NOVALIDINPUT = '2';
+                $option = New-PSRuleOption;
+                $option.Execution.NoValidInput | Should -Be 'Warn';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_NOVALIDINPUT' -Force;
+            }
+        }
+    }
+
+    Context 'Read Execution.NoValidSources' {
+        It 'from default' {
+            $option = New-PSRuleOption -Default;
+            $option.Execution.NoValidSources | Should -Be 'Error'
+        }
+
+        It 'from Hashtable' {
+            $option = New-PSRuleOption -Option @{ 'Execution.NoValidSources' = 'warn' };
+            $option.Execution.NoValidSources | Should -Be 'Warn';
+
+            $option = New-PSRuleOption -Option @{ 'Execution.NoValidSources' = 'Warn' };
+            $option.Execution.NoValidSources | Should -Be 'Warn';
+        }
+
+        It 'from YAML' {
+            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
+            $option.Execution.NoValidSources | Should -Be 'Warn';
+        }
+
+        It 'from Environment' {
+            try {
+                # With enum
+                $Env:PSRULE_EXECUTION_NOVALIDSOURCES = 'warn';
+                $option = New-PSRuleOption;
+                $option.Execution.NoValidSources | Should -Be 'Warn';
+
+                $Env:PSRULE_EXECUTION_NOVALIDSOURCES = 'Warn';
+                $option = New-PSRuleOption;
+                $option.Execution.NoValidSources | Should -Be 'Warn';
+
+                # With int
+                $Env:PSRULE_EXECUTION_NOVALIDSOURCES = '2';
+                $option = New-PSRuleOption;
+                $option.Execution.NoValidSources | Should -Be 'Warn';
+            }
+            finally {
+                Remove-Item 'Env:PSRULE_EXECUTION_NOVALIDSOURCES' -Force;
+            }
+        }
+    }
+
     Context 'Read Execution.UnprocessedObject' {
         It 'from default' {
             $option = New-PSRuleOption -Default;

@@ -156,7 +156,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'Propagates PowerShell exceptions' {
             $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithException.Rule.ps1') -ErrorVariable outErrors -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
-            $outErrors | Should -Be 'You cannot call a method on a null-valued expression.';
+            $outErrors | Should -Be 'You cannot call a method on a null-valued expression.', 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
         }
 
         It 'Processes rule tags' {
@@ -385,11 +385,11 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             if (!(Test-Path -Path $emptyPath)) {
                 $Null = New-Item -Path $emptyPath -ItemType Directory -Force;
             }
-            $Null = $testObject | Invoke-PSRule -Path $emptyPath -WarningVariable outWarnings -WarningAction SilentlyContinue;
-            $warningMessages = $outwarnings.ToArray();
-            $warningMessages.Length | Should -Be 1;
-            $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-            $warningMessages[0].Message | Should -Be 'No matching .Rule.ps1 files were found. Rule definitions should be saved into script files with the .Rule.ps1 extension.';
+            $Null = $testObject | Invoke-PSRule -Path $emptyPath -ErrorVariable outErrors -ErrorAction SilentlyContinue;
+            $errorMessages = @($outErrors);
+            $errorMessages.Length | Should -Be 1;
+            $errorMessages[0] | Should -BeOfType [System.Management.Automation.ErrorRecord];
+            $errorMessages[0].Exception.Message | Should -Be 'PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting';
         }
     }
 
@@ -925,20 +925,28 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             )
 
             # Single file
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles[0] -ErrorVariable outErrors -ErrorAction SilentlyContinue);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles[0] -ErrorVariable outErrors -ErrorAction SilentlyContinue -Option @{
+                'Execution.NoMatchingRules' = 'Ignore';
+                'Execution.NoValidInput' = 'Ignore';
+                'Execution.NoValidSources' = 'Ignore';
+            });
             $result | Should -BeNullOrEmpty;
             $records = @($outErrors);
             $records | Should -Not -BeNullOrEmpty;
-            $records.Length | Should -Be 1;
             $records.CategoryInfo.Category | Should -BeIn 'ObjectNotFound';
+            $records.Length | Should -Be 1;
 
             # Multiple files
-            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles -ErrorVariable outErrors -ErrorAction SilentlyContinue);
+            $result = @(Invoke-PSRule -Path $ruleFilePath -Name 'WithFormat' -InputPath $inputFiles -ErrorVariable outErrors -ErrorAction SilentlyContinue -Option @{
+                'Execution.NoMatchingRules' = 'Ignore';
+                'Execution.NoValidInput' = 'Ignore';
+                'Execution.NoValidSources' = 'Ignore';
+            });
             $result | Should -BeNullOrEmpty;
             $records = @($outErrors);
             $records | Should -Not -BeNullOrEmpty;
-            $records.Length | Should -Be 2;
             $records.CategoryInfo.Category | Should -BeIn 'ObjectNotFound';
+            $records.Length | Should -Be 2;
         }
     }
 
@@ -1028,7 +1036,12 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         # Check that '[Console]::WriteLine('Should fail')' is not executed
         It 'Should fail to execute blocked code' {
-            $option = @{ 'execution.mode' = 'ConstrainedLanguage' };
+            $option = @{
+                'Execution.Mode' = 'ConstrainedLanguage';
+                'Execution.NoMatchingRules' = 'Ignore';
+                'Execution.NoValidInput' = 'Ignore';
+                'Execution.NoValidSources' = 'Ignore';
+            };
             { $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'ConstrainedTest2' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
             { $Null = $testObject | Invoke-PSRule -Path $ruleFilePath -Name 'ConstrainedTest3' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
         }
@@ -1412,7 +1425,7 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
         }
 
         It 'Returns warnings on inconclusive' {
-            # Check result with an inconculsive rule
+            # Check result with an inconclusive rule
             $result = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'FromFile3' -WarningVariable outWarnings -WarningAction SilentlyContinue;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.Boolean;
@@ -1422,21 +1435,21 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
 
         It 'Returns warnings on no rules' {
             # Check result with no matching rules
-            $result = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'NotARule' -WarningVariable outWarnings -WarningAction SilentlyContinue;
+            $result = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'NotARule' -ErrorVariable outErrors -ErrorAction SilentlyContinue;
             $result | Should -BeNullOrEmpty;
-            $outWarnings | Should -Be 'Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.';
+            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
 
             # Json
             $jsonRuleFilePath = Join-Path -Path $here -ChildPath 'FromFileEmpty.Rule.jsonc'
-            $result = $testObject | Invoke-PSRule -Path $jsonRuleFilePath -WarningVariable outWarning -WarningAction SilentlyContinue
+            $result = $testObject | Invoke-PSRule -Path $jsonRuleFilePath -ErrorVariable outErrors -ErrorAction SilentlyContinue;
             $result | Should -BeNullOrEmpty;
-            $outWarnings | Should -Be 'Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.';
+            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
 
             # Yaml
             $yamlRuleFilePath = Join-Path -Path $here -ChildPath 'FromFileEmpty.Rule.yaml'
-            $result = $testObject | Invoke-PSRule -Path $yamlRuleFilePath -WarningVariable outWarning -WarningAction SilentlyContinue
+            $result = $testObject | Invoke-PSRule -Path $yamlRuleFilePath -ErrorVariable outErrors -ErrorAction SilentlyContinue;
             $result | Should -BeNullOrEmpty;
-            $outWarnings | Should -Be 'Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.';
+            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
         }
 
         It 'Returns warning with empty path' {
@@ -1444,11 +1457,11 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             if (!(Test-Path -Path $emptyPath)) {
                 $Null = New-Item -Path $emptyPath -ItemType Directory -Force;
             }
-            $Null = $testObject | Test-PSRuleTarget -Path $emptyPath -WarningVariable outWarnings -WarningAction SilentlyContinue;
-            $warningMessages = $outwarnings.ToArray();
-            $warningMessages.Length | Should -Be 1;
-            $warningMessages[0] | Should -BeOfType [System.Management.Automation.WarningRecord];
-            $warningMessages[0].Message | Should -Be 'No matching .Rule.ps1 files were found. Rule definitions should be saved into script files with the .Rule.ps1 extension.';
+            $Null = $testObject | Test-PSRuleTarget -Path $emptyPath -ErrorVariable outErrors -ErrorAction SilentlyContinue;
+            $errorMessages = @($outErrors);
+            $errorMessages.Length | Should -Be 1;
+            $errorMessages[0] | Should -BeOfType [System.Management.Automation.ErrorRecord];
+            $errorMessages[0].Exception.Message | Should -Be 'PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting';
         }
 
         It 'Returns warning when not processed' {
@@ -1534,7 +1547,12 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
 
         # Check that '[Console]::WriteLine('Should fail')' is not executed
         It 'Should fail to execute blocked code' {
-            $option = @{ 'execution.mode' = 'ConstrainedLanguage' };
+            $option = @{
+                'Execution.Mode' = 'ConstrainedLanguage';
+                'Execution.NoMatchingRules' = 'Ignore';
+                'Execution.NoValidInput' = 'Ignore';
+                'Execution.NoValidSources' = 'Ignore';
+            };
             { $Null = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'ConstrainedTest2' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
             { $Null = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'ConstrainedTest3' -Option $option -ErrorAction Stop } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
         }
@@ -1783,7 +1801,12 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
 
         # Check that '[Console]::WriteLine('Should fail')' is not executed
         It 'Should fail to execute blocked code' {
-            $option = @{ 'execution.mode' = 'ConstrainedLanguage' };
+            $option = @{
+                'Execution.Mode' = 'ConstrainedLanguage';
+                'Execution.NoMatchingRules' = 'Ignore';
+                'Execution.NoValidInput' = 'Ignore';
+                'Execution.NoValidSources' = 'Ignore';
+            };
             { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest2' -Option $option -ErrorAction Stop 6>&1 } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
             { $Null = $testObject | Assert-PSRule -Path $ruleFilePath -Name 'ConstrainedTest3' -Option $option -ErrorAction Stop 6>&1 } | Should -Throw 'Cannot invoke method. Method invocation is supported only on core types in this language mode.';
         }
@@ -2596,19 +2619,23 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
     Context 'Parsing' {
         BeforeAll {
             $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileParseError.Rule.ps1';
-            $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithNestedRule;
+            $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name WithNestedRule -Option @{
+                'Execution.NoMatchingRules' = 'Ignore';
+                'Execution.NoValidInput' = 'Ignore';
+                'Execution.NoValidSources' = 'Ignore';
+            };
             $messages = @($outError);
         }
 
         It 'Error on nested rules' {
-            $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidRuleNesting' });
+            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidRuleNesting' });
             $filteredResult.Length | Should -Be 1;
             $filteredResult[0].Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike 'Rule nesting was detected for rule at *';
         }
 
         It 'Error on missing parameter' {
-            $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.RuleParameterNotFound' });
+            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSRule.Parse.RuleParameterNotFound' });
             $filteredResult.Length | Should -Be 2;
             $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Name'' on rule at * line *';
@@ -2616,14 +2643,14 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
         }
 
         It 'Error on invalid ErrorAction' {
-            $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidErrorAction' });
+            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidErrorAction' });
             $filteredResult.Length | Should -Be 1;
             $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike 'An invalid ErrorAction (*) was specified for rule at *';
         }
 
         It 'Error on invalid name' {
-            $filteredResult = @($messages | Where-Object { $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidResourceName' });
+            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidResourceName' });
             $filteredResult.Length | Should -Be 1;
             $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike "The resource name '' is not valid at * line 16. Each resource name must be between 3-128 characters in length, must start and end with a letter or number, and only contain letters, numbers, hyphens, dots, or underscores. See https://aka.ms/ps-rule/naming for more information.";
@@ -2696,11 +2723,15 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
 
         It 'Error on $null DependsOn' {
             $ruleFilePath = Join-Path -Path $here -ChildPath 'FromFileInvalid.Rule.ps1';
-            $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name InvalidRule1, InvalidRule2;
+            $Null = $testObject | Invoke-PSRule @testParams -Path $ruleFilePath -Name InvalidRule1, InvalidRule2  -Option @{
+                'Execution.NoMatchingRules' = 'Ignore';
+                'Execution.NoValidInput' = 'Ignore';
+                'Execution.NoValidSources' = 'Ignore';
+            }
             $messages = @($outError);
-            $messages.Length | Should -Be 2;
             $messages.Exception | Should -BeOfType System.Management.Automation.ParameterBindingException;
             $messages.Exception.Message | Should -BeLike '*The argument is null*';
+            $messages.Length | Should -Be 2;
         }
 
         It 'Error on missing dependency' {

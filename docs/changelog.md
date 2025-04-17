@@ -31,6 +31,9 @@ What's changed since pre-release v3.0.0-B0453:
     [#2641](https://github.com/microsoft/PSRule/issues/2641)
     - To scan a single file, right-click on the file in explorer or an open editor tab and select `Run scan on path`.
     - To scan a folder, right-click on the folder in explorer and select `Run scan on path`.
+  - Added support and by default error if rules or input is not found during a run by @BernieWhite.
+    [#1778](https://github.com/microsoft/PSRule/issues/1778)
+    - Added options for `Execution.NoMatchingRules`, `Execution.NoValidInput`, and `Execution.NoValidSources`.
 - Engineering:
   - Added GitHub Actions support to CLI by @BernieWhite.
     [#2824](https://github.com/microsoft/PSRule/issues/2824)

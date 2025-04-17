@@ -31,14 +31,6 @@ public static class PipelineWriterExtensions
         logger.WriteDebug(new DebugRecord(message));
     }
 
-    internal static void WarnRulePathNotFound(this IPipelineWriter writer)
-    {
-        if (writer == null || !writer.ShouldWriteWarning())
-            return;
-
-        writer.WriteWarning(PSRuleResources.RulePathNotFound);
-    }
-
     internal static void WriteWarning(this IPipelineWriter writer, string message, params object[] args)
     {
         if (writer == null || !writer.ShouldWriteWarning() || string.IsNullOrEmpty(message))

@@ -290,15 +290,9 @@
   <data name="RuleSuppressionGroupCount" xml:space="preserve">
     <value>{0} rule/s were suppressed by suppression group '{1}' for '{2}'.</value>
   </data>
-  <data name="RuleNotFound" xml:space="preserve">
-    <value>Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.</value>
-  </data>
   <data name="RuleParameterNotFound" xml:space="preserve">
     <value>Could not find required rule definition parameter '{0}' on rule at {1}.</value>
     <comment>Occurs when a rule definition is missing a mandatory parameter.</comment>
-  </data>
-  <data name="RulePathNotFound" xml:space="preserve">
-    <value>No matching .Rule.ps1 files were found. Rule definitions should be saved into script files with the .Rule.ps1 extension.</value>
   </data>
   <data name="RuleStackTrace" xml:space="preserve">
     <value>at Rule '{0}', {1}: line {2}</value>
@@ -440,6 +434,15 @@
     <value>PSR0013: Completed building chain using '{0}' emitters.</value>
   </data>
   <data name="PSR0014" xml:space="preserve">
-    <value>Failed to create runtime factory '{0}' from '{1}'. {2}</value>
+    <value>PSR0014: Failed to create runtime factory '{0}' from '{1}'. {2}</value>
+  </data>
+  <data name="PSR0016" xml:space="preserve">
+    <value>PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting</value>
+  </data>
+  <data name="PSR0015" xml:space="preserve">
+    <value>PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting</value>
+  </data>
+  <data name="PSR0017" xml:space="preserve">
+    <value>PSR0017: No valid input objects or files were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting</value>
   </data>
 </root>

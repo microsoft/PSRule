@@ -5,6 +5,7 @@ using System.CommandLine.Invocation;
 using PSRule.Configuration;
 using PSRule.Options;
 using PSRule.Pipeline.Dependencies;
+using PSRule.Runtime;
 
 namespace PSRule.CommandLine;
 
@@ -86,6 +87,11 @@ public sealed class ClientContext
     /// </summary>
     public string? WorkingPath { get; }
 
+    /// <summary>
+    /// The last error code for the current context.
+    /// </summary>
+    public int? LastErrorCode { get; private set; }
+
     private static PSRuleOption GetOption(ClientHost host, string? path)
     {
         PSRuleOption.UseHostContext(host);
@@ -94,5 +100,15 @@ public sealed class ClientContext
         //option.Input.Format = InputFormat.File;
         option.Output.Style ??= OutputStyle.Client;
         return option;
+    }
+
+    /// <summary>
+    /// Set the last error code for the current context.
+    /// </summary>
+    internal void SetLastErrorCode(EventId? eventId)
+    {
+        if (eventId == null) return;
+
+        LastErrorCode = eventId.Value.Id;
     }
 }

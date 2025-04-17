@@ -557,6 +557,56 @@
           ],
           "default": "FullLanguage"
         },
+        "initialSessionState": {
+          "type": "string",
+          "title": "Initial Session State",
+          "description": "Determines how the initial session state for executing PowerShell code is created. The default is BuiltIn.",
+          "markdownDescription": "Determines how the initial session state for executing PowerShell code is created. The default is `BuiltIn`.\n- When set to `BuiltIn` all built-in cmdlets are loaded.\n- When set to `Minimal` only cmdlets for hosting PowerShell will be loaded.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninitialsessionstate)",
+          "enum": [
+            "BuiltIn",
+            "Minimal"
+          ],
+          "default": "BuiltIn"
+        },
+        "noMatchingRules": {
+          "type": "string",
+          "title": "No matching rules",
+          "description": "Determines how to report cases when no rules are found. By default, an error is reported. When set to Warn, a warning is generated. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed.",
+          "markdownDescription": "Determines how to report cases when no rules are found. By default, an error is reported.\n\n- When set to `Warn`, a warning is generated.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionunprocessedobject)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Error"
+        },
+        "noValidInput": {
+          "type": "string",
+          "title": "No valid input",
+          "description": "Determines how to report cases when no valid input is found. By default, an error is reported. When set to Warn, a warning is generated. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed.",
+          "markdownDescription": "Determines how to report cases when no valid input is found. By default, an error is reported.\n\n- When set to `Warn`, a warning is generated.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionunprocessedobject)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Error"
+        },
+        "noValidSources": {
+          "type": "string",
+          "title": "No valid sources",
+          "description": "Determines how to report cases when no valid sources are found. By default, an error is reported. When set to Warn, a warning is generated. When set to Debug, a message is written to the debug log. When set to Ignore, no output will be displayed.",
+          "markdownDescription": "Determines how to report cases when no valid sources are found. By default, an error is reported.\n\n- When set to `Warn`, a warning is generated.\n- When set to `Debug`, a message is written to the debug log.\n- When set to `Ignore`, no output will be displayed.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executionunprocessedobject)",
+          "enum": [
+            "Ignore",
+            "Warn",
+            "Error",
+            "Debug"
+          ],
+          "default": "Error"
+        },
         "restrictScriptSource": {
           "type": "string",
           "title": "Restrict Script Source",
@@ -568,17 +618,6 @@
             "DisablePowerShell"
           ],
           "default": "Unrestricted"
-        },
-        "initialSessionState": {
-          "type": "string",
-          "title": "Initial Session State",
-          "description": "Determines how the initial session state for executing PowerShell code is created. The default is BuiltIn.",
-          "markdownDescription": "Determines how the initial session state for executing PowerShell code is created. The default is `BuiltIn`.\n- When set to `BuiltIn` all built-in cmdlets are loaded.\n- When set to `Minimal` only cmdlets for hosting PowerShell will be loaded.\n\n[See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#executioninitialsessionstate)",
-          "enum": [
-            "BuiltIn",
-            "Minimal"
-          ],
-          "default": "BuiltIn"
         },
         "suppressionGroupExpired": {
           "type": "string",

@@ -682,11 +682,38 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to create runtime factory &apos;{0}&apos; from &apos;{1}&apos;. {2}.
+        ///   Looks up a localized string similar to PSR0014: Failed to create runtime factory &apos;{0}&apos; from &apos;{1}&apos;. {2}.
         /// </summary>
         internal static string PSR0014 {
             get {
                 return ResourceManager.GetString("PSR0014", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting.
+        /// </summary>
+        internal static string PSR0015 {
+            get {
+                return ResourceManager.GetString("PSR0015", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting.
+        /// </summary>
+        internal static string PSR0016 {
+            get {
+                return ResourceManager.GetString("PSR0016", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSR0017: No valid input objects or files were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting.
+        /// </summary>
+        internal static string PSR0017 {
+            get {
+                return ResourceManager.GetString("PSR0017", resourceCulture);
             }
         }
         
@@ -781,29 +808,11 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not find a matching rule. Please check that Path, Name and Tag parameters are correct..
-        /// </summary>
-        internal static string RuleNotFound {
-            get {
-                return ResourceManager.GetString("RuleNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Could not find required rule definition parameter &apos;{0}&apos; on rule at {1}..
         /// </summary>
         internal static string RuleParameterNotFound {
             get {
                 return ResourceManager.GetString("RuleParameterNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No matching .Rule.ps1 files were found. Rule definitions should be saved into script files with the .Rule.ps1 extension..
-        /// </summary>
-        internal static string RulePathNotFound {
-            get {
-                return ResourceManager.GetString("RulePathNotFound", resourceCulture);
             }
         }
         

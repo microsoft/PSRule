@@ -125,6 +125,58 @@ To define a baseline group, see [Baseline.Group][4] option.
 
 This error is caused when you attempt to reference a resource such as a baseline, rule, or selector which has not been defined.
 
+### PSR0015 - No valid sources where found
+
+!!! Error
+
+    PSR0015: No valid sources were found. Please check your working path and configured options.
+
+When this message occurs, PSRule didn't find any `*.Rule.*` files in the specified path or module.
+These files contain the rules to be evaluated.
+
+If no sources are found this is probably a configuration error, since PSRule requires at least one rule to execute.
+
+The `Path` and `Module` arguments are used to specify the location of the rules.
+By default, PSRule will look for rules in the `.ps-rule/` directory when the `Path` arguments is not set.
+
+This may occur when:
+
+- You are running PSRule from a different working directory than expected.
+  For example, if you are running from a sub-directory of the repository, the `.ps-rule/` directory may not be found.
+- Using the `Path` argument to specify a path that does not exist or is empty.
+- Using the `Module` argument to specify a module that does not exist or is empty.
+- The rule files are not named correctly.
+  PSRule only looks for files with the `.Rule.ps1`, `.Rule.yaml`, or `.Rule.jsonc` suffix.
+  On case-sensitive file systems such as Linux, this file suffix is case-sensitive.
+
+### PSR0016 - Could not find a matching rule
+
+!!! Error
+
+    PSR0016: Could not find a matching rule. Please check that Path, Name and Tag parameters are correct.
+
+When this message occurs, PSRule loaded sources but didn't find any rules that matched that should be evaluated.
+If no rules are found this is probably a configuration error, since PSRule requires at least one rule to execute.
+
+This may occur when:
+
+- The `Path` or `Module` arguments are configured to a path or module that does not exist or does not contain any rules.
+- A baseline or `ps-rule.yaml` file is configured with `name`, `tag`, or `label` properties that do not match any rules.
+
+### PSR0017 - No valid input
+
+!!! Error
+
+    PSR0017: No valid input objects or files were found. Please check your working path and configured options.
+
+When this message occurs, PSRule didn't find any input objects or files in the specified path or module.
+if no input is found this is probably a configuration error, since PSRule requires at least one input to evaluate any rules.
+
+This may occur when:
+
+- You are running PSRule from a different working directory than expected and the input files are not found.
+- The input files your are expecting to evaluate are in a path that has been excluded by `Input.PathIgnore` or `.gitignore`.
+
 ## CLI exit codes
 
 The following table lists exit codes that may be returned by the PSRule CLI.
