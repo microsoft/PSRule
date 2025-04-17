@@ -29,6 +29,8 @@ What's changed since pre-release v3.0.0-B0453:
 - Engineering:
   - Added GitHub Actions support to CLI by @BernieWhite.
     [#2824](https://github.com/microsoft/PSRule/issues/2824)
+  - Bump vscode engine to v1.99.1.
+    [#2858](https://github.com/microsoft/PSRule/pull/2858)
 
 ## v3.0.0-B0453 (pre-release)
 
