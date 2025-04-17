@@ -28,12 +28,13 @@ public sealed class RunCommand
     /// <summary>
     /// Call <c>run</c>.
     /// </summary>
-    public static async Task<int> RunAsync(RunOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
+    public static async Task<RunCommandOutput> RunAsync(RunOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
     {
         var exitCode = 0;
+        var workingPath = operationOptions.WorkspacePath ?? Environment.GetWorkingPath();
         var file = LockFile.Read(null);
         var inputPath = operationOptions.InputPath == null || operationOptions.InputPath.Length == 0 ?
-            [Environment.GetWorkingPath()] : operationOptions.InputPath;
+            [workingPath] : operationOptions.InputPath;
 
         if (operationOptions.Path != null)
         {
@@ -43,6 +44,11 @@ public sealed class RunCommand
         if (operationOptions.Outcome != null && operationOptions.Outcome.Value != Rules.RuleOutcome.None)
         {
             clientContext.Option.Output.Outcome = operationOptions.Outcome;
+        }
+
+        if (operationOptions.BreakLevel != null)
+        {
+            clientContext.Option.Execution.Break = operationOptions.BreakLevel.Value;
         }
 
         if (operationOptions.OutputPath != null && operationOptions.OutputFormat != null && operationOptions.OutputFormat.Value != OutputFormat.None)
@@ -67,7 +73,11 @@ public sealed class RunCommand
         }
 
         // Build command.
-        var builder = CommandLineBuilder.Assert(operationOptions.Module ?? [], clientContext.Option, clientContext.Host, file, clientContext.ResolvedModuleVersions);
+        var sessionContext = new SessionContext(clientContext.Host)
+        {
+            WorkingPath = workingPath,
+        };
+        var builder = CommandLineBuilder.Assert(operationOptions.Module ?? [], clientContext.Option, sessionContext, file, clientContext.ResolvedModuleVersions);
         builder.Baseline(BaselineOption.FromString(operationOptions.Baseline));
         builder.InputPath(inputPath);
         builder.UnblockPublisher(PUBLISHER);
@@ -84,6 +94,6 @@ public sealed class RunCommand
         }
         exitCode = clientContext.Host.HadErrors || pipeline == null ? ERROR_GENERIC : exitCode;
         clientContext.LogVerbose("[PSRule][R] -- Completed run with exit code {0}.", exitCode);
-        return await Task.FromResult(exitCode);
+        return await Task.FromResult(new RunCommandOutput(exitCode));
     }
 }

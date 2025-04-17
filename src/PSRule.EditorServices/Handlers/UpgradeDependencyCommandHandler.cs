@@ -25,7 +25,7 @@ public sealed class UpgradeDependencyCommandHandler(ClientContext context, ISeri
     private readonly ILogger _Logger = logger;
 
     /// <summary>
-    /// Handle the upgradeDependency command.
+    /// Handle the <c>upgradeDependency</c> command.
     /// </summary>
     public override async Task<UpgradeDependencyCommandHandlerOutput> Handle(UpgradeDependencyCommandHandlerInput input, CancellationToken cancellationToken)
     {

@@ -25,5 +25,6 @@ suite('ConfigurationManager tests', () => {
         assert.equal(config.get().notificationsShowPowerShellExtension, true);
         assert.equal(config.get().ruleBaseline, undefined);
         assert.equal(config.get().traceTask, false);
+        assert.equal(config.get().traceServer, false);
     });
 });

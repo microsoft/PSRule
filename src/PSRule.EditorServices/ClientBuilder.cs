@@ -199,7 +199,8 @@ internal sealed class ClientBuilder
                 invocation.Console.WriteLine($"VERBOSE: Using cache path: {client.CachePath}");
             }
 
-            invocation.ExitCode = await RunCommand.RunAsync(option, client);
+            var result = await RunCommand.RunAsync(option, client);
+            invocation.ExitCode = result.ExitCode;
         });
         Command.AddCommand(cmd);
     }

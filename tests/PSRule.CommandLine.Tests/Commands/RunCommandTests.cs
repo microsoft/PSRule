@@ -19,8 +19,8 @@ public sealed class RunCommandTests : BaseTests
             workingPath: GetSourcePath("../../../../../")
         );
 
-        var exitCode = await RunCommand.RunAsync(OperationOptions(), context);
-        Assert.Equal(0, exitCode);
+        var output = await RunCommand.RunAsync(OperationOptions(), context);
+        Assert.Equal(0, output.ExitCode);
     }
 
     #region Helper methods

@@ -92,6 +92,12 @@
         "category": "PSRule"
       },
       {
+        "command": "PSRule.runAnalysisForPath",
+        "title": "Run scan on path",
+        "category": "PSRule",
+        "enablement": "config.PSRule.experimental.enabled"
+      },
+      {
         "command": "PSRule.showTasks",
         "title": "Show tasks",
         "enablement": "false",
@@ -113,6 +119,22 @@
         "category": "PSRule"
       }
     ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "PSRule.runAnalysisForPath",
+          "group": "2_psrule_run",
+          "when": "config.PSRule.experimental.enabled"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "PSRule.runAnalysisForPath",
+          "group": "2_psrule_run",
+          "when": "config.PSRule.experimental.enabled"
+        }
+      ]
+    },
     "configuration": [
       {
         "title": "PSRule",
@@ -262,10 +284,21 @@
           "PSRule.trace.task": {
             "type": "string",
             "default": "Off",
-            "markdownDescription": "Determines if verbose logging is enabled for task output.",
+            "markdownDescription": "Determines if diagnostic logging is enabled for task output.",
             "enum": [
               "Off",
               "Verbose"
+            ],
+            "scope": "application"
+          },
+          "PSRule.trace.server": {
+            "type": "string",
+            "default": "Off",
+            "markdownDescription": "Determines if diagnostic logging is enabled for language server.",
+            "enum": [
+              "Off",
+              "Verbose",
+              "Debug"
             ],
             "scope": "application"
           }

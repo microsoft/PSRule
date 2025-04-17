@@ -199,7 +199,8 @@ internal sealed class ClientBuilder
             };
 
             var client = GetClientContext(invocation);
-            invocation.ExitCode = await RunCommand.RunAsync(option, client);
+            var output = await RunCommand.RunAsync(option, client);
+            invocation.ExitCode = output.ExitCode;
         });
         Command.AddCommand(cmd);
     }
