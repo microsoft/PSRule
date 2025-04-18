@@ -67,7 +67,7 @@ internal sealed class ExportConventionCommand : LanguageBlock
         //if (!IsScriptScope())
         //    throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordScriptScope, LanguageKeywords.Rule));
 
-        var context = RunspaceContext.CurrentThread;
+        var context = LegacyRunspaceContext.CurrentThread;
         if (context == null) return;
 
         var source = context.Source!;
@@ -104,7 +104,7 @@ internal sealed class ExportConventionCommand : LanguageBlock
         WriteObject(block);
     }
 
-    private LanguageScriptBlock? ConventionBlock(RunspaceContext context, ScriptBlock? block, RunspaceScope scope)
+    private LanguageScriptBlock? ConventionBlock(LegacyRunspaceContext context, ScriptBlock? block, RunspaceScope scope)
     {
         if (block == null)
             return null;

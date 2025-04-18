@@ -1557,7 +1557,7 @@ public sealed class AssertTests(ITestOutputHelper output) : ContextBaseTests
     private void SetContext()
     {
         var context = GetPipelineContext();
-        var runspace = new RunspaceContext(context);
+        var runspace = new LegacyRunspaceContext(context);
         runspace.PushScope(RunspaceScope.Rule);
     }
 

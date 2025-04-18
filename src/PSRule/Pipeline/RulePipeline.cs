@@ -10,7 +10,7 @@ namespace PSRule.Pipeline;
 internal abstract class RulePipeline : IPipeline
 {
     protected readonly PipelineContext Pipeline;
-    internal readonly RunspaceContext Context;
+    internal readonly LegacyRunspaceContext Context;
     protected readonly Source[] Source;
 
     // Track whether Dispose has been called.
@@ -20,7 +20,7 @@ internal abstract class RulePipeline : IPipeline
     {
         Result = new DefaultPipelineResult(pipelineContext.Writer, pipelineContext.Option.Execution.Break.GetValueOrDefault(ExecutionOption.Default.Break.Value));
         Pipeline = pipelineContext;
-        Context = new RunspaceContext(Pipeline);
+        Context = new LegacyRunspaceContext(Pipeline);
         Source = source;
         // Initialize contexts
         Context.Initialize(source);

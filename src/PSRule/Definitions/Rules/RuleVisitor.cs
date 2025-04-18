@@ -16,9 +16,9 @@ namespace PSRule.Definitions.Rules;
 internal sealed class RuleVisitor : ICondition
 {
     private readonly LanguageExpressionOuterFn _Condition;
-    private readonly RunspaceContext _Context;
+    private readonly LegacyRunspaceContext _Context;
 
-    public RuleVisitor(RunspaceContext context, ResourceId id, ISourceFile source, IRuleSpec spec)
+    public RuleVisitor(LegacyRunspaceContext context, ResourceId id, ISourceFile source, IRuleSpec spec)
     {
         _Context = context;
         ErrorAction = ActionPreference.Stop;

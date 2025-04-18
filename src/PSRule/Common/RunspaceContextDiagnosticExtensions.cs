@@ -13,7 +13,7 @@ internal static class RunspaceContextDiagnosticExtensions
 {
     private const string WARN_KEY_PROPERTY = "Property";
 
-    internal static void WarnPropertyObsolete(this RunspaceContext context, string variableName, string propertyName)
+    internal static void WarnPropertyObsolete(this LegacyRunspaceContext context, string variableName, string propertyName)
     {
         context.DebugPropertyObsolete(variableName, propertyName);
         if (context.Writer == null || !context.Writer.ShouldWriteWarning() || !context.ShouldWarnOnce(WARN_KEY_PROPERTY, variableName, propertyName))
@@ -25,7 +25,7 @@ internal static class RunspaceContextDiagnosticExtensions
     /// <summary>
     /// The option '{0}' is deprecated and will be removed with PSRule v3. See http://aka.ms/ps-rule/deprecations for more detail.
     /// </summary>
-    internal static void WarnDeprecatedOption(this RunspaceContext context, string option)
+    internal static void WarnDeprecatedOption(this LegacyRunspaceContext context, string option)
     {
         if (context.Writer == null || !context.Writer.ShouldWriteWarning())
             return;
@@ -33,7 +33,7 @@ internal static class RunspaceContextDiagnosticExtensions
         context.Writer.WriteWarning(PSRuleResources.DeprecatedOption, option);
     }
 
-    internal static void WarnDuplicateRuleName(this RunspaceContext context, string ruleName)
+    internal static void WarnDuplicateRuleName(this LegacyRunspaceContext context, string ruleName)
     {
         if (context == null || context.Writer == null || !context.Writer.ShouldWriteWarning())
             return;
@@ -41,7 +41,7 @@ internal static class RunspaceContextDiagnosticExtensions
         context.Writer.WriteWarning(PSRuleResources.DuplicateRuleName, ruleName);
     }
 
-    internal static void DuplicateResourceId(this RunspaceContext context, ResourceId id, ResourceId duplicateId)
+    internal static void DuplicateResourceId(this LegacyRunspaceContext context, ResourceId id, ResourceId duplicateId)
     {
         if (context == null || context.Pipeline == null)
             return;
@@ -50,7 +50,7 @@ internal static class RunspaceContextDiagnosticExtensions
         context.Throw(action, PSRuleResources.DuplicateResourceId, id.Value, duplicateId.Value);
     }
 
-    internal static void SuppressionGroupExpired(this RunspaceContext context, ResourceId suppressionGroupId)
+    internal static void SuppressionGroupExpired(this LegacyRunspaceContext context, ResourceId suppressionGroupId)
     {
         if (context == null || context.Pipeline == null)
             return;
@@ -59,7 +59,7 @@ internal static class RunspaceContextDiagnosticExtensions
         context.Throw(action, PSRuleResources.SuppressionGroupExpired, suppressionGroupId.Value);
     }
 
-    internal static void RuleExcluded(this RunspaceContext context, ResourceId ruleId)
+    internal static void RuleExcluded(this LegacyRunspaceContext context, ResourceId ruleId)
     {
         if (context == null || context.Pipeline == null)
             return;
@@ -68,7 +68,7 @@ internal static class RunspaceContextDiagnosticExtensions
         context.Throw(action, PSRuleResources.RuleExcluded, ruleId.Value);
     }
 
-    internal static void Throw(this RunspaceContext context, ExecutionActionPreference action, string message, params object[] args)
+    internal static void Throw(this LegacyRunspaceContext context, ExecutionActionPreference action, string message, params object[] args)
     {
         if (context == null || action == ExecutionActionPreference.Ignore)
             return;
@@ -83,7 +83,7 @@ internal static class RunspaceContextDiagnosticExtensions
             context.Writer.WriteDebug(message, args);
     }
 
-    internal static void DebugPropertyObsolete(this RunspaceContext context, string variableName, string propertyName)
+    internal static void DebugPropertyObsolete(this LegacyRunspaceContext context, string variableName, string propertyName)
     {
         if (context == null || context.Writer == null || !context.Writer.ShouldWriteDebug())
             return;
@@ -91,13 +91,13 @@ internal static class RunspaceContextDiagnosticExtensions
         context.Writer.WriteDebug(PSRuleResources.DebugPropertyObsolete, context.RuleBlock.Name, variableName, propertyName);
     }
 
-    internal static void WarnAliasReference(this RunspaceContext context, ResourceKind kind, string resourceId, string targetId, string alias)
+    internal static void WarnAliasReference(this LegacyRunspaceContext context, ResourceKind kind, string resourceId, string targetId, string alias)
     {
         var action = context.Pipeline.Option.Execution.AliasReference.GetValueOrDefault(ExecutionOption.Default.AliasReference.Value);
         Throw(context, action, PSRuleResources.AliasReference, kind.ToString(), resourceId, targetId, alias);
     }
 
-    internal static void WarnAliasSuppression(this RunspaceContext context, string targetId, string alias)
+    internal static void WarnAliasSuppression(this LegacyRunspaceContext context, string targetId, string alias)
     {
         var action = context.Pipeline.Option.Execution.AliasReference.GetValueOrDefault(ExecutionOption.Default.AliasReference.Value);
         Throw(context, action, PSRuleResources.AliasSuppression, targetId, alias);

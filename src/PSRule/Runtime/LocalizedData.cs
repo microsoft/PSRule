@@ -35,7 +35,7 @@ public sealed class LocalizedData : DynamicObject
         if (path == null)
             return Empty;
 
-        if (RunspaceContext.CurrentThread.Pipeline.LocalizedDataCache.TryGetValue(path, out var value))
+        if (LegacyRunspaceContext.CurrentThread.Pipeline.LocalizedDataCache.TryGetValue(path, out var value))
             return value;
 
         var ast = Parser.ParseFile(path, out var tokens, out var errors);
@@ -43,7 +43,7 @@ public sealed class LocalizedData : DynamicObject
         if (data != null)
         {
             var result = (Hashtable)data.SafeGetValue();
-            RunspaceContext.CurrentThread.Pipeline.LocalizedDataCache[path] = result;
+            LegacyRunspaceContext.CurrentThread.Pipeline.LocalizedDataCache[path] = result;
             return result;
         }
         return Empty;
@@ -51,6 +51,6 @@ public sealed class LocalizedData : DynamicObject
 
     private static string GetFilePath()
     {
-        return RunspaceContext.CurrentThread.GetLocalizedPath(DATA_FILENAME, out _);
+        return LegacyRunspaceContext.CurrentThread.GetLocalizedPath(DATA_FILENAME, out _);
     }
 }

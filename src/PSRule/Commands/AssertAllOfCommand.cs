@@ -23,7 +23,7 @@ internal sealed class AssertAllOfCommand : RuleKeyword
         var invokeResult = RuleConditionHelper.Create(Body.Invoke());
         var result = invokeResult.AllOf();
 
-        RunspaceContext.CurrentThread.VerboseConditionResult(
+        LegacyRunspaceContext.CurrentThread.VerboseConditionResult(
             condition: RuleLanguageNouns.AllOf,
             pass: invokeResult.Pass,
             count: invokeResult.Count,

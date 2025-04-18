@@ -13,9 +13,9 @@ namespace PSRule.Definitions.Selectors;
 internal sealed class SelectorVisitor
 {
     private readonly LanguageExpressionOuterFn _Fn;
-    private readonly RunspaceContext _Context;
+    private readonly LegacyRunspaceContext _Context;
 
-    public SelectorVisitor(RunspaceContext context, string apiVersion, ResourceId id, ISourceFile source, ISelectorSpec spec)
+    public SelectorVisitor(LegacyRunspaceContext context, string apiVersion, ResourceId id, ISourceFile source, ISelectorSpec spec)
     {
         _Context = context;
         Id = id;

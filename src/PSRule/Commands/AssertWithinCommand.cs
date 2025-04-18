@@ -82,7 +82,7 @@ internal sealed class AssertWithinCommand : RuleKeyword
                     if (fieldValue == null && (Value == null || Value[i] == null))
                     {
                         match = true;
-                        RunspaceContext.CurrentThread.VerboseConditionMessage(
+                        LegacyRunspaceContext.CurrentThread.VerboseConditionMessage(
                             condition: RuleLanguageNouns.Within,
                             message: PSRuleResources.WithinTrue,
                             args: fieldValue);
@@ -98,7 +98,7 @@ internal sealed class AssertWithinCommand : RuleKeyword
                     if ((_LikePattern == null && _Comparer.Equals(Value[i].BaseObject, strValue)) || (_LikePattern != null && _LikePattern[i].IsMatch(strValue)))
                     {
                         match = true;
-                        RunspaceContext.CurrentThread.VerboseConditionMessage(
+                        LegacyRunspaceContext.CurrentThread.VerboseConditionMessage(
                             condition: RuleLanguageNouns.Within,
                             message: PSRuleResources.WithinTrue,
                             args: strValue);
@@ -109,7 +109,7 @@ internal sealed class AssertWithinCommand : RuleKeyword
                 else if (Value[i].Equals(fieldValue))
                 {
                     match = true;
-                    RunspaceContext.CurrentThread.VerboseConditionMessage(
+                    LegacyRunspaceContext.CurrentThread.VerboseConditionMessage(
                         condition: RuleLanguageNouns.Within,
                         message: PSRuleResources.WithinTrue,
                         args: fieldValue);
@@ -119,7 +119,7 @@ internal sealed class AssertWithinCommand : RuleKeyword
         }
 
         var result = expected == match;
-        RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Within, outcome: result);
+        LegacyRunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Within, outcome: result);
         if (!(result || TryReason(null, Reason, null)))
         {
             WriteReason(

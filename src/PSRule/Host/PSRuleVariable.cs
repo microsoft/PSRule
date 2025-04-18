@@ -18,7 +18,7 @@ internal sealed class PSRuleVariable : PSVariable
     public PSRuleVariable()
         : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
     {
-        _Value = new Runtime.PSRule(RunspaceContext.CurrentThread);
+        _Value = new Runtime.PSRule(LegacyRunspaceContext.CurrentThread);
     }
 
     public override object Value => _Value;

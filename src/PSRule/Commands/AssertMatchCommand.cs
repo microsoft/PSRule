@@ -78,7 +78,7 @@ internal sealed class AssertMatchCommand : RuleKeyword
                 if (_Expressions[i].IsMatch(s))
                 {
                     match = true;
-                    RunspaceContext.CurrentThread.VerboseConditionMessage(
+                    LegacyRunspaceContext.CurrentThread.VerboseConditionMessage(
                         condition: RuleLanguageNouns.Match,
                         message: PSRuleResources.MatchTrue,
                         args: fieldValue);
@@ -88,7 +88,7 @@ internal sealed class AssertMatchCommand : RuleKeyword
         }
 
         var result = expected == match;
-        RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
+        LegacyRunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Match, outcome: result);
         if (!(result || TryReason(null, Reason, null)))
         {
             WriteReason(

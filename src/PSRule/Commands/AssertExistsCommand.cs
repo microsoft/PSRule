@@ -62,7 +62,7 @@ internal sealed class AssertExistsCommand : RuleKeyword
                 caseSensitive: CaseSensitive,
                 value: out object _))
             {
-                RunspaceContext.CurrentThread.VerboseConditionMessage(
+                LegacyRunspaceContext.CurrentThread.VerboseConditionMessage(
                     condition: RuleLanguageNouns.Exists,
                     message: PSRuleResources.ExistsTrue,
                     args: Field[i]);
@@ -74,7 +74,7 @@ internal sealed class AssertExistsCommand : RuleKeyword
         }
 
         var result = Not ? found < required : found == required;
-        RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Exists, outcome: result);
+        LegacyRunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.Exists, outcome: result);
         if (!(result || TryReason(null, Reason, null)))
         {
             WriteReason(

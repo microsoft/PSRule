@@ -11,17 +11,17 @@ namespace PSRule.Commands;
 internal sealed class InvokeConventionCommand : Cmdlet
 {
     [Parameter()]
-    public ScriptBlock If;
+    public ScriptBlock? If;
 
     [Parameter()]
-    public ScriptBlock Body;
+    public ScriptBlock? Body;
 
     [Parameter()]
     public RunspaceScope Scope;
 
     protected override void ProcessRecord()
     {
-        var context = RunspaceContext.CurrentThread;
+        var context = LegacyRunspaceContext.CurrentThread;
         try
         {
             if (Body == null)

@@ -74,7 +74,7 @@ public sealed class AssertResult : IEquatable<bool>
 
         _Reason ??= [];
 
-        var reason = new ResultReason(RunspaceContext.CurrentThread?.TargetObject?.Path, operand, text, args);
+        var reason = new ResultReason(LegacyRunspaceContext.CurrentThread?.TargetObject?.Path, operand, text, args);
         if (_Reason.Contains(reason))
             return;
 
@@ -173,12 +173,12 @@ public sealed class AssertResult : IEquatable<bool>
     public bool Complete()
     {
         // Check that the scope is still valid
-        if (!RunspaceContext.CurrentThread!.IsScope(RunspaceScope.Rule))
+        if (!LegacyRunspaceContext.CurrentThread!.IsScope(RunspaceScope.Rule))
             throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, "Assert"));
 
         // Continue
         for (var i = 0; _Reason != null && i < _Reason.Count; i++)
-            RunspaceContext.CurrentThread.WriteReason(_Reason[i]);
+            LegacyRunspaceContext.CurrentThread.WriteReason(_Reason[i]);
 
         return Result;
     }

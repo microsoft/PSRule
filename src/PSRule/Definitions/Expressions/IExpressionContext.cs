@@ -26,7 +26,7 @@ internal interface IExpressionContext : IBindingContext
     /// </summary>
     ResourceId? RuleId { get; }
 
-    RunspaceContext Context { get; }
+    LegacyRunspaceContext Context { get; }
 
     void PushScope(RunspaceScope scope);
 

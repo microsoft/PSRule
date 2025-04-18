@@ -19,5 +19,5 @@ internal sealed class TargetObjectVariable : PSVariable
 
     }
 
-    public override object Value => RunspaceContext.CurrentThread.TargetObject?.Value;
+    public override object Value => LegacyRunspaceContext.CurrentThread.TargetObject?.Value;
 }

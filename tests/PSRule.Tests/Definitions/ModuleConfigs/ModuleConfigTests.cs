@@ -15,7 +15,7 @@ public sealed class ModuleConfigTests : ContextBaseTests
     {
         var sources = GetSource(path);
         var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
-        var context = new RunspaceContext(GetPipelineContext(option: GetOption(), optionBuilder: GetOptionBuilder(), sources: sources, resourceCache: resourcesCache));
+        var context = new LegacyRunspaceContext(GetPipelineContext(option: GetOption(), optionBuilder: GetOptionBuilder(), sources: sources, resourceCache: resourcesCache));
         context.Initialize(sources);
         context.Begin();
 
@@ -34,7 +34,7 @@ public sealed class ModuleConfigTests : ContextBaseTests
     {
         var sources = GetSource(path);
         var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
-        var context = new RunspaceContext(GetPipelineContext(option: GetOption(), optionBuilder: GetOptionBuilder(), sources: sources, resourceCache: resourcesCache));
+        var context = new LegacyRunspaceContext(GetPipelineContext(option: GetOption(), optionBuilder: GetOptionBuilder(), sources: sources, resourceCache: resourcesCache));
         context.Initialize(sources);
         context.Begin();
 

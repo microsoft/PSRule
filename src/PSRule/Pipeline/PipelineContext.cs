@@ -137,7 +137,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         return _Runspace;
     }
 
-    internal void Initialize(RunspaceContext runspaceContext, Source[] sources)
+    internal void Initialize(LegacyRunspaceContext runspaceContext, Source[] sources)
     {
         // Import PS Language Blocks.
         var blocks = HostHelper.GetPSResources<ILanguageBlock>(sources, runspaceContext);
@@ -186,7 +186,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     /// <summary>
     /// Report any tracked issues.
     /// </summary>
-    private void ReportIssue(RunspaceContext runspaceContext)
+    private void ReportIssue(LegacyRunspaceContext runspaceContext)
     {
         foreach (var issue in ResourceCache.Issues)
         {

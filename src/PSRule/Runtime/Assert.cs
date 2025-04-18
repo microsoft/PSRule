@@ -64,7 +64,7 @@ public sealed class Assert
 
     internal AssertResult Create(IOperand operand, bool condition, string reason, params object[] args)
     {
-        if (!(RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule) || RunspaceContext.CurrentThread.IsScope(RunspaceScope.Precondition)))
+        if (!(LegacyRunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule) || LegacyRunspaceContext.CurrentThread.IsScope(RunspaceScope.Precondition)))
             throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.VariableConditionScope, VARIABLE_NAME));
 
         return new AssertResult(operand, condition, reason, args);

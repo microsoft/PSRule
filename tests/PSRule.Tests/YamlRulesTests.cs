@@ -21,7 +21,7 @@ public sealed class YamlRulesTests : ContextBaseTests
     public void GetRule_FromCurrentDirectory_ShouldReturnRules()
     {
         var sources = GetSource("FromFile.Rule.yaml");
-        var context = new RunspaceContext(GetPipelineContext(sources: sources));
+        var context = new LegacyRunspaceContext(GetPipelineContext(sources: sources));
         context.Initialize(sources);
         context.Begin();
 
@@ -46,7 +46,7 @@ public sealed class YamlRulesTests : ContextBaseTests
     public void GetRule_WithRelativePath_ShouldReturnRules()
     {
         var sources = GetSource("../../../FromFile.Rule.yaml");
-        var context = new RunspaceContext(GetPipelineContext(sources: sources));
+        var context = new LegacyRunspaceContext(GetPipelineContext(sources: sources));
         context.Initialize(sources);
         context.Begin();
 
@@ -76,7 +76,7 @@ public sealed class YamlRulesTests : ContextBaseTests
     public void ReadYamlSubSelectorRule()
     {
         var sources = GetSource("FromFileSubSelector.Rule.yaml");
-        var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
+        var context = new LegacyRunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
         context.Initialize(sources);
         context.Begin();
 
@@ -149,7 +149,7 @@ public sealed class YamlRulesTests : ContextBaseTests
     public void EvaluateYamlRule()
     {
         var sources = GetSource("FromFile.Rule.yaml");
-        var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
+        var context = new LegacyRunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
         context.Initialize(sources);
         context.Begin();
 
@@ -213,7 +213,7 @@ public sealed class YamlRulesTests : ContextBaseTests
     public void RuleWithObjectPath()
     {
         var sources = GetSource("FromFile.Rule.yaml");
-        var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
+        var context = new LegacyRunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
         context.Initialize(sources);
         context.Begin();
 
@@ -263,7 +263,7 @@ public sealed class YamlRulesTests : ContextBaseTests
         return JsonConvert.DeserializeObject<object[]>(File.ReadAllText(path)).Select(o => new TargetObject(new PSObject(o))).ToArray();
     }
 
-    private static RuleBlock GetRuleVisitor(RunspaceContext context, string name)
+    private static RuleBlock GetRuleVisitor(LegacyRunspaceContext context, string name)
     {
         var block = HostHelper.GetRuleBlockGraph(context).GetAll();
         return block.FirstOrDefault(s => s.Name == name);

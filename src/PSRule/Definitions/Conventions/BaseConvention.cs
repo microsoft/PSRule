@@ -30,22 +30,22 @@ internal abstract class BaseConvention
 
     public string Module => Source.Module;
 
-    public virtual void Initialize(RunspaceContext context, IEnumerable input)
+    public virtual void Initialize(LegacyRunspaceContext context, IEnumerable input)
     {
 
     }
 
-    public virtual void Begin(RunspaceContext context, IEnumerable input)
+    public virtual void Begin(LegacyRunspaceContext context, IEnumerable input)
     {
 
     }
 
-    public virtual void Process(RunspaceContext context, IEnumerable input)
+    public virtual void Process(LegacyRunspaceContext context, IEnumerable input)
     {
 
     }
 
-    public virtual void End(RunspaceContext context, IEnumerable input)
+    public virtual void End(LegacyRunspaceContext context, IEnumerable input)
     {
 
     }

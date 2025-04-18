@@ -49,11 +49,11 @@ public sealed class SuppressionGroupVisitorTests : ContextBaseTests
         return option;
     }
 
-    private SuppressionGroupVisitor GetSuppressionGroupVisitor(string name, Source[] sources, out RunspaceContext context)
+    private SuppressionGroupVisitor GetSuppressionGroupVisitor(string name, Source[] sources, out LegacyRunspaceContext context)
     {
         var optionBuilder = new OptionContextBuilder(option: GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
         var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
-        context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: optionBuilder, resourceCache: resourcesCache));
+        context = new LegacyRunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: optionBuilder, resourceCache: resourcesCache));
         context.Initialize(sources);
         context.Begin();
         var suppressionGroup = resourcesCache.OfType<ISuppressionGroup>().Where(g => g.Id.Name == name).FirstOrDefault();

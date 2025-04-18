@@ -15,7 +15,7 @@ internal static class ConventionExtensions
     /// <summary>
     /// Convert any convention language blocks into <see cref="IConventionV1"/> resources.
     /// </summary>
-    public static IConventionV1[] ToConventionsV1(this IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+    public static IConventionV1[] ToConventionsV1(this IEnumerable<ILanguageBlock> blocks, LegacyRunspaceContext context)
     {
         if (blocks == null) return [];
 
@@ -44,7 +44,7 @@ internal static class ConventionExtensions
         return [.. results];
     }
 
-    private static bool Match(RunspaceContext context, ScriptBlockConvention block)
+    private static bool Match(LegacyRunspaceContext context, ScriptBlockConvention block)
     {
         try
         {

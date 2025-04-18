@@ -29,7 +29,7 @@ internal static class HostHelper
 {
     private const string Markdown_Extension = ".md";
 
-    internal static IRuleV1[] GetRule(RunspaceContext context, bool includeDependencies)
+    internal static IRuleV1[] GetRule(LegacyRunspaceContext context, bool includeDependencies)
     {
         var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
         var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: false);
@@ -39,7 +39,7 @@ internal static class HostHelper
         return builder.GetItems();
     }
 
-    internal static RuleHelpInfo[] GetRuleHelp(RunspaceContext context)
+    internal static RuleHelpInfo[] GetRuleHelp(LegacyRunspaceContext context)
     {
         var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
         var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: true);
@@ -47,7 +47,7 @@ internal static class HostHelper
         return blocks.GetAll().ToRuleHelp(context);
     }
 
-    internal static DependencyGraph<RuleBlock> GetRuleBlockGraph(RunspaceContext context)
+    internal static DependencyGraph<RuleBlock> GetRuleBlockGraph(LegacyRunspaceContext context)
     {
         var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
         var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: false);
@@ -73,7 +73,7 @@ internal static class HostHelper
     /// <summary>
     /// Get PS resources which are resource defined in PowerShell.
     /// </summary>
-    internal static IEnumerable<T> GetPSResources<T>(Source[] source, RunspaceContext context) where T : ILanguageBlock
+    internal static IEnumerable<T> GetPSResources<T>(Source[] source, LegacyRunspaceContext context) where T : ILanguageBlock
     {
         if (source == null || source.Length == 0) return [];
 
@@ -85,7 +85,7 @@ internal static class HostHelper
     /// <summary>
     /// Read YAML/JSON objects and return baselines.
     /// </summary>
-    internal static IEnumerable<Baseline> GetBaseline(Source[] source, RunspaceContext context)
+    internal static IEnumerable<Baseline> GetBaseline(Source[] source, LegacyRunspaceContext context)
     {
         return GetMetaResources<ILanguageBlock>(source, context).ToBaselineV1(context);
     }
@@ -367,9 +367,9 @@ internal static class HostHelper
         return result.Count == 0 ? [] : [.. result];
     }
 
-    public static void InvokeRuleBlock(RunspaceContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
+    public static void InvokeRuleBlock(LegacyRunspaceContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
     {
-        RunspaceContext.CurrentThread = context;
+        LegacyRunspaceContext.CurrentThread = context;
         var condition = ruleBlock.Condition;
         context.LogObjectStart();
 
@@ -415,7 +415,7 @@ internal static class HostHelper
         //}
     }
 
-    private static bool Match(RunspaceContext context, RuleBlock resource)
+    private static bool Match(LegacyRunspaceContext context, RuleBlock resource)
     {
         try
         {
@@ -466,7 +466,7 @@ internal static class HostHelper
         return info != null;
     }
 
-    internal static RuleHelpInfo GetRuleHelpInfo(RunspaceContext context, string name, string defaultSynopsis, string defaultDisplayName, InfoString defaultDescription, InfoString defaultRecommendation)
+    internal static RuleHelpInfo GetRuleHelpInfo(LegacyRunspaceContext context, string name, string defaultSynopsis, string defaultDisplayName, InfoString defaultDescription, InfoString defaultRecommendation)
     {
         return !TryHelpPath(context, name, out var path, out var culture) || !TryDocument(path, culture, out var document)
             ? new RuleHelpInfo(

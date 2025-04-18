@@ -24,7 +24,7 @@ internal static class RuleConditionHelper
             var baseObject = ExpressionHelpers.GetBaseObject(v);
             if (!(TryAssertResult(baseObject, out var result) || TryBoolean(baseObject, out result)))
             {
-                RunspaceContext.CurrentThread.ErrorInvalidRuleResult();
+                LegacyRunspaceContext.CurrentThread.ErrorInvalidRuleResult();
                 hasErrors = true;
             }
             else if (result)
@@ -54,7 +54,7 @@ internal static class RuleConditionHelper
         result = assert.Result;
 
         // Complete results
-        if (RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule))
+        if (LegacyRunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule))
             assert.Complete();
 
         return true;

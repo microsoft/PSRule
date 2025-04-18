@@ -14,7 +14,7 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
 
     private List<ResultReason> _Reason;
 
-    internal ExpressionContext(RunspaceContext context, ISourceFile source, ResourceKind kind, ITargetObject current, ResourceId? ruleId = null)
+    internal ExpressionContext(LegacyRunspaceContext context, ISourceFile source, ResourceKind kind, ITargetObject current, ResourceId? ruleId = null)
     {
         Context = context ?? throw new ArgumentNullException(nameof(context));
         Source = source;
@@ -36,7 +36,7 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
     /// <inheritdoc/>
     public ResourceId? RuleId { get; }
 
-    public RunspaceContext Context { get; }
+    public LegacyRunspaceContext Context { get; }
 
     [DebuggerStepThrough]
     void IBindingContext.CachePathExpression(string path, PathExpression expression)

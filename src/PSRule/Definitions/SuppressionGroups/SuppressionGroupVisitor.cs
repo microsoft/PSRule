@@ -14,9 +14,9 @@ internal sealed class SuppressionGroupVisitor
 {
     private readonly LanguageExpressionOuterFn _Fn;
     private readonly SuppressionInfo _Info;
-    private readonly RunspaceContext _Context;
+    private readonly LegacyRunspaceContext _Context;
 
-    public SuppressionGroupVisitor(RunspaceContext context, string apiVersion, ResourceId id, ISourceFile source, ISuppressionGroupSpec spec, IResourceHelpInfo info)
+    public SuppressionGroupVisitor(LegacyRunspaceContext context, string apiVersion, ResourceId id, ISourceFile source, ISuppressionGroupSpec spec, IResourceHelpInfo info)
     {
         _Context = context;
         ApiVersion = apiVersion;

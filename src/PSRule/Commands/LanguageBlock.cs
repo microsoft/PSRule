@@ -29,7 +29,7 @@ internal abstract class LanguageBlock : PSCmdlet
 
     protected static bool IsSourceScope()
     {
-        return RunspaceContext.CurrentThread.IsScope(RunspaceScope.Source);
+        return LegacyRunspaceContext.CurrentThread.IsScope(RunspaceScope.Source);
     }
 
     protected ActionPreference GetErrorActionPreference()

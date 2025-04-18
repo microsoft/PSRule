@@ -10,14 +10,14 @@ namespace PSRule.Runtime;
 /// </summary>
 public abstract class ScopedItem
 {
-    private readonly RunspaceContext _Context;
+    private readonly LegacyRunspaceContext _Context;
 
     internal ScopedItem()
     {
 
     }
 
-    internal ScopedItem(RunspaceContext context)
+    internal ScopedItem(LegacyRunspaceContext context)
     {
         _Context = context;
     }
@@ -32,9 +32,9 @@ public abstract class ScopedItem
         throw new RuntimeScopeException();
     }
 
-    internal RunspaceContext GetContext()
+    internal LegacyRunspaceContext GetContext()
     {
-        return _Context ?? RunspaceContext.CurrentThread;
+        return _Context ?? LegacyRunspaceContext.CurrentThread;
     }
 
     #endregion Helper methods
