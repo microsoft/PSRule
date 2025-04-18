@@ -8,7 +8,7 @@ using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
-internal abstract class PathBuilder(IPipelineWriter logger, string basePath, string searchPattern, IPathFilter filter, IPathFilter required)
+internal abstract class PathBuilder(IPipelineWriter logger, string basePath, string searchPattern, IPathFilter? filter, IPathFilter? required)
 {
     // Path separators
     private const char Slash = '/';
@@ -26,8 +26,8 @@ internal abstract class PathBuilder(IPipelineWriter logger, string basePath, str
     private readonly HashSet<string> _Paths = [];
     private readonly string _BasePath = NormalizePath(Environment.GetRootedBasePath(basePath));
     private readonly string _DefaultSearchPattern = searchPattern;
-    private readonly IPathFilter _GlobalFilter = filter;
-    private readonly IPathFilter _Required = required;
+    private readonly IPathFilter? _GlobalFilter = filter;
+    private readonly IPathFilter? _Required = required;
 
     /// <summary>
     /// The number of files found.

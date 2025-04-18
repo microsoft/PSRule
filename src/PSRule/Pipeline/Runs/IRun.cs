@@ -10,6 +10,7 @@ namespace PSRule.Pipeline.Runs;
 
 /// <summary>
 /// A logical run.
+/// Multiple runs can be created for a single pipeline execution.
 /// </summary>
 public interface IRun : IConfiguration
 {

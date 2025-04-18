@@ -107,7 +107,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     }
 
     /// <inheritdoc/>
-    public abstract IPipeline Build(IPipelineWriter? writer = null);
+    public abstract IPipeline? Build(IPipelineWriter? writer = null);
 
     /// <inheritdoc/>
     public void Baseline(Configuration.BaselineOption? baseline)
@@ -350,7 +350,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     protected virtual PipelineWriter GetOutput(bool writeHost = false)
     {
         // Redirect to file instead
-        return !string.IsNullOrEmpty(Option.Output.Path)
+        return !string.IsNullOrEmpty(Option.Output.Path) && Option.Output.Path != null
             ? new FileOutputWriter(
                 inner: _Output,
                 option: Option,
@@ -362,7 +362,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             : _Output;
     }
 
-    protected static string[]? GetCulture(string[] culture)
+    protected static string[]? GetCulture(string[]? culture)
     {
         var result = new List<string>();
         var parent = new List<string>();

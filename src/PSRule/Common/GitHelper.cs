@@ -134,7 +134,7 @@ internal static class GitHelper
         return TryGetOriginUrl(path, out value);
     }
 
-    public static bool TryGetChangedFiles(string baseRef, string filter, string options, out string[] files)
+    public static bool TryGetChangedFiles(string baseRef, string filter, string? options, out string[] files)
     {
         // Get current tip
         var source = TryRevision(out var source_sha) ? source_sha : GIT_HEAD;
@@ -144,17 +144,17 @@ internal static class GitHelper
         var args = GetDiffArgs(target, source, filter, options);
         var tool = ExternalTool.Get(null, bin);
 
-        files = Array.Empty<string>();
-        if (!tool.WaitForExit(args, out var exitCode) || exitCode != 0)
+        files = [];
+        if (tool == null || !tool.WaitForExit(args, out var exitCode) || exitCode != 0)
             return false;
 
-        files = tool.GetOutput().Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+        files = tool.GetOutput().Split([System.Environment.NewLine], StringSplitOptions.RemoveEmptyEntries);
         return true;
     }
 
     #region Helper methods
 
-    internal static bool TryReadHead(out string value, string path = null)
+    internal static bool TryReadHead(out string value, string? path = null)
     {
         value = null;
         return TryGitFile(GIT_HEAD, out var filePath, path) && TryReadRef(filePath, out value, out _);
@@ -166,7 +166,7 @@ internal static class GitHelper
             RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "git" : "git.exe";
     }
 
-    private static string GetDiffArgs(string target, string source, string filter, string options)
+    private static string GetDiffArgs(string target, string source, string filter, string? options)
     {
         return $"diff --diff-filter={filter} --ignore-submodules=all --name-only --no-renames {target}";
     }

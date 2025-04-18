@@ -5,6 +5,8 @@ using PSRule.Configuration;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// A helper to build a PSRule pipeline.
 /// </summary>
@@ -19,11 +21,13 @@ public interface IPipelineBuilder
     /// Configure the pipeline to use a specific baseline.
     /// </summary>
     /// <param name="baseline">A baseline option or the name of a baseline.</param>
-    void Baseline(BaselineOption baseline);
+    void Baseline(BaselineOption? baseline);
 
     /// <summary>
     /// Build the pipeline.
     /// </summary>
     /// <param name="writer">Optionally specify a custom writer which will handle output processing.</param>
-    IPipeline Build(IPipelineWriter writer = null);
+    IPipeline? Build(IPipelineWriter? writer = null);
 }
+
+#nullable restore

@@ -39,7 +39,7 @@ internal sealed class GetBaselinePipelineBuilder : PipelineBuilderBase
         return this;
     }
 
-    public override IPipeline Build(IPipelineWriter? writer = null)
+    public override IPipeline? Build(IPipelineWriter? writer = null)
     {
         var filter = new BaselineFilter(ResolveBaselineGroup(_Name));
         return new GetBaselinePipeline(
