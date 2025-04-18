@@ -15,7 +15,7 @@ internal static class ModuleConfigExtensions
     /// <summary>
     /// Convert any selector language blocks into <see cref="ModuleConfigV1"/> resources.
     /// </summary>
-    public static ModuleConfigV1[] ToModuleConfigV1(this IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+    public static ModuleConfigV1[] ToModuleConfigV1(this IEnumerable<ILanguageBlock> blocks, LegacyRunspaceContext context)
     {
         if (blocks == null) return [];
 

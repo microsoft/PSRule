@@ -27,12 +27,12 @@ public sealed class PSRule : ScopedItem
     /// </summary>
     public PSRule() { }
 
-    internal PSRule(RunspaceContext context)
+    internal PSRule(LegacyRunspaceContext context)
         : base(context) { }
 
     private sealed class PSRuleSource : ScopedItem, ITargetSourceCollection
     {
-        internal PSRuleSource(RunspaceContext context)
+        internal PSRuleSource(LegacyRunspaceContext context)
             : base(context) { }
 
         public TargetSourceInfo? this[string type]
@@ -46,7 +46,7 @@ public sealed class PSRule : ScopedItem
 
     private sealed class PSRuleIssue : ScopedItem, ITargetIssueCollection
     {
-        internal PSRuleIssue(RunspaceContext context)
+        internal PSRuleIssue(LegacyRunspaceContext context)
             : base(context) { }
 
         public TargetIssueInfo[]? Get(string? type = null)
@@ -62,7 +62,7 @@ public sealed class PSRule : ScopedItem
 
     private sealed class PSRuleInput : ScopedItem, IInputCollection
     {
-        internal PSRuleInput(RunspaceContext context)
+        internal PSRuleInput(LegacyRunspaceContext context)
             : base(context) { }
 
         /// <inheritdoc/>
@@ -80,7 +80,7 @@ public sealed class PSRule : ScopedItem
     {
         private InputFileInfoCollection? _ChangedFiles;
 
-        internal PSRuleRepository(RunspaceContext context)
+        internal PSRuleRepository(LegacyRunspaceContext context)
             : base(context)
         {
             Url = GetContext().Pipeline.Option.Repository.Url;

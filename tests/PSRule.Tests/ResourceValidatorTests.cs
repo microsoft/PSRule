@@ -16,7 +16,7 @@ public sealed class ResourceValidatorTests : ContextBaseTests
     {
         var writer = GetTestWriter();
         var sources = GetSource(path);
-        var context = new RunspaceContext(GetPipelineContext(writer: writer, sources: sources));
+        var context = new LegacyRunspaceContext(GetPipelineContext(writer: writer, sources: sources));
 
         // Get good rules
         var rule = HostHelper.GetRule(context, includeDependencies: false);
@@ -31,7 +31,7 @@ public sealed class ResourceValidatorTests : ContextBaseTests
     {
         var writer = GetTestWriter();
         var sources = GetSource(path);
-        var context = new RunspaceContext(GetPipelineContext(writer: writer, sources: sources));
+        var context = new LegacyRunspaceContext(GetPipelineContext(writer: writer, sources: sources));
 
         // Get invalid rule names.
         var rule = HostHelper.GetRule(context, includeDependencies: false);

@@ -36,7 +36,7 @@ internal sealed class AssertTypeOfCommand : RuleKeyword
             result = (actualTypeNames.Intersect(TypeName).Any());
         }
 
-        RunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.TypeOf, outcome: result);
+        LegacyRunspaceContext.CurrentThread.VerboseConditionResult(condition: RuleLanguageNouns.TypeOf, outcome: result);
         if (!(result || TryReason(null, Reason, null)))
         {
             WriteReason(

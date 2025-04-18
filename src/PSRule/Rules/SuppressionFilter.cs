@@ -18,7 +18,7 @@ internal sealed class SuppressionFilter
     private readonly ResourceIndex _ResourceIndex;
     private readonly Dictionary<string, List<SuppressionGroupVisitor>> _RuleSuppressionGroupIndex;
 
-    public SuppressionFilter(RunspaceContext context, SuppressionOption option, ResourceIndex resourceIndex)
+    public SuppressionFilter(LegacyRunspaceContext context, SuppressionOption option, ResourceIndex resourceIndex)
     {
         if (option == null || option.Count == 0 || resourceIndex.IsEmpty())
         {
@@ -98,7 +98,7 @@ internal sealed class SuppressionFilter
             _Index.Contains(new SuppressionKey(id.Value, targetName));
     }
 
-    private HashSet<SuppressionKey> Index(RunspaceContext context, SuppressionOption option)
+    private HashSet<SuppressionKey> Index(LegacyRunspaceContext context, SuppressionOption option)
     {
         var index = new HashSet<SuppressionKey>();
 

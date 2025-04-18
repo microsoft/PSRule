@@ -18,7 +18,7 @@ internal static class RuleExtensions
     /// <summary>
     /// Convert any rule language blocks to <see cref="RuleBlock"/>.
     /// </summary>
-    public static IRuleV1[] ToRuleV1(this IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+    public static IRuleV1[] ToRuleV1(this IEnumerable<ILanguageBlock> blocks, LegacyRunspaceContext context)
     {
         if (blocks == null) return [];
 
@@ -76,7 +76,7 @@ internal static class RuleExtensions
     }
 
 
-    public static RuleHelpInfo[] ToRuleHelp(this IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+    public static RuleHelpInfo[] ToRuleHelp(this IEnumerable<ILanguageBlock> blocks, LegacyRunspaceContext context)
     {
         if (blocks == null) return [];
 
@@ -104,7 +104,7 @@ internal static class RuleExtensions
         return [.. results.Values];
     }
 
-    public static DependencyTargetCollection<RuleBlock> ToRuleDependencyTargetCollection(this IEnumerable<IRuleV1> blocks, RunspaceContext context, bool skipDuplicateName)
+    public static DependencyTargetCollection<RuleBlock> ToRuleDependencyTargetCollection(this IEnumerable<IRuleV1> blocks, LegacyRunspaceContext context, bool skipDuplicateName)
     {
         // Index rules by RuleId
         var results = new DependencyTargetCollection<RuleBlock>();
@@ -208,7 +208,7 @@ internal static class RuleExtensions
             info.SetOnlineHelpUrl(metadata.Link);
     }
 
-    private static bool Match(RunspaceContext context, RuleBlock resource)
+    private static bool Match(LegacyRunspaceContext context, RuleBlock resource)
     {
         try
         {
@@ -222,7 +222,7 @@ internal static class RuleExtensions
         }
     }
 
-    private static RuleHelpInfo GetRuleHelpInfo(RunspaceContext context, IRuleV1 rule)
+    private static RuleHelpInfo GetRuleHelpInfo(LegacyRunspaceContext context, IRuleV1 rule)
     {
         return HostHelper.GetRuleHelpInfo(context, rule.Name, rule.Synopsis, rule.Info.DisplayName, rule.Info.Description, rule.Recommendation);
     }

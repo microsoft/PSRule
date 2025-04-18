@@ -62,27 +62,27 @@ internal sealed class ScriptBlockConvention : BaseConvention, IConventionV1, IDi
     // Not supported with conventions.
     IResourceLabels? IResource.Labels => null;
 
-    public override void Initialize(RunspaceContext context, IEnumerable input)
+    public override void Initialize(LegacyRunspaceContext context, IEnumerable input)
     {
         InvokeConventionBlock(context, Source, _Initialize, input);
     }
 
-    public override void Begin(RunspaceContext context, IEnumerable input)
+    public override void Begin(LegacyRunspaceContext context, IEnumerable input)
     {
         InvokeConventionBlock(context, Source, _Begin, input);
     }
 
-    public override void Process(RunspaceContext context, IEnumerable input)
+    public override void Process(LegacyRunspaceContext context, IEnumerable input)
     {
         InvokeConventionBlock(context, Source, _Process, input);
     }
 
-    public override void End(RunspaceContext context, IEnumerable input)
+    public override void End(LegacyRunspaceContext context, IEnumerable input)
     {
         InvokeConventionBlock(context, Source, _End, input);
     }
 
-    private static void InvokeConventionBlock(RunspaceContext context, ISourceFile source, LanguageScriptBlock? block, IEnumerable input)
+    private static void InvokeConventionBlock(LegacyRunspaceContext context, ISourceFile source, LanguageScriptBlock? block, IEnumerable input)
     {
         if (block == null)
             return;

@@ -8,11 +8,11 @@ namespace PSRule.Definitions;
 
 internal interface IConventionV1 : IResource
 {
-    void Initialize(RunspaceContext context, IEnumerable input);
+    void Initialize(LegacyRunspaceContext context, IEnumerable input);
 
-    void Begin(RunspaceContext context, IEnumerable input);
+    void Begin(LegacyRunspaceContext context, IEnumerable input);
 
-    void Process(RunspaceContext context, IEnumerable input);
+    void Process(LegacyRunspaceContext context, IEnumerable input);
 
-    void End(RunspaceContext context, IEnumerable input);
+    void End(LegacyRunspaceContext context, IEnumerable input);
 }

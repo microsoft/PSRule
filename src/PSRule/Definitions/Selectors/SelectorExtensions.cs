@@ -18,7 +18,7 @@ internal static class SelectorExtensions
     /// <param name="resource">The selector resource.</param>
     /// <param name="runspaceContext">A valid runspace context.</param>
     /// <returns>An instance of a <see cref="SelectorVisitor"/>.</returns>
-    public static SelectorVisitor ToSelectorVisitor(this ISelector resource, RunspaceContext runspaceContext)
+    public static SelectorVisitor ToSelectorVisitor(this ISelector resource, LegacyRunspaceContext runspaceContext)
     {
         return new SelectorVisitor(
             runspaceContext,
@@ -32,7 +32,7 @@ internal static class SelectorExtensions
     /// <summary>
     /// Convert any selector language blocks into <see cref="SelectorV1"/> resources.
     /// </summary>
-    public static SelectorV1[] ToSelectorV1(this IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+    public static SelectorV1[] ToSelectorV1(this IEnumerable<ILanguageBlock> blocks, LegacyRunspaceContext context)
     {
         if (blocks == null) return [];
 
@@ -59,7 +59,7 @@ internal static class SelectorExtensions
         return [.. results.Values];
     }
 
-    private static bool Match(RunspaceContext context, SelectorV1 resource)
+    private static bool Match(LegacyRunspaceContext context, SelectorV1 resource)
     {
         try
         {

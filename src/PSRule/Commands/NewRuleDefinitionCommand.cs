@@ -107,7 +107,7 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
         if (!IsSourceScope())
             throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordSourceScope, LanguageKeywords.Rule));
 
-        var context = RunspaceContext.CurrentThread;
+        var context = LegacyRunspaceContext.CurrentThread;
         var source = context.Source;
         var errorPreference = GetErrorActionPreference();
         var metadata = GetCommentMetadata(source, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
@@ -157,7 +157,7 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
         WriteObject(block);
     }
 
-    private PowerShellCondition GetCondition(RunspaceContext context, ResourceId id, ISourceFile source, ActionPreference errorAction)
+    private PowerShellCondition GetCondition(LegacyRunspaceContext context, ResourceId id, ISourceFile source, ActionPreference errorAction)
     {
         var result = context.GetPowerShell();
         result.AddCommand(new CmdletInfo(CmdletName, typeof(InvokeRuleBlockCommand)));

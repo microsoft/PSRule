@@ -10,14 +10,14 @@ namespace PSRule.Definitions;
 
 internal sealed class DependencyGraphBuilder<T> where T : IDependencyTarget
 {
-    private readonly RunspaceContext _Context;
+    private readonly LegacyRunspaceContext _Context;
     private readonly IEqualityComparer<ResourceId> _Comparer;
     private readonly Dictionary<ResourceId, T> _Targets;
     private readonly Stack<ResourceId> _Stack;
     private readonly bool _IncludeDependencies;
     private readonly bool _IncludeDisabled;
 
-    public DependencyGraphBuilder(RunspaceContext context, bool includeDependencies, bool includeDisabled)
+    public DependencyGraphBuilder(LegacyRunspaceContext context, bool includeDependencies, bool includeDisabled)
     {
         _Context = context;
         _Comparer = ResourceIdEqualityComparer.Default;

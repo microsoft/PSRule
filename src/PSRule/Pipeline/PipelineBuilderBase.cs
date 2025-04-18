@@ -10,6 +10,7 @@ using PSRule.Definitions.Baselines;
 using PSRule.Definitions.ModuleConfigs;
 using PSRule.Options;
 using PSRule.Pipeline.Output;
+using PSRule.Pipeline.Runs;
 using PSRule.Resources;
 using PSRule.Runtime;
 
@@ -268,6 +269,8 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             scope.Configure(options.Build(scope.Name));
         }
 
+        // var runs = GetRunCollection();
+
         if (checkModuleCapabilities && !RequireModuleCapabilities(resourceCache))
             return null;
 
@@ -280,6 +283,11 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             optionBuilder: options,
             resourceCache: resourceCache
         );
+    }
+
+    private IEnumerable<IRun> GetRunCollection()
+    {
+        throw new NotImplementedException();
     }
 
     protected ILanguageScopeSet GetLanguageScopeSet()
@@ -448,6 +456,9 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         return _InputFilter;
     }
 
+    /// <summary>
+    /// Load sources into a resource cache.
+    /// </summary>
     private ResourceCache GetResourceCache(List<ResourceRef> unresolved, ILanguageScopeSet languageScopeSet)
     {
         return new ResourceCacheBuilder(_Writer, languageScopeSet).Import(Source).Build(unresolved);

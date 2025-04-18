@@ -80,7 +80,7 @@ internal static class PipelineReceiverActions
         {
             if (sourceInfo != null && !string.IsNullOrEmpty(sourceInfo.File))
             {
-                RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(sourceInfo.File, ex);
+                LegacyRunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(sourceInfo.File, ex);
                 return EmptyArray;
             }
             throw;
@@ -130,7 +130,7 @@ internal static class PipelineReceiverActions
         {
             if (sourceInfo != null && !string.IsNullOrEmpty(sourceInfo.File))
             {
-                RunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(sourceInfo.File, ex);
+                LegacyRunspaceContext.CurrentThread.Writer.ErrorReadFileFailed(sourceInfo.File, ex);
                 return EmptyArray;
             }
             throw;

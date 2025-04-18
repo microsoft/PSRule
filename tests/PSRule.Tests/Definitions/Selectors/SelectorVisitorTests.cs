@@ -29,7 +29,7 @@ public sealed class SelectorVisitorTests : ContextBaseTests
         var testObject = GetTargetObject((name: "value", value: 3));
         var sources = GetSource(path);
         var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
-        var context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, resourceCache: resourcesCache));
+        var context = new LegacyRunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, resourceCache: resourcesCache));
         context.Initialize(sources);
         context.Begin();
         var selector = resourcesCache.OfType<SelectorV1>().ToArray();
@@ -56,7 +56,7 @@ public sealed class SelectorVisitorTests : ContextBaseTests
     {
         var sources = GetSource(path);
         var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
-        var context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, resourceCache: resourcesCache));
+        var context = new LegacyRunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, resourceCache: resourcesCache));
         context.Initialize(sources);
         context.Begin();
         var selector = resourcesCache.OfType<SelectorV2>().ToArray();
@@ -1921,11 +1921,11 @@ public sealed class SelectorVisitorTests : ContextBaseTests
         return option;
     }
 
-    private SelectorVisitor GetSelectorVisitor(string name, Source[] sources, out RunspaceContext context)
+    private SelectorVisitor GetSelectorVisitor(string name, Source[] sources, out LegacyRunspaceContext context)
     {
         var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
         var optionBuilder = new OptionContextBuilder(option: GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
-        context = new RunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: optionBuilder, resourceCache: resourcesCache));
+        context = new LegacyRunspaceContext(GetPipelineContext(option: GetOption(), sources: sources, optionBuilder: optionBuilder, resourceCache: resourcesCache));
         context.Initialize(sources);
         context.Begin();
         var selector = resourcesCache.OfType<ISelector>().FirstOrDefault(s => s.Id.Name == name);

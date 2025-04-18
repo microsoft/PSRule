@@ -15,7 +15,7 @@ internal static class BaselineExtensions
     /// <summary>
     /// Convert any baseline language blocks into <see cref="Baseline"/> resources.
     /// </summary>
-    public static Baseline[] ToBaselineV1(this IEnumerable<ILanguageBlock> blocks, RunspaceContext context)
+    public static Baseline[] ToBaselineV1(this IEnumerable<ILanguageBlock> blocks, LegacyRunspaceContext context)
     {
         if (blocks == null) return [];
 
@@ -43,7 +43,7 @@ internal static class BaselineExtensions
         return [.. results.Values];
     }
 
-    private static bool Match(RunspaceContext context, Baseline resource)
+    private static bool Match(LegacyRunspaceContext context, Baseline resource)
     {
         try
         {

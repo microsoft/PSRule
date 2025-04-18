@@ -18,12 +18,12 @@ internal abstract class RuleKeyword : PSCmdlet
 {
     protected static RuleRecord GetResult()
     {
-        return RunspaceContext.CurrentThread.RuleRecord;
+        return LegacyRunspaceContext.CurrentThread.RuleRecord;
     }
 
     protected static PSObject GetTargetObject()
     {
-        return RunspaceContext.CurrentThread.TargetObject.Value;
+        return LegacyRunspaceContext.CurrentThread.TargetObject.Value;
     }
 
     protected static bool GetField(object targetObject, string name, bool caseSensitive, out object value)
@@ -81,7 +81,7 @@ internal abstract class RuleKeyword : PSCmdlet
 
     protected static void WriteReason(string path, string text, params object[] args)
     {
-        RunspaceContext.CurrentThread.WriteReason(new ResultReason(RunspaceContext.CurrentThread.TargetObject.Path, Operand.FromPath(path), text, args));
+        LegacyRunspaceContext.CurrentThread.WriteReason(new ResultReason(LegacyRunspaceContext.CurrentThread.TargetObject.Path, Operand.FromPath(path), text, args));
     }
 
     protected static bool TryReason(string path, string text, object[] args)
@@ -95,13 +95,13 @@ internal abstract class RuleKeyword : PSCmdlet
 
     protected static bool IsRuleScope()
     {
-        return RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule) ||
-            RunspaceContext.CurrentThread.IsScope(RunspaceScope.Precondition);
+        return LegacyRunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule) ||
+            LegacyRunspaceContext.CurrentThread.IsScope(RunspaceScope.Precondition);
     }
 
     protected static bool IsConditionScope()
     {
-        return RunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule);
+        return LegacyRunspaceContext.CurrentThread.IsScope(RunspaceScope.Rule);
     }
 
     protected static RuleException RuleScopeException(string keyword)

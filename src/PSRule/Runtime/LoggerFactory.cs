@@ -10,6 +10,6 @@ internal sealed class LoggerFactory : ILoggerFactory
 {
     public ILogger Create(string categoryName)
     {
-        return RunspaceContext.CurrentThread == null ? RunspaceContext.CurrentThread : NullLogger.Instance;
+        return LegacyRunspaceContext.CurrentThread == null ? LegacyRunspaceContext.CurrentThread : NullLogger.Instance;
     }
 }

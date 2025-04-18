@@ -21,7 +21,7 @@ namespace PSRule.Runtime;
 /// <summary>
 /// A context applicable to rule execution.
 /// </summary>
-internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext
+internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext
 {
     private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
     private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
@@ -29,7 +29,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
     private const string WARN_KEY_SEPARATOR = "_";
 
     [ThreadStatic]
-    internal static RunspaceContext? CurrentThread;
+    internal static LegacyRunspaceContext? CurrentThread;
 
     internal readonly PipelineContext Pipeline;
 
@@ -69,7 +69,7 @@ internal sealed class RunspaceContext : IDisposable, ILogger, IScriptResourceDis
     // Track whether Dispose has been called.
     private bool _Disposed;
 
-    internal RunspaceContext(PipelineContext pipeline)
+    internal LegacyRunspaceContext(PipelineContext pipeline)
     {
         CurrentThread = this;
         Pipeline = pipeline;

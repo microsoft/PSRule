@@ -13,9 +13,9 @@ namespace PSRule.Runtime;
 /// </summary>
 public sealed class Configuration : DynamicObject, IScriptRuntimeConfiguration
 {
-    private readonly RunspaceContext _Context;
+    private readonly LegacyRunspaceContext _Context;
 
-    internal Configuration(RunspaceContext context)
+    internal Configuration(LegacyRunspaceContext context)
     {
         _Context = context;
     }

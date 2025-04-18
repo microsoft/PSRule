@@ -23,7 +23,7 @@ internal sealed class AssertAnyOfCommand : RuleKeyword
         var invokeResult = RuleConditionHelper.Create(Body.Invoke());
         var result = invokeResult.AnyOf();
 
-        RunspaceContext.CurrentThread.VerboseConditionResult(
+        LegacyRunspaceContext.CurrentThread.VerboseConditionResult(
             condition: RuleLanguageNouns.AnyOf,
             pass: invokeResult.Pass,
             count: invokeResult.Count,

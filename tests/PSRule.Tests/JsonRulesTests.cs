@@ -21,7 +21,7 @@ public sealed class JsonRulesTests : ContextBaseTests
     public void GetRule_FromCurrentDirectory_ShouldReturnRules()
     {
         var sources = GetSource("FromFile.Rule.jsonc");
-        var context = new RunspaceContext(GetPipelineContext(sources: sources));
+        var context = new LegacyRunspaceContext(GetPipelineContext(sources: sources));
         context.Initialize(sources);
         context.Begin();
 
@@ -46,7 +46,7 @@ public sealed class JsonRulesTests : ContextBaseTests
     public void GetRule_WithRelativePath_ShouldReturnRules()
     {
         var sources = GetSource("../../../FromFile.Rule.jsonc");
-        var context = new RunspaceContext(GetPipelineContext(sources: sources));
+        var context = new LegacyRunspaceContext(GetPipelineContext(sources: sources));
         context.Initialize(sources);
         context.Begin();
 
@@ -76,7 +76,7 @@ public sealed class JsonRulesTests : ContextBaseTests
     public void ReadJsonSubSelectorRule()
     {
         var sources = GetSource("FromFileSubSelector.Rule.jsonc");
-        var context = new RunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
+        var context = new LegacyRunspaceContext(GetPipelineContext(sources: sources, optionBuilder: GetOptionBuilder()));
         context.Initialize(sources);
         context.Begin();
 
@@ -168,7 +168,7 @@ public sealed class JsonRulesTests : ContextBaseTests
         return JsonConvert.DeserializeObject<object[]>(File.ReadAllText(path)).Select(o => new TargetObject(new PSObject(o))).ToArray();
     }
 
-    private static RuleBlock GetRuleVisitor(RunspaceContext context, string name)
+    private static RuleBlock GetRuleVisitor(LegacyRunspaceContext context, string name)
     {
         var block = HostHelper.GetRuleBlockGraph(context).GetAll();
         return block.FirstOrDefault(s => s.Name == name);

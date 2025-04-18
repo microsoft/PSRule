@@ -14,7 +14,7 @@ public sealed class ExpressionContextTests : ContextBaseTests
     [Fact]
     public void Reason_WithText_ShouldAddReason()
     {
-        var context = new ExpressionContext(new RunspaceContext(GetPipelineContext()), GetSourceFile("FromFile.Rule.yaml"), ResourceKind.Rule, new TargetObject(new System.Management.Automation.PSObject(new TestObject())));
+        var context = new ExpressionContext(new LegacyRunspaceContext(GetPipelineContext()), GetSourceFile("FromFile.Rule.yaml"), ResourceKind.Rule, new TargetObject(new System.Management.Automation.PSObject(new TestObject())));
         context.Context.PushScope(RunspaceScope.Rule);
         var operand = Operand.FromPath("name");
 
@@ -26,7 +26,7 @@ public sealed class ExpressionContextTests : ContextBaseTests
     [Fact]
     public void Reason_WithDuplicate_ShouldNotAddReason()
     {
-        var context = new ExpressionContext(new RunspaceContext(GetPipelineContext()), GetSourceFile("FromFile.Rule.yaml"), ResourceKind.Rule, new TargetObject(new System.Management.Automation.PSObject(new TestObject())));
+        var context = new ExpressionContext(new LegacyRunspaceContext(GetPipelineContext()), GetSourceFile("FromFile.Rule.yaml"), ResourceKind.Rule, new TargetObject(new System.Management.Automation.PSObject(new TestObject())));
         context.Context.PushScope(RunspaceScope.Rule);
         var operand = Operand.FromPath("name");
 

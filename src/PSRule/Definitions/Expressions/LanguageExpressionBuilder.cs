@@ -176,7 +176,7 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
     {
         return (context, o) =>
         {
-            RunspaceContext.CurrentThread?.EnterLanguageScope(context.Source);
+            LegacyRunspaceContext.CurrentThread?.EnterLanguageScope(context.Source);
 
             return fn(context, o);
         };

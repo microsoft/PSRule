@@ -28,10 +28,10 @@ public sealed class FunctionBuilderTests : ContextBaseTests
 
     #region Helper methods
 
-    private SelectorVisitor GetSelectorVisitor(string name, Source[] sources, out RunspaceContext context)
+    private SelectorVisitor GetSelectorVisitor(string name, Source[] sources, out LegacyRunspaceContext context)
     {
         var resourcesCache = GetResourceCache(option: GetOption(), sources: sources);
-        context = new RunspaceContext(GetPipelineContext(resourceCache: resourcesCache));
+        context = new LegacyRunspaceContext(GetPipelineContext(resourceCache: resourcesCache));
         context.Initialize(sources);
         context.Begin();
         var selector = resourcesCache.OfType<SelectorV1>().FirstOrDefault(s => s.Id.Name == name);
