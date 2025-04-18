@@ -291,7 +291,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     /// <remarks>
     /// This method is called from PowerShell.
     /// </remarks>
-    public static PSRuleOption FromFileOrEmpty(string path)
+    public static PSRuleOption FromFileOrEmpty(string? path)
     {
         // Get a rooted file path instead of directory or relative path
         var filePath = GetFilePath(path);
@@ -523,7 +523,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     /// </summary>
     /// <param name="path">A file or directory path.</param>
     /// <returns></returns>
-    public static string GetFilePath(string path)
+    public static string GetFilePath(string? path)
     {
         var rootedPath = Environment.GetRootedPath(path);
         if (Path.HasExtension(rootedPath))

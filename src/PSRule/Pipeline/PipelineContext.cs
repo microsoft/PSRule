@@ -5,7 +5,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using System.Text;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
@@ -109,24 +108,6 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         var context = new PipelineContext(option, hostContext, reader, writer, languageScope, optionBuilder, resourceCache);
         CurrentThread = context;
         return context;
-    }
-
-    internal sealed class SourceScope
-    {
-        public readonly ISourceFile File;
-
-        public SourceScope(ISourceFile source)
-        {
-            File = source;
-        }
-
-        public string[] SourceContentCache
-        {
-            get
-            {
-                return System.IO.File.ReadAllLines(File.Path, Encoding.UTF8);
-            }
-        }
     }
 
     internal Runspace GetRunspace()

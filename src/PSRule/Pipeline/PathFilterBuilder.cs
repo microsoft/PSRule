@@ -38,10 +38,10 @@ internal sealed class PathFilterBuilder
     private readonly List<string> _Expressions;
     private readonly bool _MatchResult;
 
-    private PathFilterBuilder(string basePath, string[] expressions, bool matchResult, bool ignoreGitPath, bool ignoreRepositoryCommon)
+    private PathFilterBuilder(string basePath, string[]? expressions, bool matchResult, bool ignoreGitPath, bool ignoreRepositoryCommon)
     {
         _BasePath = basePath;
-        _Expressions = expressions == null || expressions.Length == 0 ? [] : new List<string>(expressions);
+        _Expressions = expressions == null || expressions.Length == 0 ? [] : [.. expressions];
         _MatchResult = matchResult;
         if (ignoreRepositoryCommon)
             _Expressions.InsertRange(0, CommonFiles);
@@ -50,7 +50,7 @@ internal sealed class PathFilterBuilder
             _Expressions.Add(".git/");
     }
 
-    internal static PathFilterBuilder Create(string basePath, string[] expressions, bool ignoreGitPath, bool ignoreRepositoryCommon)
+    internal static PathFilterBuilder Create(string basePath, string[]? expressions, bool ignoreGitPath, bool ignoreRepositoryCommon)
     {
         return new PathFilterBuilder(basePath, expressions, false, ignoreGitPath, ignoreRepositoryCommon);
     }
@@ -58,7 +58,7 @@ internal sealed class PathFilterBuilder
     /// <summary>
     /// Import expressions from .gitignore.
     /// </summary>
-    internal void UseGitIgnore(string basePath = null)
+    internal void UseGitIgnore(string? basePath = null)
     {
         ReadFile(Path.Combine(basePath ?? _BasePath, GitIgnoreFileName));
     }

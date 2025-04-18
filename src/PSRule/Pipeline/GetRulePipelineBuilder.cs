@@ -5,6 +5,8 @@ using PSRule.Configuration;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 /// <summary>
 /// A helper to construct a get pipeline.
 /// </summary>
@@ -40,7 +42,7 @@ internal sealed class GetRulePipelineBuilder : PipelineBuilderBase, IGetPipeline
     }
 
     /// <inheritdoc/>
-    public override IPipeline Build(IPipelineWriter writer = null)
+    public override IPipeline? Build(IPipelineWriter? writer = null)
     {
         return !RequireModules() || !RequireSources()
             ? null
@@ -59,3 +61,5 @@ internal sealed class GetRulePipelineBuilder : PipelineBuilderBase, IGetPipeline
             format == OutputFormat.Yaml) ? OutputFormat.None : format.Value;
     }
 }
+
+#nullable restore

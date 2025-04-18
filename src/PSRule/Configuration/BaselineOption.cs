@@ -80,9 +80,9 @@ public class BaselineOption
     /// </summary>
     /// <param name="value">The name of the baseline.</param>
     /// <returns>A reference to a baseline option.</returns>
-    public static BaselineOption FromString(string value)
+    public static BaselineOption? FromString(string? value)
     {
-        return string.IsNullOrEmpty(value) ? null : new BaselineRef(value);
+        return value == null || string.IsNullOrEmpty(value) ? null : new BaselineRef(value);
     }
 
     /// <summary>

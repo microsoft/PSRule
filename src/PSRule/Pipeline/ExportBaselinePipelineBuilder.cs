@@ -6,6 +6,8 @@ using PSRule.Definitions.Baselines;
 
 namespace PSRule.Pipeline;
 
+#nullable enable
+
 internal sealed class ExportBaselinePipelineBuilder : PipelineBuilderBase
 {
     private string[] _Name;
@@ -39,7 +41,7 @@ internal sealed class ExportBaselinePipelineBuilder : PipelineBuilderBase
         return this;
     }
 
-    public override IPipeline Build(IPipelineWriter writer = null)
+    public override IPipeline? Build(IPipelineWriter? writer = null)
     {
         var filter = new BaselineFilter(_Name);
         return new GetBaselinePipeline(
@@ -49,3 +51,5 @@ internal sealed class ExportBaselinePipelineBuilder : PipelineBuilderBase
         );
     }
 }
+
+#nullable restore

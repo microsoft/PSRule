@@ -13,7 +13,7 @@ namespace PSRule.Pipeline.Runs;
 #nullable enable
 
 /// <summary>
-/// A run.
+/// An instance of a run.
 /// </summary>
 [DebuggerDisplay("{Id}")]
 internal sealed class Run(string id, InfoString description, string correlationGuid) : IRun

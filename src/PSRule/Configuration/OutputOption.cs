@@ -157,7 +157,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
     /// One or more cultures to use for generating output.
     /// </summary>
     [DefaultValue(null)]
-    public string[] Culture { get; set; }
+    public string[]? Culture { get; set; }
 
     /// <summary>
     /// The encoding to use when writing results to file.
@@ -181,7 +181,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
     /// The path to a job summary output file.
     /// </summary>
     [DefaultValue(null)]
-    public string JobSummaryPath { get; set; }
+    public string? JobSummaryPath { get; set; }
 
     /// <summary>
     /// The indentation for JSON output.
@@ -199,7 +199,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
     /// The file path location to save results.
     /// </summary>
     [DefaultValue(null)]
-    public string Path { get; set; }
+    public string? Path { get; set; }
 
     /// <summary>
     /// The style that results will be presented in.

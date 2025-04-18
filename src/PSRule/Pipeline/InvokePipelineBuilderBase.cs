@@ -100,7 +100,7 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
         return this;
     }
 
-    public override IPipeline Build(IPipelineWriter writer = null)
+    public override IPipeline? Build(IPipelineWriter? writer = null)
     {
         writer ??= PrepareWriter();
         Unblock(writer);

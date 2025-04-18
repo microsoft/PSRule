@@ -8,7 +8,7 @@ namespace PSRule;
 
 internal sealed class ExternalTool : IDisposable
 {
-    private Process _Process;
+    private Process? _Process;
     private readonly StringBuilder _Output;
     private readonly StringBuilder _Error;
     private readonly AutoResetEvent _ErrorWait;
@@ -27,17 +27,17 @@ internal sealed class ExternalTool : IDisposable
         _OutputWait = new AutoResetEvent(false);
     }
 
-    public bool HasExited => _Process.HasExited;
+    public bool HasExited => _Process?.HasExited ?? false;
 
-    internal static ExternalTool Get(string defaultPath, string binary)
+    internal static ExternalTool? Get(string? defaultPath, string binary)
     {
         if (!TryPathFromDefault(defaultPath, binary, out var binaryPath) && !TryPathFromEnvironment(binary, out binaryPath))
             return null;
 
-        return new ExternalTool(binaryPath);
+        return binaryPath == null ? null : new ExternalTool(binaryPath);
     }
 
-    private static bool TryPathFromDefault(string defaultPath, string binary, out string binaryPath)
+    private static bool TryPathFromDefault(string? defaultPath, string binary, out string? binaryPath)
     {
         return TryPath(binary, defaultPath, out binaryPath);
     }
@@ -124,16 +124,16 @@ internal sealed class ExternalTool : IDisposable
 
     private static string[] GetErrorLine(string input)
     {
-        var lines = input.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+        var lines = input.Split([System.Environment.NewLine], StringSplitOptions.RemoveEmptyEntries);
         var result = new List<string>();
         for (var i = 0; i < lines.Length; i++)
             if (!lines[i].Contains(": Warning ") && !lines[i].Contains(": Info "))
                 result.Add(lines[i]);
 
-        return result.ToArray();
+        return [.. result];
     }
 
-    private static bool TryPathFromEnvironment(string binary, out string binaryPath)
+    private static bool TryPathFromEnvironment(string binary, out string? binaryPath)
     {
         binaryPath = null;
         if (!Environment.TryPathEnvironmentVariable(out var path))
@@ -147,10 +147,10 @@ internal sealed class ExternalTool : IDisposable
         return false;
     }
 
-    private static bool TryPath(string binary, string path, out string binaryPath)
+    private static bool TryPath(string binary, string? path, out string? binaryPath)
     {
         binaryPath = null;
-        if (string.IsNullOrEmpty(path))
+        if (path == null || string.IsNullOrEmpty(path))
             return false;
 
         binaryPath = Path.Combine(path, binary);
@@ -169,7 +169,7 @@ internal sealed class ExternalTool : IDisposable
             {
                 _ErrorWait.Dispose();
                 _OutputWait.Dispose();
-                _Process.Dispose();
+                _Process?.Dispose();
             }
             lock (_Error)
             {
