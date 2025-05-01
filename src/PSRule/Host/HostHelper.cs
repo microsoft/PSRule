@@ -193,7 +193,7 @@ internal static class HostHelper
                         }
 
                         // Invoke script
-                        ps.AddScript(string.Concat("& '", file.Path, "'"), true);
+                        ps.AddScript(string.Concat("& '", file.Path.EscapeSingleQuote(), "'"), true);
                         var invokeResults = ps.Invoke();
 
                         // Discovery has errors so skip this file
@@ -222,6 +222,9 @@ internal static class HostHelper
         }
         return [.. results];
     }
+
+    private static string EscapeSingleQuote(this string input)
+        => input.Replace(@"'", @"''");
 
     /// <summary>
     /// Get language blocks from YAML source files.

@@ -299,6 +299,22 @@ public sealed partial class PipelineTests : ContextBaseTests
         //Assert.True(items[2].HasSource());
     }
 
+    /// <summary>
+    /// Test for issue #2885, the error happen when any script source directory contains a quote in the name
+    /// </summary>
+    [Fact]
+    public void PipelineWithInQuoteSource()
+    {
+        var option = GetOption();
+        var builder = PipelineBuilder.Invoke(GetSource(
+        [
+            @"John's Documents\FromFileBaseline.Rule.ps1"
+        ]), option, null);
+        var pipeline = builder.Build();
+
+        Assert.NotNull(pipeline);
+    }
+
     ///// <summary>
     ///// An Invoke pipeline reading from an input file with File format.
     ///// </summary>
