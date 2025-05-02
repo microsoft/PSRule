@@ -308,7 +308,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         var option = GetOption();
         var builder = PipelineBuilder.Invoke(GetSource(
         [
-            @"John's Documents\FromFileBaseline.Rule.ps1"
+            Path.Combine(@"John's Documents", "FromFileBaseline.Rule.ps1")
         ]), option, null);
         var pipeline = builder.Build();
 

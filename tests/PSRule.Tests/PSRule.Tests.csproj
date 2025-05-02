@@ -185,12 +185,10 @@
   </ItemGroup>
   
   <Target Name="CopyFile_ForTest_Issue2885" AfterTargets="Build">
-    <Message Importance="high" Text="Copy File = $(ProjectDir)FromFileBaseline.Rule.ps1 to = $(TargetDir)John's Documents" />
     <Copy
         SourceFiles="$(ProjectDir)FromFileBaseline.Rule.ps1"
         DestinationFolder="$(TargetDir)John's Documents"
     />
-    <Message Importance="high" Text="Test file for issue #2885 copied!!!" />
   </Target>
   
 </Project>
