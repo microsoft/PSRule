@@ -20,13 +20,13 @@ ModuleVersion = '0.0.1'
 GUID = 'ff869216-0ca8-42e8-930f-5728719d4f5d'
 
 # Author of this module
-Author = 'Armaan Mcleod'
+Author            = 'Bernie White'
 
 # Company or vendor of this module
-CompanyName = 'Armaan Mcleod'
+CompanyName       = 'Bernie White'
 
 # Copyright statement for this module
-Copyright = '(c) Armaan Mcleod. All rights reserved.'
+Copyright         = '(c) Bernie White. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'A module for Pester testing for PSRule.'
@@ -109,7 +109,7 @@ PrivateData = @{
         # ReleaseNotes = ''
 
         # Prerelease string of this module
-        # Prerelease = ''
+        Prerelease = 'Alpha'
 
         # Flag to indicate whether the module requires explicit user acceptance for install/update/save
         # RequireLicenseAcceptance = $false

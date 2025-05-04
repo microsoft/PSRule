@@ -30,7 +30,7 @@ public sealed class SourcePipelineBuilderTests : BaseTests
         var sources = builder.Build();
 
         Assert.Single(sources);
-        Assert.Equal(25, sources[0].File.Length);
+        Assert.Equal(27, sources[0].File.Length);
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public sealed class SourcePipelineBuilderTests : BaseTests
         var sources = builder.Build();
 
         Assert.Single(sources);
-        Assert.Equal(20, sources[0].File.Length);
+        Assert.Equal(21, sources[0].File.Length);
     }
 
     [Fact]
@@ -106,6 +106,21 @@ public sealed class SourcePipelineBuilderTests : BaseTests
         var sources = builder.Build();
 
         Assert.Single(sources);
-        Assert.Equal(20, sources[0].File.Length);
+        Assert.Equal(21, sources[0].File.Length);
+    }
+
+    [Theory]
+    [InlineData("TestModule7", "0.0.1")]
+    [InlineData("TestModule8", "0.0.1-Alpha")]
+    public void ModuleByName_WithNameAndVersion_ShouldAddModuleFiles(string name, string version)
+    {
+        var builder = new SourcePipelineBuilder(null, null, cachePath: GetSourcePath(""));
+        builder.ModuleByName(name: name, version: version);
+        var sources = builder.Build();
+
+        Assert.Single(sources);
+        Assert.Equal(name, sources[0].Module.Name);
+        Assert.Equal(version, sources[0].Module.FullVersion);
+        Assert.NotEmpty(sources[0].File);
     }
 }

@@ -39,6 +39,9 @@ What's changed since pre-release v3.0.0-B0453:
     [#2824](https://github.com/microsoft/PSRule/issues/2824)
   - Bump vscode engine to v1.99.1.
     [#2858](https://github.com/microsoft/PSRule/pull/2858)
+- Bug fixes:
+  - Fixed module path not found with pre-release by @BernieWhite.
+    [#2889](https://github.com/microsoft/PSRule/issues/2889)
 
 ## v3.0.0-B0453 (pre-release)
 
