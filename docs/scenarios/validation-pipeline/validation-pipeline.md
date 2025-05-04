@@ -295,8 +295,6 @@ By using `-If` or `-Type` pre-conditions, rules can dynamically provide validati
 When calling PSRule from Pester use `Invoke-PSRule` instead of `Assert-PSRule`.
 `Invoke-PSRule` returns validation result objects that can be tested by Pester `Should` conditions.
 
-Additionally, the `Logging.RuleFail` option can be included to generate an error message for each failing rule.
-
 For example:
 
 ```powershell

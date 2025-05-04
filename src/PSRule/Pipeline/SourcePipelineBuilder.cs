@@ -9,6 +9,7 @@ using PSRule.Definitions;
 using PSRule.Options;
 using PSRule.Pipeline.Output;
 using PSRule.Resources;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
@@ -44,7 +45,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         _Source = new Dictionary<string, Source>(StringComparer.OrdinalIgnoreCase);
         _HostContext = hostContext;
         _Writer = new HostPipelineWriter(hostContext, option, ShouldProcess);
-        _Writer.EnterScope("[Discovery.Source]");
+        // _Writer.EnterScope("[Discovery.Source]");
         _UseDefaultPath = option == null || option.Include == null || option.Include.Path == null;
         _CachePath = cachePath;
         _RestrictScriptSource = option?.Execution?.RestrictScriptSource ?? ExecutionOption.Default.RestrictScriptSource!.Value;
@@ -85,10 +86,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     /// </summary>
     private void Log(string message, params object[] args)
     {
-        if (!_Writer.ShouldWriteVerbose())
-            return;
-
-        _Writer.WriteVerbose(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
+        _Writer.LogVerbose(EventId.None, message, args);
     }
 
     /// <summary>
@@ -96,10 +94,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     /// </summary>
     private void Debug(string message, params object[] args)
     {
-        if (!_Writer.ShouldWriteDebug())
-            return;
-
-        _Writer.WriteDebug(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
+        _Writer.LogVerbose(EventId.None, message, args);
     }
 
     #endregion Logging
@@ -432,8 +427,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
 
     private static SourceFile[]? IncludeFile(string path, string? helpPath, RestrictScriptSource restrictScriptSource, string workspacePath)
     {
-        if (!File.Exists(path))
-            throw new FileNotFoundException(PSRuleResources.SourceNotFound, path);
+        if (!File.Exists(path)) throw new FileNotFoundException(PSRuleResources.SourceNotFound, path);
 
         var sourceType = GetSourceType(path);
         if (sourceType == SourceType.Script && IgnoreScript(path, restrictScriptSource, workspacePath))

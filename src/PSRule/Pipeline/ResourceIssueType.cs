@@ -7,5 +7,9 @@ internal enum ResourceIssueType
 {
     Unknown,
 
-    SuppressionGroupExpired
+    SuppressionGroupExpired,
+
+    DuplicateResourceId,
+
+    DuplicateResourceName,
 }

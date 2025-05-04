@@ -3,6 +3,7 @@
 
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using PSRule.Runtime;
 
 namespace PSRule;
 
@@ -22,8 +23,8 @@ public sealed class PipelineSerializationException : PipelineException
     /// <summary>
     /// Creates a serialization exception.
     /// </summary>
-    internal PipelineSerializationException(string message, string path, Exception innerException)
-        : this(message, innerException)
+    internal PipelineSerializationException(EventId eventId, string message, string path, Exception innerException)
+        : base(eventId, message, innerException)
     {
         Path = path;
     }

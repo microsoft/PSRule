@@ -16,7 +16,7 @@ internal interface ILanguageScopeSet : IDisposable
     /// <param name="name">The name of the scope.</param>
     /// <param name="scope">The resulting scope instance.</param>
     /// <returns>Returns <c>true</c> when the scope exists. Otherwise returns <c>false</c>.</returns>
-    bool TryScope(string name, out ILanguageScope? scope);
+    bool TryScope(string? name, out ILanguageScope? scope);
 
     /// <summary>
     /// Get all the language scopes configured in the collection.

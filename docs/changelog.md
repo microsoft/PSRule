@@ -45,6 +45,10 @@ What's changed since pre-release v3.0.0-B0453:
 What's changed since pre-release v3.0.0-B0416:
 
 - Engineering:
+  - **Important change**: Remove legacy log scopes by @BernieWhite.
+    [#2891](https://github.com/microsoft/PSRule/issues/2891)
+  - **Important change**: Remove pass fail streams by @BernieWhite.
+    [#2892](https://github.com/microsoft/PSRule/issues/2892)
   - Bump System.Drawing.Common to v9.0.3.
     [#2808](https://github.com/microsoft/PSRule/pull/2808)
   - Bump NuGet.Protocol to v6.13.2.

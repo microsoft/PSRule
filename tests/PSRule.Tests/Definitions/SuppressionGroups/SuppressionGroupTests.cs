@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Linq;
 using PSRule.Configuration;
 using PSRule.Pipeline;
@@ -97,16 +96,13 @@ public sealed class SuppressionGroupTests : ContextBaseTests
         context.Initialize(sources);
         context.Begin();
 
-        var suppressionGroup = resourcesCache.OfType<SuppressionGroupV1>().Where(g => g.Id.Equals(".\\SuppressWithExpiry"));
+        var resourceId = ".\\SuppressWithExpiry";
+
+        var suppressionGroup = resourcesCache.OfType<SuppressionGroupV1>().Where(g => g.Id.Equals(resourceId));
         Assert.Empty(suppressionGroup);
 
-        var issues = resourcesCache.Issues.Where(issue => issue.Resource.Id.Equals(".\\SuppressWithExpiry"));
+        var issues = resourcesCache.Issues.Where(issue => issue.ResourceId.Equals(resourceId));
         Assert.Single(issues);
-
-        var actual = issues.FirstOrDefault().Resource as SuppressionGroupV1;
-        Assert.Equal("SuppressWithExpiry", actual.Name);
-        Assert.Equal("Suppress with expiry.", actual.Info.Synopsis.Text);
-        Assert.Equal(DateTime.Parse("2022-01-01T00:00:00Z").ToUniversalTime(), actual.Spec.ExpiresOn);
     }
 
     #region Helper methods

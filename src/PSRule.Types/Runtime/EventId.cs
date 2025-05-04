@@ -7,8 +7,14 @@ namespace PSRule.Runtime;
 /// Identifies a logging event.
 /// The primary identifier is the "Id" property, with the "Name" property providing a short description of this type of event.
 /// </summary>
+[Serializable]
 public readonly struct EventId : IEquatable<EventId>
 {
+    /// <summary>
+    /// The default event id for an unknown event.
+    /// </summary>
+    public static readonly EventId None = new(0);
+
     /// <summary>
     /// Implicitly creates an EventId from the given <see cref="int"/>.
     /// </summary>

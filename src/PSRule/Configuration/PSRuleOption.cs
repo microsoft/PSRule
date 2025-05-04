@@ -41,7 +41,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         Format = FormatOption.Default,
         Include = IncludeOption.Default,
         Input = InputOption.Default,
-        Logging = LoggingOption.Default,
         Output = OutputOption.Default,
         Override = OverrideOption.Default,
         Rule = RuleOption.Default,
@@ -63,7 +62,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         Format = new FormatOption();
         Include = new IncludeOption();
         Input = new InputOption();
-        Logging = new LoggingOption();
         Output = new OutputOption();
         Override = new OverrideOption();
         Repository = new RepositoryOption();
@@ -87,7 +85,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         Format = new FormatOption(option?.Format);
         Include = new IncludeOption(option?.Include);
         Input = new InputOption(option?.Input);
-        Logging = new LoggingOption(option?.Logging);
         Output = new OutputOption(option?.Output);
         Override = new OverrideOption(option?.Override);
         Repository = new RepositoryOption(option?.Repository);
@@ -141,11 +138,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     /// Options that affect how input types are processed.
     /// </summary>
     public InputOption Input { get; set; }
-
-    /// <summary>
-    /// Options for logging outcomes to a informational streams.
-    /// </summary>
-    public LoggingOption Logging { get; set; }
 
     /// <summary>
     /// Options that affect how output is generated.
@@ -242,7 +234,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         result.Format = FormatOption.Combine(result.Format, o2?.Format);
         result.Include = IncludeOption.Combine(result.Include, o2?.Include);
         result.Input = InputOption.Combine(result.Input, o2?.Input);
-        result.Logging = LoggingOption.Combine(result.Logging, o2?.Logging);
         result.Output = OutputOption.Combine(result?.Output, o2?.Output);
         result.Override = OverrideOption.Combine(result?.Override, o2?.Override);
         result.Repository = RepositoryOption.Combine(result?.Repository, o2?.Repository);
@@ -378,7 +369,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         option.Format.Load();
         option.Include.Load();
         option.Input.Load();
-        option.Logging.Load();
         option.Output.Load();
         option.Override.Load();
         option.Repository.Load();
@@ -412,7 +402,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
         option.Format.Import(index);
         option.Include.Load(index);
         option.Input.Load(index);
-        option.Logging.Load(index);
         option.Output.Load(index);
         option.Override.Import(index);
         option.Repository.Load(index);
@@ -481,7 +470,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
             Format == other.Format &&
             Include == other.Include &&
             Input == other.Input &&
-            Logging == other.Logging &&
             Output == other.Output &&
             Override == other.Override &&
             Suppression == other.Suppression &&
@@ -506,7 +494,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
             hash = hash * 23 + (Format != null ? Format.GetHashCode() : 0);
             hash = hash * 23 + (Include != null ? Include.GetHashCode() : 0);
             hash = hash * 23 + (Input != null ? Input.GetHashCode() : 0);
-            hash = hash * 23 + (Logging != null ? Logging.GetHashCode() : 0);
             hash = hash * 23 + (Output != null ? Output.GetHashCode() : 0);
             hash = hash * 23 + (Override != null ? Override.GetHashCode() : 0);
             hash = hash * 23 + (Suppression != null ? Suppression.GetHashCode() : 0);

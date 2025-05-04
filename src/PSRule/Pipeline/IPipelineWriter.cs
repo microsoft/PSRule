@@ -12,6 +12,11 @@ namespace PSRule.Pipeline;
 public interface IPipelineWriter : IDisposable, ILogger
 {
     /// <summary>
+    /// Get the last exit code.
+    /// </summary>
+    int ExitCode { get; }
+
+    /// <summary>
     /// Determines if any errors were reported.
     /// </summary>
     bool HadErrors { get; }
@@ -22,76 +27,21 @@ public interface IPipelineWriter : IDisposable, ILogger
     bool HadFailures { get; }
 
     /// <summary>
-    /// Write a verbose message.
-    /// </summary>
-    void WriteVerbose(string message);
-
-    /// <summary>
-    /// Determines if a verbose message should be written to output.
-    /// </summary>
-    bool ShouldWriteVerbose();
-
-    /// <summary>
-    /// Write a warning message.
-    /// </summary>
-    void WriteWarning(string message);
-
-    /// <summary>
-    /// Determines if a warning message should be written to output.
-    /// </summary>
-    bool ShouldWriteWarning();
-
-    /// <summary>
-    /// Write an error message.
-    /// </summary>
-    void WriteError(ErrorRecord errorRecord);
-
-    /// <summary>
-    /// Determines if an error message should be written to output.
-    /// </summary>
-    bool ShouldWriteError();
-
-    /// <summary>
-    /// Write an informational message.
-    /// </summary>
-    void WriteInformation(InformationRecord informationRecord);
-
-    /// <summary>
     /// Write a message to the host process.
     /// </summary>
     void WriteHost(HostInformationMessage info);
 
     /// <summary>
-    /// Determines if an informational message should be written to output.
-    /// </summary>
-    bool ShouldWriteInformation();
-
-    /// <summary>
-    /// Write a debug message.
-    /// </summary>
-    void WriteDebug(string text, params object[] args);
-
-    /// <summary>
-    /// Determines if a debug message should be written to output.
-    /// </summary>
-    bool ShouldWriteDebug();
-
-    /// <summary>
     /// Write an object to output.
     /// </summary>
-    /// <param name="sendToPipeline">The object to write to the pipeline.</param>
+    /// <param name="o">The object to write to output.</param>
     /// <param name="enumerateCollection">Determines when the object is enumerable if it should be enumerated as more then one object.</param>
-    void WriteObject(object sendToPipeline, bool enumerateCollection);
+    void WriteObject(object o, bool enumerateCollection);
 
     /// <summary>
-    /// Enter a logging scope.
+    /// Write a result to the pipeline.
     /// </summary>
-    void EnterScope(string scopeName);
-
-    /// <summary>
-    /// Exit a logging scope.
-    /// </summary>
-    void ExitScope();
+    void WriteResult(InvokeResult result);
 
     /// <summary>
     /// Start and initialize the writer.
@@ -102,4 +52,10 @@ public interface IPipelineWriter : IDisposable, ILogger
     /// Stop and finalized the writer.
     /// </summary>
     void End(IPipelineResult result);
+
+    /// <summary>
+    /// Set the terminating exit code of the pipeline.
+    /// </summary>
+    /// <param name="exitCode">The numerical exit code.</param>
+    void SetExitCode(int exitCode);
 }

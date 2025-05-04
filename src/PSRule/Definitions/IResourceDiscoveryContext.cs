@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions;
@@ -16,7 +15,7 @@ internal interface IResourceDiscoveryContext
     /// <summary>
     /// A writer to log messages.
     /// </summary>
-    IPipelineWriter Writer { get; }
+    ILogger Logger { get; }
 
     /// <summary>
     /// The current source file.

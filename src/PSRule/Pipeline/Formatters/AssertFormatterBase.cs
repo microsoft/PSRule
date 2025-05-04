@@ -6,6 +6,7 @@ using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Resources;
 using PSRule.Rules;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline.Formatters;
 
@@ -89,17 +90,17 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
 
     protected sealed override void DoWriteVerbose(string message)
     {
-        Writer.WriteVerbose(message);
+        Writer.LogVerbose(EventId.None, message);
     }
 
     protected sealed override void DoWriteInformation(InformationRecord informationRecord)
     {
-        Writer.WriteInformation(informationRecord);
+        Writer.LogInformation(EventId.None, informationRecord.MessageData.ToString());
     }
 
     protected sealed override void DoWriteDebug(DebugRecord debugRecord)
     {
-        Writer.WriteDebug(debugRecord);
+        Writer.LogDebug(EventId.None, debugRecord.Message);
     }
 
     protected sealed override void DoWriteObject(object sendToPipeline, bool enumerateCollection)

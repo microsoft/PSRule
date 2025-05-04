@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
@@ -10,8 +11,19 @@ namespace PSRule.Pipeline;
 /// <summary>
 /// A host context for handling input and output emitted from the pipeline.
 /// </summary>
-public interface IHostContext
+public interface IHostContext : ILogger
 {
+    /// <summary>
+    /// Configures the root path to use for caching artifacts including modules.
+    /// Each artifact is in a subdirectory of the root path.
+    /// </summary>
+    string? CachePath { get; }
+
+    /// <summary>
+    /// Get the last exit code.
+    /// </summary>
+    int ExitCode { get; }
+
     /// <summary>
     /// Determines if the pipeline is executing in a remote PowerShell session.
     /// </summary>
@@ -40,34 +52,16 @@ public interface IHostContext
     void SetVariable<T>(string variableName, T value);
 
     /// <summary>
-    /// Handle an error reported by the pipeline.
+    /// Write an object to output.
     /// </summary>
-    void Error(ErrorRecord errorRecord);
+    /// <param name="o">The object to write to output.</param>
+    /// <param name="enumerateCollection">Determines when the object is enumerable if it should be enumerated as more then one object.</param>
+    void WriteObject(object o, bool enumerateCollection);
 
     /// <summary>
-    /// Handle a warning reported by the pipeline.
+    /// Write a message to the host.
     /// </summary>
-    void Warning(string text);
-
-    /// <summary>
-    /// Handle an informational record reported by the pipeline.
-    /// </summary>
-    void Information(InformationRecord informationRecord);
-
-    /// <summary>
-    /// Handle a verbose message reported by the pipeline.
-    /// </summary>
-    void Verbose(string text);
-
-    /// <summary>
-    /// Handle a debug message reported by the pipeline.
-    /// </summary>
-    void Debug(string text);
-
-    /// <summary>
-    /// Handle an object emitted from the pipeline.
-    /// </summary>
-    void Object(object sendToPipeline, bool enumerateCollection);
+    void WriteHost(string message, ConsoleColor? backgroundColor = null, ConsoleColor? foregroundColor = null, bool? noNewLine = null);
 
     /// <summary>
     /// Determines if a destructive action such as overwriting a file should be processed.
@@ -77,13 +71,13 @@ public interface IHostContext
     /// <summary>
     /// Get the current working path.
     /// </summary>
-    string GetWorkingPath();
+    string GetWorkingPath(); 
 
     /// <summary>
-    /// Configures the root path to use for caching artifacts including modules.
-    /// Each artifact is in a subdirectory of the root path.
+    /// Set the terminating exit code of the pipeline.
     /// </summary>
-    string? CachePath { get; }
+    /// <param name="exitCode">The numerical exit code.</param>
+    void SetExitCode(int exitCode);
 }
 
 #nullable restore

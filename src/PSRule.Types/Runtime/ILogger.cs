@@ -23,6 +23,6 @@ public interface ILogger
     /// <param name="eventId">An event identifier for the diagnostic message.</param>
     /// <param name="state">Additional information that describes the diagnostic state to log.</param>
     /// <param name="exception">An optional exception which the diagnostic message is related to.</param>
-    /// <param name="formatter">A function to format the diagnostic message for the outpuWt stream.</param>
+    /// <param name="formatter">A function to format the diagnostic message for the output stream.</param>
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter);
 }

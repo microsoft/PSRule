@@ -574,7 +574,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PSR0002: Summary results are not supported with Job Summaries. See https://aka.ms/ps-rule/troubleshooting..
+        ///   Looks up a localized string similar to PSR0002: Summary results are not supported with Job Summaries. See https://aka.ms/ps-rule/troubleshooting-v3.
         /// </summary>
         internal static string PSR0002 {
             get {
@@ -691,7 +691,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting.
+        ///   Looks up a localized string similar to PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting-v3.
         /// </summary>
         internal static string PSR0015 {
             get {
@@ -700,7 +700,7 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting.
+        ///   Looks up a localized string similar to PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting-v3.
         /// </summary>
         internal static string PSR0016 {
             get {
@@ -709,11 +709,20 @@ namespace PSRule.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PSR0017: No valid input objects or files were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting.
+        ///   Looks up a localized string similar to PSR0017: No valid input objects or files were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting-v3.
         /// </summary>
         internal static string PSR0017 {
             get {
                 return ResourceManager.GetString("PSR0017", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PSR0022: Language scope not found. See https://aka.ms/ps-rule/troubleshooting-v3.
+        /// </summary>
+        internal static string PSR0022 {
+            get {
+                return ResourceManager.GetString("PSR0022", resourceCulture);
             }
         }
         

@@ -5,6 +5,7 @@ using System.Management.Automation;
 using System.Text;
 using PSRule.Configuration;
 using PSRule.Resources;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline.Output;
 
@@ -57,7 +58,7 @@ internal sealed class FileOutputWriter : PipelineWriter
         }
         else
         {
-            WriteInformation(new InformationRecord(message, Source));
+            this.LogInformation(EventId.None, message);
         }
     }
 }

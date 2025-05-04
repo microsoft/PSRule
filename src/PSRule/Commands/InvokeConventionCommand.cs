@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
-using PSRule.Pipeline;
 using PSRule.Resources;
 using PSRule.Runtime;
 
@@ -36,7 +35,7 @@ internal sealed class InvokeConventionCommand : Cmdlet
                     var ifResult = RuleConditionHelper.Create(If.Invoke());
                     if (!ifResult.AllOf())
                     {
-                        context.Writer.DebugMessage(PSRuleResources.DebugTargetIfMismatch);
+                        context.Logger?.LogDebug(EventId.None, PSRuleResources.DebugTargetIfMismatch);
                         return;
                     }
                 }

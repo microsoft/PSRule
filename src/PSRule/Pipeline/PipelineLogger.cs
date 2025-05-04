@@ -51,11 +51,7 @@ internal sealed class PipelineLogger : PipelineLoggerBase
 
     internal void Configure(PSRuleOption option)
     {
-        if (option.Logging.LimitVerbose != null && option.Logging.LimitVerbose.Length > 0)
-            _VerboseFilter = new HashSet<string>(option.Logging.LimitVerbose);
-
-        if (option.Logging.LimitDebug != null && option.Logging.LimitDebug.Length > 0)
-            _DebugFilter = new HashSet<string>(option.Logging.LimitDebug);
+        // Do nothing.
     }
 
     private static bool GetPreferenceVariable(EngineIntrinsics executionContext, string variableName)

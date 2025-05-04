@@ -83,7 +83,7 @@ internal sealed class ExportConventionCommand : LanguageBlock
             position: MyInvocation.OffsetInLine
         );
 
-        context.VerboseFoundResource(name: Name, moduleName: source.Module, scriptName: MyInvocation.ScriptName);
+        context.VerboseFoundResource(name: Name, scope: source.Module, scriptName: MyInvocation.ScriptName);
 
         var helpInfo = new ResourceHelpInfo(Name, Name, new InfoString(commentMetadata.Synopsis), new InfoString());
 

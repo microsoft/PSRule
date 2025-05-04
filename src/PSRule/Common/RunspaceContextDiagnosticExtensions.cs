@@ -16,7 +16,7 @@ internal static class RunspaceContextDiagnosticExtensions
     internal static void WarnPropertyObsolete(this LegacyRunspaceContext context, string variableName, string propertyName)
     {
         context.DebugPropertyObsolete(variableName, propertyName);
-        if (context.Writer == null || !context.Writer.ShouldWriteWarning() || !context.ShouldWarnOnce(WARN_KEY_PROPERTY, variableName, propertyName))
+        if (context.Writer == null || !context.Writer.IsEnabled(LogLevel.Warning) || !context.ShouldWarnOnce(WARN_KEY_PROPERTY, variableName, propertyName))
             return;
 
         context.Writer.WriteWarning(PSRuleResources.PropertyObsolete, variableName, propertyName);
@@ -27,7 +27,7 @@ internal static class RunspaceContextDiagnosticExtensions
     /// </summary>
     internal static void WarnDeprecatedOption(this LegacyRunspaceContext context, string option)
     {
-        if (context.Writer == null || !context.Writer.ShouldWriteWarning())
+        if (context.Writer == null || !context.Writer.IsEnabled(LogLevel.Warning))
             return;
 
         context.Writer.WriteWarning(PSRuleResources.DeprecatedOption, option);
@@ -35,7 +35,7 @@ internal static class RunspaceContextDiagnosticExtensions
 
     internal static void WarnDuplicateRuleName(this LegacyRunspaceContext context, string ruleName)
     {
-        if (context == null || context.Writer == null || !context.Writer.ShouldWriteWarning())
+        if (context == null || context.Writer == null || !context.Writer.IsEnabled(LogLevel.Warning))
             return;
 
         context.Writer.WriteWarning(PSRuleResources.DuplicateRuleName, ruleName);
@@ -76,16 +76,16 @@ internal static class RunspaceContextDiagnosticExtensions
         if (action == ExecutionActionPreference.Error)
             throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
 
-        else if (action == ExecutionActionPreference.Warn && context.Writer != null && context.Writer.ShouldWriteWarning())
+        else if (action == ExecutionActionPreference.Warn && context.Writer != null && context.Writer.IsEnabled(LogLevel.Warning))
             context.Writer.WriteWarning(message, args);
 
-        else if (action == ExecutionActionPreference.Debug && context.Writer != null && context.Writer.ShouldWriteDebug())
+        else if (action == ExecutionActionPreference.Debug && context.Writer != null && context.Writer.IsEnabled(LogLevel.Debug))
             context.Writer.WriteDebug(message, args);
     }
 
     internal static void DebugPropertyObsolete(this LegacyRunspaceContext context, string variableName, string propertyName)
     {
-        if (context == null || context.Writer == null || !context.Writer.ShouldWriteDebug())
+        if (context == null || context.Writer == null || !context.Writer.IsEnabled(LogLevel.Debug))
             return;
 
         context.Writer.WriteDebug(PSRuleResources.DebugPropertyObsolete, context.RuleBlock.Name, variableName, propertyName);

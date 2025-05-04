@@ -3,36 +3,53 @@
 
 using System.Management.Automation;
 using PSRule.Definitions;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
 #nullable enable
 
 /// <summary>
-/// A base class for custom host context instances.
+/// A base class for host context instances, by default this is a no-op implementation.
 /// </summary>
 public abstract class HostContext : IHostContext
 {
-    private const string ErrorPreference = "ErrorActionPreference";
-    private const string WarningPreference = "WarningPreference";
+    /// <summary>
+    /// A preference variable for error handling action.
+    /// </summary>
+    protected const string ErrorPreference = "ErrorActionPreference";
+
+    /// <summary>
+    /// A preference variable for warning handling action.
+    /// </summary>
+    protected const string WarningPreference = "WarningPreference";
+
+    /// <summary>
+    /// A preference variable for verbose handling action.
+    /// </summary>
+    protected const string VerbosePreference = "VerbosePreference";
+
+    /// <summary>
+    /// A preference variable for information handling action.
+    /// </summary>
+    protected const string InformationPreference = "InformationPreference";
+
+    /// <summary>
+    /// A preference variable for debug handling action.
+    /// </summary>
+    protected const string DebugPreference = "DebugPreference";
+
+    /// <inheritdoc/>
+    public virtual string? CachePath => null;
+
+    /// <inheritdoc/>
+    public int ExitCode { get; private set; }
 
     /// <inheritdoc/>
     public virtual bool InSession => false;
 
     /// <inheritdoc/>
-    public virtual bool HadErrors { get; protected set; }
-
-    /// <inheritdoc/>
-    public virtual void Debug(string text)
-    {
-
-    }
-
-    /// <inheritdoc/>
-    public virtual void Error(ErrorRecord errorRecord)
-    {
-        HadErrors = true;
-    }
+    public virtual bool HadErrors { get; private set; }
 
     /// <inheritdoc/>
     public virtual ActionPreference GetPreferenceVariable(string variableName)
@@ -48,18 +65,18 @@ public abstract class HostContext : IHostContext
     }
 
     /// <inheritdoc/>
-    public virtual void Information(InformationRecord informationRecord)
-    {
-
-    }
-
-    /// <inheritdoc/>
-    public virtual void Object(object sendToPipeline, bool enumerateCollection)
+    public virtual void WriteObject(object sendToPipeline, bool enumerateCollection)
     {
         if (sendToPipeline is IResultRecord record)
             Record(record);
         //else if (enumerateCollection)
         //    foreach (var item in record)
+    }
+
+    /// <inheritdoc/>
+    public virtual void WriteHost(string message, ConsoleColor? backgroundColor = null, ConsoleColor? foregroundColor = null, bool? noNewLine = null)
+    {
+
     }
 
     /// <inheritdoc/>
@@ -70,18 +87,6 @@ public abstract class HostContext : IHostContext
 
     /// <inheritdoc/>
     public abstract bool ShouldProcess(string target, string action);
-
-    /// <inheritdoc/>
-    public virtual void Verbose(string text)
-    {
-
-    }
-
-    /// <inheritdoc/>
-    public virtual void Warning(string text)
-    {
-
-    }
 
     /// <summary>
     /// Handle record objects emitted from the pipeline.
@@ -98,7 +103,25 @@ public abstract class HostContext : IHostContext
     }
 
     /// <inheritdoc/>
-    public virtual string? CachePath => null;
+    public virtual bool IsEnabled(LogLevel logLevel)
+    {
+        return false;
+    }
+
+    /// <inheritdoc/>
+    public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    {
+        if (logLevel == LogLevel.Error || logLevel == LogLevel.Critical)
+            HadErrors = true;
+    }
+
+    /// <inheritdoc/>
+    public virtual void SetExitCode(int exitCode)
+    {
+        if (exitCode == 0) return;
+
+        ExitCode = exitCode;
+    }
 }
 
 #nullable restore

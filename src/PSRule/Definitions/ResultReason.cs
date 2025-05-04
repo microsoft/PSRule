@@ -10,7 +10,7 @@ namespace PSRule.Definitions;
 /// <summary>
 /// A reason for the rule result.
 /// </summary>
-internal sealed class ResultReason : IResultReason
+public sealed class ResultReason : IResultReason
 {
     private readonly string _ParentPath;
 

@@ -1,28 +1,19 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Management.Automation;
 using System.Text.RegularExpressions;
-using PSRule.Pipeline;
-using PSRule.Resources;
+using PSRule.Runtime;
 
 namespace PSRule.Definitions;
 
 /// <summary>
 /// A helper class to help validate a resource object.
 /// </summary>
-internal sealed class ResourceValidator : IResourceValidator
+internal sealed class ResourceValidator(ILogger? logger) : IResourceValidator
 {
-    private const string ERROR_ID_INVALID_RESOURCE_NAME = "PSRule.Parse.InvalidResourceName";
-
     private static readonly Regex ValidName = new("^[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F][^<>:/\\\\|?*\"'`+@\x00-\x1F]{1,126}[^<>:/\\\\|?*\"'`+@._\\-\x00-\x1F]$", RegexOptions.Compiled, TimeSpan.FromSeconds(5));
 
-    private readonly IPipelineWriter _Writer;
-
-    public ResourceValidator(IPipelineWriter writer)
-    {
-        _Writer = writer;
-    }
+    private readonly ILogger? _Logger = logger;
 
     internal static bool IsNameValid(string name)
     {
@@ -41,7 +32,7 @@ internal sealed class ResourceValidator : IResourceValidator
         if (IsNameValid(name))
             return true;
 
-        ReportError(ERROR_ID_INVALID_RESOURCE_NAME, PSRuleResources.InvalidResourceName, name, ReportExtent(resource.Extent));
+        _Logger?.LogInvalidResourceName(name, ReportExtent(resource.Extent));
         return false;
     }
 
@@ -50,7 +41,7 @@ internal sealed class ResourceValidator : IResourceValidator
         return !name.HasValue || VisitName(resource, name.Value.Name);
     }
 
-    private bool VisitName(IResource resource, ResourceId[] name)
+    private bool VisitName(IResource resource, ResourceId[]? name)
     {
         if (name == null || name.Length == 0)
             return true;
@@ -65,29 +56,5 @@ internal sealed class ResourceValidator : IResourceValidator
     private static string ReportExtent(ISourceExtent extent)
     {
         return string.Concat(extent.File, " line ", extent.Line);
-    }
-
-    private void ReportError(string errorId, string message, params object[] args)
-    {
-        if (_Writer == null)
-            return;
-
-        ReportError(new Pipeline.ParseException(
-            message: string.Format(Thread.CurrentThread.CurrentCulture, message, args),
-            errorId: errorId
-        ));
-    }
-
-    private void ReportError(Pipeline.ParseException exception)
-    {
-        if (_Writer == null)
-            return;
-
-        _Writer.WriteError(new ErrorRecord(
-            exception: exception,
-            errorId: exception.ErrorId,
-            errorCategory: ErrorCategory.InvalidOperation,
-            targetObject: null
-        ));
     }
 }

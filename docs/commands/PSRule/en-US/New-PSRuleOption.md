@@ -30,8 +30,7 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-IncludePath <String[]>] [-InputFileObjects <Boolean>] [-InputStringFormat <String>]
  [-InputIgnoreGitPath <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
  [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
- [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-InputPathIgnore <String[]>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
  [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
@@ -57,8 +56,7 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-IncludePath <String[]>] [-InputFileObjects <Boolean>] [-InputStringFormat <String>]
  [-InputIgnoreGitPath <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
  [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
- [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-InputPathIgnore <String[]>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
  [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
@@ -84,8 +82,7 @@ New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTar
  [-IncludePath <String[]>] [-InputFileObjects <Boolean>] [-InputStringFormat <String>]
  [-InputIgnoreGitPath <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>] [-InputIgnoreObjectSource <Boolean>]
  [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputTargetType <String[]>]
- [-InputPathIgnore <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-InputPathIgnore <String[]>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
  [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
@@ -596,74 +593,6 @@ The `Input.IgnoreObjectSource` option determines if objects will be skipped if t
 
 ```yaml
 Type: Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LoggingLimitDebug
-
-Sets the `Logging.LimitDebug` option to limit debug messages to a list of named debug scopes.
-See about_PSRule_Options for more information.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LoggingLimitVerbose
-
-Sets the `Logging.LimitVerbose` option to limit verbose messages to a list of named verbose scopes.
-See about_PSRule_Options for more information.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LoggingRuleFail
-
-Sets the `Logging.RuleFail` option to generate an informational message for each rule fail.
-See about_PSRule_Options for more information.
-
-```yaml
-Type: OutcomeLogStream
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LoggingRulePass
-
-Sets the `Logging.RulePass` option to generate an informational message for each rule pass.
-See about_PSRule_Options for more information.
-
-```yaml
-Type: OutcomeLogStream
 Parameter Sets: (All)
 Aliases:
 

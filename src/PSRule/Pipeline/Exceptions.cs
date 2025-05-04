@@ -144,46 +144,20 @@ public sealed class ParseException : PipelineException
     /// <summary>
     /// Creates a parser exception.
     /// </summary>
-    /// <param name="message">The detail of the exception.</param>
-    /// <param name="errorId">A unique identifier related to the exception.</param>
-    internal ParseException(string message, string errorId) : base(message)
-    {
-        ErrorId = errorId;
-    }
+    internal ParseException(EventId eventId, string message)
+        : base(eventId, message) { }
 
     /// <summary>
     /// Creates a parser exception.
     /// </summary>
-    /// <param name="message">The detail of the exception.</param>
-    /// <param name="errorId">A unique identifier related to the exception.</param>
-    /// <param name="innerException">A nested exception that caused the issue.</param>
-    internal ParseException(string message, string errorId, Exception innerException) : base(message, innerException)
-    {
-        ErrorId = errorId;
-    }
+    internal ParseException(EventId eventId, string message, Exception innerException)
+        : base(eventId, message, innerException) { }
 
     /// <summary>
     /// Creates a parser exception.
     /// </summary>
-    private ParseException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-        ErrorId = info.GetString("ErrorId");
-    }
-
-    /// <summary>
-    /// An associated identifier related to why the exception was thrown.
-    /// </summary>
-    public string ErrorId { get; }
-
-    /// <inheritdoc/>
-    [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-    public override void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        if (info == null) throw new ArgumentNullException(nameof(info));
-
-        info.AddValue("ErrorId", ErrorId);
-        base.GetObjectData(info, context);
-    }
+    private ParseException(SerializationInfo info, StreamingContext context)
+        : base(info, context) { }
 }
 
 /// <summary>
@@ -232,14 +206,13 @@ public sealed class RuleException : RuntimeException
     /// <summary>
     /// An associated error record related to the exception.
     /// </summary>
-    public ErrorRecord ErrorRecord { get; }
+    public ErrorRecord? ErrorRecord { get; }
 
     /// <inheritdoc/>
     [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
     public override void GetObjectData(SerializationInfo info, StreamingContext context)
     {
-        if (info == null)
-            throw new ArgumentNullException(nameof(info));
+        if (info == null) throw new ArgumentNullException(nameof(info));
 
         base.GetObjectData(info, context);
     }
@@ -428,44 +401,6 @@ public sealed class FailPipelineException : PipelineException
 
     /// <inheritdoc/>
     private FailPipelineException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
-
-    /// <inheritdoc/>
-    [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-    public override void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        if (info == null)
-            throw new ArgumentNullException(nameof(info));
-
-        base.GetObjectData(info, context);
-    }
-}
-
-/// <summary>
-/// An exception thrown by PSRule when a runtime property or method is used outside of the intended scope.
-/// Avoid using runtime variables outside of a PSRule pipeline.
-/// </summary>
-[Serializable]
-public sealed class RuntimeScopeException : PipelineException
-{
-    /// <inheritdoc/>
-    public RuntimeScopeException()
-    {
-    }
-
-    /// <inheritdoc/>
-    public RuntimeScopeException(string message) : base(message)
-    {
-    }
-
-    /// <inheritdoc/>
-    public RuntimeScopeException(string message, Exception innerException) : base(message, innerException)
-    {
-    }
-
-    /// <inheritdoc/>
-    private RuntimeScopeException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 

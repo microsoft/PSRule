@@ -65,8 +65,6 @@ internal class OptionScope
 
     public InputOption Input { get; set; }
 
-    public LoggingOption Logging { get; set; }
-
     public OutputOption Output { get; set; }
 
     public OverrideOption Override { get; set; }
@@ -109,7 +107,6 @@ internal class OptionScope
             Execution = option.Execution,
             Include = option.Include,
             Input = option.Input,
-            Logging = option.Logging,
             Output = option.Output,
             Override = option.Override,
             Repository = option.Repository,

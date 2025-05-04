@@ -12,7 +12,7 @@ namespace PSRule.Pipeline;
 #nullable enable
 
 /// <summary>
-/// A base class for writers.
+/// A base class for pipeline writers that passes through to an inner writer.
 /// </summary>
 internal abstract class PipelineWriter(IPipelineWriter? inner, PSRuleOption option, ShouldProcess shouldProcess) : IPipelineWriter
 {
@@ -22,173 +22,55 @@ internal abstract class PipelineWriter(IPipelineWriter? inner, PSRuleOption opti
     protected const string InformationPreference = "InformationPreference";
     protected const string DebugPreference = "DebugPreference";
 
-    private readonly IPipelineWriter? _Writer = inner;
+    private readonly IPipelineWriter? _Inner = inner;
     private readonly ShouldProcess _ShouldProcess = shouldProcess;
-
     protected readonly PSRuleOption Option = option;
 
     private bool _IsDisposed;
-    private bool _HadErrors;
-    private bool _HadFailures;
-
-    bool IPipelineWriter.HadErrors => HadErrors;
-
-    bool IPipelineWriter.HadFailures => HadFailures;
 
     /// <inheritdoc/>
-    public virtual bool HadErrors
-    {
-        get
-        {
-            return _HadErrors || (_Writer != null && _Writer.HadErrors);
-        }
-        set
-        {
-            _HadErrors = value;
-        }
-    }
+    public int ExitCode => _Inner?.ExitCode ?? 0;
 
     /// <inheritdoc/>
-    public virtual bool HadFailures
-    {
-        get
-        {
-            return _HadFailures || (_Writer != null && _Writer.HadFailures);
-        }
-        set
-        {
-            _HadFailures = value;
-        }
-    }
+    public virtual bool HadErrors => _Inner?.HadErrors ?? false;
+
+    /// <inheritdoc/>
+    public virtual bool HadFailures => _Inner?.HadFailures ?? false;
 
     /// <inheritdoc/>
     public virtual void Begin()
     {
-        if (_Writer == null)
-            return;
-
-        _Writer.Begin();
+        _Inner?.Begin();
     }
 
     /// <inheritdoc/>
     public virtual void WriteObject(object sendToPipeline, bool enumerateCollection)
     {
-        if (_Writer == null || sendToPipeline == null)
-            return;
+        _Inner?.WriteObject(sendToPipeline, enumerateCollection);
+    }
 
-        _Writer.WriteObject(sendToPipeline, enumerateCollection);
+    /// <inheritdoc/>
+    public virtual void WriteResult(InvokeResult result)
+    {
+        _Inner?.WriteResult(result);
     }
 
     /// <inheritdoc/>
     public virtual void End(IPipelineResult result)
     {
-        if (_Writer == null)
-            return;
-
-        _Writer.End(result);
-    }
-
-    /// <inheritdoc/>
-    public virtual void WriteVerbose(string message)
-    {
-        if (_Writer == null || string.IsNullOrEmpty(message))
-            return;
-
-        _Writer.WriteVerbose(message);
-    }
-
-    /// <inheritdoc/>
-    public virtual bool ShouldWriteVerbose()
-    {
-        return _Writer != null && _Writer.ShouldWriteVerbose();
-    }
-
-    /// <inheritdoc/>
-    public virtual void WriteWarning(string message)
-    {
-        if (_Writer == null || string.IsNullOrEmpty(message))
-            return;
-
-        _Writer.WriteWarning(message);
-    }
-
-    /// <inheritdoc/>
-    public virtual bool ShouldWriteWarning()
-    {
-        return _Writer != null && _Writer.ShouldWriteWarning();
-    }
-
-    /// <inheritdoc/>
-    public virtual void WriteError(ErrorRecord errorRecord)
-    {
-        if (_Writer == null || errorRecord == null)
-            return;
-
-        _Writer.WriteError(errorRecord);
-    }
-
-    /// <inheritdoc/>
-    public virtual bool ShouldWriteError()
-    {
-        return _Writer != null && _Writer.ShouldWriteError();
-    }
-
-    /// <inheritdoc/>
-    public virtual void WriteInformation(InformationRecord informationRecord)
-    {
-        if (_Writer == null || informationRecord == null)
-            return;
-
-        _Writer.WriteInformation(informationRecord);
+        _Inner?.End(result);
     }
 
     /// <inheritdoc/>
     public virtual void WriteHost(HostInformationMessage info)
     {
-        if (_Writer == null)
-            return;
-
-        _Writer.WriteHost(info);
+        _Inner?.WriteHost(info);
     }
 
     /// <inheritdoc/>
-    public virtual bool ShouldWriteInformation()
+    public virtual void SetExitCode(int exitCode)
     {
-        return _Writer != null && _Writer.ShouldWriteInformation();
-    }
-
-    /// <inheritdoc/>
-    public virtual void WriteDebug(string text, params object[] args)
-    {
-        if (_Writer == null || string.IsNullOrEmpty(text) || !ShouldWriteDebug())
-            return;
-
-        text = args == null || args.Length == 0 ? text : string.Format(Thread.CurrentThread.CurrentCulture, text, args);
-        _Writer.WriteDebug(text);
-    }
-
-    /// <inheritdoc/>
-    public virtual bool ShouldWriteDebug()
-    {
-        return _Writer != null && _Writer.ShouldWriteDebug();
-    }
-
-    /// <inheritdoc/>
-    public virtual void EnterScope(string scopeName)
-    {
-        if (_Writer == null)
-            return;
-
-        _Writer.EnterScope(scopeName);
-    }
-
-    /// <inheritdoc/>
-    public virtual void ExitScope()
-    {
-        if (_Writer == null)
-            return;
-
-        _Writer.ExitScope();
+        _Inner?.SetExitCode(exitCode);
     }
 
     #region IDisposable
@@ -197,8 +79,8 @@ internal abstract class PipelineWriter(IPipelineWriter? inner, PSRuleOption opti
     {
         if (!_IsDisposed)
         {
-            if (disposing && _Writer != null)
-                _Writer.Dispose();
+            if (disposing && _Inner != null)
+                _Inner.Dispose();
 
             _IsDisposed = true;
         }
@@ -234,8 +116,27 @@ internal abstract class PipelineWriter(IPipelineWriter? inner, PSRuleOption opti
             record.Error.ScriptExtent.StartLineNumber,
             record.Error.ScriptExtent.StartColumnNumber
         ));
-        WriteError(errorRecord);
+        _Inner?.LogError(errorRecord);
     }
+
+    protected bool CreateFile(string path)
+    {
+        return CreatePath(path) && ShouldProcess(target: path, action: PSRuleResources.ShouldWriteFile);
+    }
+
+    #region ILogger
+
+    public virtual bool IsEnabled(LogLevel logLevel)
+    {
+        return _Inner?.IsEnabled(logLevel) ?? false;
+    }
+
+    public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    {
+        _Inner?.Log(logLevel, eventId, state, exception, formatter);
+    }
+
+    #endregion ILogger
 
     private bool ShouldProcess(string target, string action)
     {
@@ -252,55 +153,6 @@ internal abstract class PipelineWriter(IPipelineWriter? inner, PSRuleOption opti
         }
         return parentPath.Exists;
     }
-
-    protected bool CreateFile(string path)
-    {
-        return CreatePath(path) && ShouldProcess(target: path, action: PSRuleResources.ShouldWriteFile);
-    }
-
-    /// <summary>
-    /// Get the value of a preference variable.
-    /// </summary>
-    protected static ActionPreference GetPreferenceVariable(SessionState sessionState, string variableName)
-    {
-        return (ActionPreference)sessionState.PSVariable.GetValue(variableName);
-    }
-
-    #region ILogger
-
-    public virtual bool IsEnabled(LogLevel logLevel)
-    {
-        switch (logLevel)
-        {
-            case LogLevel.Trace:
-            case LogLevel.Debug:
-                return ShouldWriteDebug();
-
-            case LogLevel.Information:
-                return ShouldWriteInformation();
-
-            case LogLevel.Warning:
-                return ShouldWriteWarning();
-
-            case LogLevel.Error:
-            case LogLevel.Critical:
-                return ShouldWriteError();
-        }
-        return false;
-    }
-
-    public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-    {
-        if (logLevel == LogLevel.Error || logLevel == LogLevel.Critical)
-            HadErrors = true;
-
-        if (_Writer == null)
-            return;
-
-        _Writer.Log(logLevel, eventId, state, exception, formatter);
-    }
-
-    #endregion ILogger
 }
 
 #nullable restore

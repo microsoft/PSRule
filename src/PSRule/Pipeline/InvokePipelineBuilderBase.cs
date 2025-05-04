@@ -74,11 +74,6 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
 
         base.Configure(option);
 
-        Option.Logging.RuleFail = option.Logging.RuleFail ?? LoggingOption.Default.RuleFail;
-        Option.Logging.RulePass = option.Logging.RulePass ?? LoggingOption.Default.RulePass;
-        Option.Logging.LimitVerbose = option.Logging.LimitVerbose;
-        Option.Logging.LimitDebug = option.Logging.LimitDebug;
-
         Option.Output.As = option.Output.As ?? OutputOption.Default.As;
         Option.Output.Culture = GetCulture(option.Output.Culture);
         Option.Output.Encoding = option.Output.Encoding ?? OutputOption.Default.Encoding;

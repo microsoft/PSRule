@@ -122,7 +122,7 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
         var id = new ResourceId(source.Module, Name, ResourceIdKind.Id);
         var labels = ResourceLabels.FromHashtable(Labels);
 
-        context.VerboseFoundResource(name: Name, moduleName: source.Module, scriptName: MyInvocation.ScriptName);
+        context.VerboseFoundResource(name: Name, scope: source.Module, scriptName: MyInvocation.ScriptName);
 
         CheckDependsOn();
         var ps = GetCondition(context, id, source, errorPreference);

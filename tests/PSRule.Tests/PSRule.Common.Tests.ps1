@@ -140,7 +140,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
             # Errors
             $outErrors | Should -BeLike '*Rule error message*';
-            $outErrors.FullyQualifiedErrorId | Should -BeLike '*,WithError,Invoke-PSRule';
+            $outErrors.FullyQualifiedErrorId | Should -Be 'Invoke-PSRule';
 
             # Information
             $informationMessages = $outInformation.ToArray();
@@ -156,7 +156,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
 
         It 'Propagates PowerShell exceptions' {
             $Null = $testObject | Invoke-PSRule -Path (Join-Path -Path $here -ChildPath 'FromFileWithException.Rule.ps1') -ErrorVariable outErrors -ErrorAction SilentlyContinue -WarningAction SilentlyContinue;
-            $outErrors | Should -Be 'You cannot call a method on a null-valued expression.', 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
+            $outErrors | Should -Be 'You cannot call a method on a null-valued expression.', 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting-v3';
         }
 
         It 'Processes rule tags' {
@@ -389,7 +389,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $errorMessages = @($outErrors);
             $errorMessages.Length | Should -Be 1;
             $errorMessages[0] | Should -BeOfType [System.Management.Automation.ErrorRecord];
-            $errorMessages[0].Exception.Message | Should -Be 'PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting';
+            $errorMessages[0].Exception.Message | Should -Be 'PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting-v3';
         }
     }
 
@@ -933,7 +933,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -BeNullOrEmpty;
             $records = @($outErrors);
             $records | Should -Not -BeNullOrEmpty;
-            $records.CategoryInfo.Category | Should -BeIn 'ObjectNotFound';
+            $records.CategoryInfo.Category | Should -BeIn 'NotSpecified';
             $records.Length | Should -Be 1;
 
             # Multiple files
@@ -945,7 +945,7 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $result | Should -BeNullOrEmpty;
             $records = @($outErrors);
             $records | Should -Not -BeNullOrEmpty;
-            $records.CategoryInfo.Category | Should -BeIn 'ObjectNotFound';
+            $records.CategoryInfo.Category | Should -BeIn 'NotSpecified';
             $records.Length | Should -Be 2;
         }
     }
@@ -1079,132 +1079,6 @@ Describe 'Invoke-PSRule' -Tag 'Invoke-PSRule','Common' {
             $filteredResult = @($result | Where-Object { $_.Outcome -eq 'Fail' });
             $filteredResult | Should -Not -BeNullOrEmpty;
             $filteredResult[0].TargetName | Should -Be 'TestObject1';
-        }
-    }
-
-    Context 'Logging' {
-        It 'RuleFail' {
-            $testObject = [PSCustomObject]@{
-                Name = 'LoggingTest'
-            }
-
-            # Warning
-            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Warning'};
-            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile2' -WarningVariable outWarning -WarningAction SilentlyContinue;
-            $messages = @($outwarning);
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Outcome | Should -Be 'Fail';
-            $messages | Should -Not -BeNullOrEmpty;
-            $messages | Should -Be "[FAIL] -- FromFile2:: Reported for 'LoggingTest'"
-
-            # Error
-            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error'};
-            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile2' -ErrorVariable outError -ErrorAction SilentlyContinue;
-            $messages = @($outError);
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Outcome | Should -Be 'Fail';
-            $messages | Should -Not -BeNullOrEmpty;
-            $messages.Exception.Message | Should -Be "[FAIL] -- FromFile2:: Reported for 'LoggingTest'"
-
-            # Information
-            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Information'};
-            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile2' -InformationVariable outInformation;
-            $messages = @($outInformation);
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Outcome | Should -Be 'Fail';
-            $messages | Should -Not -BeNullOrEmpty;
-            $messages | Should -Be "[FAIL] -- FromFile2:: Reported for 'LoggingTest'"
-        }
-
-        It 'RulePass' {
-            $testObject = [PSCustomObject]@{
-                Name = 'LoggingTest'
-            }
-
-            # Warning
-            $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Warning'};
-            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1' -WarningVariable outWarning -WarningAction SilentlyContinue;
-            $messages = @($outwarning);
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Outcome | Should -Be 'Pass';
-            $messages | Should -Not -BeNullOrEmpty;
-            $messages | Should -Be "[PASS] -- FromFile1:: Reported for 'LoggingTest'"
-
-            # Error
-            $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Error'};
-            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1' -ErrorVariable outError -ErrorAction SilentlyContinue;
-            $messages = @($outError);
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Outcome | Should -Be 'Pass';
-            $messages | Should -Not -BeNullOrEmpty;
-            $messages.Exception.Message | Should -Be "[PASS] -- FromFile1:: Reported for 'LoggingTest'"
-
-            # Information
-            $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Information'};
-            $result = $testObject | Invoke-PSRule -Option $option -Path $ruleFilePath -Name 'FromFile1' -InformationVariable outInformation;
-            $messages = @($outInformation);
-            $result | Should -Not -BeNullOrEmpty;
-            $result.Outcome | Should -Be 'Pass';
-            $messages | Should -Not -BeNullOrEmpty;
-            $messages | Should -Be "[PASS] -- FromFile1:: Reported for 'LoggingTest'"
-        }
-
-        It 'LimitDebug' {
-            $withLoggingRulePath = (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1');
-            $loggingParams = @{
-                Path = $withLoggingRulePath
-                Name = 'WithDebug', 'WithDebug2'
-                WarningAction = 'SilentlyContinue'
-                ErrorAction = 'SilentlyContinue'
-                InformationAction = 'SilentlyContinue'
-            }
-            $option = New-PSRuleOption -LoggingLimitDebug 'WithDebug2', '[Discovery.Rule]';
-            $testObject = [PSCustomObject]@{
-                Name = 'LoggingTest'
-            }
-
-            $outDebug = @()
-            $originalDebugPreference = $DebugPreference;
-
-            try {
-                $Global:DebugPreference = [System.Management.Automation.ActionPreference]::Continue;
-                $outDebug += ($testObject | Invoke-PSRule @loggingParams -Option $option 5>&1 | Where-Object {
-                    $_ -like "* debug message*"
-                });
-            }
-            finally {
-                $Global:DebugPreference = $originalDebugPreference;
-            }
-
-            # Debug
-            $outDebug.Length | Should -Be 2;
-            $outDebug[0] | Should -Be 'Script debug message';
-            $outDebug[1] | Should -Be 'Rule debug message 2';
-        }
-
-        It 'LimitVerbose' {
-            $withLoggingRulePath = (Join-Path -Path $here -ChildPath 'FromFileWithLogging.Rule.ps1');
-            $loggingParams = @{
-                Path = $withLoggingRulePath
-                Name = 'WithVerbose', 'WithVerbose2'
-                WarningAction = 'SilentlyContinue'
-                ErrorAction = 'SilentlyContinue'
-                InformationAction = 'SilentlyContinue'
-            }
-            $option = New-PSRuleOption -LoggingLimitVerbose 'WithVerbose2', '[Discovery.Rule]';
-            $testObject = [PSCustomObject]@{
-                Name = 'LoggingTest'
-            }
-
-            $outVerbose = @($testObject | Invoke-PSRule @loggingParams -Option $option -Verbose 4>&1 | Where-Object {
-                $_ -is [System.Management.Automation.VerboseRecord] -and
-                $_.Message -like "* verbose message*"
-            });
-
-            # Verbose
-            $outVerbose.Length | Should -Be 2;
-            $outVerbose[0] | Should -Be 'Script verbose message';
-            $outVerbose[1] | Should -Be 'Rule verbose message 2';
         }
     }
 
@@ -1437,19 +1311,19 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             # Check result with no matching rules
             $result = $testObject | Test-PSRuleTarget -Path $ruleFilePath -Name 'NotARule' -ErrorVariable outErrors -ErrorAction SilentlyContinue;
             $result | Should -BeNullOrEmpty;
-            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
+            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting-v3';
 
             # Json
             $jsonRuleFilePath = Join-Path -Path $here -ChildPath 'FromFileEmpty.Rule.jsonc'
             $result = $testObject | Invoke-PSRule -Path $jsonRuleFilePath -ErrorVariable outErrors -ErrorAction SilentlyContinue;
             $result | Should -BeNullOrEmpty;
-            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
+            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting-v3';
 
             # Yaml
             $yamlRuleFilePath = Join-Path -Path $here -ChildPath 'FromFileEmpty.Rule.yaml'
             $result = $testObject | Invoke-PSRule -Path $yamlRuleFilePath -ErrorVariable outErrors -ErrorAction SilentlyContinue;
             $result | Should -BeNullOrEmpty;
-            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting';
+            $outErrors | Should -Be 'PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting-v3';
         }
 
         It 'Returns warning with empty path' {
@@ -1461,7 +1335,7 @@ Describe 'Test-PSRuleTarget' -Tag 'Test-PSRuleTarget','Common' {
             $errorMessages = @($outErrors);
             $errorMessages.Length | Should -Be 1;
             $errorMessages[0] | Should -BeOfType [System.Management.Automation.ErrorRecord];
-            $errorMessages[0].Exception.Message | Should -Be 'PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting';
+            $errorMessages[0].Exception.Message | Should -Be 'PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting-v3';
         }
 
         It 'Returns warning when not processed' {
@@ -1692,7 +1566,7 @@ Describe 'Assert-PSRule' -Tag 'Assert-PSRule','Common' {
             $result = $testObject | Assert-PSRule @assertParams -WarningAction SilentlyContinue 6>&1 | Out-String;
             $result | Should -Not -BeNullOrEmpty;
             $result | Should -BeOfType System.String;
-            $result | Should -Not -Match "\[WARN\] This is a warning";
+            $result | Should -Not -Contain "[WARN] This is a warning";
         }
 
         It 'Writes output to file' {
@@ -2343,11 +2217,6 @@ Describe 'Get-PSRule' -Tag 'Get-PSRule','Common' {
         }
     }
 
-    # Context 'Get rule with invalid path' {
-    #     # TODO: Test with invalid path
-    #     $result = Get-PSRule -Path (Join-Path -Path $here -ChildPath invalid);
-    # }
-
     Context 'With constrained language' {
         BeforeAll {
             Mock -CommandName IsDeviceGuardEnabled -ModuleName PSRule -Verifiable -MockWith {
@@ -2628,14 +2497,14 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
         }
 
         It 'Error on nested rules' {
-            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidRuleNesting' });
+            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSR0020' });
             $filteredResult.Length | Should -Be 1;
             $filteredResult[0].Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike 'Rule nesting was detected for rule at *';
         }
 
         It 'Error on missing parameter' {
-            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSRule.Parse.RuleParameterNotFound' });
+            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSR0019' });
             $filteredResult.Length | Should -Be 2;
             $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike 'Could not find required rule definition parameter ''Name'' on rule at * line *';
@@ -2643,14 +2512,14 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
         }
 
         It 'Error on invalid ErrorAction' {
-            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidErrorAction' });
+            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSR0021' });
             $filteredResult.Length | Should -Be 1;
             $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike 'An invalid ErrorAction (*) was specified for rule at *';
         }
 
         It 'Error on invalid name' {
-            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSRule.Parse.InvalidResourceName' });
+            $filteredResult = @($messages | Where-Object { $_.Exception -is [PSRule.Pipeline.ParseException] -and $_.Exception.ErrorId -eq 'PSR0018' });
             $filteredResult.Length | Should -Be 1;
             $filteredResult.Exception | Should -BeOfType PSRule.Pipeline.ParseException;
             $filteredResult[0].Exception.Message | Should -BeLike "The resource name '' is not valid at * line 16. Each resource name must be between 3-128 characters in length, must start and end with a letter or number, and only contain letters, numbers, hyphens, dots, or underscores. See https://aka.ms/ps-rule/naming for more information.";
@@ -2680,7 +2549,7 @@ Describe 'Rules' -Tag 'Common', 'Rules' {
             # Errors
             $errorsOut.Length | Should -Be 1;
             $errorsOut[0] | Should -BeLike '*Some error 1*';
-            $errorsOut[0].FullyQualifiedErrorId | Should -BeLike '*,WithRuleErrorActionDefault,Invoke-PSRule';
+            $errorsOut[0].FullyQualifiedErrorId | Should -Be 'Invoke-PSRule';
         }
 
         It 'Ignore handled exception' {

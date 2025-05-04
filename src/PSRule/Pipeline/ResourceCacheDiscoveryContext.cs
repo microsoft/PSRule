@@ -13,13 +13,15 @@ namespace PSRule.Pipeline;
 /// <summary>
 /// Define a context used for early stage resource discovery.
 /// </summary>
-internal sealed class ResourceCacheDiscoveryContext(IPipelineWriter? writer, ILanguageScopeSet languageScopeSet) : IResourceDiscoveryContext
+internal sealed class ResourceCacheDiscoveryContext(ILogger? logger, ILanguageScopeSet languageScopeSet) : IResourceDiscoveryContext
 {
+    private static readonly EventId PSR0022 = new(22, "PSR0022");
+
     private readonly ILanguageScopeSet _LanguageScopeSet = languageScopeSet;
 
     private ILanguageScope? _CurrentLanguageScope;
 
-    public IPipelineWriter? Writer { get; } = writer;
+    public ILogger Logger { get; } = logger ?? NullLogger.Instance;
 
     public ISourceFile? Source { get; private set; }
 
@@ -38,7 +40,7 @@ internal sealed class ResourceCacheDiscoveryContext(IPipelineWriter? writer, ILa
             throw new FileNotFoundException(PSRuleResources.ScriptNotFound, file.Path);
 
         if (!_LanguageScopeSet.TryScope(file.Module, out var scope))
-            throw new Exception("Language scope is unknown.");
+            throw new RuntimeScopeException(PSR0022, PSRuleResources.PSR0022);
 
         Source = file;
         _CurrentLanguageScope = scope;

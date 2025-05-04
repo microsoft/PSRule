@@ -4,11 +4,11 @@
 using System.Management.Automation;
 using System.Management.Automation.Language;
 using PSRule.Definitions;
-using PSRule.Resources;
+using PSRule.Runtime;
 
 namespace PSRule.Host;
 
-internal sealed class RuleLanguageAst : AstVisitor
+internal sealed class RuleLanguageAst(ILogger? logger) : AstVisitor
 {
     private const string PARAMETER_NAME = "Name";
     private const string PARAMETER_REF = "Ref";
@@ -16,19 +16,11 @@ internal sealed class RuleLanguageAst : AstVisitor
     private const string PARAMETER_BODY = "Body";
     private const string PARAMETER_ERRORACTION = "ErrorAction";
     private const string RULE_KEYWORD = "Rule";
-    private const string ERRORID_PARAMETERNOTFOUND = "PSRule.Parse.RuleParameterNotFound";
-    private const string ERRORID_INVALIDRULENESTING = "PSRule.Parse.InvalidRuleNesting";
-    private const string ERRORID_INVALIDERRORACTION = "PSRule.Parse.InvalidErrorAction";
-    private const string ERRORID_INVALIDRESOURCENAME = "PSRule.Parse.InvalidResourceName";
 
-    private readonly StringComparer _Comparer;
+    private readonly StringComparer _Comparer = StringComparer.OrdinalIgnoreCase;
+    private readonly ILogger? _Logger = logger;
 
-    internal List<ErrorRecord> Errors;
-
-    internal RuleLanguageAst()
-    {
-        _Comparer = StringComparer.OrdinalIgnoreCase;
-    }
+    public bool HadErrors { get; private set; }
 
     private sealed class ParameterBindResult
     {
@@ -93,7 +85,8 @@ internal sealed class RuleLanguageAst : AstVisitor
         if (bindResult.Has(PARAMETER_BODY, 1, out ScriptBlockExpressionAst _))
             return true;
 
-        ReportError(ERRORID_PARAMETERNOTFOUND, PSRuleResources.RuleParameterNotFound, PARAMETER_BODY, ReportExtent(commandAst.Extent));
+        HadErrors = true;
+        _Logger?.LogRuleParameterNotFound(PARAMETER_BODY, ReportExtent(commandAst.Extent));
         return false;
     }
 
@@ -105,7 +98,8 @@ internal sealed class RuleLanguageAst : AstVisitor
         if (bindResult.Has(PARAMETER_NAME, 0, out StringConstantExpressionAst value))
             return IsNameValid(value);
 
-        ReportError(ERRORID_PARAMETERNOTFOUND, PSRuleResources.RuleParameterNotFound, PARAMETER_NAME, ReportExtent(commandAst.Extent));
+        HadErrors = true;
+        _Logger?.LogRuleParameterNotFound(PARAMETER_NAME, ReportExtent(commandAst.Extent));
         return false;
     }
 
@@ -133,7 +127,8 @@ internal sealed class RuleLanguageAst : AstVisitor
         if (ResourceValidator.IsNameValid(name.Value))
             return true;
 
-        ReportError(ERRORID_INVALIDRESOURCENAME, PSRuleResources.InvalidResourceName, name.Value, ReportExtent(name.Extent));
+        HadErrors = true;
+        _Logger?.LogInvalidResourceName(name.Value, ReportExtent(name.Extent));
         return false;
     }
 
@@ -154,7 +149,8 @@ internal sealed class RuleLanguageAst : AstVisitor
         if (GetParentBlock(commandAst)?.Parent == null)
             return true;
 
-        ReportError(ERRORID_INVALIDRULENESTING, PSRuleResources.InvalidRuleNesting, ReportExtent(commandAst.Extent));
+        HadErrors = true;
+        _Logger?.LogInvalidRuleNesting(ReportExtent(commandAst.Extent));
         return false;
     }
 
@@ -169,7 +165,8 @@ internal sealed class RuleLanguageAst : AstVisitor
         if (!Enum.TryParse(value.Value, out ActionPreference result) || (result == ActionPreference.Ignore || result == ActionPreference.Stop))
             return true;
 
-        ReportError(ERRORID_INVALIDERRORACTION, PSRuleResources.InvalidErrorAction, value.Value, ReportExtent(commandAst.Extent));
+        HadErrors = true;
+        _Logger?.LogInvalidErrorAction(value.Value, ReportExtent(commandAst.Extent));
         return false;
     }
 
@@ -207,27 +204,6 @@ internal sealed class RuleLanguageAst : AstVisitor
             }
         }
         return result;
-    }
-
-    private void ReportError(string errorId, string message, params object[] args)
-    {
-        ReportError(new Pipeline.ParseException(
-            message: string.Format(Thread.CurrentThread.CurrentCulture, message, args),
-            errorId: errorId
-        ));
-    }
-
-    private void ReportError(Pipeline.ParseException exception)
-    {
-        if (Errors == null)
-            Errors = new List<ErrorRecord>();
-
-        Errors.Add(new ErrorRecord(
-            exception: exception,
-            errorId: exception.ErrorId,
-            errorCategory: ErrorCategory.InvalidOperation,
-            targetObject: null
-        ));
     }
 
     private static string ReportExtent(IScriptExtent extent)
