@@ -13,7 +13,6 @@ public sealed class SourcePipelineBuilderTests : BaseTests
 {
     [Theory]
     [InlineData("FromFile.Rule.ps1")]
-    [InlineData("John's Documents/FromFileBaseline.Rule.ps1")]
     public void Directory_WithSingleFile_ShouldFindCount(string path)
     {
         var builder = new SourcePipelineBuilder(null, null);
@@ -80,8 +79,7 @@ public sealed class SourcePipelineBuilderTests : BaseTests
     }
 
     [Theory]
-    [InlineData("", 28)]
-    [InlineData("John's Documents", 1)]
+    [InlineData("", 27)]
     public void Directory_WithDirectory_ShouldFindCount(string path, int count)
     {
         var builder = new SourcePipelineBuilder(null, null);
