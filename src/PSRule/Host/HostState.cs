@@ -12,8 +12,8 @@ internal static class HostState
     /// <summary>
     /// Define language commands.
     /// </summary>
-    private static readonly SessionStateCmdletEntry[] BuiltInCmdlets = new SessionStateCmdletEntry[]
-    {
+    private static readonly SessionStateCmdletEntry[] BuiltInCmdlets =
+    [
         new("New-RuleDefinition", typeof(NewRuleDefinitionCommand), null),
         new("Export-PSRuleConvention", typeof(ExportConventionCommand), null),
         new("Write-Recommendation", typeof(WriteRecommendationCommand), null),
@@ -24,13 +24,13 @@ internal static class HostState
         new("Assert-TypeOf", typeof(AssertTypeOfCommand), null),
         new("Assert-AllOf", typeof(AssertAllOfCommand), null),
         new("Assert-AnyOf", typeof(AssertAnyOfCommand), null),
-    };
+    ];
 
     /// <summary>
     /// Define language aliases.
     /// </summary>
-    private static readonly SessionStateAliasEntry[] BuiltInAliases = new SessionStateAliasEntry[]
-    {
+    private static readonly SessionStateAliasEntry[] BuiltInAliases =
+    [
         new(LanguageKeywords.Rule, "New-RuleDefinition", string.Empty, ScopedItemOptions.ReadOnly),
         new(LanguageKeywords.Recommend, "Write-Recommendation", string.Empty, ScopedItemOptions.ReadOnly),
         new(LanguageKeywords.Reason, "Write-Reason", string.Empty, ScopedItemOptions.ReadOnly),
@@ -40,7 +40,7 @@ internal static class HostState
         new(LanguageKeywords.TypeOf, "Assert-TypeOf", string.Empty, ScopedItemOptions.ReadOnly),
         new(LanguageKeywords.AllOf, "Assert-AllOf", string.Empty, ScopedItemOptions.ReadOnly),
         new(LanguageKeywords.AnyOf, "Assert-AnyOf", string.Empty, ScopedItemOptions.ReadOnly),
-    };
+    ];
 
     /// <summary>
     /// Create a default session state.

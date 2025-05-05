@@ -42,11 +42,11 @@ public sealed class UpgradeDependencyCommandHandler(ClientContext context, ISeri
 
         if (all)
         {
-            _Logger.LogInformation(new EventId(0), "Checking for upgrades of all modules in: {0}", input.Path);
+            _Logger.LogInformation(EventId.None, "Checking for upgrades of all modules in: {0}", input.Path);
         }
         else
         {
-            _Logger.LogInformation(new EventId(0), "Checking for upgrades of module {0} in: {1}", input.Module, input.Path);
+            _Logger.LogInformation(EventId.None, "Checking for upgrades of module {0} in: {1}", input.Module, input.Path);
         }
 
         try
@@ -59,7 +59,7 @@ public sealed class UpgradeDependencyCommandHandler(ClientContext context, ISeri
         }
         catch (Exception ex)
         {
-            _Logger.LogError(new EventId(0), ex, ex.Message);
+            _Logger.LogError(EventId.None, ex, ex.Message);
         }
 
         return new UpgradeDependencyCommandHandlerOutput();

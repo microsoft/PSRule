@@ -78,7 +78,7 @@ internal abstract class PathBuilder(IPipelineWriter logger, string basePath, str
 
         foreach (var file in _Files)
         {
-            _Logger.LogDebug(new EventId(0), "Included file path: {0}", file.Path);
+            _Logger.LogDebug(EventId.None, "Included file path: {0}", file.Path);
         }
     }
 
@@ -144,7 +144,7 @@ internal abstract class PathBuilder(IPipelineWriter logger, string basePath, str
         if (_Logger == null)
             return;
 
-        _Logger.WriteError(new ErrorRecord(new FileNotFoundException(), "PSRule.PathBuilder.ErrorNotFound", ErrorCategory.ObjectNotFound, path));
+        _Logger.LogError(new ErrorRecord(new FileNotFoundException(), "PSRule.PathBuilder.ErrorNotFound", ErrorCategory.ObjectNotFound, path));
     }
 
     /// <summary>

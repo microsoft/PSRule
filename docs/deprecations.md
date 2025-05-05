@@ -214,6 +214,15 @@ The following execution options have been deprecated and will be removed from _v
     You do not need to configure both options.
     If you have the deprecated option configured, switch to the new option.
 
+### Logging options
+
+The following legacy logging options have been removed because they are no longer effective for their intended purpose:
+
+- `Logging.RuleFail`
+- `Logging.RulePass`
+- `Logging.LimitDebug`
+- `Logging.LimitVerbose`
+
 ## Changes to API
 
 ### Rule output object

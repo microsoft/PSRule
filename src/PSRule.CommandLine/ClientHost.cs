@@ -5,11 +5,12 @@ using System.CommandLine;
 using System.CommandLine.IO;
 using System.Management.Automation;
 using PSRule.Pipeline;
+using PSRule.Runtime;
 
 namespace PSRule.CommandLine;
 
 /// <summary>
-/// 
+/// A host context for .NET processes.
 /// </summary>
 public sealed class ClientHost : HostContext
 {
@@ -33,7 +34,7 @@ public sealed class ClientHost : HostContext
         _BackgroundColor = Console.BackgroundColor;
         _ForegroundColor = Console.ForegroundColor;
 
-        Verbose($"[PSRule] -- Using working path: {Directory.GetCurrentDirectory()}");
+        _Context.LogVerbose($"[PSRule] -- Using working path: {Directory.GetCurrentDirectory()}");
     }
 
     /// <summary>
@@ -43,38 +44,13 @@ public sealed class ClientHost : HostContext
     /// <returns></returns>
     public override ActionPreference GetPreferenceVariable(string variableName)
     {
-        if (variableName == "VerbosePreference")
+        if (variableName == VerbosePreference)
             return _Verbose ? ActionPreference.Continue : ActionPreference.SilentlyContinue;
 
-        if (variableName == "DebugPreference")
+        if (variableName == DebugPreference)
             return _Debug ? ActionPreference.Continue : ActionPreference.SilentlyContinue;
 
         return base.GetPreferenceVariable(variableName);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="errorRecord"></param>
-    public override void Error(ErrorRecord errorRecord)
-    {
-        if (errorRecord.Exception is PipelineException pipelineException)
-        {
-            // If the error is a pipeline exception, set the last error code.
-            _Context.SetLastErrorCode(pipelineException.EventId);
-        }
-
-        _Context.LogError(errorRecord.Exception.Message);
-        base.Error(errorRecord);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="text"></param>
-    public override void Warning(string text)
-    {
-        _Context.Invocation.Console.WriteLine(text);
     }
 
     /// <summary>
@@ -88,58 +64,24 @@ public sealed class ClientHost : HostContext
         return true;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="informationRecord"></param>
-    public override void Information(InformationRecord informationRecord)
+    /// <inheritdoc/>
+    public override void WriteHost(string message, ConsoleColor? backgroundColor = null, ConsoleColor? foregroundColor = null, bool? noNewLine = null)
     {
-        if (informationRecord?.MessageData is HostInformationMessage info)
-        {
-            SetConsole(info);
-            if (info.NoNewLine.GetValueOrDefault(false))
-                _Context.Invocation.Console.Write(info.Message);
-            else
-                _Context.Invocation.Console.WriteLine(info.Message);
+        Console.BackgroundColor = backgroundColor.GetValueOrDefault(_BackgroundColor);
+        Console.ForegroundColor = foregroundColor.GetValueOrDefault(_ForegroundColor);
 
-            RevertConsole();
-        }
-    }
+        if (noNewLine.GetValueOrDefault(false))
+            _Context.Invocation.Console.Write(message);
+        else
+            _Context.Invocation.Console.WriteLine(message);
 
-    private void SetConsole(HostInformationMessage info)
-    {
-        Console.BackgroundColor = info.BackgroundColor.GetValueOrDefault(_BackgroundColor);
-        Console.ForegroundColor = info.ForegroundColor.GetValueOrDefault(_ForegroundColor);
+        RevertConsole();
     }
 
     private void RevertConsole()
     {
         Console.BackgroundColor = _BackgroundColor;
         Console.ForegroundColor = _ForegroundColor;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="text"></param>
-    public override void Verbose(string text)
-    {
-        if (!_Verbose)
-            return;
-
-        _Context.LogVerbose(text);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="text"></param>
-    public override void Debug(string text)
-    {
-        if (!_Debug)
-            return;
-
-        _Context.Invocation.Console.WriteLine(text);
     }
 
     /// <summary>
@@ -153,4 +95,65 @@ public sealed class ClientHost : HostContext
 
     /// <inheritdoc/>
     public override string? CachePath => _Context.CachePath;
+
+
+    /// <summary>
+    /// Determine if a log level is enabled.
+    /// All log levels are enabled by default except Trace and Debug.
+    /// Trace and Debug are enabled if the verbose or debug arguments are set in the constructor.
+    /// </summary>
+    public override bool IsEnabled(Runtime.LogLevel logLevel)
+    {
+        switch (logLevel)
+        {
+            case LogLevel.Trace:
+                return _Verbose;
+            case LogLevel.Debug:
+                return _Debug;
+        }
+        return true;
+    }
+
+    /// <inheritdoc/>
+    public override void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    {
+        if (!IsEnabled(logLevel))
+            return;
+
+        switch (logLevel)
+        {
+            case LogLevel.Trace:
+                _Context.LogVerbose(formatter(state, exception));
+                break;
+            case LogLevel.Debug:
+                _Context.Invocation.Console.WriteLine(formatter(state, exception));
+                break;
+            case LogLevel.Information:
+                _Context.Invocation.Console.WriteLine(formatter(state, exception));
+                break;
+            case LogLevel.Warning:
+                _Context.Invocation.Console.WriteLine(formatter(state, exception));
+                break;
+            case LogLevel.Error:
+            case LogLevel.Critical:
+                if (exception is PipelineException pipelineException)
+                {
+                    // If the error is a pipeline exception, set the last error code.
+                    _Context.SetLastErrorCode(pipelineException.EventId);
+                }
+
+                _Context.LogError(formatter(state, exception));
+                base.Log(logLevel, eventId, state, exception, formatter);
+                break;
+        }
+    }
+
+    /// <inheritdoc/>
+    public override void SetExitCode(int exitCode)
+    {
+        if (exitCode == 0) return;
+
+        _Context.SetLastErrorCode(exitCode);
+        base.SetExitCode(exitCode);
+    }
 }

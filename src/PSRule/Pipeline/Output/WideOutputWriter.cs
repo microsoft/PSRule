@@ -31,6 +31,7 @@ internal sealed class WideOutputWriter : PipelineWriter
             var o = PSObject.AsPSObject(item);
             o.TypeNames.Insert(0, typeName);
             base.WriteObject(o, false);
+
             if (item is RuleRecord record)
                 WriteErrorInfo(record);
         }

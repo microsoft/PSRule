@@ -66,7 +66,7 @@ public sealed class InputPathBuilderTests
         var actual = builder.Build();
 
         Assert.Empty(actual);
-        Assert.True(writer.Errors.Count(r => r.FullyQualifiedErrorId == "PSRule.ReadInputFailed") == 1);
+        Assert.True(writer.Errors.Count(r => r.eventId.Name == "PSRule.ReadInputFailed") == 1);
     }
 
     [Fact]

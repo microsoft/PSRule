@@ -5,15 +5,26 @@ using PSRule.Definitions;
 
 namespace PSRule.Pipeline;
 
-internal sealed class ResourceIssue
+/// <summary>
+/// Describes an issue with a resource.
+/// </summary>
+/// <param name="type">The type of issue.</param>
+/// <param name="resourceId">The affected resource by ID.</param>
+/// <param name="args">Additional information based on the issue type.</param>
+internal sealed class ResourceIssue(ResourceIssueType type, ResourceId resourceId, params object[]? args)
 {
-    public ResourceIssue(IResource resource, ResourceIssueType issue)
-    {
-        Resource = resource;
-        Issue = issue;
-    }
+    /// <summary>
+    /// The affected resource by ID.
+    /// </summary>
+    public ResourceId ResourceId { get; } = resourceId;
 
-    public IResource Resource { get; }
+    /// <summary>
+    /// The type of issue.
+    /// </summary>
+    public ResourceIssueType Type { get; } = type;
 
-    public ResourceIssueType Issue { get; }
+    /// <summary>
+    /// Additional information based on the issue type.
+    /// </summary>
+    public object[]? Args { get; } = args;
 }

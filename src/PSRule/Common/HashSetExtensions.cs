@@ -7,7 +7,7 @@ namespace PSRule;
 
 internal static class HashSetExtensions
 {
-    internal static bool ContainsIds(this HashSet<ResourceId> set, ResourceId id, ResourceId? @ref, ResourceId[] aliases, out ResourceId? duplicate)
+    internal static bool ContainsIds(this HashSet<ResourceId> set, ResourceId id, ResourceId? @ref, ResourceId[]? aliases, out ResourceId? duplicate)
     {
         duplicate = null;
         if (set == null || set.Count == 0)
@@ -34,7 +34,7 @@ internal static class HashSetExtensions
         return false;
     }
 
-    internal static bool ContainsNames(this HashSet<string> set, ResourceId id, ResourceId? @ref, ResourceId[] aliases, out string duplicate)
+    internal static bool ContainsNames(this HashSet<string> set, ResourceId id, ResourceId? @ref, ResourceId[]? aliases, out string? duplicate)
     {
         duplicate = null;
         if (set == null || set.Count == 0)
@@ -61,7 +61,7 @@ internal static class HashSetExtensions
         return false;
     }
 
-    internal static void AddIds(this HashSet<ResourceId> set, ResourceId id, ResourceId? @ref, ResourceId[] aliases)
+    internal static void AddIds(this HashSet<ResourceId> set, ResourceId id, ResourceId? @ref, ResourceId[]? aliases)
     {
         if (set == null)
             return;
@@ -77,7 +77,7 @@ internal static class HashSetExtensions
                 set.Add(aliases[i]);
     }
 
-    internal static void AddNames(this HashSet<string> set, ResourceId id, ResourceId? @ref, ResourceId[] aliases)
+    internal static void AddNames(this HashSet<string> set, ResourceId id, ResourceId? @ref, ResourceId[]? aliases)
     {
         if (set == null)
             return;

@@ -187,13 +187,11 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
                 if (ruleRecord.Outcome == RuleOutcome.Pass)
                 {
                     ruleBlockTarget.Pass();
-                    Context.Pass();
                 }
                 else if (ruleRecord.Outcome == RuleOutcome.Fail)
                 {
                     Result.Fail(ruleRecord.Level);
                     ruleBlockTarget.Fail();
-                    Context.Fail();
                 }
                 else if (ruleRecord.Outcome == RuleOutcome.Error)
                 {

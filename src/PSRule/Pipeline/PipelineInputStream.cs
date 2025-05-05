@@ -61,7 +61,7 @@ internal sealed class PipelineInputStream : IPipelineReader
     /// <inheritdoc/>
     public void Open()
     {
-        _Logger?.LogDebug(new EventId(0), "Opening input stream.");
+        _Logger?.LogDebug(EventId.None, "Opening input stream.");
         if (_InputPath == null || _InputPath.Count == 0)
             return;
 
@@ -69,7 +69,7 @@ internal sealed class PipelineInputStream : IPipelineReader
         var files = _InputPath.Build();
         for (var i = 0; i < files.Length; i++)
         {
-            _Logger?.LogDebug(new EventId(0), "opening with: {0}", files[i].Path);
+            _Logger?.LogDebug(EventId.None, "opening with: {0}", files[i].Path);
             EnqueueFile(files[i]);
         }
     }
@@ -100,7 +100,7 @@ internal sealed class PipelineInputStream : IPipelineReader
         path = Environment.GetRootedPath(path, normalize: true);
         var basePath = Environment.GetRootedBasePath(null, normalize: true);
 
-        _Logger?.Log(LogLevel.Debug, new EventId(0), null, PSRuleResources.InputAdded, path);
+        _Logger?.Log(LogLevel.Debug, EventId.None, null, PSRuleResources.InputAdded, path);
 
         _InputPath.Add(path, useGlobalFilter: false);
     }

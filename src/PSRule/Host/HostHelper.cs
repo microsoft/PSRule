@@ -134,7 +134,7 @@ internal static class HostHelper
             if (ps.HadErrors)
             {
                 foreach (var error in ps.Streams.Error)
-                    writer.WriteError(error);
+                    writer.LogError(error);
             }
         }
         finally
@@ -152,12 +152,14 @@ internal static class HostHelper
         if (context.GetExecutionOption().RestrictScriptSource == Options.RestrictScriptSource.DisablePowerShell)
             return [];
 
+        var ps = context.GetPowerShell() ?? throw new InvalidOperationException("PowerShell runspace is not available.");
         var results = new List<ILanguageBlock>();
-        var ps = context.GetPowerShell();
+        var logger = context.Logger;
 
         try
         {
-            context.Writer?.EnterScope("[Discovery.Rule]");
+            // TODO: Add scope wrapping for discovery.
+            // logger.EnterScope("[Discovery.Rule]");
             context.PushScope(RunspaceScope.Source);
 
             // Process scripts
@@ -169,25 +171,22 @@ internal static class HostHelper
                         continue;
 
                     ps.Commands.Clear();
-                    context.Writer?.VerboseRuleDiscovery(path: file.Path);
+                    logger.VerboseRuleDiscovery(path: file.Path);
                     context.EnterLanguageScope(file);
                     try
                     {
                         var scriptAst = System.Management.Automation.Language.Parser.ParseFile(file.Path, out var tokens, out var errors);
-                        var visitor = new RuleLanguageAst();
+                        var visitor = new RuleLanguageAst(logger);
                         scriptAst.Visit(visitor);
 
-                        if (visitor.Errors != null && visitor.Errors.Count > 0)
+                        if (visitor.HadErrors)
                         {
-                            foreach (var record in visitor.Errors)
-                                context.Writer?.WriteError(record);
-
                             continue;
                         }
                         if (errors != null && errors.Length > 0)
                         {
                             foreach (var error in errors)
-                                context.Writer?.WriteError(error);
+                                logger.LogError(error);
 
                             continue;
                         }
@@ -215,7 +214,7 @@ internal static class HostHelper
         }
         finally
         {
-            context.Writer?.ExitScope();
+            // logger.ExitScope();
             context.PopScope(RunspaceScope.Source);
             ps.Runspace = null;
             ps.Dispose();
@@ -231,8 +230,10 @@ internal static class HostHelper
     /// </summary>
     private static ILanguageBlock[] GetYamlLanguageBlocks(Source[] sources, IResourceDiscoveryContext context)
     {
+        // TODO: Add scope wrapping for discovery.
+        var logger = context.Logger;
         var result = new Collection<ILanguageBlock>();
-        var visitor = new ResourceValidator(context.Writer);
+        var visitor = new ResourceValidator(logger);
         var d = new DeserializerBuilder()
             .IgnoreUnmatchedProperties()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
@@ -253,7 +254,7 @@ internal static class HostHelper
 
         try
         {
-            context.Writer?.EnterScope("[Discovery.Resource]");
+            // logger.EnterScope("[Discovery.Resource]");
             context.PushScope(RunspaceScope.Resource);
             foreach (var source in sources)
             {
@@ -262,7 +263,7 @@ internal static class HostHelper
                     if (file.Type != SourceType.Yaml)
                         continue;
 
-                    context.Writer?.VerboseRuleDiscovery(path: file.Path);
+                    logger.VerboseRuleDiscovery(path: file.Path);
                     context.EnterLanguageScope(file);
                     try
                     {
@@ -278,7 +279,7 @@ internal static class HostHelper
                             }
                             else if (item != null && item.Block == null)
                             {
-                                context.Writer?.LogUnknownResourceKind(item.Kind, item.ApiVersion, file);
+                                logger.LogUnknownResourceKind(item.Kind, item.ApiVersion, file);
                             }
                         }
                     }
@@ -291,7 +292,7 @@ internal static class HostHelper
         }
         finally
         {
-            context.Writer?.ExitScope();
+            // logger.ExitScope();
             context.PopScope(RunspaceScope.Resource);
         }
         return result.Count == 0 ? [] : [.. result];
@@ -302,8 +303,10 @@ internal static class HostHelper
     /// </summary>
     private static ILanguageBlock[] GetJsonLanguageBlocks(Source[] sources, IResourceDiscoveryContext context)
     {
+        // TODO: Add scope wrapping for discovery.
+        var logger = context.Logger;
         var result = new Collection<ILanguageBlock>();
-        var visitor = new ResourceValidator(context.Writer);
+        var visitor = new ResourceValidator(logger);
         var deserializer = new JsonSerializer
         {
             DateTimeZoneHandling = DateTimeZoneHandling.Utc
@@ -317,7 +320,7 @@ internal static class HostHelper
 
         try
         {
-            context.Writer?.EnterScope("[Discovery.Resource]");
+            // logger.EnterScope("[Discovery.Resource]");
             context.PushScope(RunspaceScope.Resource);
 
             foreach (var source in sources)
@@ -327,7 +330,7 @@ internal static class HostHelper
                     if (file.Type != SourceType.Json)
                         continue;
 
-                    context.Writer?.VerboseRuleDiscovery(file.Path);
+                    logger.VerboseRuleDiscovery(file.Path);
                     context.EnterLanguageScope(file);
                     try
                     {
@@ -347,7 +350,7 @@ internal static class HostHelper
                                 }
                                 else if (item != null && item.Block == null)
                                 {
-                                    context.Writer?.LogUnknownResourceKind(item.Kind, item.ApiVersion, file);
+                                    logger.LogUnknownResourceKind(item.Kind, item.ApiVersion, file);
                                 }
 
                                 // Consume all end objects at the end of each resource
@@ -364,7 +367,7 @@ internal static class HostHelper
         }
         finally
         {
-            context.Writer?.ExitScope();
+            // logger.ExitScope();
             context.PopScope(RunspaceScope.Resource);
         }
         return result.Count == 0 ? [] : [.. result];

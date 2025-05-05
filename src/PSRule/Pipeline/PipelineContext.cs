@@ -190,9 +190,9 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     {
         foreach (var issue in ResourceCache.Issues)
         {
-            if (issue.Issue == ResourceIssueType.SuppressionGroupExpired)
+            if (issue.Type == ResourceIssueType.SuppressionGroupExpired)
             {
-                runspaceContext.SuppressionGroupExpired(issue.Resource.Id);
+                runspaceContext.SuppressionGroupExpired(issue.ResourceId);
             }
         }
     }

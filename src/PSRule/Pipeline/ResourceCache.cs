@@ -119,7 +119,7 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
                 case ISuppressionGroupV1Spec v1:
                     if (v1.ExpiresOn.HasValue && v1.ExpiresOn.Value <= DateTime.UtcNow)
                     {
-                        _TrackedIssues.Add(new ResourceIssue(resource, ResourceIssueType.SuppressionGroupExpired));
+                        _TrackedIssues.Add(new ResourceIssue(ResourceIssueType.SuppressionGroupExpired, resource.Id));
                         return true;
                     }
                     break;
@@ -127,7 +127,7 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
                 case ISuppressionGroupV2Spec v2:
                     if (v2.ExpiresOn.HasValue && v2.ExpiresOn.Value <= DateTime.UtcNow)
                     {
-                        _TrackedIssues.Add(new ResourceIssue(resource, ResourceIssueType.SuppressionGroupExpired));
+                        _TrackedIssues.Add(new ResourceIssue(ResourceIssueType.SuppressionGroupExpired, resource.Id));
                         return true;
                     }
                     break;

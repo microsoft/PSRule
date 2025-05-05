@@ -1840,94 +1840,6 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
-    Context 'Read Logging.LimitDebug' {
-        It 'from default' {
-            $option = New-PSRuleOption -Default;
-            $option.Logging.LimitDebug | Should -BeNullOrEmpty;
-        }
-
-        It 'from Hashtable' {
-            $option = New-PSRuleOption -Option @{ 'Logging.LimitDebug' = 'TestRule1' };
-            $option.Logging.LimitDebug | Should -Be 'TestRule1';
-        }
-
-        It 'from YAML' {
-            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Logging.LimitDebug | Should -Be 'TestRule2';
-        }
-
-        It 'from parameter' {
-            $option = New-PSRuleOption -LoggingLimitDebug 'TestRule2' -Path $emptyOptionsFilePath;
-            $option.Logging.LimitDebug | Should -Be 'TestRule2';
-        }
-    }
-
-    Context 'Read Logging.LimitVerbose' {
-        It 'from default' {
-            $option = New-PSRuleOption -Default;
-            $option.Logging.LimitVerbose | Should -BeNullOrEmpty;
-        }
-
-        It 'from Hashtable' {
-            $option = New-PSRuleOption -Option @{ 'Logging.LimitVerbose' = 'TestRule1' };
-            $option.Logging.LimitVerbose | Should -Be 'TestRule1';
-        }
-
-        It 'from YAML' {
-            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Logging.LimitVerbose | Should -Be 'TestRule2';
-        }
-
-        It 'from parameter' {
-            $option = New-PSRuleOption -LoggingLimitVerbose 'TestRule2' -Path $emptyOptionsFilePath;
-            $option.Logging.LimitVerbose | Should -Be 'TestRule2';
-        }
-    }
-
-    Context 'Read Logging.RuleFail' {
-        It 'from default' {
-            $option = New-PSRuleOption -Default;
-            $option.Logging.RuleFail | Should -Be 'None';
-        }
-
-        It 'from Hashtable' {
-            $option = New-PSRuleOption -Option @{ 'Logging.RuleFail' = 'Error' };
-            $option.Logging.RuleFail | Should -Be 'Error';
-        }
-
-        It 'from YAML' {
-            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Logging.RuleFail | Should -Be 'Warning';
-        }
-
-        It 'from parameter' {
-            $option = New-PSRuleOption -LoggingRuleFail 'Warning' -Path $emptyOptionsFilePath;
-            $option.Logging.RuleFail | Should -Be 'Warning';
-        }
-    }
-
-    Context 'Read Logging.RulePass' {
-        It 'from default' {
-            $option = New-PSRuleOption -Default;
-            $option.Logging.RulePass | Should -Be 'None';
-        }
-
-        It 'from Hashtable' {
-            $option = New-PSRuleOption -Option @{ 'Logging.RulePass' = 'Error' };
-            $option.Logging.RulePass | Should -Be 'Error';
-        }
-
-        It 'from YAML' {
-            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Logging.RulePass | Should -Be 'Warning';
-        }
-
-        It 'from parameter' {
-            $option = New-PSRuleOption -LoggingRulePass 'Warning' -Path $emptyOptionsFilePath;
-            $option.Logging.RulePass | Should -Be 'Warning';
-        }
-    }
-
     Context 'Read Output.As' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -2758,34 +2670,6 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -InputPathIgnore 'ignore.cs' @optionParams;
             $option.Input.PathIgnore | Should -Be 'ignore.cs';
-        }
-    }
-
-    Context 'Read Logging.LimitDebug' {
-        It 'from parameter' {
-            $option = Set-PSRuleOption -LoggingLimitDebug 'TestRule2' @optionParams;
-            $option.Logging.LimitDebug | Should -Be 'TestRule2';
-        }
-    }
-
-    Context 'Read Logging.LimitVerbose' {
-        It 'from parameter' {
-            $option = Set-PSRuleOption -LoggingLimitVerbose 'TestRule2' @optionParams;
-            $option.Logging.LimitVerbose | Should -Be 'TestRule2';
-        }
-    }
-
-    Context 'Read Logging.RuleFail' {
-        It 'from parameter' {
-            $option = Set-PSRuleOption -LoggingRuleFail 'Warning' @optionParams;
-            $option.Logging.RuleFail | Should -Be 'Warning';
-        }
-    }
-
-    Context 'Read Logging.RulePass' {
-        It 'from parameter' {
-            $option = Set-PSRuleOption -LoggingRulePass 'Warning' @optionParams;
-            $option.Logging.RulePass | Should -Be 'Warning';
         }
     }
 

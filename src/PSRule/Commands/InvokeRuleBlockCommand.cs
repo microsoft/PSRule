@@ -40,14 +40,14 @@ internal sealed class InvokeRuleBlockCommand : Cmdlet
             // Evaluate selector pre-condition
             if (!AcceptsWith())
             {
-                context.Writer.DebugMessage(PSRuleResources.DebugTargetTypeMismatch);
+                context.Logger?.LogDebug(EventId.None, PSRuleResources.DebugTargetTypeMismatch);
                 return;
             }
 
             // Evaluate type pre-condition
             if (!AcceptsType())
             {
-                context.Writer.DebugMessage(PSRuleResources.DebugTargetTypeMismatch);
+                context.Logger?.LogDebug(EventId.None, PSRuleResources.DebugTargetTypeMismatch);
                 return;
             }
 
@@ -61,9 +61,14 @@ internal sealed class InvokeRuleBlockCommand : Cmdlet
                     var ifResult = RuleConditionHelper.Create(If.Invoke());
                     if (!ifResult.AllOf())
                     {
-                        context.Writer.DebugMessage(PSRuleResources.DebugTargetIfMismatch);
+                        context.Logger?.LogDebug(EventId.None, PSRuleResources.DebugTargetIfMismatch);
                         return;
                     }
+                }
+                catch (ActionPreferenceStopException ex)
+                {
+                    context.Error(ex);
+                    return;
                 }
                 finally
                 {
@@ -79,14 +84,16 @@ internal sealed class InvokeRuleBlockCommand : Cmdlet
                 var invokeResult = RuleConditionHelper.Create(Body.Invoke());
                 WriteObject(invokeResult);
             }
+            catch (ActionPreferenceStopException ex)
+            {
+                context.Error(ex);
+                WriteObject(new RuleConditionResult(0, 0, true));
+                return;
+            }
             finally
             {
                 context.PopScope(RunspaceScope.Rule);
             }
-        }
-        catch (ActionPreferenceStopException ex)
-        {
-            context.Error(ex);
         }
         catch (System.Management.Automation.RuntimeException ex)
         {

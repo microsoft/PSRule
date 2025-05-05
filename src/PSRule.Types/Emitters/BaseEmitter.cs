@@ -28,7 +28,7 @@ public abstract class BaseEmitter : IEmitter
         {
             if (disposing)
             {
-                // TODO: dispose managed state (managed objects)
+                // Do nothing here.
             }
             _Disposed = true;
         }

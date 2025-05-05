@@ -10,10 +10,11 @@ public sealed class RuleLanguageAstTests : BaseTests
     [Fact]
     public void RuleName()
     {
+        var logger = GetTestWriter();
         var scriptAst = System.Management.Automation.Language.Parser.ParseFile(GetSourcePath("FromFileName.Rule.ps1"), out _, out _);
-        var visitor = new RuleLanguageAst();
+        var visitor = new RuleLanguageAst(logger);
         scriptAst.Visit(visitor);
 
-        Assert.Equal("PSRule.Parse.InvalidResourceName", visitor.Errors[0].FullyQualifiedErrorId);
+        Assert.Equal("PSR0018", logger.Errors[0].eventId.Name);
     }
 }

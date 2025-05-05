@@ -1262,22 +1262,6 @@ function New-PSRuleOption {
         [Parameter(Mandatory = $False)]
         [String[]]$InputPathIgnore = '',
 
-        # Sets the Logging.LimitDebug option
-        [Parameter(Mandatory = $False)]
-        [String[]]$LoggingLimitDebug = $Null,
-
-        # Sets the Logging.LimitVerbose option
-        [Parameter(Mandatory = $False)]
-        [String[]]$LoggingLimitVerbose = $Null,
-
-        # Sets the Logging.RuleFail option
-        [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.OutcomeLogStream]$LoggingRuleFail = 'None',
-
-        # Sets the Logging.RulePass option
-        [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.OutcomeLogStream]$LoggingRulePass = 'None',
-
         # Sets the Output.As option
         [Parameter(Mandatory = $False)]
         [ValidateSet('Detail', 'Summary')]
@@ -1566,22 +1550,6 @@ function Set-PSRuleOption {
         # Sets the Input.TargetType option
         [Parameter(Mandatory = $False)]
         [String[]]$InputTargetType,
-
-        # Sets the Logging.LimitDebug option
-        [Parameter(Mandatory = $False)]
-        [String[]]$LoggingLimitDebug = $Null,
-
-        # Sets the Logging.LimitVerbose option
-        [Parameter(Mandatory = $False)]
-        [String[]]$LoggingLimitVerbose = $Null,
-
-        # Sets the Logging.RuleFail option
-        [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.OutcomeLogStream]$LoggingRuleFail = 'None',
-
-        # Sets the Logging.RulePass option
-        [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.OutcomeLogStream]$LoggingRulePass = 'None',
 
         # Sets the Output.As option
         [Parameter(Mandatory = $False)]
@@ -2333,22 +2301,6 @@ function SetOptions {
         [Parameter(Mandatory = $False)]
         [String[]]$InputTargetType,
 
-        # Sets the Logging.LimitDebug option
-        [Parameter(Mandatory = $False)]
-        [String[]]$LoggingLimitDebug = $Null,
-
-        # Sets the Logging.LimitVerbose option
-        [Parameter(Mandatory = $False)]
-        [String[]]$LoggingLimitVerbose = $Null,
-
-        # Sets the Logging.RuleFail option
-        [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.OutcomeLogStream]$LoggingRuleFail = 'None',
-
-        # Sets the Logging.RulePass option
-        [Parameter(Mandatory = $False)]
-        [PSRule.Configuration.OutcomeLogStream]$LoggingRulePass = 'None',
-
         # Sets the Output.As option
         [Parameter(Mandatory = $False)]
         [ValidateSet('Detail', 'Summary')]
@@ -2579,26 +2531,6 @@ function SetOptions {
         # Sets option Input.TargetType
         if ($PSBoundParameters.ContainsKey('InputTargetType')) {
             $Option.Input.TargetType = $InputTargetType;
-        }
-
-        # Sets option Logging.LimitDebug
-        if ($PSBoundParameters.ContainsKey('LoggingLimitDebug')) {
-            $Option.Logging.LimitDebug = $LoggingLimitDebug;
-        }
-
-        # Sets option Logging.LimitVerbose
-        if ($PSBoundParameters.ContainsKey('LoggingLimitVerbose')) {
-            $Option.Logging.LimitVerbose = $LoggingLimitVerbose;
-        }
-
-        # Sets option Logging.RuleFail
-        if ($PSBoundParameters.ContainsKey('LoggingRuleFail')) {
-            $Option.Logging.RuleFail = $LoggingRuleFail;
-        }
-
-        # Sets option Logging.RulePass
-        if ($PSBoundParameters.ContainsKey('LoggingRulePass')) {
-            $Option.Logging.RulePass = $LoggingRulePass;
         }
 
         # Sets option Output.As

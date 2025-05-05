@@ -4,7 +4,6 @@
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Language;
-using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
 using PSRule.Options;
@@ -28,6 +27,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     private const string ERROR_ID_INVALID_RULE_RESULT = "PSRule.Runtime.InvalidRuleResult";
     private const string WARN_KEY_SEPARATOR = "_";
 
+    private static readonly EventId PSR0022 = new(22, "PSR0022");
+
     [ThreadStatic]
     internal static LegacyRunspaceContext? CurrentThread;
 
@@ -42,8 +43,6 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     private readonly ExecutionActionPreference _UnprocessedObject;
     private readonly ExecutionActionPreference _RuleSuppressed;
     private readonly ExecutionActionPreference _InvariantCulture;
-    private readonly OutcomeLogStream _FailStream;
-    private readonly OutcomeLogStream _PassStream;
 
     /// <summary>
     /// Track the current runspace scope.
@@ -79,8 +78,6 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         _RuleSuppressed = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed!.Value);
         _InvariantCulture = Pipeline.Option.Execution.InvariantCulture.GetValueOrDefault(ExecutionOption.Default.InvariantCulture!.Value);
 
-        _FailStream = Pipeline.Option.Logging.RuleFail ?? LoggingOption.Default.RuleFail!.Value;
-        _PassStream = Pipeline.Option.Logging.RulePass ?? LoggingOption.Default.RulePass!.Value;
         _WarnOnce = [];
 
         _ObjectNumber = -1;
@@ -92,6 +89,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     internal bool HadErrors => _RuleErrors > 0;
 
     public IPipelineWriter Writer => Pipeline.Writer;
+
+    public ILogger? Logger => Pipeline.Writer;
 
     internal IEnumerable<InvokeResult>? Output { get; private set; }
 
@@ -105,7 +104,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public ILanguageScope? LanguageScope { get; private set; }
 
-    internal bool IsScope(RunspaceScope scope)
+    public bool IsScope(RunspaceScope scope)
     {
         if (scope == RunspaceScope.None && (_Scope == null || _Scope.Count == 0))
             return true;
@@ -129,64 +128,6 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             throw new RuntimeScopeException();
 
         _Scope.Pop();
-    }
-
-    public void Pass()
-    {
-        if (Writer == null || _PassStream == OutcomeLogStream.None || RuleRecord == null)
-            return;
-
-        if (_PassStream == OutcomeLogStream.Warning && Writer.ShouldWriteWarning())
-            Writer.WriteWarning(PSRuleResources.OutcomeRulePass, RuleRecord.RuleName, Binding?.TargetName);
-
-        if (_PassStream == OutcomeLogStream.Error && Writer.ShouldWriteError())
-            Writer.WriteError(new ErrorRecord(
-                new RuleException(string.Format(
-                    Thread.CurrentThread.CurrentCulture,
-                    PSRuleResources.OutcomeRulePass,
-                    RuleRecord.RuleName,
-                    Binding?.TargetName)),
-                SOURCE_OUTCOME_PASS,
-                ErrorCategory.InvalidData,
-                null));
-
-        if (_PassStream == OutcomeLogStream.Information && Writer.ShouldWriteInformation())
-            Writer.WriteInformation(new InformationRecord(
-                messageData: string.Format(
-                    Thread.CurrentThread.CurrentCulture,
-                    PSRuleResources.OutcomeRulePass,
-                    RuleRecord.RuleName,
-                    Binding?.TargetName),
-                source: SOURCE_OUTCOME_PASS));
-    }
-
-    public void Fail()
-    {
-        if (Writer == null || _FailStream == OutcomeLogStream.None || RuleRecord == null)
-            return;
-
-        if (_FailStream == OutcomeLogStream.Warning && Writer.ShouldWriteWarning())
-            Writer.WriteWarning(PSRuleResources.OutcomeRuleFail, RuleRecord.RuleName, Binding?.TargetName);
-
-        if (_FailStream == OutcomeLogStream.Error && Writer.ShouldWriteError())
-            Writer.WriteError(new ErrorRecord(
-                new RuleException(string.Format(
-                    Thread.CurrentThread.CurrentCulture,
-                    PSRuleResources.OutcomeRuleFail,
-                    RuleRecord.RuleName,
-                    Binding?.TargetName)),
-                SOURCE_OUTCOME_FAIL,
-                ErrorCategory.InvalidData,
-                null));
-
-        if (_FailStream == OutcomeLogStream.Information && Writer.ShouldWriteInformation())
-            Writer.WriteInformation(new InformationRecord(
-                messageData: string.Format(
-                    Thread.CurrentThread.CurrentCulture,
-                    PSRuleResources.OutcomeRuleFail,
-                    RuleRecord.RuleName,
-                    Binding?.TargetName),
-                source: SOURCE_OUTCOME_FAIL));
     }
 
     public void WarnRuleInconclusive(string ruleId)
@@ -233,10 +174,10 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public void ErrorInvalidRuleResult()
     {
-        if (Writer == null || !Writer.ShouldWriteError())
+        if (Logger == null || !Logger.IsEnabled(LogLevel.Error))
             return;
 
-        Writer.WriteError(new ErrorRecord(
+        Logger.LogError(new ErrorRecord(
             exception: new RuleException(message: string.Format(
                 Thread.CurrentThread.CurrentCulture,
                 PSRuleResources.InvalidRuleResult,
@@ -248,18 +189,18 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         ));
     }
 
-    public void VerboseFoundResource(string name, string moduleName, string scriptName)
+    public void VerboseFoundResource(string name, string scope, string scriptName)
     {
-        if (Writer == null || !Writer.ShouldWriteVerbose())
+        if (Writer == null || !Writer.IsEnabled(LogLevel.Trace))
             return;
 
-        var m = string.IsNullOrEmpty(moduleName) ? "." : moduleName;
-        Writer.WriteVerbose($"[PSRule][D] -- Found {m}\\{name} in {scriptName}");
+        scope = string.IsNullOrEmpty(scope) ? "." : scope;
+        Writer.LogVerbose(EventId.None, "[PSRule][D] -- Found {0}\\{1} in {2}", scope, name, scriptName);
     }
 
     public void LogObjectStart()
     {
-        if (Writer == null || !Writer.ShouldWriteDebug())
+        if (Writer == null || !Writer.IsEnabled(LogLevel.Debug))
             return;
 
         Writer.WriteDebug(string.Concat(GetLogPrefix(), " :: ", Binding?.TargetName));
@@ -267,10 +208,10 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public void VerboseConditionMessage(string condition, string message, params object[] args)
     {
-        if (Writer == null || !Writer.ShouldWriteVerbose())
+        if (Writer == null || !Writer.IsEnabled(LogLevel.Trace))
             return;
 
-        Writer.WriteVerbose(string.Concat(
+        Writer.LogVerbose(EventId.None, string.Concat(
             GetLogPrefix(),
             "[",
             condition,
@@ -280,26 +221,26 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public void VerboseConditionResult(string condition, int pass, int count, bool outcome)
     {
-        if (Writer == null || !Writer.ShouldWriteVerbose())
+        if (Writer == null || !Writer.IsEnabled(LogLevel.Trace))
             return;
 
-        Writer.WriteVerbose(string.Concat(GetLogPrefix(), "[", condition, "] -- [", pass, "/", count, "] [", outcome, "]"));
+        Writer.LogVerbose(EventId.None, string.Concat(GetLogPrefix(), "[", condition, "] -- [", pass, "/", count, "] [", outcome, "]"));
     }
 
     public void VerboseConditionResult(string condition, bool outcome)
     {
-        if (Writer == null || !Writer.ShouldWriteVerbose())
+        if (Writer == null || !Writer.IsEnabled(LogLevel.Trace))
             return;
 
-        Writer.WriteVerbose(string.Concat(GetLogPrefix(), "[", condition, "] -- [", outcome, "]"));
+        Writer.LogVerbose(EventId.None, string.Concat(GetLogPrefix(), "[", condition, "] -- [", outcome, "]"));
     }
 
     public void VerboseConditionResult(int pass, int count, RuleOutcome outcome)
     {
-        if (Writer == null || !Writer.ShouldWriteVerbose())
+        if (Writer == null || !Writer.IsEnabled(LogLevel.Trace))
             return;
 
-        Writer.WriteVerbose(string.Concat(GetLogPrefix(), " -- [", pass, "/", count, "] [", outcome, "]"));
+        Writer.LogVerbose(EventId.None, string.Concat(GetLogPrefix(), " -- [", pass, "/", count, "] [", outcome, "]"));
     }
 
     public ExecutionOption GetExecutionOption()
@@ -326,50 +267,50 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     private static void Debug_DataAdded(object sender, DataAddedEventArgs e)
     {
-        if (CurrentThread?.Writer == null)
+        if (CurrentThread?.Logger == null)
             return;
 
         if (sender is not PSDataCollection<DebugRecord> collection)
             return;
 
         var record = collection[e.Index];
-        CurrentThread.Writer.WriteDebug(debugRecord: record);
+        CurrentThread.Logger.LogDebug(EventId.None, record.Message);
     }
 
     private static void Information_DataAdded(object sender, DataAddedEventArgs e)
     {
-        if (CurrentThread?.Writer == null)
+        if (CurrentThread?.Logger == null)
             return;
 
         if (sender is not PSDataCollection<InformationRecord> collection)
             return;
 
         var record = collection[e.Index];
-        CurrentThread.Writer.WriteInformation(informationRecord: record);
+        CurrentThread.Logger.LogInformation(EventId.None, record.MessageData.ToString());
     }
 
     private static void Verbose_DataAdded(object sender, DataAddedEventArgs e)
     {
-        if (CurrentThread?.Writer == null)
+        if (CurrentThread?.Logger == null)
             return;
 
         if (sender is not PSDataCollection<VerboseRecord> collection)
             return;
 
         var record = collection[e.Index];
-        CurrentThread.Writer.WriteVerbose(record.Message);
+        CurrentThread.Logger.LogVerbose(EventId.None, record.Message);
     }
 
     private static void Warning_DataAdded(object sender, DataAddedEventArgs e)
     {
-        if (CurrentThread?.Writer == null)
+        if (CurrentThread?.Logger == null)
             return;
 
         if (sender is not PSDataCollection<WarningRecord> collection)
             return;
 
         var record = collection[e.Index];
-        CurrentThread.Writer.WriteWarning(message: record.Message);
+        CurrentThread.Logger.LogWarning(EventId.None, record.Message);
     }
 
     private static void Error_DataAdded(object sender, DataAddedEventArgs e)
@@ -378,28 +319,26 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             return;
 
         CurrentThread._RuleErrors++;
-        if (CurrentThread.Writer == null)
+        if (CurrentThread.Logger == null)
             return;
 
         if (sender is not PSDataCollection<ErrorRecord> collection)
             return;
 
         var record = collection[e.Index];
-        CurrentThread.Error(record);
+        CurrentThread.Logger.LogError(record);
     }
 
     public void Error(ActionPreferenceStopException ex)
     {
-        if (ex == null)
-            return;
+        if (ex == null) return;
 
         Error(ex.ErrorRecord);
     }
 
     public void Error(Exception ex)
     {
-        if (ex == null)
-            return;
+        if (ex == null) return;
 
         var errorRecord = ex is IContainsErrorRecord error ? error.ErrorRecord : null;
         var scriptStackTrace = errorRecord != null ? GetStackTrace(errorRecord) : null;
@@ -407,7 +346,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         var errorId = errorRecord != null ? GetErrorId(errorRecord) : null;
         if (RuleRecord == null)
         {
-            Writer.WriteError(errorRecord);
+            CurrentThread.Logger?.LogError(errorRecord);
             return;
         }
         RuleRecord.Outcome = RuleOutcome.Error;
@@ -424,11 +363,9 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public void Error(ErrorRecord error)
     {
-        if (RuleRecord == null)
-        {
-            Writer.WriteError(error);
-            return;
-        }
+        Logger?.LogError(error);
+        if (RuleRecord == null) return;
+
         RuleRecord.Outcome = RuleOutcome.Error;
         RuleRecord.Error = new ErrorInfo(
             message: error.Exception?.Message,
@@ -516,7 +453,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             throw new FileNotFoundException(PSRuleResources.ScriptNotFound, file.Path);
 
         if (!Pipeline.LanguageScope.TryScope(file.Module, out var scope))
-            throw new Exception("Language scope is unknown.");
+            throw new RuntimeScopeException(PSR0022, PSRuleResources.PSR0022);
 
         LanguageScope = scope;
 
@@ -597,7 +534,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             @override: ruleBlock.Override
         );
 
-        Writer?.EnterScope(ruleBlock.Name);
+        // Writer?.EnterScope(ruleBlock.Name);
 
         // Starts rule execution timer
         _RuleTimer.Restart();
@@ -622,7 +559,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             }
         }
 
-        Writer?.ExitScope();
+        // Writer?.ExitScope();
 
         _LogPrefix = null;
         RuleRecord = null;
@@ -676,7 +613,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             _Conventions[i].End(this, null);
     }
 
-    internal void WriteReason(ResultReason[] reason)
+    public void WriteReason(ResultReason[] reason)
     {
         for (var i = 0; reason != null && i < reason.Length; i++)
             WriteReason(reason[i]);
@@ -819,49 +756,13 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     /// <inheritdoc/>
     bool ILogger.IsEnabled(LogLevel logLevel)
     {
-        if (Writer == null)
-            return false;
-
-        switch (logLevel)
-        {
-            case LogLevel.Trace:
-            case LogLevel.Debug:
-                return Writer.ShouldWriteDebug();
-
-            case LogLevel.Information:
-                return Writer.ShouldWriteInformation();
-
-            case LogLevel.Warning:
-                return Writer.ShouldWriteWarning();
-
-            case LogLevel.Error:
-            case LogLevel.Critical:
-                return Writer.ShouldWriteError();
-        }
-        return false;
+        return Logger?.IsEnabled(logLevel) ?? false;
     }
 
     /// <inheritdoc/>
     void ILogger.Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        if (Writer == null) return;
-
-        if (logLevel == LogLevel.Error || logLevel == LogLevel.Critical)
-        {
-            Writer.WriteError(new ErrorRecord(exception, eventId.Id.ToString(), ErrorCategory.InvalidOperation, null));
-        }
-        else if (logLevel == LogLevel.Warning)
-        {
-            Writer.WriteWarning(formatter(state, exception));
-        }
-        else if (logLevel == LogLevel.Information)
-        {
-            Writer.WriteInformation(new InformationRecord(formatter(state, exception), null));
-        }
-        else if (logLevel == LogLevel.Debug || logLevel == LogLevel.Trace)
-        {
-            Writer.WriteDebug(formatter(state, exception));
-        }
+        Logger?.Log(logLevel, eventId, state, exception, formatter);
     }
 
     #endregion ILogger

@@ -24,14 +24,18 @@ public sealed partial class PipelineTests : ContextBaseTests
         var option = GetOption();
         option.Rule.Include = ["FromFile1"];
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
-        var pipeline = builder.Build();
+        var writer = GetTestWriter(option);
+        var pipeline = builder.Build(writer);
 
         Assert.NotNull(pipeline);
         pipeline.Begin();
         for (var i = 0; i < 100; i++)
+        {
             pipeline.Process(PSObject.AsPSObject(testObject1));
-
+        }
         pipeline.End();
+
+        Assert.Equal(100, writer.Output.Count);
     }
 
     [Fact]
@@ -54,7 +58,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         var option = GetOption();
         option.Rule.Include = ["ScriptReasonTest"];
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
-        var writer = new TestWriter(option);
+        var writer = GetTestWriter(option);
         var pipeline = builder.Build(writer);
 
         Assert.NotNull(pipeline);
@@ -98,7 +102,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         var option = GetOption();
         option.Rule.Include = ["WithPathPrefix"];
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
-        var writer = new TestWriter(option);
+        var writer = GetTestWriter(option);
         var pipeline = builder.Build(writer);
 
         Assert.NotNull(pipeline);
@@ -237,7 +241,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         ];
 
         // Default
-        var writer = new TestWriter(option);
+        var writer = GetTestWriter(option);
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
         builder.InputPath(["./**/ObjectFromFile*.json"]);
         var pipeline = builder.Build(writer);
@@ -256,7 +260,7 @@ public sealed partial class PipelineTests : ContextBaseTests
 
         // With reason full path
         option.Rule.Include = ["ScriptReasonTest"];
-        writer = new TestWriter(option);
+        writer = GetTestWriter(option);
         builder = PipelineBuilder.Invoke(GetSource(), option, null);
         PipelineBuilder.Invoke(GetSource(), option, null);
         builder.InputPath(["./**/ObjectFromFile*.json"]);
@@ -281,7 +285,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         // With IgnoreObjectSource
         option.Rule.Include = ["FromFile1"];
         option.Input.IgnoreObjectSource = true;
-        writer = new TestWriter(option);
+        writer = GetTestWriter(option);
         builder = PipelineBuilder.Invoke(GetSource(), option, null);
         PipelineBuilder.Invoke(GetSource(), option, null);
         builder.InputPath(["./**/ObjectFromFile*.json"]);
@@ -297,6 +301,32 @@ public sealed partial class PipelineTests : ContextBaseTests
         Assert.True(items[0].HasSource());
         Assert.True(items[1].HasSource());
         //Assert.True(items[2].HasSource());
+    }
+
+    [Fact]
+    public void Invoke_WhenRuleLogs_ShouldReturnMessage()
+    {
+        var testObject1 = new TestObject { Name = "TestObject1" };
+        var option = GetOption();
+        var builder = PipelineBuilder.Invoke(GetSource("FromFileWithLogging.Rule.ps1"), option, null);
+        var writer = GetTestWriter(option);
+        var pipeline = builder.Build(writer);
+
+        Assert.NotNull(pipeline);
+        pipeline.Begin();
+        pipeline.Process(PSObject.AsPSObject(testObject1));
+        pipeline.End();
+
+        Assert.Contains(writer.Warnings, s => s == "Script warning message");
+        Assert.Contains(writer.Warnings, s => s == "Rule warning message");
+
+        Assert.Contains(writer.Information, s => s.ToString() == "Script information message");
+        Assert.Contains(writer.Information, s => s.ToString() == "Rule information message");
+
+        Assert.Single(writer.Output);
+        var result = writer.Output[0] as InvokeResult;
+
+        Assert.Equal(RuleOutcome.Error, result.Outcome);
     }
 
     /// <summary>

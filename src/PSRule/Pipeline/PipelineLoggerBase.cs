@@ -17,6 +17,8 @@ internal abstract class PipelineLoggerBase : IPipelineWriter
 
     public bool HadFailures { get; private set; }
 
+    public int ExitCode { get; private set; }
+
     #region Logging
 
     public void WriteError(ErrorRecord errorRecord)
@@ -81,14 +83,9 @@ internal abstract class PipelineLoggerBase : IPipelineWriter
         DoWriteObject(sendToPipeline, enumerateCollection);
     }
 
-    public void EnterScope(string scopeName)
+    public void WriteResult(InvokeResult result)
     {
-        ScopeName = scopeName;
-    }
 
-    public void ExitScope()
-    {
-        ScopeName = null;
     }
 
     #endregion Logging
@@ -156,8 +153,6 @@ internal abstract class PipelineLoggerBase : IPipelineWriter
 
     protected abstract void DoWriteObject(object sendToPipeline, bool enumerateCollection);
 
-    #region ILogger
-
     public virtual bool IsEnabled(LogLevel logLevel)
     {
         switch (logLevel)
@@ -179,7 +174,7 @@ internal abstract class PipelineLoggerBase : IPipelineWriter
         return false;
     }
 
-    public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    public virtual void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         if (logLevel == LogLevel.Error || logLevel == LogLevel.Critical)
             HadErrors = true;
@@ -202,5 +197,11 @@ internal abstract class PipelineLoggerBase : IPipelineWriter
         }
     }
 
-    #endregion ILogger
+    /// <inheritdoc/>
+    public void SetExitCode(int exitCode)
+    {
+        if (exitCode == 0) return;
+
+        ExitCode = exitCode;
+    }
 }

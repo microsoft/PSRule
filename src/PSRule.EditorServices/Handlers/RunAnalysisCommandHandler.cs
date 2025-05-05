@@ -37,8 +37,8 @@ public sealed class RunAnalysisCommandHandler(ClientContext context, ISerializer
             BreakLevel = Options.BreakLevel.Never,
         };
 
-        _Logger.LogInformation(new EventId(0), "Running tests in: {0}", input.WorkspacePath);
-        _Logger.LogInformation(new EventId(0), "Input path: {0}", string.Join(", ", input.InputPath ?? []));
+        _Logger.LogInformation(EventId.None, "Running tests in: {0}", input.WorkspacePath);
+        _Logger.LogInformation(EventId.None, "Input path: {0}", string.Join(", ", input.InputPath ?? []));
 
         try
         {
@@ -47,7 +47,7 @@ public sealed class RunAnalysisCommandHandler(ClientContext context, ISerializer
         }
         catch (Exception ex)
         {
-            _Logger.LogError(new EventId(0), ex, ex.Message);
+            _Logger.LogError(EventId.None, ex, ex.Message);
         }
 
         return new RunAnalysisCommandHandlerOutput(1);

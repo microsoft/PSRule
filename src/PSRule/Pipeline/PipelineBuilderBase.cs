@@ -326,7 +326,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             throw new PipelineConfigurationException("Baseline.Group", string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.PSR0003, key));
 
         var writer = PrepareWriter();
-        writer.WriteVerbose($"Using baseline group '{key}': {baselines[0]}");
+        writer.LogVerbose(EventId.None, "Using baseline group '{0}': {1}", key, baselines[0]);
         return baselines[0];
     }
 
@@ -530,7 +530,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
 
         for (var i = 0; i < files.Length; i++)
         {
-            HostContext.Verbose(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.UsingChangedFile, files[i]));
+            HostContext.LogVerbose(EventId.None, PSRuleResources.UsingChangedFile, files[i]);
         }
         return true;
     }

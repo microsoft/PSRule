@@ -35,6 +35,10 @@ What's changed since pre-release v3.0.0-B0453:
     [#1778](https://github.com/microsoft/PSRule/issues/1778)
     - Added options for `Execution.NoMatchingRules`, `Execution.NoValidInput`, and `Execution.NoValidSources`.
 - Engineering:
+  - **Important change**: Remove legacy log scopes by @BernieWhite.
+    [#2891](https://github.com/microsoft/PSRule/issues/2891)
+  - **Important change**: Remove pass fail streams by @BernieWhite.
+    [#2892](https://github.com/microsoft/PSRule/issues/2892)
   - Added GitHub Actions support to CLI by @BernieWhite.
     [#2824](https://github.com/microsoft/PSRule/issues/2824)
   - Bump vscode engine to v1.99.1.

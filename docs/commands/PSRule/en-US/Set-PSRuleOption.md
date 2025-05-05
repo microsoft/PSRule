@@ -28,8 +28,7 @@ Set-PSRuleOption [[-Path] <String>] [-Option <PSRuleOption>] [-PassThru] [-Force
  [-IncludePath <String[]>] [-InputFileObjects <Boolean>] [-InputStringFormat <String>]
  [-InputIgnoreGitPath <Boolean>] [-InputIgnoreObjectSource <Boolean>] [-InputIgnoreRepositoryCommon <Boolean>]
  [-InputIgnoreUnchangedPath <Boolean>] [-ObjectPath <String>] [-InputPathIgnore <String[]>]
- [-InputTargetType <String[]>] [-LoggingLimitDebug <String[]>] [-LoggingLimitVerbose <String[]>]
- [-LoggingRuleFail <OutcomeLogStream>] [-LoggingRulePass <OutcomeLogStream>] [-OutputAs <ResultFormat>]
+ [-InputTargetType <String[]>] [-OutputAs <ResultFormat>]
  [-OutputBanner <BannerFormat>] [-OutputCulture <String[]>] [-OutputEncoding <OutputEncoding>]
  [-OutputFooter <FooterFormat>] [-OutputFormat <OutputFormat>] [-OutputJobSummaryPath <String>]
  [-OutputJsonIndent <Int32>] [-OutputOutcome <RuleOutcome>] [-OutputPath <String>]
@@ -534,72 +533,6 @@ The `Input.IgnoreObjectSource` option determines if objects will be skipped if t
 Type: Boolean
 Parameter Sets: (All)
 Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LoggingLimitDebug
-
-Sets the `Logging.LimitDebug` option to limit debug messages to a list of named debug scopes.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LoggingLimitVerbose
-
-Sets the `Logging.LimitVerbose` option to limit verbose messages to a list of named verbose scopes.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LoggingRuleFail
-
-Sets the `Logging.RuleFail` option to generate an informational message for each rule fail.
-
-```yaml
-Type: OutcomeLogStream
-Parameter Sets: (All)
-Aliases:
-Accepted values: None, Error, Warning, Information
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LoggingRulePass
-
-Sets the `Logging.RulePass` option to generate an informational message for each rule pass.
-
-```yaml
-Type: OutcomeLogStream
-Parameter Sets: (All)
-Aliases:
-Accepted values: None, Error, Warning, Information
 
 Required: False
 Position: Named

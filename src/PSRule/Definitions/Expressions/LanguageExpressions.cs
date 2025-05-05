@@ -1275,7 +1275,7 @@ internal sealed class LanguageExpressions
         return properties.TryGetString(FIELD, out field);
     }
 
-    private static bool TryField(IExpressionContext context, LanguageExpression.PropertyBag properties, ITargetObject o, out IOperand operand)
+    private static bool TryField(IExpressionContext context, LanguageExpression.PropertyBag properties, ITargetObject o, out IOperand? operand)
     {
         operand = null;
         if (!properties.TryGetString(FIELD, out var field))
@@ -1287,7 +1287,7 @@ internal sealed class LanguageExpressions
         return operand != null || NotHasField(context, field);
     }
 
-    private static bool TryName(IExpressionContext context, LanguageExpression.PropertyBag properties, ITargetObject o, out IOperand operand)
+    private static bool TryName(IExpressionContext context, LanguageExpression.PropertyBag properties, ITargetObject o, out IOperand? operand)
     {
         operand = null;
         if (properties.TryGetString(NAME, out var svalue))
@@ -1304,7 +1304,7 @@ internal sealed class LanguageExpressions
         return operand != null;
     }
 
-    private static bool TryType(IExpressionContext context, LanguageExpression.PropertyBag properties, ITargetObject o, out IOperand operand)
+    private static bool TryType(IExpressionContext context, LanguageExpression.PropertyBag properties, ITargetObject o, out IOperand? operand)
     {
         operand = null;
         if (properties.TryGetString(TYPE, out var svalue))
@@ -1321,7 +1321,7 @@ internal sealed class LanguageExpressions
         return operand != null;
     }
 
-    private static bool TrySource(IExpressionContext context, LanguageExpression.PropertyBag properties, out IOperand operand)
+    private static bool TrySource(IExpressionContext context, LanguageExpression.PropertyBag properties, out IOperand? operand)
     {
         operand = null;
         if (properties.TryGetString(SOURCE, out var sourceValue))
@@ -1335,7 +1335,7 @@ internal sealed class LanguageExpressions
         return operand != null;
     }
 
-    private static bool TryValue(IExpressionContext context, LanguageExpression.PropertyBag properties, out IOperand operand)
+    private static bool TryValue(IExpressionContext context, LanguageExpression.PropertyBag properties, out IOperand? operand)
     {
         operand = null;
         if (properties.TryGetValue(VALUE, out var value))
@@ -1346,7 +1346,7 @@ internal sealed class LanguageExpressions
         return operand != null;
     }
 
-    private static bool TryScope(IExpressionContext context, LanguageExpression.PropertyBag properties, ITargetObject o, out IOperand operand)
+    private static bool TryScope(IExpressionContext context, LanguageExpression.PropertyBag properties, ITargetObject o, out IOperand? operand)
     {
         operand = null;
         if (properties.TryGetString(SCOPE, out var svalue))
@@ -1365,7 +1365,7 @@ internal sealed class LanguageExpressions
     /// <summary>
     /// Unwrap a function delegate or a literal value.
     /// </summary>
-    private static object Value(IExpressionContext context, IOperand operand)
+    private static object? Value(IExpressionContext context, IOperand operand)
     {
         if (operand == null)
             return null;

@@ -52,10 +52,7 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
 
     public void Debug(string message, params object[] args)
     {
-        if (Context.Writer == null)
-            return;
-
-        Context.Writer.WriteDebug(message, args);
+        Context.Logger?.LogDebug(EventId.None, message, args);
     }
 
     public void PushScope(RunspaceScope scope)

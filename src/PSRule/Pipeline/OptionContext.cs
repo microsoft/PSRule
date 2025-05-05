@@ -39,8 +39,6 @@ internal sealed class OptionContext(BindTargetMethod? bindTargetName, BindTarget
 
     public InputOption? Input { get; set; }
 
-    public LoggingOption? Logging { get; set; }
-
     public OutputOption? Output { get; set; }
 
     public OverrideOption? Override { get; set; }

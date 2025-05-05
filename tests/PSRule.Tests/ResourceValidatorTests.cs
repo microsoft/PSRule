@@ -37,7 +37,7 @@ public sealed class ResourceValidatorTests : ContextBaseTests
         var rule = HostHelper.GetRule(context, includeDependencies: false);
         Assert.NotNull(rule);
         Assert.NotEmpty(writer.Errors);
-        Assert.Equal("PSRule.Parse.InvalidResourceName", writer.Errors[0].FullyQualifiedErrorId);
+        Assert.Equal("PSR0018", writer.Errors[0].eventId.Name);
     }
 
     [Fact]

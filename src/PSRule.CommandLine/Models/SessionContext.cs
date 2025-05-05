@@ -3,6 +3,7 @@
 
 using System.Management.Automation;
 using PSRule.Pipeline;
+using PSRule.Runtime;
 
 namespace PSRule.CommandLine.Models;
 
@@ -13,25 +14,17 @@ internal sealed class SessionContext(IHostContext parent) : IHostContext
 {
     private readonly IHostContext _Parent = parent;
 
+    public string? CachePath => _Parent.CachePath;
+
+    public int ExitCode => _Parent.ExitCode;
+
     public bool InSession => _Parent.InSession;
 
     public bool HadErrors => _Parent.HadErrors;
 
-    public string? CachePath => _Parent.CachePath;
-
     public string? WorkingPath { get; set; }
 
     public Action<object>? GetResultOutput { get; set; }
-
-    public void Debug(string text)
-    {
-        _Parent.Debug(text);
-    }
-
-    public void Error(ErrorRecord errorRecord)
-    {
-        _Parent.Error(errorRecord);
-    }
 
     public ActionPreference GetPreferenceVariable(string variableName)
     {
@@ -48,15 +41,10 @@ internal sealed class SessionContext(IHostContext parent) : IHostContext
         return WorkingPath ?? _Parent.GetWorkingPath();
     }
 
-    public void Information(InformationRecord informationRecord)
-    {
-        _Parent.Information(informationRecord);
-    }
-
-    public void Object(object sendToPipeline, bool enumerateCollection)
+    public void WriteObject(object sendToPipeline, bool enumerateCollection)
     {
         GetResultOutput?.Invoke(sendToPipeline);
-        _Parent.Object(sendToPipeline, enumerateCollection);
+        _Parent.WriteObject(sendToPipeline, enumerateCollection);
     }
 
     public void SetVariable<T>(string variableName, T value)
@@ -69,13 +57,23 @@ internal sealed class SessionContext(IHostContext parent) : IHostContext
         return _Parent.ShouldProcess(target, action);
     }
 
-    public void Verbose(string text)
+    public void WriteHost(string message, ConsoleColor? backgroundColor = null, ConsoleColor? foregroundColor = null, bool? noNewLine = null)
     {
-        _Parent.Verbose(text);
+        _Parent.WriteHost(message, backgroundColor, foregroundColor, noNewLine);
     }
 
-    public void Warning(string text)
+    public bool IsEnabled(LogLevel logLevel)
     {
-        _Parent.Warning(text);
+        return _Parent.IsEnabled(logLevel);
+    }
+
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    {
+        _Parent.Log(logLevel, eventId, state, exception, formatter);
+    }
+
+    public void SetExitCode(int exitCode)
+    {
+        _Parent.SetExitCode(exitCode);
     }
 }

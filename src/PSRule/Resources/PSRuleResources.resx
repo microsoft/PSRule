@@ -392,7 +392,7 @@
     <value>The option '{0}' is deprecated and will be removed with PSRule v3. See http://aka.ms/ps-rule/deprecations for more detail.</value>
   </data>
   <data name="PSR0002" xml:space="preserve">
-    <value>PSR0002: Summary results are not supported with Job Summaries. See https://aka.ms/ps-rule/troubleshooting.</value>
+    <value>PSR0002: Summary results are not supported with Job Summaries. See https://aka.ms/ps-rule/troubleshooting-v3</value>
   </data>
   <data name="RuleExcluded" xml:space="preserve">
     <value>Rule '{0}' was excluded from run.</value>
@@ -437,12 +437,15 @@
     <value>PSR0014: Failed to create runtime factory '{0}' from '{1}'. {2}</value>
   </data>
   <data name="PSR0016" xml:space="preserve">
-    <value>PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting</value>
+    <value>PSR0016: Could not find a matching rule. Please check that Path, Name, and Tag parameters are correct. See https://aka.ms/ps-rule/troubleshooting-v3</value>
   </data>
   <data name="PSR0015" xml:space="preserve">
-    <value>PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting</value>
+    <value>PSR0015: No valid sources were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting-v3</value>
   </data>
   <data name="PSR0017" xml:space="preserve">
-    <value>PSR0017: No valid input objects or files were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting</value>
+    <value>PSR0017: No valid input objects or files were found. Please check your working path and configured options. See https://aka.ms/ps-rule/troubleshooting-v3</value>
+  </data>
+  <data name="PSR0022" xml:space="preserve">
+    <value>PSR0022: Language scope not found. See https://aka.ms/ps-rule/troubleshooting-v3</value>
   </data>
 </root>

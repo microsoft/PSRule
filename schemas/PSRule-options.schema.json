@@ -842,60 +842,6 @@
       },
       "additionalProperties": false
     },
-    "logging-option": {
-      "type": "object",
-      "title": "Logging options",
-      "description": "Options for configuring information logging.",
-      "properties": {
-        "limitDebug": {
-          "type": "array",
-          "title": "Scopes for debug messages",
-          "description": "Limits debug messages to a list of named debug scopes. No scopes are set by default.",
-          "markdownDescription": "Limits debug messages to a list of named debug scopes. No scopes are set by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#logginglimitdebug)",
-          "items": {
-            "type": "string"
-          },
-          "uniqueItems": true
-        },
-        "limitVerbose": {
-          "type": "array",
-          "title": "Scopes for verbose messages",
-          "description": "Limits verbose messages to a list of named verbose scopes. No scopes are set by default.",
-          "markdownDescription": "Limits verbose messages to a list of named verbose scopes. No scopes are set by default. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#logginglimitverbose)",
-          "items": {
-            "type": "string"
-          },
-          "uniqueItems": true
-        },
-        "ruleFail": {
-          "type": "string",
-          "title": "Report fail to stream",
-          "description": "Log fail outcomes for each rule to a specific informational stream. The default is None.",
-          "markdownDescription": "Log fail outcomes for each rule to a specific informational stream. The default is `None`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#loggingrulefail)",
-          "enum": [
-            "None",
-            "Error",
-            "Warning",
-            "Information"
-          ],
-          "default": "None"
-        },
-        "rulePass": {
-          "type": "string",
-          "title": "Report pass to stream",
-          "description": "Log pass outcomes for each rule to a specific informational stream. The default is None.",
-          "markdownDescription": "Log pass outcomes for each rule to a specific informational stream. The default is `None`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#loggingrulepass)",
-          "enum": [
-            "None",
-            "Error",
-            "Warning",
-            "Information"
-          ],
-          "default": "None"
-        }
-      },
-      "additionalProperties": false
-    },
     "run-option": {
       "type": "object",
       "title": "Run",
@@ -1229,14 +1175,6 @@
         "input": {
           "type": "object",
           "$ref": "#/definitions/input-option"
-        },
-        "logging": {
-          "type": "object",
-          "oneOf": [
-            {
-              "$ref": "#/definitions/logging-option"
-            }
-          ]
         },
         "output": {
           "type": "object",

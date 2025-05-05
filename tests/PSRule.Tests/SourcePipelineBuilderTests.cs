@@ -80,7 +80,7 @@ public sealed class SourcePipelineBuilderTests : BaseTests
     }
 
     [Theory]
-    [InlineData("", 28)]
+    [InlineData("", 29)]
     [InlineData("John's Documents", 1)]
     public void Directory_WithDirectory_ShouldFindCount(string path, int count)
     {
