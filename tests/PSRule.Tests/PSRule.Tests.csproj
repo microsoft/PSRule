@@ -183,7 +183,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-   
+
   <Target Name="CopyFile_ForTest_Issue2885" AfterTargets="Build">
     <Copy
         SourceFiles="$(ProjectDir)FromFileBaseline.Rule.ps1"
