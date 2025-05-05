@@ -157,7 +157,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
 
         Source(new Source(info, files, dependency: false));
 
-        // Import dependencies
+        // TODO: Import dependencies
         //for (var i = 0; module.RequiredModules != null && i < module.RequiredModules.Count; i++)
         //    Module(module.RequiredModules[i], dependency: true);
     }
@@ -177,15 +177,17 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         if (_CachePath == null)
             return false;
 
-        Log($"[PSRule][S] -- Searching for module in: {_CachePath}");
-        if (!string.IsNullOrEmpty(version))
+        Log($"[PSRule][S] -- Searching for module in cache: {_CachePath}");
+        if (!string.IsNullOrEmpty(version) && version != null)
         {
-            path = Environment.GetRootedBasePath(Path.Combine(_CachePath, "Modules", name, version));
+            path = Environment.GetRootedBasePath(Path.Combine(_CachePath, "Modules", name, GetVersionPath(version)));
+            Log($"[PSRule][S] -- Search for module by version in: {path}");
             if (File.Exists(Path.Combine(path, GetManifestName(name))))
                 return true;
         }
 
         path = Environment.GetRootedBasePath(Path.Combine(_CachePath, "Modules", name));
+        Log($"[PSRule][S] -- Search for module as version-less in: {path}");
         return File.Exists(Path.Combine(path, GetManifestName(name)));
     }
 
@@ -206,9 +208,9 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
             var searchPath = Environment.GetRootedBasePath(Path.Combine(searchPaths[i], name));
 
             // Try a specific version.
-            if (!string.IsNullOrEmpty(version))
+            if (!string.IsNullOrEmpty(version) && version != null)
             {
-                var versionPath = Path.Combine(searchPath, version);
+                var versionPath = Path.Combine(searchPath, GetVersionPath(version));
                 var manifestPath = Path.Combine(versionPath, GetManifestName(name));
                 if (File.Exists(manifestPath))
                 {
@@ -240,6 +242,20 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
             path = Environment.GetRootedBasePath(sorted[0]);
 
         return sorted.Length > 0;
+    }
+
+    /// <summary>
+    /// Get the path for version lookups which ignore pre-release version and build segments.
+    /// If version is pre-release, use major.minor.patch.
+    /// </summary>
+    /// <returns>Return a version string just containing major.minor.patch.</returns>
+    private static string GetVersionPath(string version)
+    {
+        if (version.Contains('-') || version.Contains('+'))
+        {
+            version = version.Split('-', '+')[0];
+        }
+        return version;
     }
 
     private static string[] SortModulePath(IEnumerable<string> values)

@@ -35,20 +35,25 @@ What's changed since pre-release v3.0.0-B0453:
     [#1778](https://github.com/microsoft/PSRule/issues/1778)
     - Added options for `Execution.NoMatchingRules`, `Execution.NoValidInput`, and `Execution.NoValidSources`.
 - Engineering:
+  - **Important change**: Remove legacy log scopes by @BernieWhite.
+    [#2891](https://github.com/microsoft/PSRule/issues/2891)
+  - **Important change**: Remove pass fail streams by @BernieWhite.
+    [#2892](https://github.com/microsoft/PSRule/issues/2892)
   - Added GitHub Actions support to CLI by @BernieWhite.
     [#2824](https://github.com/microsoft/PSRule/issues/2824)
   - Bump vscode engine to v1.99.1.
     [#2858](https://github.com/microsoft/PSRule/pull/2858)
+- Bug fixes:
+  - Fixed path handling issue string is missing the terminator with single quote in source paths by @juan-carlos-diaz.
+    [#2885](https://github.com/microsoft/PSRule/issues/2885)
+  - Fixed module path not found with pre-release by @BernieWhite.
+    [#2889](https://github.com/microsoft/PSRule/issues/2889)
 
 ## v3.0.0-B0453 (pre-release)
 
 What's changed since pre-release v3.0.0-B0416:
 
 - Engineering:
-  - **Important change**: Remove legacy log scopes by @BernieWhite.
-    [#2891](https://github.com/microsoft/PSRule/issues/2891)
-  - **Important change**: Remove pass fail streams by @BernieWhite.
-    [#2892](https://github.com/microsoft/PSRule/issues/2892)
   - Bump System.Drawing.Common to v9.0.3.
     [#2808](https://github.com/microsoft/PSRule/pull/2808)
   - Bump NuGet.Protocol to v6.13.2.
