@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -183,5 +183,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
+  
+  <Target Name="CopyFile_ForTest_Issue2885" AfterTargets="Build">
+    <Copy
+        SourceFiles="$(ProjectDir)FromFileBaseline.Rule.ps1"
+        DestinationFolder="$(TargetDir)John's Documents"
+    />
+  </Target>
+  
 </Project>

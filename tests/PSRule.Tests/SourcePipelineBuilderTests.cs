@@ -30,7 +30,7 @@ public sealed class SourcePipelineBuilderTests : BaseTests
         var sources = builder.Build();
 
         Assert.Single(sources);
-        Assert.Equal(25, sources[0].File.Length);
+        Assert.Equal(26, sources[0].File.Length);
     }
 
     [Fact]
