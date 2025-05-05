@@ -8,8 +8,6 @@ using PSRule.Rules;
 
 namespace PSRule.Pipeline.Output;
 
-#nullable enable
-
 /// <summary>
 /// Define an pipeline writer to write a job summary to disk.
 /// </summary>
@@ -24,13 +22,13 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
     private readonly string _OutputPath;
     private readonly Encoding _Encoding;
     private readonly JobSummaryFormat _JobSummary;
-    private readonly Source[] _Source;
+    private readonly Source[]? _Source;
 
     private Stream? _Stream;
     private StreamWriter _Writer;
     private bool _IsDisposed;
 
-    public JobSummaryWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess, string outputPath = null, Stream stream = null, Source[] source = null)
+    public JobSummaryWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess, string? outputPath = null, Stream? stream = null, Source[]? source = null)
         : base(inner, option, shouldProcess)
     {
         _OutputPath = outputPath ?? Environment.GetRootedPath(Option.Output.JobSummaryPath);
@@ -114,7 +112,7 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
         WriteLine();
     }
 
-    private void WriteLine(string text = null)
+    private void WriteLine(string? text = null)
     {
         if (_Writer == null || _IsDisposed)
             return;
@@ -170,13 +168,13 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
 
     private void FinalResult(InvokeResult[] o)
     {
-        var count = o?.Length;
+        var count = o?.Length ?? 0;
         var overall = RuleOutcome.None;
         var pass = 0;
         var fail = 0;
         var total = 0;
         var error = 0;
-        for (var i = 0; o != null && i < o.Length; i++)
+        for (var i = 0; o != null && i < count; i++)
         {
             overall = o[i].Outcome.GetWorstCase(overall);
             pass += o[i].Pass;
@@ -239,5 +237,3 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
 
     #endregion IDisposable
 }
-
-#nullable restore

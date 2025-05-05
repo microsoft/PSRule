@@ -17,8 +17,6 @@ using Run = Microsoft.CodeAnalysis.Sarif.Run;
 
 namespace PSRule.Pipeline.Output;
 
-#nullable enable
-
 /// <summary>
 /// A helper to build a SARIF log.
 /// </summary>
@@ -39,6 +37,7 @@ internal sealed class SarifBuilder
     private readonly PSRuleOption _Option;
     private readonly Dictionary<string, ReportingDescriptor> _Rules;
     private readonly Dictionary<string, ToolComponent> _Extensions;
+    private readonly bool _ReportAll;
 
     public SarifBuilder(Source[]? source, PSRuleOption option)
     {
@@ -53,6 +52,8 @@ internal sealed class SarifBuilder
 
         // Always include SHA-256 to allow comparison with other tools and formats such as SPDX.
         _SHA265 = algorithm != HashAlgorithm.SHA256 ? HashAlgorithm.SHA256.GetHashAlgorithm() : null;
+
+        _ReportAll = !option.Output.SarifProblemsOnly ?? !OutputOption.Default.SarifProblemsOnly!.Value;
     }
 
     /// <summary>
@@ -64,9 +65,10 @@ internal sealed class SarifBuilder
     private static List<VersionControlDetails> GetVersionControl(RepositoryOption option)
     {
         var repository = option.Url;
-        return new List<VersionControlDetails>()
-        {
-            new() {
+        return
+        [
+            new()
+            {
                 RepositoryUri = !string.IsNullOrEmpty(repository) ? new Uri(repository) : null,
                 RevisionId = !string.IsNullOrEmpty(repository) && GitHelper.TryRevision(out var revision) ? revision : null,
                 Branch = !string.IsNullOrEmpty(repository) && GitHelper.TryHeadBranch(out var branch) ? branch : null,
@@ -75,7 +77,7 @@ internal sealed class SarifBuilder
                     UriBaseId = LOCATION_ID_REPOROOT
                 },
             }
-        };
+        ];
     }
 
     private static Dictionary<string, ArtifactLocation> GetBaseIds()
@@ -109,6 +111,12 @@ internal sealed class SarifBuilder
         var runData = GetRun(run);
 
         var descriptorReference = GetReportingDescriptorReference(runData, record);
+
+        AddArtifacts(runData, record);
+
+        if (!ShouldAddResult(record))
+            return;
+
         var result = new Result
         {
             RuleId = descriptorReference.Id,
@@ -121,7 +129,6 @@ internal sealed class SarifBuilder
 
         AddFields(result, record);
         AddAnnotations(result, record);
-        AddArtifacts(runData, record);
 
         // SARIF2004: Use the RuleId property instead of Rule for standalone rules.
         if (descriptorReference.ToolComponent.Guid == TOOL_GUID)
@@ -132,6 +139,12 @@ internal sealed class SarifBuilder
 
         // Add the result to the run.
         runData.Results.Add(result);
+    }
+
+    private bool ShouldAddResult(RuleRecord record)
+    {
+        return _ReportAll ||
+            (record.Outcome & RuleOutcome.Problem) != RuleOutcome.None;
     }
 
     /// <summary>
@@ -386,14 +399,6 @@ internal sealed class SarifBuilder
         };
     }
 
-    private static MultiformatMessageString GetMessageString(string text)
-    {
-        return new MultiformatMessageString
-        {
-            Text = text
-        };
-    }
-
     private static Dictionary<string, MultiformatMessageString> GetMessageStrings(RuleRecord record)
     {
         return new Dictionary<string, MultiformatMessageString>(1)
@@ -537,5 +542,3 @@ internal sealed class SarifBuilder
         return result.Count > 0 ? result : null;
     }
 }
-
-#nullable restore

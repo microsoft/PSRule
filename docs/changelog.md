@@ -48,6 +48,8 @@ What's changed since pre-release v3.0.0-B0453:
     [#2885](https://github.com/microsoft/PSRule/issues/2885)
   - Fixed module path not found with pre-release by @BernieWhite.
     [#2889](https://github.com/microsoft/PSRule/issues/2889)
+  - Fixed empty SARIF run metadata by @BernieWhite.
+    [#2901](https://github.com/microsoft/PSRule/issues/2901)
 
 ## v3.0.0-B0453 (pre-release)
 

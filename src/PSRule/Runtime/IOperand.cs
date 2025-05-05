@@ -11,7 +11,7 @@ public interface IOperand
     /// <summary>
     /// The value of the operand.
     /// </summary>
-    object Value { get; }
+    object? Value { get; }
 
     /// <summary>
     /// The type of operand.
@@ -21,10 +21,10 @@ public interface IOperand
     /// <summary>
     /// The object path to the operand.
     /// </summary>
-    string Path { get; }
+    string? Path { get; }
 
     /// <summary>
     /// A logical prefix to add to the object path.
     /// </summary>
-    string Prefix { get; set; }
+    string? Prefix { get; set; }
 }

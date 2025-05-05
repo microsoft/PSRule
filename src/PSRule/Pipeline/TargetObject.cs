@@ -22,7 +22,7 @@ public sealed class TargetObject : ITargetObject
     internal TargetObject(PSObject o)
         : this(o, null) { }
 
-    internal TargetObject(PSObject o, TargetSourceCollection source)
+    internal TargetObject(PSObject o, TargetSourceCollection? source)
     {
         o.ConvertTargetInfoProperty();
         o.ConvertTargetInfoType();
@@ -36,13 +36,13 @@ public sealed class TargetObject : ITargetObject
         _Annotations = [];
     }
 
-    internal TargetObject(PSObject o, string targetName = null, string targetType = null, string[] scope = null)
+    internal TargetObject(PSObject o, string? targetName = null, string? targetType = null, string[]? scope = null)
         : this(o, null)
     {
-        if (!string.IsNullOrEmpty(targetName))
+        if (targetName != null && !string.IsNullOrWhiteSpace(targetName))
             TargetName = targetName;
 
-        if (!string.IsNullOrEmpty(targetType))
+        if (targetType != null && !string.IsNullOrWhiteSpace(targetType))
             TargetType = targetType;
 
         if (scope != null && scope.Length > 0)
@@ -65,8 +65,6 @@ public sealed class TargetObject : ITargetObject
 
     IEnumerable<TargetSourceInfo> ITargetObject.Source => Source.GetSourceInfo() ?? [];
 
-#nullable enable
-
     string? ITargetObject.Name => TargetName;
 
     string? ITargetObject.Type => TargetType;
@@ -77,9 +75,7 @@ public sealed class TargetObject : ITargetObject
 
     ITargetSourceMap? ITargetObject.SourceMap => null;
 
-#nullable restore
-
-    internal Hashtable GetData()
+    internal Hashtable? GetData()
     {
         return _Data == null || _Data.Count == 0 ? null : _Data;
     }

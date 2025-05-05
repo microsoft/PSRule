@@ -68,8 +68,15 @@ public sealed class ResultReason : IResultReason
         }
     }
 
+    /// <summary>
+    /// A literal or format string reason message.
+    /// Use <see cref="Args"/> to specify arguments for a formatted message.
+    /// </summary>
     public string Text { get; }
 
+    /// <summary>
+    /// Arguments for a formatted message.
+    /// </summary>
     public object[]? Args { get; }
 
     /// <inheritdoc/>
@@ -81,16 +88,19 @@ public sealed class ResultReason : IResultReason
         }
     }
 
+    /// <inheritdoc/>
     public override string ToString()
     {
         return Format();
     }
 
+    /// <inheritdoc/>
     public override int GetHashCode()
     {
         return ToString().GetHashCode();
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object obj)
     {
         return obj is IResultReason other && Equals(other);
@@ -117,6 +127,7 @@ public sealed class ResultReason : IResultReason
 
     #region IEquatable<IResultReason>
 
+    /// <inheritdoc/>
     public bool Equals(IResultReason? other)
     {
         return other != null &&

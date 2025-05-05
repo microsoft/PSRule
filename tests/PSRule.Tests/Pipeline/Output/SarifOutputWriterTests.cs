@@ -20,17 +20,20 @@ public sealed class SarifOutputWriterTests : OutputWriterBaseTests
     {
         var option = GetOption();
         var output = new TestWriter(option);
-        var result = new InvokeResult(GetRun());
-        result.Add(GetPass());
-        result.Add(GetFail());
+        var invokeResult = new InvokeResult(GetRun());
+        invokeResult.Add(GetPass());
+        invokeResult.Add(GetFail());
 
         var writer = new SarifOutputWriter(null, output, option, null);
         writer.Begin();
-        writer.WriteObject(result, false);
+        writer.WriteObject(invokeResult, false);
         writer.End(new DefaultPipelineResult(null, Options.BreakLevel.None));
 
         var actual = JsonConvert.DeserializeObject<JObject>(output.Output.OfType<string>().FirstOrDefault()!);
         Assert.NotNull(actual);
+
+        var results = actual["runs"]?[0]?["results"];
+        Assert.NotNull(results);
 
         var driver = actual["runs"]?[0]?["tool"]?["driver"];
         Assert.NotNull(driver);
@@ -58,13 +61,19 @@ public sealed class SarifOutputWriterTests : OutputWriterBaseTests
         var rules = driver["rules"];
         Assert.NotNull(rules);
 
-        // Does not contain pass rule
+        // Contain pass rule by no results
         var rule = rules.Where(r => r["id"]?.Value<string>() == "TestModule\\rule-001").FirstOrDefault();
-        Assert.Null(rule);
+        Assert.NotNull(rule);
+
+        var result = results.Where(r => r["ruleId"]?.Value<string>() == "TestModule\\rule-001").FirstOrDefault();
+        Assert.Null(result);
 
         // Contains fail rule
         rule = rules.Where(r => r["id"]?.Value<string>() == "rid-002").FirstOrDefault();
         Assert.NotNull(rule);
+
+        result = results.Where(r => r["ruleId"]?.Value<string>() == "rid-002").FirstOrDefault();
+        Assert.NotNull(result);
     }
 
     [Fact]
