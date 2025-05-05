@@ -129,7 +129,7 @@ internal static class Functions
         };
     }
 
-    private static ExpressionFnOuter Concat(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? Concat(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||
@@ -140,13 +140,14 @@ internal static class Functions
         {
             var sb = new StringBuilder();
             foreach (var value in values)
+            {
                 sb.Append(Value(context, value));
-
+            }
             return sb.ToString();
         };
     }
 
-    private static ExpressionFnOuter Substring(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? Substring(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||

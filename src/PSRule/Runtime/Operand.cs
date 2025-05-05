@@ -8,23 +8,23 @@ internal sealed class Operand : IOperand
     private const string Dot = ".";
     private const string Space = " ";
 
-    private Operand(OperandKind kind, object value)
+    private Operand(OperandKind kind, object? value)
     {
         Kind = kind;
         Value = value;
     }
 
-    private Operand(OperandKind kind, string path, object value)
+    private Operand(OperandKind kind, string? path, object? value)
         : this(kind, value)
     {
         Path = path;
     }
 
-    public object Value { get; }
+    public object? Value { get; }
 
-    public string Path { get; }
+    public string? Path { get; }
 
-    public string Prefix { get; set; }
+    public string? Prefix { get; set; }
 
     public OperandKind Kind { get; }
 
@@ -38,7 +38,7 @@ internal sealed class Operand : IOperand
         return new Operand(OperandKind.Type, path, type);
     }
 
-    internal static IOperand FromPath(string path, object value = null)
+    internal static IOperand FromPath(string path, object? value = null)
     {
         return new Operand(OperandKind.Path, path, value);
     }

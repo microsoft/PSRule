@@ -196,7 +196,7 @@ internal abstract class PathBuilder(IPipelineWriter logger, string basePath, str
         return path.Substring(0, literalSeparator);
     }
 
-    private bool TryFilter(string path, out string searchPattern, out PathFilter filter)
+    private bool TryFilter(string path, out string? searchPattern, out PathFilter? filter)
     {
         searchPattern = null;
         filter = null;
