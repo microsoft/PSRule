@@ -213,4 +213,7 @@
   <data name="Run_Name_Description" xml:space="preserve">
     <value>The name of one or more specific rules to run instead of all rules. By default, all rules are evaluated.</value>
   </data>
+  <data name="Run_Convention_Description" xml:space="preserve">
+    <value>The name of one or more conventions.</value>
+  </data>
 </root>

@@ -43,6 +43,11 @@ public sealed class RunOptions
     public string[]? Formats { get; set; }
 
     /// <summary>
+    /// A list of conventions to use.
+    /// </summary>
+    public string[]? Convention { get; set; }
+
+    /// <summary>
     /// Only show output with the specified outcome.
     /// </summary>
     public RuleOutcome? Outcome { get; set; }

@@ -237,6 +237,24 @@ public static class Environment
     }
 
     /// <summary>
+    /// Try to get the environment variable as an array of strings.
+    /// </summary>
+    public static bool TryStringArray(string key, char[] separator, out string[]? value)
+    {
+        value = default;
+        if (!TryVariable(key, out var variable) || variable == null)
+            return false;
+
+        value = variable.Split(separator, options: StringSplitOptions.RemoveEmptyEntries);
+        for (var i = 0; i < value.Length; i++)
+        {
+            if (!string.IsNullOrEmpty(value[i]))
+                value[i] = value[i].Trim();
+        }
+        return true;
+    }
+
+    /// <summary>
     /// Try to get the environment variable as a <see cref="StringArrayMap"/>.
     /// </summary>
     public static bool TryStringArrayMap(string key, out StringArrayMap? value)

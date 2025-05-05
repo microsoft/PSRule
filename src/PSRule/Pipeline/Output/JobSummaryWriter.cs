@@ -62,7 +62,7 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
         if (string.IsNullOrEmpty(_OutputPath) || _IsDisposed || !CreateFile(_OutputPath))
             return;
 
-        _Stream ??= new FileStream(_OutputPath, FileMode.Append, FileAccess.ReadWrite, FileShare.Read);
+        _Stream ??= new FileStream(_OutputPath, FileMode.Append, FileAccess.Write, FileShare.Read);
         _Writer = new StreamWriter(_Stream, _Encoding, 2048, false);
         _Writer ??= File.AppendText(_OutputPath);
     }

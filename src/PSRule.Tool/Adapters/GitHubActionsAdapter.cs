@@ -25,13 +25,12 @@ internal sealed class GitHubActionsAdapter
 
     private void WriteVersion()
     {
-        Console.WriteLine($"[info] Using Version: {ClientBuilder.Version}");
-        // Console.WriteLine($"[info] GitHub Action Version: {Environment.GetGitHubActionVersion()}");
-        // Console.WriteLine($"[info] GitHub Action Name: {Environment.GetGitHubActionName()}");
-        // Console.WriteLine($"[info] GitHub Action ID: {Environment.GetGitHubActionId()}");
-        // Console.WriteLine($"[info] GitHub Action Path: {Environment.GetGitHubActionPath()}");
+        WriteInput("Version", ClientBuilder.Version!);
     }
 
+    /// <summary>
+    /// Load in environment variables from the GitHub Action context.
+    /// </summary>
     private string[] GetArgs(string[] args)
     {
         var result = new List<string>(args);
@@ -40,63 +39,79 @@ internal sealed class GitHubActionsAdapter
         {
             result.Add("--path");
             result.Add(includePath);
-            Console.WriteLine($"[info] Using IncludePath: {includePath}");
+            WriteInput("IncludePath", includePath);
         }
 
         if (Environment.TryString("INPUT_BASELINE", out var baseline) && !string.IsNullOrWhiteSpace(baseline))
         {
             result.Add("--baseline");
             result.Add(baseline);
-            Console.WriteLine($"[info] Using Baseline: {baseline}");
+            WriteInput("Baseline", baseline);
         }
 
-        // CLI does not support this yet.
-        // if (Environment.TryString("INPUT_CONVENTIONS", out var conventions) && !string.IsNullOrWhiteSpace(conventions))
-        // {
-        //     foreach (var convention in conventions.Split([COMMA], StringSplitOptions.RemoveEmptyEntries))
-        //     {
-        //         if (string.IsNullOrWhiteSpace(convention))
-        //             continue;
+        if (Environment.TryStringArray("INPUT_CONVENTIONS", [COMMA], out var conventions) && conventions != null)
+        {
+            foreach (var convention in conventions)
+            {
+                if (string.IsNullOrWhiteSpace(convention))
+                    continue;
 
-        //         result.Add("--convention");
-        //         result.Add(convention.Trim());
-        //     }
-        //     Console.WriteLine($"[info] Using Conventions: {conventions}");
-        // }
+                result.Add("--convention");
+                result.Add(convention);
+
+                WriteInput("Convention", convention);
+            }
+        }
 
         if (Environment.TryString("INPUT_INPUTPATH", out var inputPath) && !string.IsNullOrWhiteSpace(inputPath))
         {
             result.Add("--input-path");
             result.Add(inputPath);
-            Console.WriteLine($"[info] Using InputPath: {inputPath}");
+            WriteInput("InputPath", inputPath);
+        }
+
+        else if (Environment.TryStringArray("INPUT_FORMATS", [COMMA], out var formats) && formats != null)
+        {
+            foreach (var format in formats)
+            {
+                if (string.IsNullOrWhiteSpace(format))
+                    continue;
+
+
+
+                WriteInput("Format", format);
+            }
+
+            result.Add("--formats");
+            result.Add(string.Join(" ", formats));
         }
 
         if (Environment.TryString("INPUT_OPTION", out var option) && !string.IsNullOrWhiteSpace(option))
         {
             result.Add("--option");
             result.Add(option);
-            Console.WriteLine($"[info] Using Option: {option}");
+            WriteInput("Option", option);
         }
 
         if (Environment.TryString("INPUT_OUTCOME", out var outcome) && !string.IsNullOrWhiteSpace(outcome))
         {
             result.Add("--outcome");
             result.Add(outcome);
-            Console.WriteLine($"[info] Using Outcome: {outcome}");
+            WriteInput("Outcome", outcome);
         }
 
         if (Environment.TryString("INPUT_OUTPUTFORMAT", out var outputFormat) && !string.IsNullOrWhiteSpace(outputFormat))
         {
-            result.Add("--output-format");
+            result.Add("--output");
             result.Add(outputFormat);
-            Console.WriteLine($"[info] Using OutputFormat: {outputFormat}");
+            WriteInput("OutputFormat", outputFormat);
         }
 
         if (Environment.TryString("INPUT_OUTPUTPATH", out var outputPath) && !string.IsNullOrWhiteSpace(outputPath))
         {
             result.Add("--output-path");
             result.Add(outputPath);
-            Console.WriteLine($"[info] Using OutputPath: {outputPath}");
+            WriteInput("OutputPath", outputPath);
         }
 
         if (Environment.TryString("INPUT_SUMMARY", out var summary) && !string.IsNullOrWhiteSpace(summary) && summary == "true" &&
@@ -104,22 +119,30 @@ internal sealed class GitHubActionsAdapter
         {
             result.Add("--job-summary-path");
             result.Add(jobSummaryPath);
-            Console.WriteLine($"[info] Using Summary: {jobSummaryPath}");
+            WriteInput("Summary", summary);
         }
 
-        if (Environment.TryString("INPUT_MODULES", out var modules) && !string.IsNullOrWhiteSpace(modules))
+        if (Environment.TryStringArray("INPUT_MODULES", [COMMA], out var modules) && modules != null)
         {
-            foreach (var module in modules.Split([COMMA], StringSplitOptions.RemoveEmptyEntries))
+            foreach (var module in modules)
             {
                 if (string.IsNullOrWhiteSpace(module))
                     continue;
 
+                var m = module.Trim();
+
                 result.Add("--module");
-                result.Add(module.Trim());
+                result.Add(m);
+
+                WriteInput("Module", m);
             }
-            Console.WriteLine($"[info] Using Modules: {modules}");
         }
 
         return [.. result];
+    }
+
+    private static void WriteInput(string name, string value)
+    {
+        Console.WriteLine($"[info] Using {name}: {value}");
     }
 }

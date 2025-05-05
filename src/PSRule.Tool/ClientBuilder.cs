@@ -39,6 +39,7 @@ internal sealed class ClientBuilder
     private readonly Option<string[]> _Run_Name;
     private readonly Option<string> _Run_Baseline;
     private readonly Option<string[]> _Run_Formats;
+    private readonly Option<string[]> _Run_Convention;
     private readonly Option<string[]> _Run_Outcome;
     private readonly Option<bool> _Run_NoRestore;
     private readonly Option<string> _Run_JobSummaryPath;
@@ -108,6 +109,10 @@ internal sealed class ClientBuilder
             description: CmdStrings.Run_Formats_Description
         );
         _Run_Formats.AllowMultipleArgumentsPerToken = true;
+        _Run_Convention = new Option<string[]>(
+            ["--convention"],
+            description: CmdStrings.Run_Convention_Description
+        );
         _Run_Outcome = new Option<string[]>(
             ["--outcome"],
             description: CmdStrings.Run_Outcome_Description
@@ -198,6 +203,7 @@ internal sealed class ClientBuilder
                 Name = invocation.ParseResult.GetValueForOption(_Run_Name),
                 Baseline = invocation.ParseResult.GetValueForOption(_Run_Baseline),
                 Formats = invocation.ParseResult.GetValueForOption(_Run_Formats),
+                Convention = invocation.ParseResult.GetValueForOption(_Run_Convention),
                 Outcome = invocation.ParseResult.GetValueForOption(_Run_Outcome).ToRuleOutcome(),
                 OutputPath = invocation.ParseResult.GetValueForOption(_Run_OutputPath),
                 OutputFormat = invocation.ParseResult.GetValueForOption(_Run_OutputFormat).ToOutputFormat(),

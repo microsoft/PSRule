@@ -259,6 +259,15 @@ namespace PSRule.Tool.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The name of one or more conventions..
+        /// </summary>
+        internal static string Run_Convention_Description {
+            get {
+                return ResourceManager.GetString("Run_Convention_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run rules against an input path and output the results..
         /// </summary>
         internal static string Run_Description {

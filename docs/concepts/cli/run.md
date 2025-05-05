@@ -35,6 +35,10 @@ For example, to enable JSON and YAML formats:
 --formats json yaml
 ```
 
+### `--convention`
+
+The name of one or more conventions to use during a run.
+
 ### `--baseline`
 
 The name of a specific baseline to use.
