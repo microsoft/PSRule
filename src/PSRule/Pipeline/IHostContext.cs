@@ -71,7 +71,7 @@ public interface IHostContext : ILogger
     /// <summary>
     /// Get the current working path.
     /// </summary>
-    string GetWorkingPath(); 
+    string GetWorkingPath();
 
     /// <summary>
     /// Set the terminating exit code of the pipeline.
