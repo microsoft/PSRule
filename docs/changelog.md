@@ -42,6 +42,8 @@ What's changed since pre-release v3.0.0-B0453:
 - Bug fixes:
   - Fixed path handling issue string is missing the terminator with single quote in source paths by @juan-carlos-diaz.
     [#2885](https://github.com/microsoft/PSRule/issues/2885)
+  - Fixed module path not found with pre-release by @BernieWhite.
+    [#2889](https://github.com/microsoft/PSRule/issues/2889)
 
 ## v3.0.0-B0453 (pre-release)
 

@@ -183,12 +183,31 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  
+
   <Target Name="CopyFile_ForTest_Issue2885" AfterTargets="Build">
     <Copy
         SourceFiles="$(ProjectDir)FromFileBaseline.Rule.ps1"
         DestinationFolder="$(TargetDir)John's Documents"
     />
   </Target>
-  
+
+  <!-- Copy test modules for unit tests. -->
+  <ItemGroup>
+    <Module7FilesToCopy Include="$(ProjectDir)TestModule7\TestModule7.psd1" />
+    <Module7FilesToCopy Include="$(ProjectDir)TestModule7\Baseline.Rule.yaml" />
+    <Module8FilesToCopy Include="$(ProjectDir)TestModule8\TestModule8.psd1" />
+    <Module8FilesToCopy Include="$(ProjectDir)TestModule8\rules\Test.Rule.ps1" />
+  </ItemGroup>
+
+  <Target Name="CopyFile_ForTest_Issue2889" AfterTargets="Build">
+    <Copy
+        SourceFiles="@(Module7FilesToCopy)"
+        DestinationFolder="$(TargetDir)Modules/TestModule7/0.0.1/"
+    />
+    <Copy
+        SourceFiles="@(Module8FilesToCopy)"
+        DestinationFolder="$(TargetDir)Modules/TestModule8/0.0.1/"
+    />
+  </Target>
+
 </Project>

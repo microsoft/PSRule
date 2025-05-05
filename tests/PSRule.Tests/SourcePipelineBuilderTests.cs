@@ -11,101 +11,127 @@ namespace PSRule;
 /// </summary>
 public sealed class SourcePipelineBuilderTests : BaseTests
 {
-    [Fact]
-    public void Add_single_file()
+    [Theory]
+    [InlineData("FromFile.Rule.ps1")]
+    [InlineData("John's Documents/FromFileBaseline.Rule.ps1")]
+    public void Directory_WithSingleFile_ShouldFindCount(string path)
     {
         var builder = new SourcePipelineBuilder(null, null);
-        builder.Directory(GetSourcePath("FromFile.Rule.ps1"));
+        builder.Directory(GetSourcePath(path));
         var sources = builder.Build();
 
         Assert.Single(sources);
         Assert.Single(sources[0].File);
+        Assert.Equal(GetSourcePath(path), sources[0].File[0].Path);
     }
 
-    [Fact]
-    public void Add_directory()
-    {
-        var builder = new SourcePipelineBuilder(null, null);
-        builder.Directory(GetSourcePath(""));
-        var sources = builder.Build();
-
-        Assert.Single(sources);
-        Assert.Equal(26, sources[0].File.Length);
-    }
-
-    [Fact]
-    public void Add_script_file_with_disable_powershell()
+    [Theory]
+    [InlineData("FromFile.Rule.yaml", 1)]
+    public void Directory_WithSingleFileAndDisablePowerShell_ShouldFindCount(string path, int count)
     {
         var option = GetOption();
         option.Execution.RestrictScriptSource = RestrictScriptSource.DisablePowerShell;
         var builder = new SourcePipelineBuilder(null, option);
-        builder.Directory(GetSourcePath("FromFile.Rule.ps1"));
+        builder.Directory(GetSourcePath(path));
+        var sources = builder.Build();
+
+        Assert.Single(sources);
+        Assert.Equal(count, sources[0].File.Length);
+    }
+
+    [Theory]
+    [InlineData("FromFile.Rule.ps1")]
+    public void Directory_WithScriptFileAndDisablePowerShell_ShouldNotFindAny(string path)
+    {
+        var option = GetOption();
+        option.Execution.RestrictScriptSource = RestrictScriptSource.DisablePowerShell;
+        var builder = new SourcePipelineBuilder(null, option);
+        builder.Directory(GetSourcePath(path));
         var sources = builder.Build();
 
         Assert.Empty(sources);
     }
 
-    [Fact]
-    public void Add_script_file_with_module_only()
+    [Theory]
+    [InlineData("FromFile.Rule.yaml", 1)]
+    public void Directory_WithSingleFileAndModuleOnly_ShouldFindCount(string path, int count)
     {
         var option = GetOption();
         option.Execution.RestrictScriptSource = RestrictScriptSource.ModuleOnly;
         var builder = new SourcePipelineBuilder(null, option);
-        builder.Directory(GetSourcePath("FromFile.Rule.ps1"));
+        builder.Directory(GetSourcePath(path));
+        var sources = builder.Build();
+
+        Assert.Single(sources);
+        Assert.Equal(count, sources[0].File.Length);
+    }
+
+    [Theory]
+    [InlineData("FromFile.Rule.ps1")]
+    public void Directory_WithScriptFileAndModuleOnly_ShouldNotFindAny(string path)
+    {
+        var option = GetOption();
+        option.Execution.RestrictScriptSource = RestrictScriptSource.ModuleOnly;
+        var builder = new SourcePipelineBuilder(null, option);
+        builder.Directory(GetSourcePath(path));
         var sources = builder.Build();
 
         Assert.Empty(sources);
     }
 
-    [Fact]
-    public void Add_yaml_file_with_disable_powershell()
+    [Theory]
+    [InlineData("", 28)]
+    [InlineData("John's Documents", 1)]
+    public void Directory_WithDirectory_ShouldFindCount(string path, int count)
+    {
+        var builder = new SourcePipelineBuilder(null, null);
+        builder.Directory(GetSourcePath(path));
+        var sources = builder.Build();
+
+        Assert.Single(sources);
+        Assert.Equal(count, sources[0].File.Length);
+    }
+
+    [Theory]
+    [InlineData("", 21)]
+    public void Directory_WithDirectoryAndDisablePowerShell_ShouldFindCount(string path, int count)
     {
         var option = GetOption();
         option.Execution.RestrictScriptSource = RestrictScriptSource.DisablePowerShell;
         var builder = new SourcePipelineBuilder(null, option);
-        builder.Directory(GetSourcePath("FromFile.Rule.yaml"));
+        builder.Directory(GetSourcePath(path));
         var sources = builder.Build();
 
         Assert.Single(sources);
-        Assert.Single(sources[0].File);
+        Assert.Equal(count, sources[0].File.Length);
     }
 
-    [Fact]
-    public void Add_yaml_file_with_module_only()
+    [Theory]
+    [InlineData("", 21)]
+    public void Directory_WithDirectoryAndModuleOnly_ShouldFindCount(string path, int count)
     {
         var option = GetOption();
         option.Execution.RestrictScriptSource = RestrictScriptSource.ModuleOnly;
         var builder = new SourcePipelineBuilder(null, option);
-        builder.Directory(GetSourcePath("FromFile.Rule.yaml"));
+        builder.Directory(GetSourcePath(path));
         var sources = builder.Build();
 
         Assert.Single(sources);
-        Assert.Single(sources[0].File);
+        Assert.Equal(count, sources[0].File.Length);
     }
 
-    [Fact]
-    public void Add_directory_with_disable_powershell()
+    [Theory]
+    [InlineData("TestModule7", "0.0.1")]
+    [InlineData("TestModule8", "0.0.1-Alpha")]
+    public void ModuleByName_WithNameAndVersion_ShouldFindModuleFiles(string name, string version)
     {
-        var option = GetOption();
-        option.Execution.RestrictScriptSource = RestrictScriptSource.DisablePowerShell;
-        var builder = new SourcePipelineBuilder(null, option);
-        builder.Directory(GetSourcePath(""));
+        var builder = new SourcePipelineBuilder(null, null, cachePath: GetSourcePath(""));
+        builder.ModuleByName(name: name, version: version);
         var sources = builder.Build();
 
         Assert.Single(sources);
-        Assert.Equal(20, sources[0].File.Length);
-    }
-
-    [Fact]
-    public void Add_directory_with_module_only()
-    {
-        var option = GetOption();
-        option.Execution.RestrictScriptSource = RestrictScriptSource.ModuleOnly;
-        var builder = new SourcePipelineBuilder(null, option);
-        builder.Directory(GetSourcePath(""));
-        var sources = builder.Build();
-
-        Assert.Single(sources);
-        Assert.Equal(20, sources[0].File.Length);
+        Assert.Equal(name, sources[0].Module.Name);
+        Assert.Equal(version, sources[0].Module.FullVersion);
+        Assert.NotEmpty(sources[0].File);
     }
 }
