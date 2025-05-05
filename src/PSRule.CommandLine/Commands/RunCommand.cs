@@ -41,6 +41,11 @@ public sealed class RunCommand
             clientContext.Option.Include.Path = operationOptions.Path;
         }
 
+        if (operationOptions.Convention != null && operationOptions.Convention.Length > 0)
+        {
+            clientContext.Option.Convention.Include = operationOptions.Convention;
+        }
+
         if (operationOptions.Outcome != null && operationOptions.Outcome.Value != Rules.RuleOutcome.None)
         {
             clientContext.Option.Output.Outcome = operationOptions.Outcome;
