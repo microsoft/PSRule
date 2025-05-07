@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using PSRule.Pipeline;
+using PSRule.Runtime;
 
 namespace PSRule;
 
@@ -45,8 +46,13 @@ public sealed class InputFormatDeserializerTests
         Assert.Equal(3, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
         Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out var path));
         Assert.Null(path);
-        actual[0].Value.TryTargetInfo(out var info1);
-        actual[1].Value.TryTargetInfo(out var info2);
+
+        PSRuleTargetInfo info1 = null;
+        Assert.True(actual[0].Value is PSObject pSObject1 && pSObject1.TryTargetInfo(out info1));
+
+        PSRuleTargetInfo info2 = null;
+        Assert.True(actual[1].Value is PSObject pSObject2 && pSObject2.TryTargetInfo(out info2));
+
         Assert.Equal("some-file.json", info1.Source[0].File);
         Assert.Equal("master.items[0]", info1.Path);
         Assert.NotNull(info2.Source[0]);

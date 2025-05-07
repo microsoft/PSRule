@@ -28,14 +28,14 @@ internal static class PipelineReceiverActions
     private const string MARKDOWN = ".markdown";
     private const string PSD1 = ".psd1";
 
-    private static readonly TargetObject[] EmptyArray = Array.Empty<TargetObject>();
+    private static readonly TargetObject[] EmptyArray = [];
 
     public static IEnumerable<TargetObject> PassThru(TargetObject targetObject)
     {
         yield return targetObject;
     }
 
-    public static IEnumerable<TargetObject> DetectInputFormat(TargetObject targetObject, VisitTargetObject next)
+    public static IEnumerable<ITargetObject> DetectInputFormat(ITargetObject targetObject, VisitTargetObject next)
     {
         var pathExtension = GetPathExtension(targetObject);
 
@@ -59,14 +59,14 @@ internal static class PipelineReceiverActions
         {
             return ConvertFromPowerShellData(targetObject, next);
         }
-        return new TargetObject[] { targetObject };
+        return [targetObject];
     }
 
-    public static IEnumerable<TargetObject> ConvertFromJson(TargetObject targetObject, VisitTargetObject next)
+    public static IEnumerable<ITargetObject> ConvertFromJson(ITargetObject targetObject, VisitTargetObject next)
     {
         // Only attempt to deserialize if the input is a string, file or URI
         if (!IsAcceptedType(targetObject))
-            return new TargetObject[] { targetObject };
+            return [targetObject];
 
         var reader = ReadAsReader(targetObject, out var sourceInfo);
         try
@@ -91,11 +91,11 @@ internal static class PipelineReceiverActions
         }
     }
 
-    public static IEnumerable<TargetObject> ConvertFromYaml(TargetObject targetObject, VisitTargetObject next)
+    public static IEnumerable<ITargetObject> ConvertFromYaml(ITargetObject targetObject, VisitTargetObject next)
     {
         // Only attempt to deserialize if the input is a string, file or URI
         if (!IsAcceptedType(targetObject))
-            return new TargetObject[] { targetObject };
+            return [targetObject];
 
         var reader = ReadAsReader(targetObject, out var sourceInfo);
         var d = new DeserializerBuilder()
@@ -108,8 +108,8 @@ internal static class PipelineReceiverActions
 
         try
         {
-            var parser = new YamlDotNet.Core.Parser(reader);
-            var result = new List<TargetObject>();
+            var parser = new Parser(reader);
+            var result = new List<ITargetObject>();
             parser.TryConsume<StreamStart>(out _);
             while (parser.Current is DocumentStart)
             {
@@ -141,18 +141,18 @@ internal static class PipelineReceiverActions
         }
     }
 
-    public static IEnumerable<TargetObject> ConvertFromMarkdown(TargetObject targetObject, VisitTargetObject next)
+    public static IEnumerable<ITargetObject> ConvertFromMarkdown(ITargetObject targetObject, VisitTargetObject next)
     {
         // Only attempt to deserialize if the input is a string or a file
         if (!IsAcceptedType(targetObject))
-            return new TargetObject[] { targetObject };
+            return [targetObject];
 
         var markdown = ReadAsString(targetObject, out var sourceInfo);
         var value = MarkdownConvert.DeserializeObject(markdown);
         return VisitItems(value, sourceInfo, next);
     }
 
-    public static IEnumerable<TargetObject> ConvertFromPowerShellData(TargetObject targetObject, VisitTargetObject next)
+    public static IEnumerable<ITargetObject> ConvertFromPowerShellData(ITargetObject targetObject, VisitTargetObject next)
     {
         // Only attempt to deserialize if the input is a string or a file
         if (!IsAcceptedType(targetObject))
@@ -199,42 +199,55 @@ internal static class PipelineReceiverActions
         }
     }
 
-    private static string GetPathExtension(TargetObject targetObject)
+    private static string? GetPathExtension(ITargetObject targetObject)
     {
-        if (targetObject.Value.BaseObject is InputFileInfo inputFileInfo)
+        var baseObject = GetBaseObject(targetObject.Value);
+
+        if (baseObject is InputFileInfo inputFileInfo)
             return inputFileInfo.Extension;
 
-        if (targetObject.Value.BaseObject is FileInfo fileInfo)
+        if (baseObject is FileInfo fileInfo)
             return fileInfo.Extension;
 
-        if (targetObject.Value.BaseObject is Uri uri)
+        if (baseObject is Uri uri)
             return Path.GetExtension(uri.OriginalString);
 
         return null;
     }
 
-    private static bool IsAcceptedType(TargetObject targetObject)
+    private static object? GetBaseObject(object o)
     {
-        return targetObject.Value.BaseObject is string ||
-            targetObject.Value.BaseObject is InputFileInfo ||
-            targetObject.Value.BaseObject is FileInfo ||
-            targetObject.Value.BaseObject is Uri;
+        if (o is not PSObject pso) return o;
+
+        return pso.BaseObject == null ? o : pso.BaseObject;
     }
 
-    private static string ReadAsString(TargetObject targetObject, out TargetSourceInfo sourceInfo)
+    private static bool IsAcceptedType(ITargetObject targetObject)
+    {
+        var baseObject = GetBaseObject(targetObject.Value);
+
+        return baseObject is string ||
+            baseObject is InputFileInfo ||
+            baseObject is FileInfo ||
+            baseObject is Uri;
+    }
+
+    private static string ReadAsString(ITargetObject targetObject, out TargetSourceInfo? sourceInfo)
     {
         sourceInfo = null;
-        if (targetObject.Value.BaseObject is string)
+        var baseObject = GetBaseObject(targetObject.Value);
+
+        if (baseObject is string)
         {
-            return targetObject.Value.BaseObject.ToString();
+            return baseObject.ToString();
         }
-        else if (targetObject.Value.BaseObject is InputFileInfo inputFileInfo)
+        else if (baseObject is InputFileInfo inputFileInfo)
         {
             sourceInfo = new TargetSourceInfo(inputFileInfo);
             using var reader = new StreamReader(inputFileInfo.FullName);
             return reader.ReadToEnd();
         }
-        else if (targetObject.Value.BaseObject is FileInfo fileInfo)
+        else if (baseObject is FileInfo fileInfo)
         {
             sourceInfo = new TargetSourceInfo(fileInfo);
             using var reader = new StreamReader(fileInfo.FullName);
@@ -242,40 +255,42 @@ internal static class PipelineReceiverActions
         }
         else
         {
-            var uri = targetObject.Value.BaseObject as Uri;
+            var uri = baseObject as Uri;
             sourceInfo = new TargetSourceInfo(uri);
             using var webClient = new WebClient();
             return webClient.DownloadString(uri);
         }
     }
 
-    private static TextReader ReadAsReader(TargetObject targetObject, out TargetSourceInfo sourceInfo)
+    private static TextReader ReadAsReader(ITargetObject targetObject, out TargetSourceInfo? sourceInfo)
     {
         sourceInfo = null;
-        if (targetObject.Value.BaseObject is string)
+        var baseObject = GetBaseObject(targetObject.Value);
+
+        if (baseObject is string)
         {
-            return new StringReader(targetObject.Value.BaseObject.ToString());
+            return new StringReader(baseObject.ToString());
         }
-        else if (targetObject.Value.BaseObject is InputFileInfo inputFileInfo)
+        else if (baseObject is InputFileInfo inputFileInfo)
         {
             sourceInfo = new TargetSourceInfo(inputFileInfo);
             return new StreamReader(inputFileInfo.FullName);
         }
-        else if (targetObject.Value.BaseObject is FileInfo fileInfo)
+        else if (baseObject is FileInfo fileInfo)
         {
             sourceInfo = new TargetSourceInfo(fileInfo);
             return new StreamReader(fileInfo.FullName);
         }
         else
         {
-            var uri = targetObject.Value.BaseObject as Uri;
+            var uri = baseObject as Uri;
             sourceInfo = new TargetSourceInfo(uri);
             using var webClient = new WebClient();
             return new StringReader(webClient.DownloadString(uri));
         }
     }
 
-    private static IEnumerable<TargetObject> VisitItem(PSObject value, TargetSourceInfo sourceInfo, VisitTargetObject next)
+    private static IEnumerable<ITargetObject> VisitItem(PSObject value, TargetSourceInfo sourceInfo, VisitTargetObject next)
     {
         if (value == null)
             return EmptyArray;
@@ -285,32 +300,33 @@ internal static class PipelineReceiverActions
             return EmptyArray;
 
         foreach (var i in items)
+        {
             NoteSource(i, sourceInfo);
-
+        }
         return items;
     }
 
-    private static IEnumerable<TargetObject> VisitItems(IEnumerable<PSObject> value, TargetSourceInfo sourceInfo, VisitTargetObject next)
+    private static IEnumerable<ITargetObject> VisitItems(IEnumerable<PSObject> value, TargetSourceInfo sourceInfo, VisitTargetObject next)
     {
         if (value == null)
             return EmptyArray;
 
-        var result = new List<TargetObject>();
+        var result = new List<ITargetObject>();
         foreach (var item in value)
             result.AddRange(VisitItem(item, sourceInfo, next));
 
         return result.Count == 0 ? EmptyArray : result.ToArray();
     }
 
-    private static void NoteSource(TargetObject value, TargetSourceInfo source)
+    private static void NoteSource(ITargetObject value, TargetSourceInfo source)
     {
-        if (value == null || source == null)
+        if (value is not TargetObject to || source == null || value.Value is not PSObject pso)
             return;
 
-        value.Value.UseTargetInfo(out var targetInfo);
+        pso.UseTargetInfo(out var targetInfo);
         targetInfo.UpdateSource(source);
-        value.Source.AddRange(targetInfo.Source.ToArray());
-        value.Issue.AddRange(targetInfo.Issue.ToArray());
+        to.Source.AddRange(targetInfo.Source.ToArray());
+        to.Issue.AddRange(targetInfo.Issue.ToArray());
     }
 
     private static JsonTextReader AsJsonTextReader(TextReader reader)

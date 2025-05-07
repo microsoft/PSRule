@@ -1,17 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections;
 using PSRule.Data;
 
 namespace PSRule.Pipeline;
-
-#nullable enable
 
 internal sealed class TargetObjectChild(object o, string? path = null) : ITargetObject
 {
     public IEnumerable<TargetSourceInfo> Source => [];
 
     public ITargetSourceMap? SourceMap => null;
+
+    public string[]? Scope => null;
 
     public string? Name => null;
 
@@ -20,6 +21,6 @@ internal sealed class TargetObjectChild(object o, string? path = null) : ITarget
     public string? Path => path;
 
     public object Value { get; } = o;
-}
 
-#nullable restore
+    public Hashtable? GetData() => null;
+}

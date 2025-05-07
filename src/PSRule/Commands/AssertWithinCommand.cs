@@ -60,7 +60,7 @@ internal sealed class AssertWithinCommand : RuleKeyword
         if (!IsRuleScope())
             throw RuleScopeException(LanguageKeywords.Within);
 
-        var targetObject = InputObject ?? GetTargetObject();
+        var targetObject = InputObject ?? GetTargetObjectValue();
         var expected = !Not;
         var match = false;
         var found = string.Empty;

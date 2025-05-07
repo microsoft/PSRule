@@ -27,7 +27,7 @@ internal sealed class AssertTypeOfCommand : RuleKeyword
         if (!IsRuleScope())
             throw RuleScopeException(LanguageKeywords.TypeOf);
 
-        var inputObject = InputObject ?? GetTargetObject();
+        var inputObject = InputObject ?? GetTargetObjectValue();
         var result = false;
 
         if (inputObject != null)

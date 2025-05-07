@@ -47,7 +47,7 @@ internal sealed class AssertExistsCommand : RuleKeyword
         if (!IsRuleScope())
             throw RuleScopeException(LanguageKeywords.Exists);
 
-        var targetObject = InputObject ?? GetTargetObject();
+        var targetObject = InputObject ?? GetTargetObjectValue();
         var foundFields = new List<string>();
         var notFoundFields = new List<string>();
         var found = 0;

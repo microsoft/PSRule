@@ -43,7 +43,7 @@ internal sealed class PipelineInputStream : IPipelineReader
         if (sourceObject == null)
             return;
 
-        var targetObject = new TargetObject(sourceObject is PSObject pso ? pso : new PSObject(sourceObject), targetType: targetType);
+        var targetObject = new TargetObject(sourceObject is PSObject pso ? pso : new PSObject(sourceObject), type: targetType);
         if (skipExpansion)
         {
             EnqueueInternal(targetObject);

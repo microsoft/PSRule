@@ -2,11 +2,9 @@
 // Licensed under the MIT License.
 
 using System.Collections;
-using System.ComponentModel;
 using System.Dynamic;
 using System.Management.Automation;
 using System.Reflection;
-using System.Xml;
 using Newtonsoft.Json.Linq;
 using PSRule.Resources;
 
@@ -25,17 +23,6 @@ internal sealed class PathExpressionBuilder
     public PathExpressionBuilder()
     {
         _RecurseMaxDepth = DEFAULT_RECURSE_MAX_DEPTH;
-    }
-
-    private sealed class DynamicPropertyBinder : GetMemberBinder
-    {
-        internal DynamicPropertyBinder(string name, bool ignoreCase)
-            : base(name, ignoreCase) { }
-
-        public override DynamicMetaObject FallbackGetMember(DynamicMetaObject target, DynamicMetaObject errorSuggestion)
-        {
-            return null;
-        }
     }
 
     /// <summary>
@@ -131,7 +118,7 @@ internal sealed class PathExpressionBuilder
         {
             value = null;
             enumerable = false;
-            return TryGetIndex(input, index, out var item) && next(context, item, out value, out enumerable);
+            return ObjectHelper.TryIndexValue(input, index, out var item) && next(context, item, out value, out enumerable);
         };
     }
 
@@ -168,7 +155,7 @@ internal sealed class PathExpressionBuilder
         {
             var result = new List<object>();
             var currentIndex = start;
-            while ((!end.HasValue || (step > 0 && currentIndex < end) || (step < 0 && currentIndex > end)) && TryGetIndex(input, currentIndex, out var slice))
+            while ((!end.HasValue || (step > 0 && currentIndex < end) || (step < 0 && currentIndex > end)) && ObjectHelper.TryIndexValue(input, currentIndex, out var slice))
             {
                 currentIndex += step;
                 if (!next(context, slice, out var items, out _))
@@ -191,7 +178,7 @@ internal sealed class PathExpressionBuilder
             value = null;
             enumerable = false;
             var caseSensitive = context.CaseSensitive != caseSensitiveFlag;
-            return TryGetField(input, memberName, caseSensitive, out var item) && next(context, item, out value, out enumerable);
+            return ObjectHelper.TryPropertyValue(input, memberName, caseSensitive, out var item) && next(context, item, out value, out enumerable);
         };
     }
 
@@ -404,7 +391,7 @@ internal sealed class PathExpressionBuilder
 
         foreach (var i in GetAll(o))
         {
-            if (TryGetField(i, fieldName, caseSensitive, out var value))
+            if (ObjectHelper.TryPropertyValue(i, fieldName, caseSensitive, out var value))
             {
                 yield return value;
             }
@@ -467,291 +454,4 @@ internal sealed class PathExpressionBuilder
     }
 
     #endregion Enumerators
-
-    #region Lookup
-
-    private static bool TryGetField(object o, string fieldName, bool caseSensitive, out object value)
-    {
-        value = null;
-        var baseObject = ExpressionHelpers.GetBaseObject(o);
-        if (baseObject == null || (baseObject is JValue jValue && jValue.Type == JTokenType.Null) ||
-            baseObject is string || baseObject is int || baseObject is long || baseObject is float)
-            return false;
-
-        // Handle dictionaries and hash tables
-        if (baseObject is IDictionary dictionary)
-        {
-            return TryDictionary(dictionary, fieldName, caseSensitive, out value);
-        }
-        // Handle JToken
-        else if (baseObject is JObject jObject)
-        {
-            return TryPropertyValue(jObject, fieldName, caseSensitive, out value);
-        }
-        // Handle PSObjects
-        else if (o is PSObject psObject)
-        {
-            return TryPropertyValue(psObject, fieldName, caseSensitive, out value);
-        }
-        // Handle DynamicObjects
-        else if (o is DynamicObject dynamicObject)
-        {
-            return TryPropertyValue(dynamicObject, fieldName, caseSensitive, out value);
-        }
-        else if (o is XmlNode xmlNode)
-        {
-            // Try attribute first.
-            var item = xmlNode.Attributes?.GetNamedItem(fieldName);
-            if (item != null)
-            {
-                value = item.Value;
-                return true;
-            }
-
-            // Try elements next.
-            var nodes = xmlNode.SelectNodes(fieldName);
-            if (nodes != null && nodes.Count == 1)
-            {
-                value = nodes[0];
-                return true;
-            }
-
-            // Try to get the value of the node.
-            if (nodes != null && nodes.Count == 0 && string.Equals(fieldName, "InnerText", caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
-            {
-                value = xmlNode.InnerText;
-                return value != null;
-            }
-
-            value = nodes.Count > 1 ? nodes : null;
-            return value != null;
-        }
-
-        // Handle all other CLR types
-        var baseType = baseObject.GetType();
-        return TryPropertyValue(o, fieldName, baseType, caseSensitive, out value) ||
-               TryFieldValue(o, fieldName, baseType, caseSensitive, out value) ||
-               TryIndexerProperty(o, fieldName, baseType, out value);
-    }
-
-    private static bool TryGetIndex(object o, int index, out object value)
-    {
-        value = null;
-        var baseObject = ExpressionHelpers.GetBaseObject(o);
-        if (baseObject == null || baseObject is string || baseObject is int || baseObject is long || baseObject is float)
-            return false;
-
-        // Handle array indexes
-        if (baseObject is Array array && index < array.Length)
-        {
-            if (index < 0)
-                index = array.Length + index;
-
-            if (index < 0 || index >= array.Length)
-                return false;
-
-            value = array.GetValue(index);
-            return true;
-        }
-        // Handle IList
-        else if (baseObject is IList list && index < list.Count)
-        {
-            if (index < 0)
-                index = list.Count + index;
-
-            if (index < 0 || index >= list.Count)
-                return false;
-
-            value = list[index];
-            return true;
-        }
-        // Handle IEnumerable
-        else if (baseObject is IEnumerable enumerable)
-        {
-            return TryEnumerableIndex(enumerable, index, out value);
-        }
-        // Handle all other CLR types
-        return TryIndexerProperty(o, index, baseObject.GetType(), out value);
-    }
-
-    #endregion Lookup
-
-    private static bool TryEnumerableIndex(IEnumerable o, int index, out object value)
-    {
-        value = null;
-        var e = o.GetEnumerator();
-        if (index < 0)
-        {
-            var items = new List<object>();
-            while (e.MoveNext())
-                items.Add(e.Current);
-
-            index = items.Count + index;
-            if (index < 0 || index >= items.Count)
-                return false;
-
-            value = items[index];
-            return true;
-        }
-
-        for (var i = 0; e.MoveNext(); i++)
-        {
-            if (i == index)
-            {
-                value = e.Current;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static bool TryDictionary(IDictionary dictionary, string key, bool caseSensitive, out object value)
-    {
-        value = null;
-        var comparer = caseSensitive ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
-        foreach (var k in dictionary.Keys)
-        {
-            if (comparer.Equals(key, k))
-            {
-                value = dictionary[k];
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static bool TryPropertyValue(object targetObject, string propertyName, Type baseType, bool caseSensitive, out object value)
-    {
-        value = null;
-        var bindingFlags = caseSensitive ? BindingFlags.Default : BindingFlags.IgnoreCase;
-        var propertyInfo = baseType.GetProperty(propertyName, bindingAttr: bindingFlags | BindingFlags.Instance | BindingFlags.Public);
-        if (propertyInfo == null)
-            return false;
-
-        value = propertyInfo.GetValue(targetObject);
-        return true;
-    }
-
-    private static bool TryPropertyValue(PSObject targetObject, string propertyName, bool caseSensitive, out object value)
-    {
-        value = null;
-        var p = targetObject.Properties[propertyName];
-        if (p == null)
-            return false;
-
-        if (caseSensitive && !StringComparer.Ordinal.Equals(p.Name, propertyName))
-            return false;
-
-        value = p.Value;
-        return true;
-    }
-
-    private static bool TryPropertyValue(JObject targetObject, string propertyName, bool caseSensitive, out object value)
-    {
-        value = null;
-        if (!targetObject.TryGetValue(propertyName, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase, out var result))
-            return false;
-
-        value = GetTokenValue(result);
-        return true;
-    }
-
-    private static bool TryPropertyValue(DynamicObject targetObject, string propertyName, bool caseSensitive, out object value)
-    {
-        return targetObject.TryGetMember(new DynamicPropertyBinder(propertyName, !caseSensitive), out value);
-    }
-
-    private static object GetTokenValue(JToken o)
-    {
-        if (o == null || o.Type == JTokenType.Null)
-            return null;
-
-        if (o.Type == JTokenType.String)
-            return o.Value<string>();
-
-        if (o.Type == JTokenType.Boolean)
-            return o.Value<bool>();
-
-        if (o.Type == JTokenType.Integer)
-            return o.Value<long>();
-
-        return o;
-    }
-
-    private static bool TryFieldValue(object targetObject, string fieldName, Type baseType, bool caseSensitive, out object value)
-    {
-        value = null;
-        var bindingFlags = caseSensitive ? BindingFlags.Default : BindingFlags.IgnoreCase;
-        var fieldInfo = baseType.GetField(fieldName, bindingAttr: bindingFlags | BindingFlags.Instance | BindingFlags.Public);
-        if (fieldInfo == null)
-            return false;
-
-        value = fieldInfo.GetValue(targetObject);
-        return true;
-    }
-
-    private static bool TryIndexerProperty(object targetObject, object index, Type baseType, out object value)
-    {
-        value = null;
-        var properties = baseType.GetProperties();
-        foreach (var property in GetIndexerProperties(baseType))
-        {
-            var parameters = property.GetIndexParameters();
-            if (parameters.Length > 0)
-            {
-                try
-                {
-                    var converter = GetConverter(parameters[0].ParameterType);
-                    var p1 = converter(index);
-                    value = property.GetValue(targetObject, [p1]);
-                    return true;
-                }
-                catch
-                {
-                    // Discard converter exceptions
-                }
-            }
-        }
-        return false;
-    }
-
-    private static Converter<object, object> GetConverter(Type targetType)
-    {
-        var convertAttribute = targetType.GetCustomAttribute<TypeConverterAttribute>();
-        if (convertAttribute != null)
-        {
-            var converterType = Type.GetType(convertAttribute.ConverterTypeName);
-            if (converterType.IsSubclassOf(typeof(TypeConverter)))
-            {
-                var converter = (TypeConverter)Activator.CreateInstance(converterType);
-                return s => converter.ConvertFrom(s);
-            }
-            else if (converterType.IsSubclassOf(typeof(PSTypeConverter)))
-            {
-                var converter = (PSTypeConverter)Activator.CreateInstance(converterType);
-                return s => converter.ConvertFrom(s, targetType, Thread.CurrentThread.CurrentCulture, true);
-            }
-        }
-        return s => Convert.ChangeType(s, targetType);
-    }
-
-    private static IEnumerable<PropertyInfo> GetIndexerProperties(Type baseType)
-    {
-        var attribute = baseType.GetCustomAttribute<DefaultMemberAttribute>();
-        var properties = baseType.GetProperties();
-        foreach (var property in properties)
-        {
-            if (attribute != null)
-            {
-                if (property.Name == attribute.MemberName)
-                    yield return property;
-            }
-            else
-            {
-                var parameters = property.GetIndexParameters();
-                if (parameters.Length > 0)
-                    yield return property;
-            }
-        }
-    }
 }

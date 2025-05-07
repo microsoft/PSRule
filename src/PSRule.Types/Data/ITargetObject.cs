@@ -1,10 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections;
+
 namespace PSRule.Data;
 
 /// <summary>
-/// An instance of a target object.
+/// A target object that is processed by PSRule.
+/// This wraps a objects with additional metadata about the object.
 /// </summary>
 public interface ITargetObject
 {
@@ -22,12 +25,12 @@ public interface ITargetObject
     ITargetSourceMap? SourceMap { get; }
 
     /// <summary>
-    /// The target name of the object.
+    /// The name of the object.
     /// </summary>
     string? Name { get; }
 
     /// <summary>
-    /// The target type of the object.
+    /// The type of the object.
     /// </summary>
     string? Type { get; }
 
@@ -37,7 +40,17 @@ public interface ITargetObject
     string? Path { get; }
 
     /// <summary>
+    /// The scopes associated with the object.
+    /// </summary>
+    string[]? Scope { get; }
+
+    /// <summary>
     /// The value of the object.
     /// </summary>
     object Value { get; }
+
+    /// <summary>
+    /// The data associated with the object.
+    /// </summary>
+    Hashtable? GetData();
 }

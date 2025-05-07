@@ -153,8 +153,8 @@ public sealed class SelectorVisitorTests : ContextBaseTests
 
         // With type
         var withType = GetSelectorVisitor($"{type}TypeEquals", GetSource(path), out context);
-        var actual7 = new TargetObject(GetObject(), targetType: "CustomType1");
-        var actual8 = new TargetObject(GetObject(), targetType: "CustomType2");
+        var actual7 = new TargetObject(GetObject(), type: "CustomType1");
+        var actual8 = new TargetObject(GetObject(), type: "CustomType2");
 
         context.EnterTargetObject(actual7);
         Assert.True(withType.Match(actual7));
@@ -1759,7 +1759,7 @@ public sealed class SelectorVisitorTests : ContextBaseTests
     public void Type(string type, string path)
     {
         var equals = GetSelectorVisitor($"{type}TypeEquals", GetSource(path), out var context);
-        var actual = new TargetObject(GetObject(), targetType: "CustomType1");
+        var actual = new TargetObject(GetObject(), type: "CustomType1");
 
         context.EnterTargetObject(actual);
 
@@ -1772,7 +1772,7 @@ public sealed class SelectorVisitorTests : ContextBaseTests
     public void TypePrecondition(string type, string path)
     {
         var equals = GetSelectorVisitor($"{type}TypePrecondition", GetSource(path), out var context);
-        var actual = new TargetObject(GetObject(), targetType: "CustomType1");
+        var actual = new TargetObject(GetObject(), type: "CustomType1");
 
         context.EnterTargetObject(actual);
         context.EnterLanguageScope(equals.Source);

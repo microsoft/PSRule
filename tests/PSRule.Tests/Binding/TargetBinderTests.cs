@@ -90,7 +90,7 @@ public sealed class TargetBinderTests
         pso.Properties.Add(new PSNoteProperty("type", "Type1"));
         pso.Properties.Add(new PSNoteProperty("AlternativeName", "Name2"));
         pso.Properties.Add(new PSNoteProperty("AlternativeType", "Type2"));
-        return new TargetObject(pso, targetType: targetType);
+        return new TargetObject(pso, type: targetType);
     }
 
     private static ITargetBinder GetBinder(BindingOption? bindingOption)

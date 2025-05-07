@@ -4,12 +4,10 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Management.Automation;
 using Newtonsoft.Json;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
-using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Rules;
@@ -23,11 +21,11 @@ namespace PSRule.Rules;
 [JsonObject]
 public sealed class RuleRecord : IDetailedRuleResultV2
 {
-    private readonly TargetObject _TargetObject;
+    private readonly ITargetObject _TargetObject;
 
     internal readonly ResultDetail _Detail;
 
-    internal RuleRecord(ResourceId ruleId, string @ref, TargetObject targetObject, string targetName, string targetType, IResourceTags tag, RuleHelpInfo info, Hashtable? field, RuleProperties @default, ISourceExtent? extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, RuleOverride? @override = null)
+    internal RuleRecord(ResourceId ruleId, string @ref, ITargetObject targetObject, string targetName, string targetType, IResourceTags tag, RuleHelpInfo info, Hashtable? field, RuleProperties @default, ISourceExtent? extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, RuleOverride? @override = null)
     {
         _TargetObject = targetObject;
         RuleId = ruleId.Value;
@@ -39,7 +37,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
         Outcome = outcome;
         OutcomeReason = reason;
         Info = info;
-        Source = targetObject.Source.GetSourceInfo();
+        Source = targetObject.Source == null ? [] : [.. targetObject.Source];
         Extent = extent;
         Default = @default;
         Override = @override;
@@ -136,13 +134,13 @@ public sealed class RuleRecord : IDetailedRuleResultV2
     /// </summary>
     [JsonIgnore]
     [YamlIgnore]
-    public PSObject TargetObject { get; }
+    public object TargetObject { get; }
 
     /// <summary>
     /// Custom data set by the rule for this target object.
     /// </summary>
     [JsonProperty(PropertyName = "data")]
-    public Hashtable Data => _TargetObject.GetData();
+    public Hashtable? Data => _TargetObject.GetData();
 
     /// <summary>
     /// A set of custom fields bound for the target object.

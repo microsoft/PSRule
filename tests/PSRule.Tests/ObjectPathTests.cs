@@ -19,7 +19,7 @@ public sealed class ObjectPathTests
         ).ToArray();
 
         Assert.Equal(2, actual.Length);
-        Assert.Equal("TestObject1", actual[0].Value.Properties["targetName"].Value);
+        Assert.Equal("TestObject1", actual[0].Value.PropertyValue<string>("targetName"));
         Assert.Equal("Test", actual[0].Value.PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<string>("kind"));
         Assert.Equal(2, actual[1].Value.PropertyValue<PSObject>("spec").PropertyValue<PSObject>("properties").PropertyValue<int>("value2"));
     }

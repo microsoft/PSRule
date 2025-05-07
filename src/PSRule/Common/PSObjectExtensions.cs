@@ -56,7 +56,7 @@ internal static class PSObjectExtensions
         return false;
     }
 
-    public static bool TryProperty<T>(this PSObject o, string name, out T value)
+    public static bool TryProperty<T>(this PSObject o, string name, out T? value)
     {
         value = default;
         var pValue = ConvertValue<T>(o.Properties[name]?.Value);
@@ -97,9 +97,9 @@ internal static class PSObjectExtensions
 
     public static void SetTargetInfo(this PSObject o, PSRuleTargetInfo targetInfo)
     {
-        if (TryTargetInfo(o, out var orginalInfo))
+        if (TryTargetInfo(o, out var originalInfo))
         {
-            targetInfo.Combine(orginalInfo);
+            targetInfo.Combine(originalInfo);
             o.Members[PSRuleTargetInfo.PropertyName].Value = targetInfo;
             return;
         }
@@ -108,12 +108,12 @@ internal static class PSObjectExtensions
 
     public static TargetSourceInfo[] GetSourceInfo(this PSObject o)
     {
-        return o.TryTargetInfo(out var targetInfo) ? targetInfo.Source.ToArray() : Array.Empty<TargetSourceInfo>();
+        return o.TryTargetInfo(out var targetInfo) ? [.. targetInfo.Source] : [];
     }
 
     public static TargetIssueInfo[] GetIssueInfo(this PSObject o)
     {
-        return o.TryTargetInfo(out var targetInfo) ? targetInfo.Issue.ToArray() : Array.Empty<TargetIssueInfo>();
+        return o.TryTargetInfo(out var targetInfo) ? [.. targetInfo.Issue] : [];
     }
 
     public static string GetTargetName(this PSObject o)
