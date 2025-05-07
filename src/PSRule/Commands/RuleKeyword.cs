@@ -21,7 +21,7 @@ internal abstract class RuleKeyword : PSCmdlet
         return LegacyRunspaceContext.CurrentThread.RuleRecord;
     }
 
-    protected static PSObject GetTargetObject()
+    protected static object GetTargetObjectValue()
     {
         return LegacyRunspaceContext.CurrentThread.TargetObject.Value;
     }

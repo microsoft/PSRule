@@ -51,7 +51,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
 
     internal readonly Dictionary<string, Hashtable> LocalizedDataCache;
     internal readonly Dictionary<string, object> ExpressionCache;
-    internal readonly Dictionary<string, PSObject[]> ContentCache;
+    internal readonly Dictionary<string, object[]> ContentCache;
 
     internal IDictionary<string, SelectorVisitor> Selector;
 

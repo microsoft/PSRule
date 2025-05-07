@@ -162,7 +162,9 @@ public sealed class YamlRulesTests : ContextBaseTests
         var actual1 = GetObject((name: "value", value: 3));
         var actual2 = GetObject((name: "notValue", value: 3));
         var actual3 = GetObject((name: "value", value: 4));
-        actual3.Value.TypeNames.Insert(0, "CustomType");
+
+        if (actual3.Value is PSObject pso)
+            pso.TypeNames.Insert(0, "CustomType");
 
         context.EnterTargetObject(actual1);
         context.EnterRuleBlock(yamlTrue);

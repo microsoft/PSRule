@@ -58,7 +58,7 @@ internal sealed class AssertMatchCommand : RuleKeyword
         if (!IsRuleScope())
             throw RuleScopeException(LanguageKeywords.Match);
 
-        var targetObject = InputObject ?? GetTargetObject();
+        var targetObject = InputObject ?? GetTargetObjectValue();
         var expected = !Not;
         var match = false;
         var found = string.Empty;

@@ -191,7 +191,7 @@ public sealed class PSRule : ScopedItem
     /// <summary>
     /// The current target object.
     /// </summary>
-    public PSObject? TargetObject => GetContext().TargetObject?.Value;
+    public object? TargetObject => GetContext().TargetObject?.Value;
 
     /// <summary>
     /// The bound name of the target object.
@@ -211,20 +211,21 @@ public sealed class PSRule : ScopedItem
     /// <summary>
     /// Attempts to read content from disk.
     /// </summary>
-    public PSObject[] GetContent(PSObject sourceObject)
+    public object[] GetContent(object sourceObject)
     {
         if (sourceObject == null)
             return [];
 
-        if (!(sourceObject.BaseObject is InputFileInfo || sourceObject.BaseObject is FileInfo || sourceObject.BaseObject is Uri))
+        var baseObject = ExpressionHelpers.GetBaseObject(sourceObject);
+        if (baseObject is not InputFileInfo && baseObject is not FileInfo && baseObject is not Uri)
             return [sourceObject];
 
-        var cacheKey = sourceObject.BaseObject.ToString();
+        var cacheKey = baseObject.ToString();
         if (GetContext().Pipeline.ContentCache.TryGetValue(cacheKey, out var result))
             return result;
 
-        var items = PipelineReceiverActions.DetectInputFormat(new TargetObject(sourceObject), PipelineReceiverActions.PassThru).ToArray();
-        result = new PSObject[items.Length];
+        var items = PipelineReceiverActions.DetectInputFormat(new TargetObject(new PSObject(baseObject)), PipelineReceiverActions.PassThru).ToArray();
+        result = new object[items.Length];
         for (var i = 0; i < items.Length; i++)
             result[i] = items[i].Value;
 
@@ -264,13 +265,13 @@ public sealed class PSRule : ScopedItem
     /// <summary>
     /// Attempts to read content from disk and return the first object or null.
     /// </summary>
-    public PSObject? GetContentFirstOrDefault(PSObject sourceObject)
+    public object? GetContentFirstOrDefault(object sourceObject)
     {
         var content = GetContent(sourceObject);
         return IsEmptyContent(content) ? null : content[0];
     }
 
-    private static bool IsEmptyContent(PSObject[] content)
+    private static bool IsEmptyContent(object[] content)
     {
         return content == null || content.Length == 0;
     }

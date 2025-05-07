@@ -10,14 +10,14 @@ using PSRule.Data;
 namespace PSRule.Pipeline;
 
 /// <summary>
-/// An object processed by PSRule.
+/// An instance of an object that is processed by PSRule.
 /// </summary>
-[DebuggerDisplay("Type = {TargetType}, Name = {TargetName}")]
+[DebuggerDisplay("Type = {Type}, Name = {Name}")]
 public sealed class TargetObject : ITargetObject
 {
     private readonly Dictionary<Type, TargetObjectAnnotation> _Annotations;
 
-    private Hashtable _Data;
+    private Hashtable? _Data;
 
     internal TargetObject(PSObject o)
         : this(o, null) { }
@@ -28,54 +28,55 @@ public sealed class TargetObject : ITargetObject
         o.ConvertTargetInfoType();
         Source = ReadSourceInfo(o, source);
         Issue = ReadIssueInfo(o, null);
-        TargetName = o.GetTargetName();
-        TargetType = o.GetTargetType();
+        Name = o.GetTargetName();
+        Type = o.GetTargetType();
         Scope = o.GetScope();
-        Path = ReadPath(o);
+        Path = o.GetTargetPath();
         Value = Convert(o);
         _Annotations = [];
     }
 
-    internal TargetObject(PSObject o, string? targetName = null, string? targetType = null, string[]? scope = null)
+    internal TargetObject(PSObject o, string? name = null, string? type = null, string[]? scope = null)
         : this(o, null)
     {
-        if (targetName != null && !string.IsNullOrWhiteSpace(targetName))
-            TargetName = targetName;
+        if (name != null && !string.IsNullOrWhiteSpace(name))
+            Name = name;
 
-        if (targetType != null && !string.IsNullOrWhiteSpace(targetType))
-            TargetType = targetType;
+        if (type != null && !string.IsNullOrWhiteSpace(type))
+            Type = type;
 
         if (scope != null && scope.Length > 0)
             Scope = scope;
     }
 
-    internal PSObject Value { get; }
+    /// <summary>
+    /// The actual value of the object.
+    /// </summary>
+    internal object Value { get; }
 
     internal TargetSourceCollection Source { get; private set; }
 
     internal TargetIssueCollection Issue { get; private set; }
 
-    internal string TargetName { [DebuggerStepThrough] get; }
+    /// <inheritdoc/>
+    public string? Name { get; }
 
-    internal string TargetType { [DebuggerStepThrough] get; }
+    /// <inheritdoc/>
+    public string? Type { get; }
 
-    internal string[] Scope { [DebuggerStepThrough] get; }
+    /// <inheritdoc/>
+    public string[]? Scope { get; }
 
-    internal string Path { [DebuggerStepThrough] get; }
+    /// <inheritdoc/>
+    public string? Path { get; }
 
     IEnumerable<TargetSourceInfo> ITargetObject.Source => Source.GetSourceInfo() ?? [];
-
-    string? ITargetObject.Name => TargetName;
-
-    string? ITargetObject.Type => TargetType;
-
-    string? ITargetObject.Path => Path;
 
     object ITargetObject.Value => Value;
 
     ITargetSourceMap? ITargetObject.SourceMap => null;
 
-    internal Hashtable? GetData()
+    public Hashtable? GetData()
     {
         return _Data == null || _Data.Count == 0 ? null : _Data;
     }
@@ -96,12 +97,7 @@ public sealed class TargetObject : ITargetObject
         return (T)value;
     }
 
-    private static string ReadPath(PSObject o)
-    {
-        return o.GetTargetPath();
-    }
-
-    private static TargetSourceCollection ReadSourceInfo(PSObject o, TargetSourceCollection source)
+    private static TargetSourceCollection ReadSourceInfo(PSObject o, TargetSourceCollection? source)
     {
         var result = source ?? new TargetSourceCollection();
         if (ExpressionHelpers.GetBaseObject(o) is ITargetInfo targetInfo)
@@ -111,7 +107,7 @@ public sealed class TargetObject : ITargetObject
         return result;
     }
 
-    private static TargetIssueCollection ReadIssueInfo(PSObject o, TargetIssueCollection issue)
+    private static TargetIssueCollection ReadIssueInfo(PSObject o, TargetIssueCollection? issue)
     {
         var result = issue ?? new TargetIssueCollection();
         result.AddRange(o.GetIssueInfo());
