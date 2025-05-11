@@ -49,7 +49,7 @@ internal sealed class DependencyGraphBuilder<T> where T : IDependencyTarget
 
     public T[] GetItems()
     {
-        return _Targets.Values.ToArray();
+        return [.. _Targets.Values];
     }
 
     private void Include(DependencyTargetCollection<T> index, T item, ResourceId? parentId)

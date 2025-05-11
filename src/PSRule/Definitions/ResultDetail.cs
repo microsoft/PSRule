@@ -9,7 +9,7 @@ internal sealed class ResultDetail : IResultDetail
 
     internal ResultDetail()
     {
-        _Reason = new List<ResultReason>();
+        _Reason = [];
     }
 
     internal int Count => _Reason.Count;

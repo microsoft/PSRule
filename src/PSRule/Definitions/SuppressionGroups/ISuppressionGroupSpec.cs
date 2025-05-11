@@ -9,5 +9,3 @@ namespace PSRule.Definitions.SuppressionGroups;
 internal interface ISuppressionGroupSpec : ISpec
 {
 }
-
-#nullable restore

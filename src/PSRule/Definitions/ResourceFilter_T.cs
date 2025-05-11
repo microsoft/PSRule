@@ -13,7 +13,7 @@ internal abstract class ResourceFilter<T> : IResourceFilter where T : class, IRe
 
     public bool Match(IResource resource)
     {
-        return resource is not T t ? false : Match(t);
+        return resource is T t && Match(t);
     }
 
     public abstract bool Match(T resource);

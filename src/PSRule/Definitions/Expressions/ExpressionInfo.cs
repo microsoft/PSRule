@@ -3,12 +3,7 @@
 
 namespace PSRule.Definitions.Expressions;
 
-internal sealed class ExpressionInfo
+internal sealed class ExpressionInfo(string path)
 {
-    private readonly string _Path;
-
-    public ExpressionInfo(string path)
-    {
-        _Path = path;
-    }
+    private readonly string _Path = path;
 }

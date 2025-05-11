@@ -5,8 +5,6 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions.SuppressionGroups;
 
-#nullable enable
-
 /// <summary>
 /// Extensions methods for suppression groups.
 /// </summary>
@@ -30,5 +28,3 @@ internal static class SuppressionGroupExtensions
         );
     }
 }
-
-#nullable restore

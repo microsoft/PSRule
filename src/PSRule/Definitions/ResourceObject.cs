@@ -11,29 +11,22 @@ namespace PSRule.Definitions;
 /// A resource object.
 /// </summary>
 [DebuggerDisplay("{Block.Kind} - {Block.Id.Value}")]
-public sealed class ResourceObject
+public sealed class ResourceObject(IResource? block, string? apiVersion, string? kind)
 {
-    internal ResourceObject(IResource? block, string? apiVersion, string? kind)
-    {
-        Block = block;
-        ApiVersion = apiVersion;
-        Kind = kind;
-    }
-
     /// <summary>
     /// The resource block.
     /// </summary>
-    public IResource? Block { get; }
+    public IResource? Block { get; } = block;
 
     /// <summary>
     /// The API version of the resource.
     /// </summary>
-    public string? ApiVersion { get; }
+    public string? ApiVersion { get; } = apiVersion;
 
     /// <summary>
     /// The kind of the resource.
     /// </summary>
-    public string? Kind { get; }
+    public string? Kind { get; } = kind;
 
     internal bool Visit(IResourceVisitor visitor)
     {

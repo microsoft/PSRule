@@ -3,14 +3,8 @@
 
 namespace PSRule.Definitions;
 
-internal abstract class ResourceRef
+internal abstract class ResourceRef(string id, ResourceKind kind)
 {
-    public readonly string Id;
-    public readonly ResourceKind Kind;
-
-    protected ResourceRef(string id, ResourceKind kind)
-    {
-        Kind = kind;
-        Id = id;
-    }
+    public readonly string Id = id;
+    public readonly ResourceKind Kind = kind;
 }

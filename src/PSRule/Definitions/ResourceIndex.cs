@@ -3,25 +3,14 @@
 
 namespace PSRule.Definitions;
 
-internal sealed class ResourceIndex
+internal sealed class ResourceIndex(IEnumerable<IResource> items)
 {
-    private readonly IndexEntry[] _Items;
+    private readonly IndexEntry[] _Items = Load(items);
 
-    public ResourceIndex(IEnumerable<IResource> items)
+    internal sealed class IndexEntry(ResourceId id, ResourceId target)
     {
-        _Items = Load(items);
-    }
-
-    internal sealed class IndexEntry
-    {
-        public readonly ResourceId Id;
-        public readonly ResourceId Target;
-
-        public IndexEntry(ResourceId id, ResourceId target)
-        {
-            Id = id;
-            Target = target;
-        }
+        public readonly ResourceId Id = id;
+        public readonly ResourceId Target = target;
     }
 
     public bool TryFind(string id, out ResourceId value, out ResourceIdKind kind)

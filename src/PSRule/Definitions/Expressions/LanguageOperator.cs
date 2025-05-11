@@ -6,20 +6,13 @@ using System.Diagnostics;
 namespace PSRule.Definitions.Expressions;
 
 [DebuggerDisplay("Selector {Descriptor.Name}")]
-internal sealed class LanguageOperator : LanguageExpression
+internal sealed class LanguageOperator(LanguageExpressionDescriptor descriptor, LanguageExpression.PropertyBag properties) : LanguageExpression(descriptor)
 {
-    internal LanguageOperator(LanguageExpressionDescriptor descriptor, PropertyBag properties)
-        : base(descriptor)
-    {
-        Property = properties ?? [];
-        Children = [];
-    }
-
     public LanguageExpression Subselector { get; set; }
 
-    public PropertyBag Property { get; }
+    public PropertyBag Property { get; } = properties ?? [];
 
-    public List<LanguageExpression> Children { get; }
+    public List<LanguageExpression> Children { get; } = [];
 
     public void Add(LanguageExpression item)
     {

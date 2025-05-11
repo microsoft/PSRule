@@ -5,8 +5,6 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions;
 
-#nullable enable
-
 /// <summary>
 /// A reason for the rule result.
 /// </summary>
@@ -137,5 +135,3 @@ public sealed class ResultReason : IResultReason
 
     #endregion IEquatable<IResultReason>
 }
-
-#nullable restore

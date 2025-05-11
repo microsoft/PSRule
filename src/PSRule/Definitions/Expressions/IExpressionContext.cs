@@ -6,7 +6,7 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions.Expressions;
 
-internal interface IExpressionContext : IBindingContext
+internal interface IExpressionContext : IBindingContext, IConfigurableContext
 {
     ResourceKind Kind { get; }
 
