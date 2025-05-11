@@ -14,8 +14,6 @@ updates:
       interval: daily
     labels:
       - dependencies
-    reviewers:
-      - microsoft/psrule
     groups:
       # Group PowerShell packages that have inter-dependencies
       dev-powershell:
@@ -32,8 +30,6 @@ updates:
       interval: daily
     labels:
       - dependencies
-    reviewers:
-      - microsoft/psrule
 
   # Maintain dependencies for Python
   - package-ecosystem: pip
@@ -42,8 +38,6 @@ updates:
       interval: daily
     labels:
       - dependencies
-    reviewers:
-      - microsoft/psrule
 
   # Maintain dependencies for npm.
   - package-ecosystem: npm
@@ -52,8 +46,6 @@ updates:
       interval: daily
     labels:
       - 'dependencies'
-    reviewers:
-      - 'microsoft/psrule'
     groups:
       # Group linting dependencies
       dev-linting:
@@ -74,8 +66,6 @@ updates:
       interval: weekly
     labels:
       - dependencies
-    reviewers:
-      - microsoft/psrule
 
   # Maintain dependencies for Docker
   - package-ecosystem: docker
@@ -84,5 +74,3 @@ updates:
       interval: weekly
     labels:
       - dependencies
-    reviewers:
-      - microsoft/psrule
