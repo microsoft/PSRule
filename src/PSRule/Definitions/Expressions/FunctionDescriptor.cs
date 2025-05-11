@@ -9,17 +9,11 @@ namespace PSRule.Definitions.Expressions;
 /// A structure describing a specific function.
 /// </summary>
 [DebuggerDisplay("Function: {Name}")]
-internal sealed class FunctionDescriptor : IFunctionDescriptor
+internal sealed class FunctionDescriptor(string name, ExpressionBuilderFn fn) : IFunctionDescriptor
 {
-    public FunctionDescriptor(string name, ExpressionBuilderFn fn)
-    {
-        Name = name;
-        Fn = fn;
-    }
+    /// <inheritdoc/>
+    public string Name { get; } = name ?? throw new ArgumentNullException(nameof(name));
 
     /// <inheritdoc/>
-    public string Name { get; }
-
-    /// <inheritdoc/>
-    public ExpressionBuilderFn Fn { get; }
+    public ExpressionBuilderFn Fn { get; } = fn ?? throw new ArgumentNullException(nameof(fn));
 }

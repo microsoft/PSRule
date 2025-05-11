@@ -6,8 +6,6 @@ using System.Diagnostics;
 namespace PSRule.Definitions.Expressions;
 
 [DebuggerDisplay("Selector {Descriptor.Name}")]
-internal sealed class LanguageFunction : LanguageExpression
+internal sealed class LanguageFunction(LanguageExpressionDescriptor descriptor) : LanguageExpression(descriptor)
 {
-    internal LanguageFunction(LanguageExpressionDescriptor descriptor)
-        : base(descriptor) { }
 }

@@ -20,42 +20,42 @@ internal sealed class LanguageExpressions
     // Conditions
     private const string EXISTS = "exists";
     private const string EQUALS = "equals";
-    private const string NOTEQUALS = "notEquals";
-    private const string HASDEFAULT = "hasDefault";
-    private const string HASSCHEMA = "hasSchema";
-    private const string HASVALUE = "hasValue";
+    private const string NOT_EQUALS = "notEquals";
+    private const string HAS_DEFAULT = "hasDefault";
+    private const string HAS_SCHEMA = "hasSchema";
+    private const string HAS_VALUE = "hasValue";
     private const string MATCH = "match";
-    private const string NOTMATCH = "notMatch";
+    private const string NOT_MATCH = "notMatch";
     private const string IN = "in";
-    private const string NOTIN = "notIn";
+    private const string NOT_IN = "notIn";
     private const string LESS = "less";
-    private const string LESSOREQUALS = "lessOrEquals";
+    private const string LESS_OR_EQUALS = "lessOrEquals";
     private const string GREATER = "greater";
-    private const string GREATEROREQUALS = "greaterOrEquals";
-    private const string STARTSWITH = "startsWith";
-    private const string NOTSTARTSWITH = "notStartsWith";
-    private const string ENDSWITH = "endsWith";
-    private const string NOTENDSWITH = "notEndsWith";
+    private const string GREATER_OR_EQUALS = "greaterOrEquals";
+    private const string STARTS_WITH = "startsWith";
+    private const string NOT_STARTS_WITH = "notStartsWith";
+    private const string ENDS_WITH = "endsWith";
+    private const string NOT_ENDS_WITH = "notEndsWith";
     private const string CONTAINS = "contains";
-    private const string NOTCONTAINS = "notContains";
-    private const string ISSTRING = "isString";
-    private const string ISARRAY = "isArray";
-    private const string ISBOOLEAN = "isBoolean";
-    private const string ISDATETIME = "isDateTime";
-    private const string ISINTEGER = "isInteger";
-    private const string ISNUMERIC = "IsNumeric";
-    private const string ISLOWER = "isLower";
-    private const string ISUPPER = "isUpper";
-    private const string SETOF = "setOf";
+    private const string NOT_CONTAINS = "notContains";
+    private const string IS_STRING = "isString";
+    private const string IS_ARRAY = "isArray";
+    private const string IS_BOOLEAN = "isBoolean";
+    private const string IS_DATETIME = "isDateTime";
+    private const string IS_INTEGER = "isInteger";
+    private const string IS_NUMERIC = "IsNumeric";
+    private const string IS_LOWER = "isLower";
+    private const string IS_UPPER = "isUpper";
+    private const string SET_OF = "setOf";
     private const string SUBSET = "subset";
     private const string COUNT = "count";
     private const string NOTCOUNT = "notCount";
     private const string VERSION = "version";
-    private const string APIVERSION = "apiVersion";
-    private const string WITHINPATH = "withinPath";
-    private const string NOTWITHINPATH = "notWithinPath";
+    private const string API_VERSION = "apiVersion";
+    private const string WITHIN_PATH = "withinPath";
+    private const string NOT_WITHIN_PATH = "notWithinPath";
     private const string LIKE = "like";
-    private const string NOTLIKE = "notLike";
+    private const string NOT_LIKE = "notLike";
 
     // Operators
     private const string IF = "if";
@@ -67,11 +67,11 @@ internal sealed class LanguageExpressions
     private const string FIELD = "field";
     private const string TYPE = "type";
     private const string NAME = "name";
-    private const string CASESENSITIVE = "caseSensitive";
+    private const string CASE_SENSITIVE = "caseSensitive";
     private const string UNIQUE = "unique";
     private const string CONVERT = "convert";
-    private const string IGNORESCHEME = "ignoreScheme";
-    private const string INCLUDEPRERELEASE = "includePrerelease";
+    private const string IGNORE_SCHEME = "ignoreScheme";
+    private const string INCLUDE_PRERELEASE = "includePrerelease";
     private const string PROPERTY_SCHEMA = "$schema";
     private const string SOURCE = "source";
     private const string VALUE = "value";
@@ -85,8 +85,8 @@ internal sealed class LanguageExpressions
     private const string DOT = ".";
 
     // Define built-ins
-    internal static readonly ILanguageExpressionDescriptor[] Builtin = new ILanguageExpressionDescriptor[]
-    {
+    internal static readonly ILanguageExpressionDescriptor[] Builtin =
+    [
         // Operators
         new LanguageExpressionDescriptor(IF, LanguageExpressionType.Operator, If),
         new LanguageExpressionDescriptor(ANYOF, LanguageExpressionType.Operator, AnyOf),
@@ -96,43 +96,43 @@ internal sealed class LanguageExpressions
         // Conditions
         new LanguageExpressionDescriptor(EXISTS, LanguageExpressionType.Condition, Exists),
         new LanguageExpressionDescriptor(EQUALS, LanguageExpressionType.Condition, Equals),
-        new LanguageExpressionDescriptor(NOTEQUALS, LanguageExpressionType.Condition, NotEquals),
-        new LanguageExpressionDescriptor(HASVALUE, LanguageExpressionType.Condition, HasValue),
+        new LanguageExpressionDescriptor(NOT_EQUALS, LanguageExpressionType.Condition, NotEquals),
+        new LanguageExpressionDescriptor(HAS_VALUE, LanguageExpressionType.Condition, HasValue),
         new LanguageExpressionDescriptor(MATCH, LanguageExpressionType.Condition, Match),
-        new LanguageExpressionDescriptor(NOTMATCH, LanguageExpressionType.Condition, NotMatch),
+        new LanguageExpressionDescriptor(NOT_MATCH, LanguageExpressionType.Condition, NotMatch),
         new LanguageExpressionDescriptor(IN, LanguageExpressionType.Condition, In),
-        new LanguageExpressionDescriptor(NOTIN, LanguageExpressionType.Condition, NotIn),
+        new LanguageExpressionDescriptor(NOT_IN, LanguageExpressionType.Condition, NotIn),
         new LanguageExpressionDescriptor(LESS, LanguageExpressionType.Condition, Less),
-        new LanguageExpressionDescriptor(LESSOREQUALS, LanguageExpressionType.Condition, LessOrEquals),
+        new LanguageExpressionDescriptor(LESS_OR_EQUALS, LanguageExpressionType.Condition, LessOrEquals),
         new LanguageExpressionDescriptor(GREATER, LanguageExpressionType.Condition, Greater),
-        new LanguageExpressionDescriptor(GREATEROREQUALS, LanguageExpressionType.Condition, GreaterOrEquals),
-        new LanguageExpressionDescriptor(STARTSWITH, LanguageExpressionType.Condition, StartsWith),
-        new LanguageExpressionDescriptor(NOTSTARTSWITH, LanguageExpressionType.Condition, NotStartsWith),
-        new LanguageExpressionDescriptor(ENDSWITH, LanguageExpressionType.Condition, EndsWith),
-        new LanguageExpressionDescriptor(NOTENDSWITH, LanguageExpressionType.Condition, NotEndsWith),
+        new LanguageExpressionDescriptor(GREATER_OR_EQUALS, LanguageExpressionType.Condition, GreaterOrEquals),
+        new LanguageExpressionDescriptor(STARTS_WITH, LanguageExpressionType.Condition, StartsWith),
+        new LanguageExpressionDescriptor(NOT_STARTS_WITH, LanguageExpressionType.Condition, NotStartsWith),
+        new LanguageExpressionDescriptor(ENDS_WITH, LanguageExpressionType.Condition, EndsWith),
+        new LanguageExpressionDescriptor(NOT_ENDS_WITH, LanguageExpressionType.Condition, NotEndsWith),
         new LanguageExpressionDescriptor(CONTAINS, LanguageExpressionType.Condition, Contains),
-        new LanguageExpressionDescriptor(NOTCONTAINS, LanguageExpressionType.Condition, NotContains),
-        new LanguageExpressionDescriptor(ISSTRING, LanguageExpressionType.Condition, IsString),
-        new LanguageExpressionDescriptor(ISARRAY, LanguageExpressionType.Condition, IsArray),
-        new LanguageExpressionDescriptor(ISBOOLEAN, LanguageExpressionType.Condition, IsBoolean),
-        new LanguageExpressionDescriptor(ISDATETIME, LanguageExpressionType.Condition, IsDateTime),
-        new LanguageExpressionDescriptor(ISINTEGER, LanguageExpressionType.Condition, IsInteger),
-        new LanguageExpressionDescriptor(ISNUMERIC, LanguageExpressionType.Condition, IsNumeric),
-        new LanguageExpressionDescriptor(ISLOWER, LanguageExpressionType.Condition, IsLower),
-        new LanguageExpressionDescriptor(ISUPPER, LanguageExpressionType.Condition, IsUpper),
-        new LanguageExpressionDescriptor(SETOF, LanguageExpressionType.Condition, SetOf),
+        new LanguageExpressionDescriptor(NOT_CONTAINS, LanguageExpressionType.Condition, NotContains),
+        new LanguageExpressionDescriptor(IS_STRING, LanguageExpressionType.Condition, IsString),
+        new LanguageExpressionDescriptor(IS_ARRAY, LanguageExpressionType.Condition, IsArray),
+        new LanguageExpressionDescriptor(IS_BOOLEAN, LanguageExpressionType.Condition, IsBoolean),
+        new LanguageExpressionDescriptor(IS_DATETIME, LanguageExpressionType.Condition, IsDateTime),
+        new LanguageExpressionDescriptor(IS_INTEGER, LanguageExpressionType.Condition, IsInteger),
+        new LanguageExpressionDescriptor(IS_NUMERIC, LanguageExpressionType.Condition, IsNumeric),
+        new LanguageExpressionDescriptor(IS_LOWER, LanguageExpressionType.Condition, IsLower),
+        new LanguageExpressionDescriptor(IS_UPPER, LanguageExpressionType.Condition, IsUpper),
+        new LanguageExpressionDescriptor(SET_OF, LanguageExpressionType.Condition, SetOf),
         new LanguageExpressionDescriptor(SUBSET, LanguageExpressionType.Condition, Subset),
         new LanguageExpressionDescriptor(COUNT, LanguageExpressionType.Condition, Count),
         new LanguageExpressionDescriptor(NOTCOUNT, LanguageExpressionType.Condition, NotCount),
-        new LanguageExpressionDescriptor(HASSCHEMA, LanguageExpressionType.Condition, HasSchema),
+        new LanguageExpressionDescriptor(HAS_SCHEMA, LanguageExpressionType.Condition, HasSchema),
         new LanguageExpressionDescriptor(VERSION, LanguageExpressionType.Condition, Version),
-        new LanguageExpressionDescriptor(APIVERSION, LanguageExpressionType.Condition, APIVersion),
-        new LanguageExpressionDescriptor(HASDEFAULT, LanguageExpressionType.Condition, HasDefault),
-        new LanguageExpressionDescriptor(WITHINPATH, LanguageExpressionType.Condition, WithinPath),
-        new LanguageExpressionDescriptor(NOTWITHINPATH, LanguageExpressionType.Condition, NotWithinPath),
+        new LanguageExpressionDescriptor(API_VERSION, LanguageExpressionType.Condition, APIVersion),
+        new LanguageExpressionDescriptor(HAS_DEFAULT, LanguageExpressionType.Condition, HasDefault),
+        new LanguageExpressionDescriptor(WITHIN_PATH, LanguageExpressionType.Condition, WithinPath),
+        new LanguageExpressionDescriptor(NOT_WITHIN_PATH, LanguageExpressionType.Condition, NotWithinPath),
         new LanguageExpressionDescriptor(LIKE, LanguageExpressionType.Condition, Like),
-        new LanguageExpressionDescriptor(NOTLIKE, LanguageExpressionType.Condition, NotLike),
-    };
+        new LanguageExpressionDescriptor(NOT_LIKE, LanguageExpressionType.Condition, NotLike),
+    ];
 
     #region Operators
 
@@ -177,7 +177,7 @@ internal sealed class LanguageExpressions
     internal static bool Exists(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyBool(properties, EXISTS, out var propertyValue) && TryField(properties, out var field))
+        if (TryPropertyBool(properties, EXISTS, out var propertyValue) && propertyValue != null && TryField(properties, out var field) && field != null)
         {
             context.ExpressionTrace(EXISTS, field, propertyValue);
             return Condition(
@@ -213,16 +213,16 @@ internal sealed class LanguageExpressions
     internal static bool NotEquals(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (!TryPropertyAny(properties, NOTEQUALS, out var propertyValue))
-            return Invalid(context, NOTEQUALS);
+        if (!TryPropertyAny(properties, NOT_EQUALS, out var propertyValue))
+            return Invalid(context, NOT_EQUALS);
 
         if (TryFieldNotExists(context, o, properties))
-            return PassPathNotFound(context, NOTEQUALS);
+            return PassPathNotFound(context, NOT_EQUALS);
 
-        if (!TryOperand(context, NOTEQUALS, o, properties, out var operand) ||
+        if (!TryOperand(context, NOT_EQUALS, o, properties, out var operand) ||
             !GetConvert(properties, out var convert) ||
             !GetCaseSensitive(properties, out var caseSensitive))
-            return Invalid(context, NOTEQUALS);
+            return Invalid(context, NOT_EQUALS);
 
         // int, string, bool
         return Condition(
@@ -237,15 +237,15 @@ internal sealed class LanguageExpressions
     internal static bool HasDefault(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (!TryPropertyAny(properties, HASDEFAULT, out var propertyValue))
-            return Invalid(context, HASDEFAULT);
+        if (!TryPropertyAny(properties, HAS_DEFAULT, out var propertyValue))
+            return Invalid(context, HAS_DEFAULT);
 
         GetCaseSensitive(properties, out var caseSensitive);
         if (TryFieldNotExists(context, o, properties))
-            return PassPathNotFound(context, HASDEFAULT);
+            return PassPathNotFound(context, HAS_DEFAULT);
 
-        if (!TryOperand(context, HASDEFAULT, o, properties, out var operand))
-            return Invalid(context, HASDEFAULT);
+        if (!TryOperand(context, HAS_DEFAULT, o, properties, out var operand) || operand == null)
+            return Invalid(context, HAS_DEFAULT);
 
         return Condition(
             context,
@@ -259,14 +259,14 @@ internal sealed class LanguageExpressions
     internal static bool HasValue(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (!TryPropertyBool(properties, HASVALUE, out var propertyValue))
-            return Invalid(context, HASVALUE);
+        if (!TryPropertyBool(properties, HAS_VALUE, out var propertyValue))
+            return Invalid(context, HAS_VALUE);
 
         if (TryFieldNotExists(context, o, properties) && !propertyValue.Value)
-            return PassPathNotFound(context, HASVALUE);
+            return PassPathNotFound(context, HAS_VALUE);
 
-        if (!TryOperand(context, HASVALUE, o, properties, out var operand))
-            return Invalid(context, HASVALUE);
+        if (!TryOperand(context, HAS_VALUE, o, properties, out var operand) || operand == null)
+            return Invalid(context, HAS_VALUE);
 
         return Condition(
             context,
@@ -298,15 +298,15 @@ internal sealed class LanguageExpressions
     internal static bool NotMatch(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (!TryPropertyAny(properties, NOTMATCH, out var propertyValue))
-            return Invalid(context, NOTMATCH);
+        if (!TryPropertyAny(properties, NOT_MATCH, out var propertyValue))
+            return Invalid(context, NOT_MATCH);
 
         if (TryFieldNotExists(context, o, properties))
-            return PassPathNotFound(context, NOTMATCH);
+            return PassPathNotFound(context, NOT_MATCH);
 
-        if (!TryOperand(context, NOTMATCH, o, properties, out var operand) ||
+        if (!TryOperand(context, NOT_MATCH, o, properties, out var operand) ||
             !GetCaseSensitive(properties, out var caseSensitive))
-            return Invalid(context, NOTMATCH);
+            return Invalid(context, NOT_MATCH);
 
         return Condition(
             context,
@@ -340,14 +340,14 @@ internal sealed class LanguageExpressions
     internal static bool NotIn(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (!TryPropertyArray(properties, NOTIN, out var propertyValue))
-            return Invalid(context, NOTIN);
+        if (!TryPropertyArray(properties, NOT_IN, out var propertyValue))
+            return Invalid(context, NOT_IN);
 
         if (TryFieldNotExists(context, o, properties))
-            return PassPathNotFound(context, NOTIN);
+            return PassPathNotFound(context, NOT_IN);
 
-        if (!TryOperand(context, NOTIN, o, properties, out var operand))
-            return Invalid(context, NOTIN);
+        if (!TryOperand(context, NOT_IN, o, properties, out var operand))
+            return Invalid(context, NOT_IN);
 
         for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
             if (ExpressionHelpers.AnyValue(operand.Value, propertyValue.GetValue(i), caseSensitive: false, out _))
@@ -364,11 +364,11 @@ internal sealed class LanguageExpressions
     internal static bool SetOf(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyArray(properties, SETOF, out var expectedValue) &&
+        if (TryPropertyArray(properties, SET_OF, out var expectedValue) &&
             TryField(properties, out var field) &&
             GetCaseSensitive(properties, out var caseSensitive))
         {
-            context.ExpressionTrace(SETOF, field, expectedValue);
+            context.ExpressionTrace(SET_OF, field, expectedValue);
             if (!ObjectHelper.GetPath(context, o.Value, field, caseSensitive: false, out object actualValue))
                 return NotHasField(context, field);
 
@@ -385,7 +385,7 @@ internal sealed class LanguageExpressions
             }
             return Pass();
         }
-        return Invalid(context, SETOF);
+        return Invalid(context, SET_OF);
     }
 
     internal static bool Subset(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
@@ -496,10 +496,10 @@ internal sealed class LanguageExpressions
     internal static bool LessOrEquals(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (!TryPropertyLong(context, properties, LESSOREQUALS, out var propertyValue) ||
-            !TryOperand(context, LESSOREQUALS, o, properties, out var operand) ||
+        if (!TryPropertyLong(context, properties, LESS_OR_EQUALS, out var propertyValue) ||
+            !TryOperand(context, LESS_OR_EQUALS, o, properties, out var operand) ||
             !GetConvert(properties, out var convert))
-            return Invalid(context, LESSOREQUALS);
+            return Invalid(context, LESS_OR_EQUALS);
 
         if (operand.Value == null)
             return Condition(
@@ -516,7 +516,7 @@ internal sealed class LanguageExpressions
             convert,
             compare: out var compare,
             value: out _))
-            return Invalid(context, LESSOREQUALS);
+            return Invalid(context, LESS_OR_EQUALS);
 
         // int, string, bool
         return Condition(
@@ -570,10 +570,10 @@ internal sealed class LanguageExpressions
     internal static bool GreaterOrEquals(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (!TryPropertyLong(context, properties, GREATEROREQUALS, out var propertyValue) ||
-            !TryOperand(context, GREATEROREQUALS, o, properties, out var operand) ||
+        if (!TryPropertyLong(context, properties, GREATER_OR_EQUALS, out var propertyValue) ||
+            !TryOperand(context, GREATER_OR_EQUALS, o, properties, out var operand) ||
             !GetConvert(properties, out var convert))
-            return Invalid(context, GREATEROREQUALS);
+            return Invalid(context, GREATER_OR_EQUALS);
 
         if (operand.Value == null)
             return Condition(
@@ -590,7 +590,7 @@ internal sealed class LanguageExpressions
             convert,
             compare: out var compare,
             value: out _))
-            return Invalid(context, GREATEROREQUALS);
+            return Invalid(context, GREATER_OR_EQUALS);
 
         // int, string, bool
         return Condition(
@@ -607,12 +607,12 @@ internal sealed class LanguageExpressions
     internal static bool StartsWith(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyStringArray(properties, STARTSWITH, out var propertyValue) &&
-            TryOperand(context, STARTSWITH, o, properties, out var operand) &&
+        if (TryPropertyStringArray(properties, STARTS_WITH, out var propertyValue) &&
+            TryOperand(context, STARTS_WITH, o, properties, out var operand) &&
             GetConvert(properties, out var convert) &&
             GetCaseSensitive(properties, out var caseSensitive))
         {
-            context.ExpressionTrace(STARTSWITH, operand.Value, propertyValue);
+            context.ExpressionTrace(STARTS_WITH, operand.Value, propertyValue);
             if (!ExpressionHelpers.TryStringOrArray(operand.Value, convert, out var value))
                 return NotString(context, operand);
 
@@ -632,18 +632,18 @@ internal sealed class LanguageExpressions
                 StringJoin(propertyValue)
             );
         }
-        return Invalid(context, STARTSWITH);
+        return Invalid(context, STARTS_WITH);
     }
 
     internal static bool NotStartsWith(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyStringArray(properties, NOTSTARTSWITH, out var propertyValue) &&
-            TryOperand(context, NOTSTARTSWITH, o, properties, out var operand) &&
+        if (TryPropertyStringArray(properties, NOT_STARTS_WITH, out var propertyValue) &&
+            TryOperand(context, NOT_STARTS_WITH, o, properties, out var operand) &&
             GetConvert(properties, out var convert) &&
             GetCaseSensitive(properties, out var caseSensitive))
         {
-            context.ExpressionTrace(NOTSTARTSWITH, operand.Value, propertyValue);
+            context.ExpressionTrace(NOT_STARTS_WITH, operand.Value, propertyValue);
             if (ExpressionHelpers.TryStringOrArray(operand.Value, convert, out var value))
             {
                 for (var i_propertyValue = 0; propertyValue != null && i_propertyValue < propertyValue.Length; i_propertyValue++)
@@ -663,18 +663,18 @@ internal sealed class LanguageExpressions
             }
             return Pass();
         }
-        return Invalid(context, NOTSTARTSWITH);
+        return Invalid(context, NOT_STARTS_WITH);
     }
 
     internal static bool EndsWith(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyStringArray(properties, ENDSWITH, out var propertyValue) &&
-            TryOperand(context, ENDSWITH, o, properties, out var operand) &&
+        if (TryPropertyStringArray(properties, ENDS_WITH, out var propertyValue) &&
+            TryOperand(context, ENDS_WITH, o, properties, out var operand) &&
             GetConvert(properties, out var convert) &&
             GetCaseSensitive(properties, out var caseSensitive))
         {
-            context.ExpressionTrace(ENDSWITH, operand.Value, propertyValue);
+            context.ExpressionTrace(ENDS_WITH, operand.Value, propertyValue);
             if (!ExpressionHelpers.TryStringOrArray(operand.Value, convert, out var value))
                 return NotString(context, operand);
 
@@ -694,18 +694,18 @@ internal sealed class LanguageExpressions
                 StringJoin(propertyValue)
             );
         }
-        return Invalid(context, ENDSWITH);
+        return Invalid(context, ENDS_WITH);
     }
 
     internal static bool NotEndsWith(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyStringArray(properties, NOTENDSWITH, out var propertyValue) &&
-            TryOperand(context, NOTENDSWITH, o, properties, out var operand) &&
+        if (TryPropertyStringArray(properties, NOT_ENDS_WITH, out var propertyValue) &&
+            TryOperand(context, NOT_ENDS_WITH, o, properties, out var operand) &&
             GetConvert(properties, out var convert) &&
             GetCaseSensitive(properties, out var caseSensitive))
         {
-            context.ExpressionTrace(NOTENDSWITH, operand.Value, propertyValue);
+            context.ExpressionTrace(NOT_ENDS_WITH, operand.Value, propertyValue);
             if (ExpressionHelpers.TryStringOrArray(operand.Value, convert, out var value))
             {
                 for (var i_propertyValue = 0; propertyValue != null && i_propertyValue < propertyValue.Length; i_propertyValue++)
@@ -725,7 +725,7 @@ internal sealed class LanguageExpressions
             }
             return Pass();
         }
-        return Invalid(context, NOTENDSWITH);
+        return Invalid(context, NOT_ENDS_WITH);
     }
 
     internal static bool Contains(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
@@ -762,12 +762,12 @@ internal sealed class LanguageExpressions
     internal static bool NotContains(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyStringArray(properties, NOTCONTAINS, out var propertyValue) &&
-            TryOperand(context, NOTCONTAINS, o, properties, out var operand) &&
+        if (TryPropertyStringArray(properties, NOT_CONTAINS, out var propertyValue) &&
+            TryOperand(context, NOT_CONTAINS, o, properties, out var operand) &&
             GetConvert(properties, out var convert) &&
             GetCaseSensitive(properties, out var caseSensitive))
         {
-            context.ExpressionTrace(NOTCONTAINS, operand.Value, propertyValue);
+            context.ExpressionTrace(NOT_CONTAINS, operand.Value, propertyValue);
             if (ExpressionHelpers.TryStringOrArray(operand.Value, convert, out var value))
             {
                 for (var i_propertyValue = 0; propertyValue != null && i_propertyValue < propertyValue.Length; i_propertyValue++)
@@ -787,16 +787,16 @@ internal sealed class LanguageExpressions
             }
             return Pass();
         }
-        return Invalid(context, NOTCONTAINS);
+        return Invalid(context, NOT_CONTAINS);
     }
 
     internal static bool IsString(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyBool(properties, ISSTRING, out var propertyValue) &&
-            TryOperand(context, ISSTRING, o, properties, out var operand))
+        if (TryPropertyBool(properties, IS_STRING, out var propertyValue) &&
+            TryOperand(context, IS_STRING, o, properties, out var operand))
         {
-            context.ExpressionTrace(ISSTRING, operand.Value, propertyValue);
+            context.ExpressionTrace(IS_STRING, operand.Value, propertyValue);
             return Condition(
                 context,
                 operand,
@@ -811,10 +811,10 @@ internal sealed class LanguageExpressions
     internal static bool IsArray(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyBool(properties, ISARRAY, out var propertyValue) &&
-            TryOperand(context, ISARRAY, o, properties, out var operand))
+        if (TryPropertyBool(properties, IS_ARRAY, out var propertyValue) &&
+            TryOperand(context, IS_ARRAY, o, properties, out var operand))
         {
-            context.ExpressionTrace(ISARRAY, operand.Value, propertyValue);
+            context.ExpressionTrace(IS_ARRAY, operand.Value, propertyValue);
             return Condition(
                 context,
                 operand,
@@ -829,11 +829,11 @@ internal sealed class LanguageExpressions
     internal static bool IsBoolean(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyBool(properties, ISBOOLEAN, out var propertyValue) &&
-            TryOperand(context, ISBOOLEAN, o, properties, out var operand) &&
+        if (TryPropertyBool(properties, IS_BOOLEAN, out var propertyValue) &&
+            TryOperand(context, IS_BOOLEAN, o, properties, out var operand) &&
             GetConvert(properties, out var convert))
         {
-            context.ExpressionTrace(ISBOOLEAN, operand.Value, propertyValue);
+            context.ExpressionTrace(IS_BOOLEAN, operand.Value, propertyValue);
             return Condition(
                 context,
                 operand,
@@ -848,11 +848,11 @@ internal sealed class LanguageExpressions
     internal static bool IsDateTime(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyBool(properties, ISDATETIME, out var propertyValue) &&
-            TryOperand(context, ISDATETIME, o, properties, out var operand) &&
+        if (TryPropertyBool(properties, IS_DATETIME, out var propertyValue) &&
+            TryOperand(context, IS_DATETIME, o, properties, out var operand) &&
             GetConvert(properties, out var convert))
         {
-            context.ExpressionTrace(ISDATETIME, operand.Value, propertyValue);
+            context.ExpressionTrace(IS_DATETIME, operand.Value, propertyValue);
             return Condition(
                 context,
                 operand,
@@ -867,11 +867,11 @@ internal sealed class LanguageExpressions
     internal static bool IsInteger(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyBool(properties, ISINTEGER, out var propertyValue) &&
-            TryOperand(context, ISINTEGER, o, properties, out var operand) &&
+        if (TryPropertyBool(properties, IS_INTEGER, out var propertyValue) &&
+            TryOperand(context, IS_INTEGER, o, properties, out var operand) &&
             GetConvert(properties, out var convert))
         {
-            context.ExpressionTrace(ISINTEGER, operand.Value, propertyValue);
+            context.ExpressionTrace(IS_INTEGER, operand.Value, propertyValue);
             return Condition(
                 context,
                 operand,
@@ -888,11 +888,11 @@ internal sealed class LanguageExpressions
     internal static bool IsNumeric(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyBool(properties, ISNUMERIC, out var propertyValue) &&
-            TryOperand(context, ISNUMERIC, o, properties, out var operand) &&
+        if (TryPropertyBool(properties, IS_NUMERIC, out var propertyValue) &&
+            TryOperand(context, IS_NUMERIC, o, properties, out var operand) &&
             GetConvert(properties, out var convert))
         {
-            context.ExpressionTrace(ISNUMERIC, operand.Value, propertyValue);
+            context.ExpressionTrace(IS_NUMERIC, operand.Value, propertyValue);
             return Condition(
                 context,
                 operand,
@@ -911,11 +911,11 @@ internal sealed class LanguageExpressions
     internal static bool WithinPath(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryOperand(context, WITHINPATH, o, properties, out var operand) &&
-            TryPropertyStringArray(properties, WITHINPATH, out var path) &&
+        if (TryOperand(context, WITHIN_PATH, o, properties, out var operand) &&
+            TryPropertyStringArray(properties, WITHIN_PATH, out var path) &&
             GetCaseSensitive(properties, out var caseSensitive))
         {
-            context.ExpressionTrace(WITHINPATH, operand.Value, path);
+            context.ExpressionTrace(WITHIN_PATH, operand.Value, path);
 
             if (ExpressionHelpers.TryString(operand.Value, out var source))
             {
@@ -934,17 +934,17 @@ internal sealed class LanguageExpressions
             );
         }
 
-        return Invalid(context, WITHINPATH);
+        return Invalid(context, WITHIN_PATH);
     }
 
     internal static bool NotWithinPath(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryOperand(context, NOTWITHINPATH, o, properties, out var operand) &&
-            TryPropertyStringArray(properties, NOTWITHINPATH, out var path) &&
+        if (TryOperand(context, NOT_WITHIN_PATH, o, properties, out var operand) &&
+            TryPropertyStringArray(properties, NOT_WITHIN_PATH, out var path) &&
             GetCaseSensitive(properties, out var caseSensitive))
         {
-            context.ExpressionTrace(NOTWITHINPATH, operand.Value, path);
+            context.ExpressionTrace(NOT_WITHIN_PATH, operand.Value, path);
 
             if (ExpressionHelpers.TryString(operand.Value, out var source))
             {
@@ -963,7 +963,7 @@ internal sealed class LanguageExpressions
             return Pass();
         }
 
-        return Invalid(context, NOTWITHINPATH);
+        return Invalid(context, NOT_WITHIN_PATH);
     }
 
     internal static bool Like(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
@@ -996,12 +996,12 @@ internal sealed class LanguageExpressions
     internal static bool NotLike(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyStringArray(properties, NOTLIKE, out var propertyValue) &&
-            TryOperand(context, NOTLIKE, o, properties, out var operand) &&
+        if (TryPropertyStringArray(properties, NOT_LIKE, out var propertyValue) &&
+            TryOperand(context, NOT_LIKE, o, properties, out var operand) &&
             GetConvert(properties, out var convert) &&
             GetCaseSensitive(properties, out var caseSensitive))
         {
-            context.ExpressionTrace(NOTLIKE, operand.Value, propertyValue);
+            context.ExpressionTrace(NOT_LIKE, operand.Value, propertyValue);
             if (ExpressionHelpers.TryString(operand.Value, convert, out var value))
             {
                 for (var i = 0; propertyValue != null && i < propertyValue.Length; i++)
@@ -1018,16 +1018,16 @@ internal sealed class LanguageExpressions
             }
             return Pass();
         }
-        return Invalid(context, NOTLIKE);
+        return Invalid(context, NOT_LIKE);
     }
 
     internal static bool IsLower(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyBool(properties, ISLOWER, out var propertyValue) &&
-            TryOperand(context, ISLOWER, o, properties, out var operand))
+        if (TryPropertyBool(properties, IS_LOWER, out var propertyValue) &&
+            TryOperand(context, IS_LOWER, o, properties, out var operand))
         {
-            if (!ExpressionHelpers.TryString(operand.Value, out var value))
+            if (!ExpressionHelpers.TryString(operand.Value, out var value) || value == null)
                 return Condition(
                     context,
                     operand,
@@ -1036,7 +1036,7 @@ internal sealed class LanguageExpressions
                     operand.Value
                 );
 
-            context.ExpressionTrace(ISLOWER, operand.Value, propertyValue);
+            context.ExpressionTrace(IS_LOWER, operand.Value, propertyValue);
             return Condition(
                 context,
                 operand,
@@ -1051,10 +1051,10 @@ internal sealed class LanguageExpressions
     internal static bool IsUpper(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyBool(properties, ISUPPER, out var propertyValue) &&
-            TryOperand(context, ISUPPER, o, properties, out var operand))
+        if (TryPropertyBool(properties, IS_UPPER, out var propertyValue) &&
+            TryOperand(context, IS_UPPER, o, properties, out var operand))
         {
-            if (!ExpressionHelpers.TryString(operand.Value, out var value))
+            if (!ExpressionHelpers.TryString(operand.Value, out var value) || value == null)
                 return Condition(
                     context,
                     operand,
@@ -1063,7 +1063,7 @@ internal sealed class LanguageExpressions
                     operand.Value
                 );
 
-            context.ExpressionTrace(ISUPPER, operand.Value, propertyValue);
+            context.ExpressionTrace(IS_UPPER, operand.Value, propertyValue);
             return Condition(
                 context,
                 operand,
@@ -1078,11 +1078,11 @@ internal sealed class LanguageExpressions
     internal static bool HasSchema(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyArray(properties, HASSCHEMA, out var expectedValue) &&
+        if (TryPropertyArray(properties, HAS_SCHEMA, out var expectedValue) &&
             TryField(properties, out var field) &&
-            TryPropertyBoolOrDefault(properties, IGNORESCHEME, out var ignoreScheme, false))
+            TryPropertyBoolOrDefault(properties, IGNORE_SCHEME, out var ignoreScheme, false))
         {
-            context.ExpressionTrace(HASSCHEMA, field, expectedValue);
+            context.ExpressionTrace(HAS_SCHEMA, field, expectedValue);
             if (!ObjectHelper.GetPath(context, o.Value, field, caseSensitive: false, out object actualValue))
                 return NotHasField(context, field);
 
@@ -1108,7 +1108,7 @@ internal sealed class LanguageExpressions
                 actualSchema
             );
         }
-        return Invalid(context, HASSCHEMA);
+        return Invalid(context, HAS_SCHEMA);
     }
 
     internal static bool Version(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
@@ -1116,7 +1116,7 @@ internal sealed class LanguageExpressions
         var properties = GetProperties(args);
         if (TryPropertyString(properties, VERSION, out var expectedValue) &&
             TryOperand(context, VERSION, o, properties, out var operand) &&
-            TryPropertyBoolOrDefault(properties, INCLUDEPRERELEASE, out var includePrerelease, false))
+            TryPropertyBoolOrDefault(properties, INCLUDE_PRERELEASE, out var includePrerelease, false))
         {
             context.ExpressionTrace(VERSION, operand.Value, expectedValue);
             if (!ExpressionHelpers.TryString(operand.Value, out var version))
@@ -1139,11 +1139,11 @@ internal sealed class LanguageExpressions
     internal static bool APIVersion(IExpressionContext context, ExpressionInfo info, object[] args, ITargetObject o)
     {
         var properties = GetProperties(args);
-        if (TryPropertyString(properties, APIVERSION, out var expectedValue) &&
-            TryOperand(context, APIVERSION, o, properties, out var operand) &&
-            TryPropertyBoolOrDefault(properties, INCLUDEPRERELEASE, out var includePrerelease, false))
+        if (TryPropertyString(properties, API_VERSION, out var expectedValue) &&
+            TryOperand(context, API_VERSION, o, properties, out var operand) &&
+            TryPropertyBoolOrDefault(properties, INCLUDE_PRERELEASE, out var includePrerelease, false))
         {
-            context.ExpressionTrace(APIVERSION, operand.Value, expectedValue);
+            context.ExpressionTrace(API_VERSION, operand.Value, expectedValue);
             if (!ExpressionHelpers.TryString(operand.Value, out var version))
                 return NotString(context, operand);
 
@@ -1158,7 +1158,7 @@ internal sealed class LanguageExpressions
 
             return Pass();
         }
-        return Invalid(context, APIVERSION);
+        return Invalid(context, API_VERSION);
     }
 
     #endregion Conditions
@@ -1270,7 +1270,7 @@ internal sealed class LanguageExpressions
         return true;
     }
 
-    private static bool TryField(LanguageExpression.PropertyBag properties, out string field)
+    private static bool TryField(LanguageExpression.PropertyBag properties, out string? field)
     {
         return properties.TryGetString(FIELD, out field);
     }
@@ -1340,7 +1340,7 @@ internal sealed class LanguageExpressions
         operand = null;
         if (properties.TryGetValue(VALUE, out var value))
         {
-            // TODO: Propogate path
+            // TODO: Propagate path
             operand = Operand.FromValue(value);
         }
         return operand != null;
@@ -1383,7 +1383,7 @@ internal sealed class LanguageExpressions
 
     private static bool GetCaseSensitive(LanguageExpression.PropertyBag properties, out bool caseSensitive, bool defaultValue = false)
     {
-        return TryPropertyBoolOrDefault(properties, CASESENSITIVE, out caseSensitive, defaultValue);
+        return TryPropertyBoolOrDefault(properties, CASE_SENSITIVE, out caseSensitive, defaultValue);
     }
 
     private static bool GetUnique(LanguageExpression.PropertyBag properties, out bool unique, bool defaultValue = false)
@@ -1405,7 +1405,7 @@ internal sealed class LanguageExpressions
             !ObjectHelper.GetPath(context, o.Value, field, caseSensitive: false, out object _);
     }
 
-    private static bool TryOperand(IExpressionContext context, string name, ITargetObject o, LanguageExpression.PropertyBag properties, out IOperand operand)
+    private static bool TryOperand(IExpressionContext context, string name, ITargetObject o, LanguageExpression.PropertyBag properties, out IOperand? operand)
     {
         return TryField(context, properties, o, out operand) ||
             TryType(context, properties, o, out operand) ||
@@ -1416,7 +1416,7 @@ internal sealed class LanguageExpressions
             Invalid(context, name);
     }
 
-    private static bool TryPropertyArray(LanguageExpression.PropertyBag properties, string propertyName, out Array propertyValue)
+    private static bool TryPropertyArray(LanguageExpression.PropertyBag properties, string propertyName, out Array? propertyValue)
     {
         if (properties.TryGetValue(propertyName, out var array) && array is Array arrayValue)
         {
@@ -1427,7 +1427,7 @@ internal sealed class LanguageExpressions
         return false;
     }
 
-    private static bool TryPropertyStringArray(LanguageExpression.PropertyBag properties, string propertyName, out string[] propertyValue)
+    private static bool TryPropertyStringArray(LanguageExpression.PropertyBag properties, string propertyName, out string[]? propertyValue)
     {
         if (properties.TryGetStringArray(propertyName, out propertyValue))
         {
@@ -1435,7 +1435,7 @@ internal sealed class LanguageExpressions
         }
         else if (properties.TryGetString(propertyName, out var s))
         {
-            propertyValue = new string[] { s };
+            propertyValue = [s];
             return true;
         }
         propertyValue = null;

@@ -87,4 +87,10 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
         if (!_Reason.Contains(reason))
             _Reason.Add(reason);
     }
+
+    /// <inheritdoc/>
+    public bool TryGetConfigurationValue(string name, out object? value)
+    {
+        return Context.TryGetConfigurationValue(name, out value);
+    }
 }

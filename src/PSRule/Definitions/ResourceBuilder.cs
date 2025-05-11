@@ -18,7 +18,7 @@ internal sealed class ResourceBuilder
 
     internal ResourceBuilder(IResourceDiscoveryContext context)
     {
-        _Output = new List<ILanguageBlock>();
+        _Output = [];
         _Deserializer = new DeserializerBuilder()
             .IgnoreUnmatchedProperties()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)

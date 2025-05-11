@@ -51,17 +51,11 @@ internal sealed class SuppressionGroupVisitor
     /// <summary>
     /// Tracking information about the suppression.
     /// </summary>
-    private sealed class SuppressionInfo : ISuppressionInfo
+    private sealed class SuppressionInfo(ResourceId id, IResourceHelpInfo info) : ISuppressionInfo
     {
-        private readonly IResourceHelpInfo _Info;
+        private readonly IResourceHelpInfo _Info = info;
 
-        public SuppressionInfo(ResourceId id, IResourceHelpInfo info)
-        {
-            Id = id;
-            _Info = info;
-        }
-
-        public ResourceId Id { get; }
+        public ResourceId Id { get; } = id;
 
         public InfoString Synopsis => _Info.Synopsis;
 
@@ -101,7 +95,7 @@ internal sealed class SuppressionGroupVisitor
 
     public string[] Rule { get; }
 
-    public bool TryMatch(ResourceId ruleId, ITargetObject o, out ISuppressionInfo suppression)
+    public bool TryMatch(ResourceId ruleId, ITargetObject o, out ISuppressionInfo? suppression)
     {
         suppression = null;
         var context = new ExpressionContext(_Context, Source, ResourceKind.SuppressionGroup, o, ruleId);

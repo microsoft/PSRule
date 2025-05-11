@@ -5,20 +5,13 @@ using PSRule.Annotations;
 
 namespace PSRule.Definitions;
 
-internal sealed class SpecDescriptor<T, TSpec> : ISpecDescriptor where T : Resource<TSpec>, IResource where TSpec : Spec, new()
+internal sealed class SpecDescriptor<T, TSpec>(string apiVersion, string name) : ISpecDescriptor where T : Resource<TSpec>, IResource where TSpec : Spec, new()
 {
-    public SpecDescriptor(string apiVersion, string name)
-    {
-        ApiVersion = apiVersion;
-        Name = name;
-        FullName = Spec.GetFullName(apiVersion, name);
-    }
+    public string Name { get; } = name;
 
-    public string Name { get; }
+    public string ApiVersion { get; } = apiVersion;
 
-    public string ApiVersion { get; }
-
-    public string FullName { get; }
+    public string FullName { get; } = Spec.GetFullName(apiVersion, name);
 
     public Type SpecType => typeof(TSpec);
 

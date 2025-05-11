@@ -5,8 +5,6 @@ using System.Collections;
 
 namespace PSRule.Definitions;
 
-#nullable enable
-
 /// <summary>
 /// Additional resource taxonomy references.
 /// </summary>
@@ -52,5 +50,3 @@ public sealed class ResourceLabels : Dictionary<string, string[]>, IResourceLabe
         return false;
     }
 }
-
-#nullable enable

@@ -10,20 +10,14 @@ internal sealed class DependencyTargetCollection<T> where T : IDependencyTarget
 
     public DependencyTargetCollection()
     {
-        _Items = new List<T>();
+        _Items = [];
         _Index = new Dictionary<ResourceId, TargetLink>(ResourceIdEqualityComparer.Default);
     }
 
-    private sealed class TargetLink
+    private sealed class TargetLink(T link, ResourceIdKind kind)
     {
-        public readonly T Link;
-        public readonly ResourceIdKind Kind;
-
-        public TargetLink(T link, ResourceIdKind kind)
-        {
-            Link = link;
-            Kind = kind;
-        }
+        public readonly T Link = link;
+        public readonly ResourceIdKind Kind = kind;
     }
 
     public bool Contains(ResourceId id)
@@ -31,7 +25,7 @@ internal sealed class DependencyTargetCollection<T> where T : IDependencyTarget
         return _Index.ContainsKey(id);
     }
 
-    public bool TryGet(ResourceId id, out T value, out ResourceIdKind kind)
+    public bool TryGet(ResourceId id, out T? value, out ResourceIdKind kind)
     {
         value = default;
         kind = default;

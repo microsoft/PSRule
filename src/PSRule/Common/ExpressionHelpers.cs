@@ -179,7 +179,7 @@ internal static class ExpressionHelpers
         return false;
     }
 
-    internal static bool TryString(object o, out string value)
+    internal static bool TryString(object o, out string? value)
     {
         return TypeConverter.TryString(GetBaseObject(o), out value);
     }
@@ -212,12 +212,12 @@ internal static class ExpressionHelpers
         return false;
     }
 
-    internal static bool TryArray(object o, out Array value)
+    internal static bool TryArray(object o, out Array? value)
     {
         return TypeConverter.TryArray(GetBaseObject(o), out value);
     }
 
-    internal static bool TryStringOrArray(object o, bool convert, out string[] value)
+    internal static bool TryStringOrArray(object o, bool convert, out string[]? value)
     {
         // Handle single string
         if (TryString(o, convert, value: out var s))
@@ -230,7 +230,7 @@ internal static class ExpressionHelpers
         return TryStringArray(o, convert, out value);
     }
 
-    internal static bool TryStringArray(object o, bool convert, out string[] value)
+    internal static bool TryStringArray(object o, bool convert, out string[]? value)
     {
         value = null;
         if (o is Array array)
@@ -257,7 +257,7 @@ internal static class ExpressionHelpers
         }
         else if (o is IEnumerable e)
         {
-            value = e.OfType<string>().ToArray();
+            value = [.. e.OfType<string>()];
         }
         return value != null;
     }
@@ -430,7 +430,7 @@ internal static class ExpressionHelpers
             path.StartsWith(basePath, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) ? path.Substring(basePath.Length).Replace(Backslash, Slash) : path;
     }
 
-    internal static string GetObjectOriginPath(object o)
+    internal static string? GetObjectOriginPath(object o)
     {
         var baseObject = GetBaseObject(o);
         var targetInfo = GetTargetInfo(o);
@@ -497,7 +497,7 @@ internal static class ExpressionHelpers
     /// <summary>
     /// Try to retrieve the cached key from the pipeline cache.
     /// </summary>
-    private static bool TryPipelineCache<T>(string prefix, string key, out T value)
+    private static bool TryPipelineCache<T>(string prefix, string key, out T? value)
     {
         value = default;
         if (PipelineContext.CurrentThread.ExpressionCache.TryGetValue(string.Concat(prefix, key), out var ovalue))

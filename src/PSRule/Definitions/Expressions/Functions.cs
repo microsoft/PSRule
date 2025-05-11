@@ -27,22 +27,22 @@ internal static class Functions
     private const string FIRST = "first";
     private const string LAST = "last";
     private const string SPLIT = "split";
-    private const string PADLEFT = "padLeft";
-    private const string PADRIGHT = "padRight";
+    private const string PAD_LEFT = "padLeft";
+    private const string PAD_RIGHT = "padRight";
     private const string DELIMITER = "delimiter";
-    private const string OLDSTRING = "oldstring";
-    private const string NEWSTRING = "newstring";
-    private const string CASESENSITIVE = "casesensitive";
-    private const string TOTALLENGTH = "totalLength";
-    private const string PADDINGCHARACTER = "paddingCharacter";
+    private const string OLD_STRING = "oldstring";
+    private const string NEW_STRING = "newstring";
+    private const string CASE_SENSITIVE = "casesensitive";
+    private const string TOTAL_LENGTH = "totalLength";
+    private const string PADDING_CHARACTER = "paddingCharacter";
 
     private const char SPACE = ' ';
 
     /// <summary>
     /// The available built-in functions.
     /// </summary>
-    internal static readonly IFunctionDescriptor[] Builtin = new IFunctionDescriptor[]
-    {
+    internal static readonly IFunctionDescriptor[] Builtin =
+    [
         new FunctionDescriptor(CONFIGURATION, Configuration),
         new FunctionDescriptor(PATH, Path),
         new FunctionDescriptor(BOOLEAN, Boolean),
@@ -55,15 +55,15 @@ internal static class Functions
         new FunctionDescriptor(FIRST, First),
         new FunctionDescriptor(LAST, Last),
         new FunctionDescriptor(SPLIT, Split),
-        new FunctionDescriptor(PADLEFT, PadLeft),
-        new FunctionDescriptor(PADRIGHT, PadRight),
-    };
+        new FunctionDescriptor(PAD_LEFT, PadLeft),
+        new FunctionDescriptor(PAD_RIGHT, PadRight),
+    ];
 
-    private static ExpressionFnOuter Boolean(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? Boolean(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||
-            !TryProperty(properties, BOOLEAN, out ExpressionFnOuter next))
+            !TryProperty(properties, BOOLEAN, out var next))
             return null;
 
         return (context) =>
@@ -74,11 +74,11 @@ internal static class Functions
         };
     }
 
-    private static ExpressionFnOuter String(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? String(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||
-            !TryProperty(properties, STRING, out ExpressionFnOuter next))
+            !TryProperty(properties, STRING, out var next))
             return null;
 
         return (context) =>
@@ -89,11 +89,11 @@ internal static class Functions
         };
     }
 
-    private static ExpressionFnOuter Integer(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? Integer(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||
-            !TryProperty(properties, INTEGER, out ExpressionFnOuter next))
+            !TryProperty(properties, INTEGER, out var next))
             return null;
 
         return (context) =>
@@ -104,7 +104,7 @@ internal static class Functions
         };
     }
 
-    private static ExpressionFnOuter Configuration(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? Configuration(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null || properties.Count == 0 ||
             !properties.TryGetString(CONFIGURATION, out var name))
@@ -113,11 +113,11 @@ internal static class Functions
         // Lookup a configuration value.
         return (context) =>
         {
-            return context.Context.TryGetConfigurationValue(name, out var value) ? value : null;
+            return context.TryGetConfigurationValue(name, out var value) ? value : null;
         };
     }
 
-    private static ExpressionFnOuter Path(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? Path(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null || properties.Count == 0 ||
             !properties.TryGetString(PATH, out var path))
@@ -151,8 +151,8 @@ internal static class Functions
     {
         if (properties == null ||
             properties.Count == 0 ||
-            !TryProperty(properties, LENGTH, out int? length) ||
-            !TryProperty(properties, SUBSTRING, out ExpressionFnOuter next))
+            !properties.TryGetInt(LENGTH, out var length) ||
+            !TryProperty(properties, SUBSTRING, out var next))
             return null;
 
         return (context) =>
@@ -167,16 +167,16 @@ internal static class Functions
         };
     }
 
-    private static ExpressionFnOuter Replace(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? Replace(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||
-            !properties.TryGetString(OLDSTRING, out var oldString) ||
-            !properties.TryGetString(NEWSTRING, out var newString) ||
-            !TryProperty(properties, REPLACE, out ExpressionFnOuter next))
+            !properties.TryGetString(OLD_STRING, out var oldString) ||
+            !properties.TryGetString(NEW_STRING, out var newString) ||
+            !TryProperty(properties, REPLACE, out var next))
             return null;
 
-        var caseSensitive = properties.TryGetBool(CASESENSITIVE, out var cs) && cs.HasValue && cs.Value;
+        var caseSensitive = properties.TryGetBool(CASE_SENSITIVE, out var cs) && cs.HasValue && cs.Value;
         return (context) =>
         {
             var value = next(context);
@@ -187,11 +187,11 @@ internal static class Functions
         };
     }
 
-    private static ExpressionFnOuter Trim(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? Trim(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||
-            !TryProperty(properties, TRIM, out ExpressionFnOuter next))
+            !TryProperty(properties, TRIM, out var next))
             return null;
 
         return (context) =>
@@ -201,11 +201,11 @@ internal static class Functions
         };
     }
 
-    private static ExpressionFnOuter First(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? First(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||
-            !TryProperty(properties, FIRST, out ExpressionFnOuter next))
+            !TryProperty(properties, FIRST, out var next))
             return null;
 
         return (context) =>
@@ -218,11 +218,11 @@ internal static class Functions
         };
     }
 
-    private static ExpressionFnOuter Last(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? Last(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||
-            !TryProperty(properties, LAST, out ExpressionFnOuter next))
+            !TryProperty(properties, LAST, out var next))
             return null;
 
         return (context) =>
@@ -235,12 +235,12 @@ internal static class Functions
         };
     }
 
-    private static ExpressionFnOuter Split(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? Split(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||
             !properties.TryGetStringArray(DELIMITER, out var delimiter) ||
-            !TryProperty(properties, SPLIT, out ExpressionFnOuter next))
+            !TryProperty(properties, SPLIT, out var next))
             return null;
 
         return (context) =>
@@ -250,16 +250,16 @@ internal static class Functions
         };
     }
 
-    private static ExpressionFnOuter PadLeft(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? PadLeft(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||
 
-            !TryProperty(properties, PADLEFT, out ExpressionFnOuter next))
+            !TryProperty(properties, PAD_LEFT, out var next))
             return null;
 
-        var paddingChar = properties.TryGetChar(PADDINGCHARACTER, out var c) ? c : SPACE;
-        var totalWidth = properties.TryGetInt(TOTALLENGTH, out var i) ? i : 0;
+        var paddingChar = properties.TryGetChar(PADDING_CHARACTER, out var c) ? c : SPACE;
+        var totalWidth = properties.TryGetInt(TOTAL_LENGTH, out var i) ? i : 0;
         return (context) =>
         {
             var value = next(context);
@@ -270,15 +270,15 @@ internal static class Functions
         };
     }
 
-    private static ExpressionFnOuter PadRight(IExpressionContext context, PropertyBag properties)
+    private static ExpressionFnOuter? PadRight(IExpressionContext context, PropertyBag properties)
     {
         if (properties == null ||
             properties.Count == 0 ||
-            !TryProperty(properties, PADRIGHT, out ExpressionFnOuter next))
+            !TryProperty(properties, PAD_RIGHT, out var next))
             return null;
 
-        var paddingChar = properties.TryGetChar(PADDINGCHARACTER, out var c) ? c : SPACE;
-        var totalWidth = properties.TryGetInt(TOTALLENGTH, out var i) ? i : 0;
+        var paddingChar = properties.TryGetChar(PADDING_CHARACTER, out var c) ? c : SPACE;
+        var totalWidth = properties.TryGetInt(TOTAL_LENGTH, out var i) ? i : 0;
         return (context) =>
         {
             var value = next(context);
@@ -291,12 +291,7 @@ internal static class Functions
 
     #region Helper functions
 
-    private static bool TryProperty(PropertyBag properties, string name, out int? value)
-    {
-        return properties.TryGetInt(name, out value);
-    }
-
-    private static bool TryProperty(PropertyBag properties, string name, out ExpressionFnOuter value)
+    private static bool TryProperty(PropertyBag properties, string name, out ExpressionFnOuter? value)
     {
         value = null;
         if (properties.TryGetValue(name, out var v) && v is ExpressionFnOuter fn)

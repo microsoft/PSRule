@@ -3,8 +3,8 @@
 
 namespace PSRule.Definitions.Expressions;
 
-internal delegate object ExpressionFnOuter(IExpressionContext context);
-internal delegate object ExpressionFn(IExpressionContext context, object[] args);
+internal delegate object? ExpressionFnOuter(IExpressionContext context);
+internal delegate object? ExpressionFn(IExpressionContext context, object[] args);
 
 internal delegate ExpressionFnOuter ExpressionBuilderFn(IExpressionContext context, LanguageExpression.PropertyBag properties);
 
@@ -25,7 +25,7 @@ internal sealed class FunctionBuilder
 
     public void Push()
     {
-        _Current = new LanguageExpression.PropertyBag();
+        _Current = [];
         _Stack.Push(_Current);
     }
 
@@ -41,7 +41,7 @@ internal sealed class FunctionBuilder
         return TryFunction(properties, out var descriptor) ? descriptor.Fn(null, properties) : null;
     }
 
-    private bool TryFunction(LanguageExpression.PropertyBag properties, out IFunctionDescriptor descriptor)
+    private bool TryFunction(LanguageExpression.PropertyBag properties, out IFunctionDescriptor? descriptor)
     {
         descriptor = null;
         foreach (var property in properties)

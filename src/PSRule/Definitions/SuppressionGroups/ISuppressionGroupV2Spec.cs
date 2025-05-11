@@ -5,8 +5,6 @@ using PSRule.Definitions.Expressions;
 
 namespace PSRule.Definitions.SuppressionGroups;
 
-#nullable enable
-
 /// <summary>
 /// A specification for a V2 suppression group resource.
 /// </summary>
@@ -35,5 +33,3 @@ internal interface ISuppressionGroupV2Spec : ISuppressionGroupSpec
     /// </summary>
     LanguageIf? If { get; }
 }
-
-#nullable restore

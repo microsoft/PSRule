@@ -14,7 +14,7 @@ internal sealed class LanguageExpressionFactory
             With(d);
     }
 
-    public bool TryDescriptor(string name, out ILanguageExpressionDescriptor descriptor)
+    public bool TryDescriptor(string name, out ILanguageExpressionDescriptor? descriptor)
     {
         descriptor = null;
         return !string.IsNullOrEmpty(name) &&
