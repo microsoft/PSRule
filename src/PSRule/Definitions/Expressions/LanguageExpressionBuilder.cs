@@ -40,7 +40,7 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
         return this;
     }
 
-    public LanguageExpressionBuilder WithType(string[] type)
+    public LanguageExpressionBuilder WithType(string[]? type)
     {
         if (type == null || type.Length == 0)
             return this;
@@ -264,21 +264,21 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
     /// <summary>
     /// Returns a quantifier function if set for the expression.
     /// </summary>
-    private static Func<long, bool> GetQuantifier(LanguageOperator expression)
+    private static Func<long, bool>? GetQuantifier(LanguageOperator expression)
     {
-        if (expression.Property.TryGetLong(GREATEROREQUAL, out var q))
+        if (expression.Property.TryGetLong(GREATEROREQUAL, out var q) && q != null)
             return (number) => number >= q.Value;
 
-        if (expression.Property.TryGetLong(GREATER, out q))
+        if (expression.Property.TryGetLong(GREATER, out q) && q != null)
             return (number) => number > q.Value;
 
-        if (expression.Property.TryGetLong(LESSOREQUAL, out q))
+        if (expression.Property.TryGetLong(LESSOREQUAL, out q) && q != null)
             return (number) => number <= q.Value;
 
-        if (expression.Property.TryGetLong(LESS, out q))
+        if (expression.Property.TryGetLong(LESS, out q) && q != null)
             return (number) => number < q.Value;
 
-        if (expression.Property.TryGetLong(COUNT, out q))
+        if (expression.Property.TryGetLong(COUNT, out q) && q != null)
             return (number) => number == q.Value;
 
         return null;

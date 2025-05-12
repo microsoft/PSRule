@@ -28,12 +28,12 @@ internal sealed class Operand : IOperand
 
     public OperandKind Kind { get; }
 
-    internal static IOperand FromName(string name, string path)
+    internal static IOperand FromName(string name, string? path)
     {
         return new Operand(OperandKind.Name, path, name);
     }
 
-    internal static IOperand FromType(string type, string path)
+    internal static IOperand FromType(string type, string? path)
     {
         return new Operand(OperandKind.Type, path, type);
     }
@@ -58,7 +58,7 @@ internal sealed class Operand : IOperand
         return new Operand(OperandKind.Value, null, value);
     }
 
-    internal static IOperand FromScope(string[] scope)
+    internal static IOperand FromScope(string[]? scope)
     {
         return new Operand(OperandKind.Scope, scope);
     }

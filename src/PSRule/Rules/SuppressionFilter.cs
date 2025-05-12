@@ -105,18 +105,19 @@ internal sealed class SuppressionFilter
         // Read suppress rules into index combined key (RuleName + TargetName)
         foreach (var rule in option)
         {
-            // Only add suppresion entries for rules that are loaded
+            // Only add suppression entries for rules that are loaded
             if (!_ResourceIndex.TryFind(rule.Key, out var blockId, out var kind))
                 continue;
 
             if (kind == ResourceIdKind.Alias)
+            {
                 context.WarnAliasSuppression(blockId.Value, rule.Key);
+            }
 
             foreach (var targetName in rule.Value.TargetName)
             {
                 var key = new SuppressionKey(blockId.Value, targetName);
-                if (!index.Contains(key))
-                    index.Add(key);
+                index.Add(key);
             }
         }
         return index;
@@ -165,7 +166,7 @@ internal sealed class SuppressionFilter
             {
                 foreach (var rule in rules)
                 {
-                    // Only add suppresion entries for rules that are loaded
+                    // Only add suppression entries for rules that are loaded
                     if (!_ResourceIndex.TryFind(rule, out var blockId, out _))
                         continue;
 
