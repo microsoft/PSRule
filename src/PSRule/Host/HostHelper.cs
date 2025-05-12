@@ -214,7 +214,6 @@ internal static class HostHelper
         }
         finally
         {
-            // logger.ExitScope();
             context.PopScope(RunspaceScope.Source);
             ps.Runspace = null;
             ps.Dispose();
@@ -292,7 +291,6 @@ internal static class HostHelper
         }
         finally
         {
-            // logger.ExitScope();
             context.PopScope(RunspaceScope.Resource);
         }
         return result.Count == 0 ? [] : [.. result];
@@ -367,7 +365,6 @@ internal static class HostHelper
         }
         finally
         {
-            // logger.ExitScope();
             context.PopScope(RunspaceScope.Resource);
         }
         return result.Count == 0 ? [] : [.. result];
