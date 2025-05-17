@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Language;
+using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
 using PSRule.Options;
@@ -492,22 +493,18 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         Binding = null;
     }
 
-    public bool TrySelector(string name)
+    public bool TrySelector(ResourceId id, ITargetObject targetObject)
     {
-        return TrySelector(ResourceHelper.GetRuleId(Source?.Module, name, ResourceIdKind.Unknown));
-    }
-
-    public bool TrySelector(ResourceId id)
-    {
-        if (TargetObject == null || Pipeline == null || !Pipeline.Selector.TryGetValue(id.Value, out var selector))
+        if (targetObject == null || Pipeline == null || !Pipeline.Selector.TryGetValue(id.Value, out var selector))
             return false;
 
-        var annotation = TargetObject.GetAnnotation<SelectorTargetAnnotation>();
+        var annotation = targetObject.GetAnnotation<SelectorTargetAnnotation>() ?? new SelectorTargetAnnotation();
         if (annotation.TryGetSelectorResult(selector, out var result))
             return result;
 
-        result = selector.Match(TargetObject);
+        result = selector.Match(targetObject);
         annotation.SetSelectorResult(selector, result);
+        targetObject.SetAnnotation(annotation);
         return result;
     }
 

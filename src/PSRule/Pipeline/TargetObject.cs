@@ -15,7 +15,7 @@ namespace PSRule.Pipeline;
 [DebuggerDisplay("Type = {Type}, Name = {Name}")]
 public sealed class TargetObject : ITargetObject
 {
-    private readonly Dictionary<Type, TargetObjectAnnotation> _Annotations;
+    private readonly Dictionary<Type, object> _Annotations;
 
     private Hashtable? _Data;
 
@@ -76,6 +76,7 @@ public sealed class TargetObject : ITargetObject
 
     ITargetSourceMap? ITargetObject.SourceMap => null;
 
+    /// <inheritdoc/>
     public Hashtable? GetData()
     {
         return _Data == null || _Data.Count == 0 ? null : _Data;
@@ -87,14 +88,16 @@ public sealed class TargetObject : ITargetObject
         return _Data;
     }
 
-    internal T GetAnnotation<T>() where T : TargetObjectAnnotation, new()
+    /// <inheritdoc/>
+    public TAnnotation? GetAnnotation<TAnnotation>() where TAnnotation : class
     {
-        if (!_Annotations.TryGetValue(typeof(T), out var value))
-        {
-            value = new T();
-            _Annotations.Add(typeof(T), value);
-        }
-        return (T)value;
+        return _Annotations.TryGetValue(typeof(TAnnotation), out var value) ? (TAnnotation)value : null;
+    }
+
+    /// <inheritdoc/>
+    public void SetAnnotation<TAnnotation>(TAnnotation value) where TAnnotation : class
+    {
+        _Annotations[typeof(TAnnotation)] = value ?? throw new ArgumentNullException(nameof(value));
     }
 
     private static TargetSourceCollection ReadSourceInfo(PSObject o, TargetSourceCollection? source)

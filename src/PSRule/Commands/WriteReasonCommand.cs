@@ -12,7 +12,7 @@ namespace PSRule.Commands;
 internal sealed class WriteReasonCommand : RuleKeyword
 {
     [Parameter(Mandatory = false, Position = 0)]
-    public string Text { get; set; }
+    public string? Text { get; set; }
 
     protected override void ProcessRecord()
     {

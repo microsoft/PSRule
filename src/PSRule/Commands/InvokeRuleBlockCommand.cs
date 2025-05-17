@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
+using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Resources;
@@ -15,19 +16,19 @@ namespace PSRule.Commands;
 internal sealed class InvokeRuleBlockCommand : Cmdlet
 {
     [Parameter()]
-    public string[] Type;
+    public string[]? Type;
 
     [Parameter()]
-    public ResourceId[] With;
+    public ResourceId[]? With;
 
     [Parameter()]
-    public ScriptBlock If;
+    public ScriptBlock? If;
 
     [Parameter()]
-    public ScriptBlock Body;
+    public ScriptBlock? Body;
 
     [Parameter()]
-    public SourceFile Source;
+    public SourceFile? Source;
 
     protected override void ProcessRecord()
     {
@@ -38,7 +39,7 @@ internal sealed class InvokeRuleBlockCommand : Cmdlet
                 return;
 
             // Evaluate selector pre-condition
-            if (!AcceptsWith())
+            if (!AcceptsWith(context.TargetObject))
             {
                 context.Logger?.LogDebug(EventId.None, PSRuleResources.DebugTargetTypeMismatch);
                 return;
@@ -119,14 +120,14 @@ internal sealed class InvokeRuleBlockCommand : Cmdlet
         return false;
     }
 
-    private bool AcceptsWith()
+    private bool AcceptsWith(ITargetObject targetObject)
     {
         if (With == null || With.Length == 0)
             return true;
 
         for (var i = 0; i < With.Length; i++)
         {
-            if (LegacyRunspaceContext.CurrentThread.TrySelector(With[i]))
+            if (LegacyRunspaceContext.CurrentThread.TrySelector(With[i], targetObject))
                 return true;
         }
         return false;

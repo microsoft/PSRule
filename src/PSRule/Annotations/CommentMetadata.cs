@@ -11,5 +11,5 @@ namespace PSRule.Annotations;
 [DebuggerDisplay("Synopsis = {Synopsis}")]
 internal sealed class CommentMetadata
 {
-    public string Synopsis;
+    public string? Synopsis;
 }

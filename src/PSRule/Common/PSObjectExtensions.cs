@@ -116,17 +116,17 @@ internal static class PSObjectExtensions
         return o.TryTargetInfo(out var targetInfo) ? [.. targetInfo.Issue] : [];
     }
 
-    public static string GetTargetName(this PSObject o)
+    public static string? GetTargetName(this PSObject o)
     {
         return o != null && o.TryTargetInfo(out var targetInfo) ? targetInfo.TargetName : null;
     }
 
-    public static string GetTargetType(this PSObject o)
+    public static string? GetTargetType(this PSObject o)
     {
         return o != null && o.TryTargetInfo(out var targetInfo) ? targetInfo.TargetType : null;
     }
 
-    public static string[] GetScope(this PSObject o)
+    public static string[]? GetScope(this PSObject o)
     {
         return o != null && o.TryTargetInfo(out var targetInfo) ? targetInfo.Scope : null;
     }
@@ -194,7 +194,7 @@ internal static class PSObjectExtensions
         }
     }
 
-    private static TargetIssueInfo CreateIssueInfo(object o)
+    private static TargetIssueInfo? CreateIssueInfo(object o)
     {
         return o is PSObject pso ? CreateIssueInfo(pso) : null;
     }
@@ -217,7 +217,7 @@ internal static class PSObjectExtensions
         return result;
     }
 
-    private static TargetSourceInfo CreateSourceInfo(object o)
+    private static TargetSourceInfo? CreateSourceInfo(object o)
     {
         return o is PSObject pso ? CreateSourceInfo(pso) : null;
     }
@@ -240,7 +240,7 @@ internal static class PSObjectExtensions
         return result;
     }
 
-    private static T ConvertValue<T>(object value)
+    private static T? ConvertValue<T>(object value)
     {
         if (value == null)
             return default;

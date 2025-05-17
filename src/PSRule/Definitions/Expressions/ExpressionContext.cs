@@ -93,4 +93,12 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
     {
         return Context.TryGetConfigurationValue(name, out value);
     }
+
+    public bool TrySelector(ResourceId id, ITargetObject o)
+    {
+        if (id == null) throw new ArgumentNullException(nameof(id));
+        if (o == null) throw new ArgumentNullException(nameof(o));
+
+        return Context.TrySelector(id, o);
+    }
 }

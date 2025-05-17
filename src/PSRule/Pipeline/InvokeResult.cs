@@ -72,7 +72,7 @@ public sealed class InvokeResult
     /// </summary>
     public SeverityLevel Level => _Level;
 
-    internal string TargetName
+    internal string? TargetName
     {
         get
         {
@@ -80,7 +80,7 @@ public sealed class InvokeResult
         }
     }
 
-    internal string TargetType
+    internal string? TargetType
     {
         get
         {

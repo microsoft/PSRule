@@ -246,7 +246,7 @@ internal sealed class MarkdownStream
     /// Get the extent and clear previous marker.
     /// </summary>
     /// <returns></returns>
-    public SourceExtent GetExtent()
+    public SourceExtent? GetExtent()
     {
         if (!_ExtentMarker.HasValue)
         {

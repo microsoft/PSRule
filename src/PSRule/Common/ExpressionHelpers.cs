@@ -521,7 +521,7 @@ internal static class ExpressionHelpers
         return o is PSObject pso && pso.BaseObject != null && pso.BaseObject is not PSCustomObject ? pso.BaseObject : o;
     }
 
-    private static PSRuleTargetInfo GetTargetInfo(object o)
+    private static PSRuleTargetInfo? GetTargetInfo(object o)
     {
         return o is PSObject pso && pso.TryTargetInfo(out var targetInfo) ? targetInfo : null;
     }

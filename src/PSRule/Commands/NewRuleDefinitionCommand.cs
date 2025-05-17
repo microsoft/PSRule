@@ -32,7 +32,7 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
     [Parameter(Mandatory = true, Position = 0)]
     [ValidateNotNullOrEmpty()]
     [ValidateLength(3, 128)]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// If the rule fails, how serious is the result.
@@ -44,63 +44,63 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
     /// The definition of the deployment.
     /// </summary>
     [Parameter(Mandatory = false, Position = 1)]
-    public ScriptBlock Body { get; set; }
+    public ScriptBlock? Body { get; set; }
 
     /// <summary>
     /// A set of tags with additional metadata for the rule.
     /// </summary>
     [Parameter(Mandatory = false)]
-    public Hashtable Tag { get; set; }
+    public Hashtable? Tag { get; set; }
 
     /// <summary>
     /// An optional script precondition before the rule is evaluated.
     /// </summary>
     [Parameter(Mandatory = false)]
-    public ScriptBlock If { get; set; }
+    public ScriptBlock? If { get; set; }
 
     /// <summary>
     /// An optional type precondition before the rule is evaluated.
     /// </summary>
     [Parameter(Mandatory = false)]
-    public string[] Type { get; set; }
+    public string[]? Type { get; set; }
 
     /// <summary>
     /// An optional selector precondition before the rule is evaluated.
     /// </summary>
     [Parameter(Mandatory = false)]
-    public string[] With { get; set; }
+    public string[]? With { get; set; }
 
     /// <summary>
     /// Deployments that this deployment depends on.
     /// </summary>
     [Parameter(Mandatory = false)]
     [ValidateNotNullOrEmpty()]
-    public string[] DependsOn { get; set; }
+    public string[]? DependsOn { get; set; }
 
     /// <summary>
     /// A set of default configuration values.
     /// </summary>
     [Parameter(Mandatory = false)]
-    public Hashtable Configure { get; set; }
+    public Hashtable? Configure { get; set; }
 
     /// <summary>
     /// Any aliases for the rule.
     /// </summary>
     [Parameter(Mandatory = false)]
-    public string[] Alias { get; set; }
+    public string[]? Alias { get; set; }
 
     /// <summary>
     /// An optional reference identifier for the resource.
     /// </summary>
     [Parameter(Mandatory = false)]
     [ValidateLength(3, 128)]
-    public string Ref { get; set; }
+    public string? Ref { get; set; }
 
     /// <summary>
     /// Any taxonomy references.
     /// </summary>
     [Parameter(Mandatory = false)]
-    public Hashtable Labels { get; set; }
+    public Hashtable? Labels { get; set; }
 
     protected override void ProcessRecord()
     {
@@ -146,8 +146,8 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
             info: info,
             condition: ps,
             tag: tag,
-            alias: ResourceHelper.GetRuleId(source.Module, Alias, ResourceIdKind.Alias),
-            dependsOn: ResourceHelper.GetRuleId(source.Module, DependsOn, ResourceIdKind.Unknown),
+            alias: ResourceHelper.GetResourceId(source.Module, Alias, ResourceIdKind.Alias),
+            dependsOn: ResourceHelper.GetResourceId(source.Module, DependsOn, ResourceIdKind.Unknown),
             configuration: Configure,
             extent: extent,
             flags: flags,
@@ -184,6 +184,6 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
 
     private ResourceId[] GetScopedSelectors(ISourceFile source)
     {
-        return ResourceHelper.GetRuleId(source.Module, With, ResourceIdKind.Unknown);
+        return ResourceHelper.GetResourceId(source.Module, With, ResourceIdKind.Unknown);
     }
 }

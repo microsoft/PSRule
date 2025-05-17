@@ -25,7 +25,7 @@ internal static class PipelineHookActions
     private const string Property_Name = "Name";
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
-    public static string BindTargetName(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
+    public static string? BindTargetName(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
     {
         path = null;
         if (targetObject == null)
@@ -43,7 +43,7 @@ internal static class PipelineHookActions
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
-    public static string BindTargetType(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
+    public static string? BindTargetType(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
     {
         path = null;
         if (targetObject == null)
@@ -62,7 +62,7 @@ internal static class PipelineHookActions
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameter preferTargetInfo is required for matching the delegate type.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
-    public static string BindField(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
+    public static string? BindField(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
     {
         path = null;
         if (targetObject == null)
@@ -186,7 +186,7 @@ internal static class PipelineHookActions
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
-    private static string GetTypeNames(object targetObject)
+    private static string? GetTypeNames(object targetObject)
     {
         if (targetObject == null)
             return null;
@@ -194,7 +194,7 @@ internal static class PipelineHookActions
         return targetObject is PSObject pso ? pso.TypeNames[0] : targetObject.GetType().FullName;
     }
 
-    private static string DefaultFieldBinding(object targetObject)
+    private static string? DefaultFieldBinding(object targetObject)
     {
         return null;
     }
@@ -225,7 +225,7 @@ internal static class PipelineHookActions
         return targetType != null;
     }
 
-    private static string ValueAsString(object o, string propertyName, bool caseSensitive)
+    private static string? ValueAsString(object o, string propertyName, bool caseSensitive)
     {
         return ObjectHelper.GetPath(bindingContext: null, targetObject: o, path: propertyName, caseSensitive: caseSensitive, value: out object value) && value != null ? value.ToString() : null;
     }

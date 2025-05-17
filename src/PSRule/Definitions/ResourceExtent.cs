@@ -11,10 +11,10 @@ public sealed class ResourceExtent
     /// <summary>
     /// The file where the resource is located.
     /// </summary>
-    public string File { get; set; }
+    public string? File { get; set; }
 
     /// <summary>
     /// The name of the module if the resource is contained within a module.
     /// </summary>
-    public string Module { get; set; }
+    public string? Module { get; set; }
 }

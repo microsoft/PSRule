@@ -312,7 +312,7 @@ internal static class Functions
         return value != null;
     }
 
-    private static object Value(IExpressionContext context, object value)
+    private static object? Value(IExpressionContext context, object value)
     {
         return value is ExpressionFnOuter fn ? fn(context) : value;
     }

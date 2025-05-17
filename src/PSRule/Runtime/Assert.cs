@@ -32,7 +32,7 @@ public sealed class Assert
     /// <param name="condition">A boolean condition that passes when set to <c>true</c>, and fails when set to <c>false</c>.</param>
     /// <param name="reason">A localized reason why the assertion failed. This parameter is ignored if the assertion passed.</param>
     /// <returns>An assertion result.</returns>
-    public AssertResult Create(bool condition, string reason = null)
+    public AssertResult Create(bool condition, string? reason = null)
     {
         return Create(condition, reason, args: null);
     }
@@ -230,7 +230,7 @@ public sealed class Assert
     /// The value of '$schema' is null or empty.
     /// None of the specified schemas match '{0}'.
     /// </remarks>
-    public AssertResult HasJsonSchema(PSObject inputObject, string[] uri = null, bool ignoreScheme = false)
+    public AssertResult HasJsonSchema(PSObject inputObject, string[]? uri = null, bool ignoreScheme = false)
     {
         // Guard parameters
         if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
@@ -337,7 +337,7 @@ public sealed class Assert
     /// Is null or empty.
     /// Is set to '{0}'.
     /// </remarks>
-    public AssertResult HasFieldValue(PSObject inputObject, string field, object expectedValue = null)
+    public AssertResult HasFieldValue(PSObject inputObject, string field, object? expectedValue = null)
     {
         // Guard parameters
         if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
@@ -846,7 +846,7 @@ public sealed class Assert
     /// <remarks>
     /// Only applies to strings.
     /// </remarks>
-    public AssertResult Version(PSObject inputObject, string field, string constraint = null, bool includePrerelease = false)
+    public AssertResult Version(PSObject inputObject, string field, string? constraint = null, bool includePrerelease = false)
     {
         // Guard parameters
         if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
@@ -870,7 +870,7 @@ public sealed class Assert
     /// <remarks>
     /// Only applies to strings.
     /// </remarks>
-    public AssertResult APIVersion(PSObject inputObject, string field, string constraint = null, bool includePrerelease = false)
+    public AssertResult APIVersion(PSObject inputObject, string field, string? constraint = null, bool includePrerelease = false)
     {
         // Guard parameters
         if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
@@ -1144,7 +1144,7 @@ public sealed class Assert
     /// Checks use file system case-sensitivity rules.
     /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#filepath"/>
     /// </summary>
-    public AssertResult FilePath(PSObject inputObject, string field, string[] suffix = null)
+    public AssertResult FilePath(PSObject inputObject, string field, string[]? suffix = null)
     {
         // Guard parameters
         if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||
@@ -1174,7 +1174,7 @@ public sealed class Assert
     /// When comparing the file header, the format of line comments are automatically detected by file extension.
     /// <seealso href="https://microsoft.github.io/PSRule/latest/concepts/PSRule/en-US/about_PSRule_Assert/#fileheader"/>
     /// </summary>
-    public AssertResult FileHeader(PSObject inputObject, string field, string[] header, string prefix = null)
+    public AssertResult FileHeader(PSObject inputObject, string field, string[] header, string? prefix = null)
     {
         // Guard parameters
         if (GuardNullParam(inputObject, nameof(inputObject), out var result) ||

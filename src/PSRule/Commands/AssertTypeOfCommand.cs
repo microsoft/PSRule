@@ -14,13 +14,13 @@ namespace PSRule.Commands;
 internal sealed class AssertTypeOfCommand : RuleKeyword
 {
     [Parameter(Mandatory = true, Position = 0)]
-    public string[] TypeName { get; set; }
+    public string[]? TypeName { get; set; }
 
     [Parameter(Mandatory = false)]
-    public string Reason { get; set; }
+    public string? Reason { get; set; }
 
     [Parameter(Mandatory = false, ValueFromPipeline = true)]
-    public PSObject InputObject { get; set; }
+    public PSObject? InputObject { get; set; }
 
     protected override void ProcessRecord()
     {

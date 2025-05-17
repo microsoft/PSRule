@@ -14,15 +14,15 @@ internal sealed class PipelineLogger : PipelineLoggerBase
     private const string InformationPreference = "InformationPreference";
     private const string DebugPreference = "DebugPreference";
 
-    private HashSet<string> _VerboseFilter;
-    private HashSet<string> _DebugFilter;
+    private HashSet<string>? _VerboseFilter;
+    private HashSet<string>? _DebugFilter;
 
-    private Action<string> _OnWriteWarning;
-    private Action<string> _OnWriteVerbose;
-    private Action<ErrorRecord> _OnWriteError;
-    private Action<InformationRecord> _OnWriteInformation;
-    private Action<string> _OnWriteDebug;
-    internal Action<object, bool> OnWriteObject;
+    private Action<string>? _OnWriteWarning;
+    private Action<string>? _OnWriteVerbose;
+    private Action<ErrorRecord>? _OnWriteError;
+    private Action<InformationRecord>? _OnWriteInformation;
+    private Action<string>? _OnWriteDebug;
+    internal Action<object, bool>? OnWriteObject;
 
     private bool _LogError;
     private bool _LogWarning;

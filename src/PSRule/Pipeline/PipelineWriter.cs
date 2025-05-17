@@ -9,8 +9,6 @@ using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
 /// <summary>
 /// A base class for pipeline writers that passes through to an inner writer.
 /// </summary>
@@ -154,5 +152,3 @@ internal abstract class PipelineWriter(IPipelineWriter? inner, PSRuleOption opti
         return parentPath.Exists;
     }
 }
-
-#nullable restore

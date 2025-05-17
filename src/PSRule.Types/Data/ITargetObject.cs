@@ -53,4 +53,14 @@ public interface ITargetObject
     /// The data associated with the object.
     /// </summary>
     Hashtable? GetData();
+
+    /// <summary>
+    /// Get additional typed data associated with the object.
+    /// </summary>
+    TAnnotation? GetAnnotation<TAnnotation>() where TAnnotation : class;
+
+    /// <summary>
+    /// Associated additional typed data with the object.
+    /// </summary>
+    void SetAnnotation<TAnnotation>(TAnnotation value) where TAnnotation : class;
 }

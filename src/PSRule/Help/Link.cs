@@ -8,7 +8,7 @@ namespace PSRule.Help;
 /// </summary>
 internal sealed class Link
 {
-    public string Name;
+    public string? Name;
 
-    public string Uri;
+    public string? Uri;
 }

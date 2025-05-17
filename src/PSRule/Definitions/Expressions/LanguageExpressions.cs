@@ -1376,7 +1376,7 @@ internal sealed class LanguageExpressions
     /// <summary>
     /// Unwrap a function delegate or a literal value.
     /// </summary>
-    private static object Value(IExpressionContext context, object value)
+    private static object? Value(IExpressionContext context, object value)
     {
         return value is ExpressionFnOuter fn ? fn(context) : value;
     }

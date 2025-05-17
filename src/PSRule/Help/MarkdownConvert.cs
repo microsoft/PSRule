@@ -16,7 +16,7 @@ internal static class MarkdownConvert
         return result == null ? System.Array.Empty<PSObject>() : new PSObject[] { result };
     }
 
-    private static PSObject YamlHeader(string markdown)
+    private static PSObject? YamlHeader(string markdown)
     {
         var stream = new MarkdownStream(markdown);
         if (stream.EOF || stream.Line > 1 || stream.Current != Dash)

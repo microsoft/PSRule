@@ -50,7 +50,7 @@ public sealed class SuppressionRule
         return new SuppressionRule(value);
     }
 
-    internal static SuppressionRule FromObject(object value)
+    internal static SuppressionRule? FromObject(object value)
     {
         if (value is string)
             return FromString(value.ToString());

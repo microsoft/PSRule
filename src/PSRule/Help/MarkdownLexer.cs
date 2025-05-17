@@ -20,7 +20,7 @@ internal abstract class MarkdownLexer
             string.Equals(text, token.Text, StringComparison.OrdinalIgnoreCase);
     }
 
-    protected static Dictionary<string, string> YamlHeader(TokenStream stream)
+    protected static Dictionary<string, string>? YamlHeader(TokenStream stream)
     {
         var metadata = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         while (!stream.EOF && stream.IsTokenType(MarkdownTokenType.YamlKeyValue))

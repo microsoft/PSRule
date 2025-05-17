@@ -11,7 +11,7 @@ internal abstract class PipelineLoggerBase : IPipelineWriter
     private const string Source = "PSRule";
     private const string HostTag = "PSHOST";
 
-    protected string ScopeName { get; private set; }
+    protected string? ScopeName { get; private set; }
 
     public bool HadErrors { get; private set; }
 
