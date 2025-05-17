@@ -27,7 +27,7 @@ public interface ISourceCommandLineBuilder
     /// </summary>
     /// <param name="name">The name of the module.</param>
     /// <param name="version">A specific version of the module.</param>
-    void ModuleByName(string name, string version = null);
+    void ModuleByName(string name, string? version = null);
 
     /// <summary>
     /// Build a list of sources for executing within PSRule.

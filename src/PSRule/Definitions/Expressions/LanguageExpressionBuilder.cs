@@ -9,9 +9,7 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions.Expressions;
 
-#nullable enable
-
-internal sealed class LanguageExpressionBuilder(bool debugger = true)
+internal sealed class LanguageExpressionBuilder(ResourceId id, bool debugger = true)
 {
     private const char Dot = '.';
     private const char OpenBracket = '[';
@@ -19,24 +17,25 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
 
     private const string DOT_WHERE = ".where";
     private const string LESS = "less";
-    private const string LESSOREQUAL = "lessOrEqual";
+    private const string LESS_OR_EQUAL = "lessOrEqual";
     private const string GREATER = "greater";
-    private const string GREATEROREQUAL = "greaterOrEqual";
+    private const string GREATER_OR_EQUAL = "greaterOrEqual";
     private const string COUNT = "count";
 
+    private readonly ResourceId _Id = id;
     private readonly bool _Debugger = debugger;
 
-    private string[]? _With;
+    private ResourceId[]? _With;
     private string[]? _Type;
     private LanguageExpression? _When;
-    private string[]? _Rule;
+    private ResourceId[]? _Rule;
 
     public LanguageExpressionBuilder WithSelector(string[] with)
     {
         if (with == null || with.Length == 0)
             return this;
 
-        _With = with;
+        _With = GetRelatedResourceID(_Id.Scope, with);
         return this;
     }
 
@@ -63,7 +62,7 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
         if (rule == null || rule.Length == 0)
             return this;
 
-        _Rule = rule;
+        _Rule = GetRelatedResourceID(_Id.Scope, rule);
         return this;
     }
 
@@ -73,7 +72,7 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
         return Precondition(Expression(string.Empty, condition.Expression), _With, _Type, Expression(string.Empty, _When), _Rule);
     }
 
-    private static LanguageExpressionOuterFn Precondition(LanguageExpressionOuterFn expression, string[] with, string[] type, LanguageExpressionOuterFn when, string[] rule)
+    private static LanguageExpressionOuterFn Precondition(LanguageExpressionOuterFn expression, ResourceId[]? with, string[]? type, LanguageExpressionOuterFn? when, ResourceId[]? rule)
     {
         var fn = expression;
         if (type != null)
@@ -91,7 +90,7 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
         return fn;
     }
 
-    private static LanguageExpressionOuterFn PreconditionRule(string[] rule, LanguageExpressionOuterFn fn)
+    private static LanguageExpressionOuterFn PreconditionRule(ResourceId[] rule, LanguageExpressionOuterFn fn)
     {
         return (context, o) =>
         {
@@ -105,12 +104,12 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
         };
     }
 
-    private static LanguageExpressionOuterFn PreconditionSelector(string[] with, LanguageExpressionOuterFn fn)
+    private static LanguageExpressionOuterFn PreconditionSelector(ResourceId[] with, LanguageExpressionOuterFn fn)
     {
         return (context, o) =>
         {
             // Evaluate selector pre-condition
-            if (!AcceptsWith(context, with))
+            if (!AcceptsWith(context, with, o))
             {
                 context.Debug(PSRuleResources.DebugTargetTypeMismatch);
                 return null;
@@ -156,7 +155,7 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
         };
     }
 
-    private LanguageExpressionOuterFn Expression(string path, LanguageExpression expression)
+    private LanguageExpressionOuterFn? Expression(string path, LanguageExpression? expression)
     {
         if (expression == null)
             return null;
@@ -266,13 +265,13 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
     /// </summary>
     private static Func<long, bool>? GetQuantifier(LanguageOperator expression)
     {
-        if (expression.Property.TryGetLong(GREATEROREQUAL, out var q) && q != null)
+        if (expression.Property.TryGetLong(GREATER_OR_EQUAL, out var q) && q != null)
             return (number) => number >= q.Value;
 
         if (expression.Property.TryGetLong(GREATER, out q) && q != null)
             return (number) => number > q.Value;
 
-        if (expression.Property.TryGetLong(LESSOREQUAL, out q) && q != null)
+        if (expression.Property.TryGetLong(LESS_OR_EQUAL, out q) && q != null)
             return (number) => number <= q.Value;
 
         if (expression.Property.TryGetLong(LESS, out q) && q != null)
@@ -285,7 +284,7 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
     }
 
     [DebuggerStepThrough]
-    private static string Value<T>(IExpressionContext context, object v)
+    private static string? Value<T>(IExpressionContext context, object v)
     {
         return v as string;
     }
@@ -305,7 +304,7 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
 
     private static bool AcceptsType(IExpressionContext context, string[] type)
     {
-        if (type == null)
+        if (type == null || type.Length == 0)
             return true;
 
         if (!context.Context.LanguageScope.TryGetType(context.Current, out var targetType, out _))
@@ -315,20 +314,24 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
         for (var i = 0; i < type.Length; i++)
         {
             if (comparer.Equals(targetType, type[i]))
+            {
                 return true;
+            }
         }
         return false;
     }
 
-    private static bool AcceptsWith(IExpressionContext context, string[] with)
+    private static bool AcceptsWith(IExpressionContext context, ResourceId[] with, ITargetObject o)
     {
         if (with == null || with.Length == 0)
             return true;
 
         for (var i = 0; i < with.Length; i++)
         {
-            if (context.Context.TrySelector(with[i]))
+            if (context.TrySelector(with[i], o))
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -338,7 +341,7 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
         return subselector == null || subselector.Invoke(context, o).GetValueOrDefault(false);
     }
 
-    private static bool AcceptsRule(IExpressionContext context, string[] rule)
+    private static bool AcceptsRule(IExpressionContext context, ResourceId[] rule)
     {
         if (context.RuleId == null)
             return false;
@@ -349,16 +352,22 @@ internal sealed class LanguageExpressionBuilder(bool debugger = true)
         var stringComparer = context.Context.LanguageScope.GetBindingComparer();
         var resourceIdComparer = ResourceIdEqualityComparer.Default;
 
+        // Allow short name cases.
         var ruleName = context.RuleId.Value.Name;
-        var ruleId = context.RuleId.Value.Value;
 
         for (var i = 0; i < rule.Length; i++)
         {
-            if (stringComparer.Equals(ruleName, rule[i]) || resourceIdComparer.Equals(ruleId, rule[i]))
+            if (stringComparer.Equals(ruleName, rule[i]) || resourceIdComparer.Equals(context.RuleId.Value, rule[i]))
                 return true;
         }
         return false;
     }
-}
 
-#nullable restore
+    /// <summary>
+    /// Convert the identifiers to resource IDs.
+    /// </summary>
+    private static ResourceId[] GetRelatedResourceID(string defaultScope, string[] resourceNameOrId)
+    {
+        return ResourceHelper.GetResourceId(defaultScope, resourceNameOrId, ResourceIdKind.Unknown) ?? [];
+    }
+}

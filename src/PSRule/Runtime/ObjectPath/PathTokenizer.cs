@@ -19,7 +19,7 @@ internal static class PathTokenizer
             _Items = new List<IPathToken>();
         }
 
-        public IPathToken Last
+        public IPathToken? Last
         {
             get
             {
@@ -537,7 +537,7 @@ internal static class PathTokenizer
             return true;
         }
 
-        private string CaptureMemberName(ref int position)
+        private string? CaptureMemberName(ref int position)
         {
             return UntilQuote(ref position, out var value) || WhileMemberName(ref position, out value) ? value : null;
         }
@@ -587,7 +587,7 @@ internal static class PathTokenizer
             return pos;
         }
 
-        private string Substring(int pos, int end)
+        private string? Substring(int pos, int end)
         {
             return pos == end ? null : _Path.Substring(pos, end - pos);
         }

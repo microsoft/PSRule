@@ -52,7 +52,7 @@ internal sealed class AssertPipelineBuilder : InvokePipelineBuilderBase
             Option.Output.Format == OutputFormat.None);
     }
 
-    public sealed override IPipeline Build(IPipelineWriter writer = null)
+    public sealed override IPipeline? Build(IPipelineWriter? writer = null)
     {
         writer ??= PrepareWriter();
         Unblock(writer);

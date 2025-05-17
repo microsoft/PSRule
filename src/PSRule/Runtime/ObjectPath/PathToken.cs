@@ -29,7 +29,7 @@ internal sealed class PathToken : IPathToken
 
     public object Arg { get; }
 
-    public T As<T>()
+    public T? As<T>()
     {
         return Arg is T result ? result : default;
     }

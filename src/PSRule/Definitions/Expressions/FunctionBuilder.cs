@@ -34,7 +34,7 @@ internal sealed class FunctionBuilder
         _Current.Add(name, value);
     }
 
-    public ExpressionFnOuter Pop()
+    public ExpressionFnOuter? Pop()
     {
         var properties = _Stack.Pop();
         _Current = _Stack.Count > 0 ? _Stack.Peek() : null;

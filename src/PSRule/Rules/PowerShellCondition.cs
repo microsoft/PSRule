@@ -56,7 +56,7 @@ internal sealed class PowerShellCondition : ICondition
         return GetResult(_Condition.Invoke<Runtime.RuleConditionResult>());
     }
 
-    private static Runtime.RuleConditionResult GetResult(Collection<Runtime.RuleConditionResult> value)
+    private static Runtime.RuleConditionResult? GetResult(Collection<Runtime.RuleConditionResult> value)
     {
         return value == null || value.Count == 0 ? null : value[0];
     }

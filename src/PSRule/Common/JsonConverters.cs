@@ -40,7 +40,7 @@ internal abstract class PSObjectBaseConverter : JsonConverter
         if (reader.TokenType != JsonToken.StartObject || !reader.Read())
             throw new PipelineSerializationException(Messages.ReadJsonFailedExpectedToken, Enum.GetName(typeof(JsonToken), reader.TokenType), reader.Path);
 
-        string name = null;
+        string? name = null;
         var lineNumber = 0;
         var linePosition = 0;
 
@@ -99,7 +99,7 @@ internal abstract class PSObjectBaseConverter : JsonConverter
         }
     }
 
-    protected static PSRuleTargetInfo ReadInfo(JsonReader reader)
+    protected static PSRuleTargetInfo? ReadInfo(JsonReader reader)
     {
         if (!reader.Read() || reader.TokenType == JsonToken.None || reader.TokenType != JsonToken.StartObject)
             return null;
@@ -159,7 +159,7 @@ internal sealed class PSObjectJsonConverter : PSObjectBaseConverter
         return objectType == typeof(PSObject);
     }
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         if (value is not PSObject obj)
             throw new ArgumentException(message: PSRuleResources.SerializeNullPSObject, paramName: nameof(value));
@@ -180,7 +180,7 @@ internal sealed class PSObjectJsonConverter : PSObjectBaseConverter
         writer.WriteEndObject();
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         // Create target object based on JObject
         var result = existingValue as PSObject ?? new PSObject();
@@ -234,12 +234,12 @@ internal sealed class PSObjectArrayJsonConverter : PSObjectBaseConverter
 
     public override bool CanWrite => false;
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         throw new NotImplementedException();
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         SkipComments(reader);
         if (reader.TokenType == JsonToken.Comment && !reader.Read())
@@ -287,12 +287,12 @@ internal sealed class ErrorCategoryJsonConverter : JsonConverter
 
     public override bool CanRead => false;
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         writer.WriteValue(Enum.GetName(typeof(ErrorCategory), value));
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         throw new NotImplementedException();
     }
@@ -312,12 +312,12 @@ internal sealed class BaselineJsonConverter : JsonConverter
 
     public override bool CanRead => false;
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         BaselineJsonSerializationMapper.MapBaseline(writer, serializer, value as Baseline);
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         throw new NotImplementedException();
     }
@@ -361,14 +361,14 @@ internal sealed class FieldMapJsonConverter : JsonConverter
         return objectType == typeof(FieldMap);
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         var fieldMap = existingValue as FieldMap ?? new FieldMap();
         ReadFieldMap(fieldMap, reader);
         return fieldMap;
     }
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         if (value is not FieldMap map) return;
 
@@ -443,7 +443,7 @@ internal sealed class StringArrayJsonConverter : JsonConverter
         return typeof(string[]).IsAssignableFrom(objectType);
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         if (reader.TryConsume(JsonToken.StartArray))
         {
@@ -463,7 +463,7 @@ internal sealed class StringArrayJsonConverter : JsonConverter
         return null;
     }
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         throw new NotImplementedException();
     }
@@ -500,14 +500,14 @@ internal sealed class EnumMapJsonConverter<T> : JsonConverter where T : struct, 
         return typeof(EnumMap<T>).IsAssignableFrom(objectType);
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         var map = existingValue as EnumMap<T> ?? new EnumMap<T>();
         ReadMap(map, reader);
         return map;
     }
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         throw new NotImplementedException();
     }
@@ -540,14 +540,14 @@ internal sealed class CaseInsensitiveDictionaryConverter<TValue> : JsonConverter
         return objectType == typeof(Dictionary<string, TValue>) || objectType == typeof(IDictionary<string, TValue>);
     }
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         existingValue ??= new Dictionary<string, TValue>(StringComparer.OrdinalIgnoreCase);
         serializer.Deserialize<Dictionary<string, TValue>>(reader);
         return existingValue;
     }
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         serializer.Serialize(writer, value);
     }

@@ -13,14 +13,14 @@ internal sealed class TargetIssueCollection : ITargetIssueCollection
     internal TargetIssueCollection() { }
 
     /// <inheritdoc/>
-    public bool Any(string type = null)
+    public bool Any(string? type = null)
     {
         return Get(type).Length > 0;
     }
 
     /// <inheritdoc/>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
-    public TargetIssueInfo[] Get(string type = null)
+    public TargetIssueInfo[] Get(string? type = null)
     {
         if (_Items == null)
             return Array.Empty<TargetIssueInfo>();

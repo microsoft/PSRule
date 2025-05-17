@@ -25,12 +25,12 @@ internal sealed class SelectorVisitor
         switch (spec)
         {
             case ISelectorV1Spec v1:
-                _Fn = new LanguageExpressionBuilder()
+                _Fn = new LanguageExpressionBuilder(Id)
                     .Build(v1.If);
                 break;
 
             case ISelectorV2Spec v2:
-                _Fn = new LanguageExpressionBuilder()
+                _Fn = new LanguageExpressionBuilder(Id)
                     .WithType(v2.Type)
                     .Build(v2.If);
                 break;

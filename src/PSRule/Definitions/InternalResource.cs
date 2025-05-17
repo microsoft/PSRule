@@ -38,7 +38,7 @@ public abstract class InternalResource<TSpec> : Resource<TSpec>, IResource, IAnn
     ResourceId? IResource.Ref => null;
 
     // Not supported with base resources.
-    ResourceId[] IResource.Alias => null;
+    ResourceId[]? IResource.Alias => null;
 
     IResourceTags IResource.Tags => Metadata.Tags;
 

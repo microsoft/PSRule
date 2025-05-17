@@ -13,7 +13,7 @@ internal sealed class WriteRecommendationCommand : RuleKeyword
 {
     [Parameter(Mandatory = false, Position = 0)]
     [Alias(aliasNames: "Message")]
-    public string Text { get; set; }
+    public string? Text { get; set; }
 
     protected override void ProcessRecord()
     {

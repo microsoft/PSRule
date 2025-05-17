@@ -564,7 +564,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     /// <param name="path">A directory path where a options file may be stored.</param>
     /// <param name="name">A file name of an options file.</param>
     /// <returns>Returns a file path if the file exists or null if the file does not exist.</returns>
-    private static string UseFilePath(string path, string name)
+    private static string? UseFilePath(string path, string name)
     {
         var filePath = Path.Combine(path, name);
         return File.Exists(filePath) ? filePath : null;

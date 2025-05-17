@@ -19,7 +19,7 @@ internal sealed class RuleV1 : InternalResource<RuleV1Spec>, IResource, IRuleV1
         : base(ResourceKind.Rule, apiVersion, source, metadata, info, extent, spec)
     {
         Ref = ResourceHelper.GetIdNullable(source.Module, metadata.Ref, ResourceIdKind.Ref);
-        Alias = ResourceHelper.GetRuleId(source.Module, metadata.Alias, ResourceIdKind.Alias);
+        Alias = ResourceHelper.GetResourceId(source.Module, metadata.Alias, ResourceIdKind.Alias);
         Level = ResourceHelper.GetLevel(spec.Level);
     }
 

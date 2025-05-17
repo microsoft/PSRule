@@ -31,4 +31,12 @@ internal interface IExpressionContext : IBindingContext, IConfigurableContext
     void PushScope(RunspaceScope scope);
 
     void PopScope(RunspaceScope scope);
+
+    /// <summary>
+    /// Evaluate a target object to determine if it met the conditions of the selector.
+    /// </summary>
+    /// <param name="id">The resource identifier of the selector to run.</param>
+    /// <param name="o">The target object to evaluate with the selector.</param>
+    /// <returns>Returns <c>true</c> if the target object met the conditions of the selector.</returns>
+    bool TrySelector(ResourceId id, ITargetObject o);
 }

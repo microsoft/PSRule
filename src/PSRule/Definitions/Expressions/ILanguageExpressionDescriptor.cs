@@ -9,5 +9,5 @@ internal interface ILanguageExpressionDescriptor
 
     LanguageExpressionType Type { get; }
 
-    LanguageExpression CreateInstance(ISourceFile source, LanguageExpression.PropertyBag properties);
+    LanguageExpression? CreateInstance(ISourceFile source, LanguageExpression.PropertyBag properties);
 }

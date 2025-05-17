@@ -30,11 +30,11 @@
       },
       "System.Drawing.Common": {
         "type": "Direct",
-        "requested": "[9.0.4, )",
-        "resolved": "9.0.4",
-        "contentHash": "SbtusMUT1bCxZ14904ZPo2GZyelze0rwUni9wXrp8KX9Zlsda8idqpxra1RBvOA85WM0wW+fCI4GLrlCTYiE6A==",
+        "requested": "[9.0.5, )",
+        "resolved": "9.0.5",
+        "contentHash": "T/6nqx0B7/uTe5JjBwrKZilLuwfhHLOVmNKlT/wr4A9Dna94mgTdz3lTfrdJ72QRx7IHCv/LzoJPmFSfK/N6WA==",
         "dependencies": {
-          "Microsoft.Win32.SystemEvents": "9.0.4"
+          "Microsoft.Win32.SystemEvents": "9.0.5"
         }
       },
       "Microsoft.Build.Tasks.Git": {
@@ -54,8 +54,8 @@
       },
       "Microsoft.Win32.SystemEvents": {
         "type": "Transitive",
-        "resolved": "9.0.4",
-        "contentHash": "kHgtAkXhNEP8oGuAVe3Q5admxsdMlSdWE2rXcA9FfeGDZJQawPccmZgnOswgW3ugUPSJt7VH+TMQPz65mnhGSQ=="
+        "resolved": "9.0.5",
+        "contentHash": "D4OYNpmvAsF9MkaY2W8Jue2XuNHDhygvwzo019hs+lP85KaVnOlXmqsjDKr1dHb1DPxDnOKpe6mAgJN7S6ttwg=="
       },
       "System.Memory": {
         "type": "Transitive",

@@ -13,14 +13,14 @@ namespace PSRule.Pipeline.Output;
 /// </summary>
 internal sealed class HostPipelineWriter : PipelineWriter
 {
-    private readonly IHostContext _HostContext;
+    private readonly IHostContext? _HostContext;
 
-    internal Action<object, bool> OnWriteObject;
+    internal Action<object, bool>? OnWriteObject;
 
     private bool _HadErrors;
     private bool _HadFailures;
 
-    internal HostPipelineWriter(IHostContext hostContext, PSRuleOption option, ShouldProcess shouldProcess)
+    internal HostPipelineWriter(IHostContext? hostContext, PSRuleOption option, ShouldProcess shouldProcess)
         : base(null, option, shouldProcess)
     {
         _HostContext = hostContext;
@@ -30,7 +30,7 @@ internal sealed class HostPipelineWriter : PipelineWriter
         }
     }
 
-    public override bool HadErrors => _HadErrors || _HostContext.HadErrors;
+    public override bool HadErrors => _HadErrors || (_HostContext?.HadErrors ?? false);
 
     public override bool HadFailures => _HadFailures;
 

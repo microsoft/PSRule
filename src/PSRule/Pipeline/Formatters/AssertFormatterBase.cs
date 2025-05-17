@@ -371,7 +371,7 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
         WriteLineFormat(FormatterStrings.FooterRunInfo, PipelineContext.CurrentThread.RunInstance, elapsed.ToString("c", Thread.CurrentThread.CurrentCulture));
     }
 
-    protected void WriteStatus(string status, string statusIndent, ConsoleColor? statusForeground, ConsoleColor? statusBackground, ConsoleColor? messageForeground, ConsoleColor? messageBackground, string message, string suffix = null)
+    protected void WriteStatus(string status, string statusIndent, ConsoleColor? statusForeground, ConsoleColor? statusBackground, ConsoleColor? messageForeground, ConsoleColor? messageBackground, string message, string? suffix = null)
     {
         var output = message;
         if (statusForeground != null || statusBackground != null)
@@ -405,13 +405,13 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
         Writer.WriteHost(new HostInformationMessage { Message = string.Concat(prefix, output), ForegroundColor = foregroundColor });
     }
 
-    protected void WriteLine(string message, string prefix = null, ConsoleColor? foregroundColor = null)
+    protected void WriteLine(string message, string? prefix = null, ConsoleColor? foregroundColor = null)
     {
         var output = string.IsNullOrEmpty(prefix) ? message : string.Concat(prefix, message);
         Writer.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = foregroundColor });
     }
 
-    protected void WriteIndentedLine(string message, string indent, string prefix = null, ConsoleColor? foregroundColor = null)
+    protected void WriteIndentedLine(string message, string indent, string? prefix = null, ConsoleColor? foregroundColor = null)
     {
         if (string.IsNullOrEmpty(message))
             return;
@@ -420,7 +420,7 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
         Writer.WriteHost(new HostInformationMessage { Message = output, ForegroundColor = foregroundColor });
     }
 
-    protected void WriteIndentedLines(string message, string indent, string prefix = null, ConsoleColor? foregroundColor = null)
+    protected void WriteIndentedLines(string message, string indent, string? prefix = null, ConsoleColor? foregroundColor = null)
     {
         if (string.IsNullOrEmpty(message))
             return;
@@ -435,7 +435,7 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
         WriteLine(string.Format(Thread.CurrentThread.CurrentCulture, message, args));
     }
 
-    protected void WriteLines(string message, string prefix = null, ConsoleColor? foregroundColor = null)
+    protected void WriteLines(string message, string? prefix = null, ConsoleColor? foregroundColor = null)
     {
         if (string.IsNullOrEmpty(message))
             return;

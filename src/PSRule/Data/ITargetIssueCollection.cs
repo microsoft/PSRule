@@ -13,12 +13,12 @@ public interface ITargetIssueCollection
     /// </summary>
     /// <param name="type">The type of the issue.</param>
     /// <returns>Returns issues that match the specified <paramref name="type"/>.</returns>
-    TargetIssueInfo[] Get(string type = null);
+    TargetIssueInfo[] Get(string? type = null);
 
     /// <summary>
     /// Check if the collection contains any of the specified issue type.
     /// </summary>
     /// <param name="type">The type of the issue.</param>
     /// <returns>Returns <c>true</c> if any the collection contains any issues matching the specified <paramref name="type"/>.</returns>
-    bool Any(string type = null);
+    bool Any(string? type = null);
 }

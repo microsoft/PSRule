@@ -30,14 +30,14 @@ internal sealed class SuppressionGroupVisitor
         {
             case ISuppressionGroupV1Spec v1:
                 Rule = v1.Rule;
-                _Fn = new LanguageExpressionBuilder()
+                _Fn = new LanguageExpressionBuilder(Id)
                     .WithRule(Rule)
                     .Build(v1.If);
                 break;
 
             case ISuppressionGroupV2Spec v2:
                 Rule = v2.Rule;
-                _Fn = new LanguageExpressionBuilder()
+                _Fn = new LanguageExpressionBuilder(Id)
                     .WithRule(Rule)
                     .WithType(v2.Type)
                     .Build(v2.If);

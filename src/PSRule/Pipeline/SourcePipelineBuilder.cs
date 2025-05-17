@@ -40,7 +40,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     private readonly RestrictScriptSource _RestrictScriptSource;
     private readonly string _WorkspacePath;
 
-    internal SourcePipelineBuilder(IHostContext hostContext, PSRuleOption option, string? cachePath = null)
+    internal SourcePipelineBuilder(IHostContext? hostContext, PSRuleOption option, string? cachePath = null)
     {
         _Source = new Dictionary<string, Source>(StringComparer.OrdinalIgnoreCase);
         _HostContext = hostContext;
@@ -52,7 +52,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
         _WorkspacePath = Environment.GetRootedBasePath(null);
 
         // Include paths from options
-        if (!_UseDefaultPath)
+        if (!_UseDefaultPath && option?.Include != null)
         {
             Directory(option.Include.Path);
         }
@@ -100,7 +100,7 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     #endregion Logging
 
     /// <inheritdoc/>
-    public void Directory(string[] path, bool excludeDefaultRulePath = false)
+    public void Directory(string[]? path, bool excludeDefaultRulePath = false)
     {
         if (path == null || path.Length == 0)
             return;
@@ -110,9 +110,9 @@ public sealed class SourcePipelineBuilder : ISourcePipelineBuilder, ISourceComma
     }
 
     /// <inheritdoc/>
-    public void Directory(string path, bool excludeDefaultRulePath = false)
+    public void Directory(string? path, bool excludeDefaultRulePath = false)
     {
-        if (string.IsNullOrEmpty(path))
+        if (string.IsNullOrEmpty(path) || path == null)
             return;
 
         VerboseScanSource(path);

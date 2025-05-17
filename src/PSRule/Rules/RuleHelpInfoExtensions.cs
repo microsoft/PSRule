@@ -14,7 +14,7 @@ public static class RuleHelpInfoExtensions
     /// Get the URI for the online version of the documentation.
     /// </summary>
     /// <returns>Returns the URI when a valid link is set, otherwise null is returned.</returns>
-    public static Uri GetOnlineHelpUri(this IRuleHelpInfoV2 info)
+    public static Uri? GetOnlineHelpUri(this IRuleHelpInfoV2 info)
     {
         var link = GetOnlineHelpUrl(info);
         return link == null ||
@@ -26,7 +26,7 @@ public static class RuleHelpInfoExtensions
     /// Get the URL for the online version of the documentation.
     /// </summary>
     /// <returns>Returns the URL when set, otherwise null is returned.</returns>
-    public static string GetOnlineHelpUrl(this IRuleHelpInfoV2 info)
+    public static string? GetOnlineHelpUrl(this IRuleHelpInfoV2 info)
     {
         return info == null ||
             info.Annotations == null ||

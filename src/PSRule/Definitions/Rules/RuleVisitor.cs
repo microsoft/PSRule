@@ -25,7 +25,7 @@ internal sealed class RuleVisitor : ICondition
         Id = id;
         Source = source;
         InstanceId = Guid.NewGuid();
-        var builder = new LanguageExpressionBuilder();
+        var builder = new LanguageExpressionBuilder(id);
         _Condition = builder
             .WithSelector(spec.With)
             .WithType(spec.Type)

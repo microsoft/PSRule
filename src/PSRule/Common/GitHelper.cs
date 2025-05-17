@@ -113,7 +113,7 @@ internal static class GitHelper
         return TryReadCommit(out value);
     }
 
-    public static bool TryRepository(out string value, string path = null)
+    public static bool TryRepository(out string value, string? path = null)
     {
         // Try PSRule
         if (Environment.TryString(ENV_PSRULE_REPO_URL, out value))
@@ -183,14 +183,14 @@ internal static class GitHelper
         return value != null;
     }
 
-    private static bool TryGitFile(string file, out string filePath, string path = null)
+    private static bool TryGitFile(string file, out string filePath, string? path = null)
     {
         var gitPath = GetGitDir(path);
         filePath = Path.Combine(gitPath, file);
         return File.Exists(filePath);
     }
 
-    private static string GetGitDir(string path = null)
+    private static string GetGitDir(string? path = null)
     {
         path = Environment.GetRootedPath(GIT_DEFAULT_PATH, basePath: Environment.GetRootedPath(path));
 

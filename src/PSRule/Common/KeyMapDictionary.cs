@@ -173,7 +173,7 @@ public abstract class KeyMapDictionary<TValue> : DynamicObject, IDictionary<stri
     /// Keys that appear in both will replaced by environment variable values.
     /// </summary>
     /// <exception cref="ArgumentNullException">Is raised if the environment helper is null.</exception>
-    internal void Load(string prefix, Func<string, string> format = null)
+    internal void Load(string prefix, Func<string, string>? format = null)
     {
         foreach (var variable in Environment.GetByPrefix(prefix))
         {

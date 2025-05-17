@@ -18,7 +18,7 @@ public sealed class RuleHelpInfo : IRuleHelpInfoV2
     private readonly InfoString _Description;
     private readonly InfoString _Recommendation;
 
-    internal RuleHelpInfo(string name, string displayName, string moduleName, InfoString synopsis = null, InfoString description = null, InfoString recommendation = null)
+    internal RuleHelpInfo(string name, string displayName, string moduleName, InfoString? synopsis = null, InfoString? description = null, InfoString? recommendation = null)
     {
         Name = name;
         DisplayName = displayName;
@@ -100,7 +100,7 @@ public sealed class RuleHelpInfo : IRuleHelpInfoV2
     /// <summary>
     /// Get a view link string for display in rule help.
     /// </summary>
-    public string GetLinkString()
+    public string? GetLinkString()
     {
         if (Links == null)
             return null;

@@ -12,7 +12,7 @@ internal sealed class LanguageExpressionDescriptor(string name, LanguageExpressi
 
     public LanguageExpressionFn Fn { get; } = fn;
 
-    public LanguageExpression CreateInstance(ISourceFile source, LanguageExpression.PropertyBag properties)
+    public LanguageExpression? CreateInstance(ISourceFile source, LanguageExpression.PropertyBag properties)
     {
         if (Type == LanguageExpressionType.Operator)
             return new LanguageOperator(this, properties);

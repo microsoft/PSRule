@@ -31,7 +31,7 @@ internal sealed class TokenStream : IEnumerable<MarkdownToken>
 
     public bool EOF => _Position >= _Token.Count;
 
-    public MarkdownToken Current => (_Token.Count <= _Position) ? null : _Token[_Position];
+    public MarkdownToken? Current => (_Token.Count <= _Position) ? null : _Token[_Position];
 
     public int Position => _Position;
 
@@ -51,7 +51,7 @@ internal sealed class TokenStream : IEnumerable<MarkdownToken>
         return p < 0 || p >= _Token.Count ? MarkdownTokenType.None : _Token[p].Type;
     }
 
-    public MarkdownToken Peak(int offset = 1)
+    public MarkdownToken? Peak(int offset = 1)
     {
         var p = _Position + offset;
         return p < 0 || p >= _Token.Count ? null : _Token[p];
@@ -98,7 +98,7 @@ internal sealed class TokenStream : IEnumerable<MarkdownToken>
         _Position = _Token.Count - 1;
 
         // CommonMark specifies that link labels are case-insensitive, and
-        // first reference definition takes prescidence when multiple definitions use the same link label
+        // first reference definition takes precedence when multiple definitions use the same link label
         if (token.Type == MarkdownTokenType.LinkReferenceDefinition && !_LinkTargetIndex.ContainsKey(token.Meta))
         {
             _LinkTargetIndex[token.Meta] = token;
@@ -111,7 +111,7 @@ internal sealed class TokenStream : IEnumerable<MarkdownToken>
         return !EOF;
     }
 
-    public MarkdownToken Pop()
+    public MarkdownToken? Pop()
     {
         if (Count == 0)
             return null;
@@ -127,7 +127,7 @@ internal sealed class TokenStream : IEnumerable<MarkdownToken>
         _Position = position;
     }
 
-    public MarkdownToken ResolveLinkTarget(string name)
+    public MarkdownToken? ResolveLinkTarget(string name)
     {
         return !_LinkTargetIndex.ContainsKey(name) ? null : _LinkTargetIndex[name];
     }

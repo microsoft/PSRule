@@ -13,7 +13,7 @@ namespace PSRule.Commands;
 internal sealed class AssertAllOfCommand : RuleKeyword
 {
     [Parameter(Mandatory = true, Position = 0)]
-    public ScriptBlock Body { get; set; }
+    public ScriptBlock? Body { get; set; }
 
     protected override void ProcessRecord()
     {

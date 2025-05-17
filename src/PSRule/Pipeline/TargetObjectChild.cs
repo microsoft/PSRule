@@ -22,5 +22,15 @@ internal sealed class TargetObjectChild(object o, string? path = null) : ITarget
 
     public object Value { get; } = o;
 
+    public TAnnotation? GetAnnotation<TAnnotation>() where TAnnotation : class
+    {
+        return null;
+    }
+
     public Hashtable? GetData() => null;
+
+    public void SetAnnotation<TAnnotation>(TAnnotation value) where TAnnotation : class
+    {
+        // No-op
+    }
 }

@@ -49,19 +49,20 @@ internal static class ResourceHelper
     /// <param name="name">An array of names. Qualified names (RuleIds) supplied are left intact.</param>
     /// <param name="kind">The <seealso cref="ResourceIdKind"/> of the <seealso cref="ResourceId"/>.</param>
     /// <returns>An array of RuleIds.</returns>
-    internal static ResourceId[]? GetRuleId(string defaultScope, string[] name, ResourceIdKind kind)
+    internal static ResourceId[]? GetResourceId(string defaultScope, string[] name, ResourceIdKind kind)
     {
         if (name == null || name.Length == 0)
             return null;
 
         var result = new ResourceId[name.Length];
         for (var i = 0; i < name.Length; i++)
-            result[i] = GetRuleId(defaultScope, name[i], kind);
-
-        return (result.Length == 0) ? null : result;
+        {
+            result[i] = GetResourceId(defaultScope, name[i], kind);
+        }
+        return result;
     }
 
-    internal static ResourceId GetRuleId(string? defaultScope, string name, ResourceIdKind kind)
+    internal static ResourceId GetResourceId(string? defaultScope, string name, ResourceIdKind kind)
     {
         defaultScope ??= STANDALONE_SCOPE_NAME;
         return name.IndexOf(SCOPE_SEPARATOR) > 0 ? ResourceId.Parse(name, kind) : new ResourceId(defaultScope, name, kind);
