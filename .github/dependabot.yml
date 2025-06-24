@@ -22,7 +22,6 @@ updates:
           - Microsoft.PowerShell.SDK
     ignore:
       - dependency-name: gitversion.tool
-
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: github-actions
     directory: '/'
@@ -30,7 +29,6 @@ updates:
       interval: daily
     labels:
       - dependencies
-
   # Maintain dependencies for Python
   - package-ecosystem: pip
     directory: '/'
@@ -38,7 +36,6 @@ updates:
       interval: daily
     labels:
       - dependencies
-
   # Maintain dependencies for npm.
   - package-ecosystem: npm
     directory: '/'
@@ -58,7 +55,6 @@ updates:
           - '@types/*'
         exclude-patterns:
           - '@types/vscode'
-
   # Maintain dependencies for Dev Containers
   - package-ecosystem: devcontainers
     directory: '/'
@@ -66,7 +62,6 @@ updates:
       interval: weekly
     labels:
       - dependencies
-
   # Maintain dependencies for Docker
   - package-ecosystem: docker
     directory: '/'
@@ -74,3 +69,13 @@ updates:
       interval: weekly
     labels:
       - dependencies
+  - package-ecosystem: dotnet-sdk
+    directory: /
+    schedule:
+      interval: weekly
+      day: wednesday
+    ignore:
+      - dependency-name: '*'
+        update-types:
+          - version-update:semver-major
+          - version-update:semver-minor
