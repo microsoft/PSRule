@@ -15,8 +15,10 @@ tests/
 bin/
 obj/
 out/
+server/Modules/
 !out/dist/
 !docs/changelog.md
+!server/Modules/PSRule/
 
 .eslintignore
 .gitignore
