@@ -5,6 +5,8 @@ using System.Diagnostics;
 
 namespace PSRule.Runtime;
 
+#pragma warning disable CS8618 // Keyword required is not supported in .NET Standard 2.0
+
 /// <summary>
 /// A token for expressing a path through a tree of fields.
 /// </summary>
@@ -31,3 +33,5 @@ internal sealed class NameToken
     /// </summary>
     public NameTokenType Type = NameTokenType.Field;
 }
+
+#pragma warning restore CS8618
