@@ -14,8 +14,8 @@ namespace PSRule.Commands;
 [Cmdlet(VerbsLifecycle.Assert, RuleLanguageNouns.Within)]
 internal sealed class AssertWithinCommand : RuleKeyword
 {
-    private StringComparer _Comparer;
-    private WildcardPattern[] _LikePattern;
+    private StringComparer? _Comparer;
+    private WildcardPattern[]? _LikePattern;
 
     public AssertWithinCommand()
     {

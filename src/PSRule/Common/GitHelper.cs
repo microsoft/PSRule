@@ -16,7 +16,7 @@ internal static class GitHelper
 {
     private const string GIT_HEAD = "HEAD";
     private const string GIT_REF_PREFIX = "ref: ";
-    private const string GIT_GITDIR_PREFIX = "gitdir: ";
+    private const string GIT_GIT_DIR_PREFIX = "gitdir: ";
     private const string GIT_DEFAULT_PATH = ".git";
     private const string GIT_REF_HEAD = "refs/heads/";
 
@@ -45,7 +45,7 @@ internal static class GitHelper
     /// <summary>
     /// The get HEAD ref.
     /// </summary>
-    public static bool TryHeadRef(out string value)
+    public static bool TryHeadRef(out string? value)
     {
         // Try PSRule
         if (Environment.TryString(ENV_PSRULE_REPO_REF, out value) ||
@@ -68,7 +68,7 @@ internal static class GitHelper
     /// <summary>
     /// Get the HEAD branch name.
     /// </summary>
-    public static bool TryHeadBranch(out string value)
+    public static bool TryHeadBranch(out string? value)
     {
         value = TryHeadRef(out value) && value.StartsWith(GIT_REF_HEAD) ? value.Substring(11) : value;
         return !string.IsNullOrEmpty(value);
@@ -77,7 +77,7 @@ internal static class GitHelper
     /// <summary>
     /// Get the target ref.
     /// </summary>
-    public static bool TryBaseRef(out string value)
+    public static bool TryBaseRef(out string? value)
     {
         // Try PSRule
         if (Environment.TryString(ENV_PSRULE_REPO_BASEREF, out value))
@@ -95,7 +95,7 @@ internal static class GitHelper
         return TryReadHead(out value);
     }
 
-    public static bool TryRevision(out string value)
+    public static bool TryRevision(out string? value)
     {
         // Try PSRule
         if (Environment.TryString(ENV_PSRULE_REPO_REVISION, out value))
@@ -113,7 +113,7 @@ internal static class GitHelper
         return TryReadCommit(out value);
     }
 
-    public static bool TryRepository(out string value, string? path = null)
+    public static bool TryRepository(out string? value, string? path = null)
     {
         // Try PSRule
         if (Environment.TryString(ENV_PSRULE_REPO_URL, out value))
@@ -154,7 +154,7 @@ internal static class GitHelper
 
     #region Helper methods
 
-    internal static bool TryReadHead(out string value, string? path = null)
+    internal static bool TryReadHead(out string? value, string? path = null)
     {
         value = null;
         return TryGitFile(GIT_HEAD, out var filePath, path) && TryReadRef(filePath, out value, out _);
@@ -171,7 +171,7 @@ internal static class GitHelper
         return $"diff --diff-filter={filter} --ignore-submodules=all --name-only --no-renames {target}";
     }
 
-    private static bool TryReadCommit(out string value)
+    private static bool TryReadCommit(out string? value)
     {
         value = null;
         if (!TryGitFile(GIT_HEAD, out var filePath))
@@ -202,24 +202,24 @@ internal static class GitHelper
         return path;
     }
 
-    private static bool TryReadGitDirEntry(string filePath, out string value)
+    private static bool TryReadGitDirEntry(string filePath, out string? value)
     {
         value = null;
-        if (!TryReadFirstLineFromGitFile(filePath, out var line))
+        if (!TryReadFirstLineFromGitFile(filePath, out var line) || line == null)
             return false;
 
-        if (!line.StartsWith(GIT_GITDIR_PREFIX, StringComparison.OrdinalIgnoreCase))
+        if (!line.StartsWith(GIT_GIT_DIR_PREFIX, StringComparison.OrdinalIgnoreCase))
             return false;
 
         value = Environment.GetRootedBasePath(line.Substring(8), basePath: Path.GetDirectoryName(filePath));
         return true;
     }
 
-    private static bool TryReadRef(string path, out string value, out bool isRef)
+    private static bool TryReadRef(string path, out string? value, out bool isRef)
     {
         value = null;
         isRef = false;
-        if (!TryReadFirstLineFromGitFile(path, out var line))
+        if (!TryReadFirstLineFromGitFile(path, out var line) || line == null)
             return false;
 
         isRef = line.StartsWith(GIT_REF_PREFIX, StringComparison.OrdinalIgnoreCase);
@@ -230,7 +230,7 @@ internal static class GitHelper
     /// <summary>
     /// Read the first line of a git file.
     /// </summary>
-    private static bool TryReadFirstLineFromGitFile(string path, out string value)
+    private static bool TryReadFirstLineFromGitFile(string path, out string? value)
     {
         value = null;
         if (!File.Exists(path))
@@ -247,7 +247,7 @@ internal static class GitHelper
     /// <summary>
     /// Try to get the origin URL from the git config.
     /// </summary>
-    private static bool TryGetOriginUrl(string path, out string value)
+    private static bool TryGetOriginUrl(string path, out string? value)
     {
         value = null;
 
@@ -257,11 +257,11 @@ internal static class GitHelper
             var args = GetWorktreeConfigArgs();
             var tool = ExternalTool.Get(null, bin);
 
-            string[] lines = null;
-            if (!tool.WaitForExit(args, out var exitCode) || exitCode != 0)
+            string[]? lines = null;
+            if (tool == null || !tool.WaitForExit(args, out var exitCode) || exitCode != 0)
                 return false;
 
-            lines = tool.GetOutput().Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            lines = tool.GetOutput().Split([System.Environment.NewLine], StringSplitOptions.RemoveEmptyEntries);
             var origin = lines.Where(line => line.StartsWith("remote.origin.url=", StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.Split('=')?[1];
             value = origin;
         }

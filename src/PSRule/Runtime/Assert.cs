@@ -1373,7 +1373,7 @@ public sealed class Assert
     /// <remarks>
     /// Reason: The field '{0}' does not exist.
     /// </remarks>
-    private bool GuardField(PSObject inputObject, string field, bool caseSensitive, out object fieldValue, out AssertResult result)
+    private bool GuardField(PSObject inputObject, string field, bool caseSensitive, out object? fieldValue, out AssertResult? result)
     {
         result = null;
         if (ObjectHelper.GetPath(
@@ -1388,22 +1388,22 @@ public sealed class Assert
         return true;
     }
 
-    private bool GuardSemanticVersion(IOperand operand, object fieldValue, out SemanticVersion.Version value, out AssertResult result)
+    private bool GuardSemanticVersion(IOperand operand, object fieldValue, out SemanticVersion.Version? value, out AssertResult? result)
     {
         result = null;
         value = null;
-        if (ExpressionHelpers.TryString(fieldValue, out var sversion) && SemanticVersion.TryParseVersion(sversion, out value))
+        if (ExpressionHelpers.TryString(fieldValue, out var s) && SemanticVersion.TryParseVersion(s, out value))
             return false;
 
         result = Fail(operand, ReasonStrings.Version, fieldValue);
         return true;
     }
 
-    private bool GuardDateVersion(IOperand operand, object fieldValue, out DateVersion.Version value, out AssertResult result)
+    private bool GuardDateVersion(IOperand operand, object fieldValue, out DateVersion.Version? value, out AssertResult? result)
     {
         result = null;
         value = null;
-        if (ExpressionHelpers.TryString(fieldValue, out var sversion) && DateVersion.TryParseVersion(sversion, out value))
+        if (ExpressionHelpers.TryString(fieldValue, out var s) && DateVersion.TryParseVersion(s, out value))
             return false;
 
         result = Fail(operand, ReasonStrings.Version, fieldValue);
@@ -1417,7 +1417,7 @@ public sealed class Assert
     /// <remarks>
     /// Reason: The field '{0}' is not enumerable.
     /// </remarks>
-    private bool GuardFieldEnumerable(object fieldValue, string field, out int count, out AssertResult result)
+    private bool GuardFieldEnumerable(object fieldValue, string field, out int count, out AssertResult? result)
     {
         result = null;
         if (ExpressionHelpers.TryEnumerableLength(fieldValue, out count))
@@ -1434,7 +1434,7 @@ public sealed class Assert
     /// <remarks>
     /// Reason: The field value '{0}' is not a string.
     /// </remarks>
-    private bool GuardString(IOperand operand, object fieldValue, out string value, out AssertResult result)
+    private bool GuardString(IOperand operand, object fieldValue, out string? value, out AssertResult? result)
     {
         result = null;
         if (ExpressionHelpers.TryString(fieldValue, out value))
@@ -1451,7 +1451,7 @@ public sealed class Assert
     /// <remarks>
     /// Reason: The field value '{0}' is not a string.
     /// </remarks>
-    private bool GuardStringOrArray(IOperand operand, object fieldValue, out string[] value, out AssertResult result)
+    private bool GuardStringOrArray(IOperand operand, object fieldValue, out string[]? value, out AssertResult? result)
     {
         result = null;
         if (ExpressionHelpers.TryStringOrArray(fieldValue, convert: false, value: out value))
@@ -1468,7 +1468,7 @@ public sealed class Assert
     /// <remarks>
     /// Reason: The field value '{0}' is null.
     /// </remarks>
-    private bool GuardNullFieldValue(string field, object fieldValue, out AssertResult result)
+    private bool GuardNullFieldValue(string field, object? fieldValue, out AssertResult? result)
     {
         result = null;
         if (fieldValue != null)
@@ -1478,7 +1478,7 @@ public sealed class Assert
         return true;
     }
 
-    private static bool TryReadJson(string uri, out string json)
+    private static bool TryReadJson(string uri, out string? json)
     {
         json = null;
         if (uri == null)
