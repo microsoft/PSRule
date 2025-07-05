@@ -20,3 +20,5 @@ BenchmarkDotNet.Artifacts/
 TestResults/
 *.diagsession
 **/.DS_Store
+sdk/go/tool/*.exe
+sdk/go/tool/bin/
