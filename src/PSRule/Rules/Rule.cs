@@ -10,6 +10,8 @@ using YamlDotNet.Serialization;
 
 namespace PSRule.Rules;
 
+#pragma warning disable CS8618 // Keyword required is not supported in .NET Standard 2.0
+
 /// <summary>
 /// Define a single rule.
 /// </summary>
@@ -103,3 +105,5 @@ public sealed class Rule : IDependencyTarget, ITargetInfo, IResource, IRuleV1
     [JsonIgnore, YamlIgnore]
     public ResourceId[] Alias { get; set; }
 }
+
+#pragma warning restore CS8618
