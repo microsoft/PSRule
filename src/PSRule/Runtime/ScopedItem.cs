@@ -10,7 +10,7 @@ namespace PSRule.Runtime;
 /// </summary>
 public abstract class ScopedItem
 {
-    private readonly LegacyRunspaceContext _Context;
+    private readonly LegacyRunspaceContext? _Context;
 
     internal ScopedItem()
     {
@@ -26,13 +26,13 @@ public abstract class ScopedItem
 
     internal void RequireScope(RunspaceScope scope)
     {
-        if (GetContext().IsScope(scope))
+        if (GetContext()?.IsScope(scope) == true)
             return;
 
         throw new RuntimeScopeException();
     }
 
-    internal LegacyRunspaceContext GetContext()
+    internal LegacyRunspaceContext? GetContext()
     {
         return _Context ?? LegacyRunspaceContext.CurrentThread;
     }
