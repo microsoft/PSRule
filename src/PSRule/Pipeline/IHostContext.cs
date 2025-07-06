@@ -59,6 +59,11 @@ public interface IHostContext : ILogger
     void WriteObject(object o, bool enumerateCollection);
 
     /// <summary>
+    /// Write a result to the host.
+    /// </summary>
+    void WriteResult(InvokeResult result);
+
+    /// <summary>
     /// Write a message to the host.
     /// </summary>
     void WriteHost(string message, ConsoleColor? backgroundColor = null, ConsoleColor? foregroundColor = null, bool? noNewLine = null);

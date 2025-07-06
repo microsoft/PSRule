@@ -7,8 +7,6 @@ using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
 /// <summary>
 /// A base class for host context instances, by default this is a no-op implementation.
 /// </summary>
@@ -74,6 +72,12 @@ public abstract class HostContext : IHostContext
     }
 
     /// <inheritdoc/>
+    public virtual void WriteResult(InvokeResult result)
+    {
+        // No-op, override to write results to the host.
+    }
+
+    /// <inheritdoc/>
     public virtual void WriteHost(string message, ConsoleColor? backgroundColor = null, ConsoleColor? foregroundColor = null, bool? noNewLine = null)
     {
 
@@ -123,5 +127,3 @@ public abstract class HostContext : IHostContext
         ExitCode = exitCode;
     }
 }
-
-#nullable restore

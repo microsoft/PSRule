@@ -78,9 +78,11 @@ public sealed class RunCommand
         }
 
         // Build command.
+        var results = new List<InvokeResult>();
         var sessionContext = new SessionContext(clientContext.Host)
         {
             WorkingPath = workingPath,
+            OnWriteResult = results.Add
         };
         var builder = CommandLineBuilder.Assert(operationOptions.Module ?? [], clientContext.Option, sessionContext, file, clientContext.ResolvedModuleVersions);
         builder.Name(operationOptions.Name);
@@ -106,6 +108,6 @@ public sealed class RunCommand
         }
 
         clientContext.LogVerbose("[PSRule][R] -- Completed run with exit code {0}.", exitCode);
-        return await Task.FromResult(new RunCommandOutput(exitCode));
+        return await Task.FromResult(new RunCommandOutput(exitCode, results));
     }
 }

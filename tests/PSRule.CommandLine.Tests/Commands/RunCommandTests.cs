@@ -16,7 +16,7 @@ public sealed class RunCommandTests : BaseTests
         (
             option: GetSourcePath("../../../../../ps-rule-ci.yaml"),
             console: console,
-            workingPath: GetSourcePath("../../../../../")
+            workingPath: GetRepositoryRoot()
         );
 
         var output = await RunCommand.RunAsync(OperationOptions(), context);
@@ -31,7 +31,7 @@ public sealed class RunCommandTests : BaseTests
         (
             option: GetSourcePath("../../../../../ps-rule.yaml"),
             console: console,
-            workingPath: GetSourcePath("../../../../../")
+            workingPath: GetRepositoryRoot()
         );
 
         var output = await RunCommand.RunAsync(OperationOptions(), context);
@@ -46,7 +46,7 @@ public sealed class RunCommandTests : BaseTests
         (
             option: GetSourcePath("../../../../../ps-rule-ci.yaml"),
             console: console,
-            workingPath: GetSourcePath("../../../../../")
+            workingPath: GetRepositoryRoot()
         );
 
         var operation = OperationOptions();
@@ -64,7 +64,7 @@ public sealed class RunCommandTests : BaseTests
         (
             option: GetSourcePath("../../../../../ps-rule-ci.yaml"),
             console: console,
-            workingPath: GetSourcePath("../../../../../")
+            workingPath: GetRepositoryRoot()
         );
 
         var operation = OperationOptions();
@@ -79,6 +79,11 @@ public sealed class RunCommandTests : BaseTests
     private static RunOptions OperationOptions()
     {
         return new RunOptions();
+    }
+
+    private static string GetRepositoryRoot()
+    {
+        return GetSourcePath("../../../../../");
     }
 
     #endregion Helper methods
