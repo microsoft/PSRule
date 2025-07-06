@@ -81,6 +81,12 @@ public sealed class PSHostContext : IHostContext
     }
 
     /// <inheritdoc/>
+    public void WriteResult(InvokeResult result)
+    {
+        // CmdletContext.WriteObject(result, false);
+    }
+
+    /// <inheritdoc/>
     public void WriteHost(string message, ConsoleColor? backgroundColor = null, ConsoleColor? foregroundColor = null, bool? noNewLine = null)
     {
         var record = new InformationRecord(new HostInformationMessage

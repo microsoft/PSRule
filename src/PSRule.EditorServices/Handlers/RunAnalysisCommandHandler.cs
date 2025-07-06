@@ -7,6 +7,8 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using PSRule.CommandLine;
 using PSRule.CommandLine.Commands;
 using PSRule.CommandLine.Models;
+using PSRule.Pipeline;
+using PSRule.Rules;
 using PSRule.Runtime;
 
 namespace PSRule.EditorServices.Handlers;
@@ -43,7 +45,9 @@ public sealed class RunAnalysisCommandHandler(ClientContext context, ISerializer
         try
         {
             var output = await RunCommand.RunAsync(options, _Context, cancellationToken);
-            return new RunAnalysisCommandHandlerOutput(output.ExitCode);
+            var problems = GetOnlyProblemRecords(output.Results);
+
+            return new RunAnalysisCommandHandlerOutput(output.ExitCode, problems);
         }
         catch (Exception ex)
         {
@@ -51,5 +55,30 @@ public sealed class RunAnalysisCommandHandler(ClientContext context, ISerializer
         }
 
         return new RunAnalysisCommandHandlerOutput(1);
+    }
+
+    private static IEnumerable<RunAnalysisCommandHandlerRecord> GetOnlyProblemRecords(IReadOnlyCollection<InvokeResult> results)
+    {
+        foreach (var result in results)
+        {
+            if (result.IsSuccess())
+                continue;
+
+            foreach (var record in result)
+            {
+                if (record.Outcome != RuleOutcome.Fail && record.Outcome != RuleOutcome.Error)
+                    continue;
+
+                if (record.Recommendation != null)
+                {
+                    yield return new RunAnalysisCommandHandlerRecord
+                    {
+                        Recommendation = record.Recommendation,
+                        RuleName = record.RuleName,
+                        RuleId = record.RuleId
+                    };
+                }
+            }
+        }
     }
 }
