@@ -46,6 +46,16 @@ static class Program
                 return await ClientBuilder.New().InvokeAsync(args);
             };
         }
+        else if (ShouldUseAzurePipelinesAdapter(args))
+        {
+            var adapter = new AzurePipelinesAdapter();
+            args = adapter.BuildArgs(args);
+
+            execute = async (string[] args) =>
+            {
+                return await ClientBuilder.New().InvokeAsync(args);
+            };
+        }
         else if (ShouldWaitForDebugger(args))
         {
             if (!await WaitForDebuggerAsync())
@@ -65,6 +75,19 @@ static class Program
         foreach (var arg in args)
         {
             if (arg.Equals("--in-github-actions", StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+        return false;
+    }
+
+    private static bool ShouldUseAzurePipelinesAdapter(string[] args)
+    {
+        if (args == null || args.Length == 0)
+            return false;
+
+        foreach (var arg in args)
+        {
+            if (arg.Equals("--in-azure-pipelines", StringComparison.OrdinalIgnoreCase))
                 return true;
         }
         return false;
