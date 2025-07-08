@@ -13,6 +13,8 @@ public static partial class Engine
         "api-2025-01-01"
     ];
 
+    private const string _Version = "3.0.0";
+
     /// <summary>
     /// The version of PSRule.
     /// </summary>
