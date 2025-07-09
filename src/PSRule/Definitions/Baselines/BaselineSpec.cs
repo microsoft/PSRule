@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Definitions.Expressions;
 using PSRule.Options;
 
 namespace PSRule.Definitions.Baselines;
@@ -24,6 +25,9 @@ public sealed class BaselineSpec : Spec, IBaselineV1Spec
 
     /// <inheritdoc/>
     public OverrideOption Override { get; set; }
+
+    /// <inheritdoc/>
+    internal LanguageIf? Selector { get; set; }
 }
 
 #pragma warning restore CS8618
