@@ -13,7 +13,8 @@ public interface IJobSummaryContributor
     /// This method is called during job summary generation to collect custom content from conventions.
     /// </summary>
     /// <returns>
-    /// A collection of job summary sections, where each section contains a title and content that can be plain text or markdown.
+    /// A collection of job summary sections, where each section contains a title and content.
+    /// The content can be formatted differently for different output formats (plain text for console, markdown for files).
     /// Returns null or empty collection if no additional content should be added.
     /// </returns>
     IEnumerable<JobSummarySection>? GetJobSummaryContent();
@@ -28,8 +29,8 @@ public sealed class JobSummarySection
     /// Initializes a new instance of the JobSummarySection class.
     /// </summary>
     /// <param name="title">The title for the section (will be rendered as H2 header).</param>
-    /// <param name="content">The content for the section. Can be plain text or markdown.</param>
-    public JobSummarySection(string title, string content)
+    /// <param name="content">The content for the section.</param>
+    public JobSummarySection(string title, InfoString content)
     {
         Title = title ?? throw new ArgumentNullException(nameof(title));
         Content = content ?? throw new ArgumentNullException(nameof(content));
@@ -41,7 +42,7 @@ public sealed class JobSummarySection
     public string Title { get; }
 
     /// <summary>
-    /// Gets the content for this section. Can be plain text or markdown.
+    /// Gets the content for this section.
     /// </summary>
-    public string Content { get; }
+    public InfoString Content { get; }
 }

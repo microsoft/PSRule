@@ -46,7 +46,7 @@ internal sealed class ExampleJobSummaryConvention : BaseConvention, IConventionV
 - Successful: {_successCount}
 - Success rate: {(_processedCount > 0 ? (_successCount * 100.0 / _processedCount):0):F1}%";
 
-        sections.Add(new JobSummarySection("Convention Metrics", metricsContent));
+        sections.Add(new JobSummarySection("Convention Metrics", new InfoString(metricsContent)));
 
         // Add an additional information section
         var additionalInfo = @"This section demonstrates how conventions can contribute custom content to job summaries.
@@ -59,7 +59,7 @@ Convention authors can:
 
 For more information, see the [PSRule conventions documentation](https://microsoft.github.io/PSRule/concepts/conventions/).";
 
-        sections.Add(new JobSummarySection("Convention Information", additionalInfo));
+        sections.Add(new JobSummarySection("Convention Information", new InfoString(additionalInfo)));
 
         return sections;
     }

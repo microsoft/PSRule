@@ -146,7 +146,6 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
         if (_Contributors == null || _Contributors.Length == 0)
             return;
 
-        var hasContent = false;
         var sections = new List<JobSummarySection>();
 
         // Collect content from all contributors
@@ -172,12 +171,11 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
         {
             foreach (var section in sections)
             {
-                if (!string.IsNullOrWhiteSpace(section.Title) && !string.IsNullOrWhiteSpace(section.Content))
+                if (!string.IsNullOrWhiteSpace(section.Title) && section.Content != null && section.Content.HasValue)
                 {
                     H2(section.Title);
-                    WriteLine(section.Content);
+                    WriteLine(section.Content.Markdown);
                     WriteLine();
-                    hasContent = true;
                 }
             }
         }

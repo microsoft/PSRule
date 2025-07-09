@@ -122,7 +122,7 @@ public sealed class JobSummaryWriterTests : OutputWriterBaseTests
             if (string.IsNullOrWhiteSpace(_title) || string.IsNullOrWhiteSpace(_content))
                 return null;
 
-            return new[] { new JobSummarySection(_title, _content) };
+            return new[] { new JobSummarySection(_title, new InfoString(_content)) };
         }
     }
 }
