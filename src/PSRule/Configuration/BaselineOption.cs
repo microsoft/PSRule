@@ -3,7 +3,6 @@
 
 using System.Collections;
 using PSRule.Definitions.Baselines;
-using PSRule.Definitions.Expressions;
 using PSRule.Options;
 
 namespace PSRule.Configuration;
@@ -37,8 +36,6 @@ public class BaselineOption
         public OverrideOption Override { get; set; }
 
         public RuleOption Rule { get; set; }
-
-        public LanguageIf? Selector { get; set; }
     }
 
     /// <summary>

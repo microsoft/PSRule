@@ -5,11 +5,8 @@ using System.Collections;
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Data;
-using PSRule.Definitions.Baselines;
 using PSRule.Definitions.Expressions;
-using PSRule.Definitions.Selectors;
 using PSRule.Pipeline;
-using PSRule.Resources;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions.Rules;
@@ -82,8 +79,12 @@ internal sealed class BaselineRuleFilter : IResourceFilter
         {
             // Convert the rule to a target object for selector evaluation
             var targetObject = CreateRuleTargetObject(resource);
-            var visitor = new SelectorVisitor(_context, _selector.Expression);
-            return visitor.Match(targetObject);
+            
+            // Build and evaluate the expression directly
+            var builder = new LanguageExpressionBuilder(new ResourceId("", "BaselineSelector", ResourceIdKind.Id));
+            var fn = builder.Build(_selector);
+            
+            return fn != null && fn(_context, targetObject) == true;
         }
         catch
         {
@@ -102,7 +103,7 @@ internal sealed class BaselineRuleFilter : IResourceFilter
         
         // Add basic rule properties
         properties.Properties.Add(new PSNoteProperty("Name", resource.Name));
-        properties.Properties.Add(new PSNoteProperty("Module", resource.Module));
+        properties.Properties.Add(new PSNoteProperty("Module", resource.Source.Module));
         properties.Properties.Add(new PSNoteProperty("Kind", resource.Kind.ToString()));
         properties.Properties.Add(new PSNoteProperty("ApiVersion", resource.ApiVersion));
         
@@ -146,16 +147,17 @@ internal sealed class BaselineRuleFilter : IResourceFilter
             properties.Properties.Add(new PSNoteProperty("Severity", rule.Level.ToString()));
         }
 
-        // Add annotations from metadata
-        if (resource.Metadata?.Annotations != null)
-        {
-            var annotations = new PSObject();
-            foreach (var annotation in resource.Metadata.Annotations)
-            {
-                annotations.Properties.Add(new PSNoteProperty(annotation.Key, annotation.Value));
-            }
-            properties.Properties.Add(new PSNoteProperty("Annotations", annotations));
-        }
+        // TODO: Add annotations from metadata if available
+        // The metadata access pattern needs to be determined for the baseline filter
+        // if (resource is Resource<TSpec> resourceWithMetadata && resourceWithMetadata.Metadata?.Annotations != null)
+        // {
+        //     var annotations = new PSObject();
+        //     foreach (var annotation in resourceWithMetadata.Metadata.Annotations)
+        //     {
+        //         annotations.Properties.Add(new PSNoteProperty(annotation.Key, annotation.Value));
+        //     }
+        //     properties.Properties.Add(new PSNoteProperty("Annotations", annotations));
+        // }
 
         return new TargetObject(properties);
     }

@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
-using PSRule.Definitions.Expressions;
 using PSRule.Options;
 
 namespace PSRule.Definitions.Baselines;
@@ -26,9 +25,4 @@ internal interface IBaselineV1Spec
     /// Options that configure additional rule overrides.
     /// </summary>
     OverrideOption Override { get; set; }
-
-    /// <summary>
-    /// An optional selector expression that can be used to dynamically filter rules.
-    /// </summary>
-    internal LanguageIf? Selector { get; set; }
 }

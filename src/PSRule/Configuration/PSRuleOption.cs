@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Management.Automation;
 using PSRule.Converters.Yaml;
 using PSRule.Definitions.Baselines;
-using PSRule.Definitions.Expressions;
 using PSRule.Definitions.Rules;
 using PSRule.Options;
 using PSRule.Pipeline;
@@ -164,11 +163,6 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
     /// Options for that affect which rules are executed by including and filtering discovered rules.
     /// </summary>
     public RuleOption Rule { get; set; }
-
-    /// <summary>
-    /// An optional selector expression that can be used to dynamically filter rules.
-    /// </summary>
-    internal LanguageIf? Selector { get; set; }
 
     /// <summary>
     /// Options that configure runs.
