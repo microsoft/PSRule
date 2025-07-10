@@ -174,11 +174,11 @@ internal sealed class ClientBuilder
         );
         _Get_IncludeDependencies = new Option<bool>(
             ["--include-dependencies"],
-            description: CmdStrings.Get_IncludeDependencies_Description
+            description: "Include rule dependencies in the output."
         );
         _Get_NoRestore = new Option<bool>(
             "--no-restore",
-            description: CmdStrings.Run_NoRestore_Description
+            description: "Do not restore modules before getting rules."
         );
 
         cmd.AddGlobalOption(_Global_Option);
@@ -251,10 +251,10 @@ internal sealed class ClientBuilder
     /// </summary>
     private void AddGet()
     {
-        var cmd = new Command("get", CmdStrings.Get_Description);
+        var cmd = new Command("get", "Get information about rules and other PSRule resources.");
 
         // Add the rule subcommand
-        var ruleCmd = new Command("rule", CmdStrings.Get_Rule_Description);
+        var ruleCmd = new Command("rule", "Get rule information including metadata such as tags, labels, and annotations.");
         ruleCmd.AddOption(_Global_Path);
         ruleCmd.AddOption(_Get_Module);
         ruleCmd.AddOption(_Get_Name);
