@@ -28,7 +28,7 @@ public sealed class EngineVersionGenerator : ISourceGenerator
 
     private static string GetPartialContent(GeneratorExecutionContext context)
     {
-        if (!context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.PSRule_Version", out var productVersion))
+        if (!context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.PSRule_Version", out var productVersion) || string.IsNullOrEmpty(productVersion))
             productVersion = "0.0.1";
 
         // Build up the source code
