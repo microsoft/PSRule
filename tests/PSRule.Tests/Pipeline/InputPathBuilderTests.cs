@@ -15,9 +15,9 @@ public sealed class InputPathBuilderTests
     [Theory]
     [InlineData("./.github/*.yml", 1)]
     [InlineData("./.github/**/*.yaml", 9)]
-    [InlineData("./.github/", 13)]
-    [InlineData(".github/", 13)]
-    [InlineData(".github", 13)]
+    [InlineData("./.github/", 14)]
+    [InlineData(".github/", 14)]
+    [InlineData(".github", 14)]
     [InlineData("./*.json", 8)]
     public void Build_WithValidPathAdded_ShouldReturnFiles(string path, int expected)
     {

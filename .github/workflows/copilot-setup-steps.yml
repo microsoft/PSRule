@@ -45,3 +45,5 @@ jobs:
           npm install;
           dotnet restore;
           ./scripts/pipeline-deps.ps1;
+          Import-Module ./scripts/dependencies.psm1 -Force;
+          Install-Dependencies -Dev;
