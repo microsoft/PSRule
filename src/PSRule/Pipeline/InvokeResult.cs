@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Collections;
 using PSRule.Definitions.Rules;
 using PSRule.Pipeline.Runs;
 using PSRule.Rules;
@@ -10,7 +11,7 @@ namespace PSRule.Pipeline;
 /// <summary>
 /// A result for a target object.
 /// </summary>
-public sealed class InvokeResult
+public sealed class InvokeResult : IEnumerable<RuleRecord>
 {
     private readonly List<RuleRecord> _Record;
     private RuleOutcome _Outcome;
@@ -99,7 +100,7 @@ public sealed class InvokeResult
     /// <returns>Returns an enumeration of RuleRecords.</returns>
     public RuleRecord[] AsRecord()
     {
-        return _Record.ToArray();
+        return [.. _Record];
     }
 
     /// <summary>
@@ -143,5 +144,17 @@ public sealed class InvokeResult
 
         ruleRecord.RunId = Run.Id;
         _Record.Add(ruleRecord);
+    }
+
+    /// <inheritdoc/>
+    public IEnumerator<RuleRecord> GetEnumerator()
+    {
+        return _Record.GetEnumerator();
+    }
+
+    /// <inheritdoc/>
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return _Record.GetEnumerator();
     }
 }

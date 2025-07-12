@@ -24,7 +24,7 @@ internal sealed class SessionContext(IHostContext parent) : IHostContext
 
     public string? WorkingPath { get; set; }
 
-    public Action<object>? GetResultOutput { get; set; }
+    public Action<InvokeResult>? OnWriteResult { get; set; }
 
     public ActionPreference GetPreferenceVariable(string variableName)
     {
@@ -43,8 +43,13 @@ internal sealed class SessionContext(IHostContext parent) : IHostContext
 
     public void WriteObject(object sendToPipeline, bool enumerateCollection)
     {
-        GetResultOutput?.Invoke(sendToPipeline);
         _Parent.WriteObject(sendToPipeline, enumerateCollection);
+    }
+
+    public void WriteResult(InvokeResult result)
+    {
+        OnWriteResult?.Invoke(result);
+        _Parent.WriteResult(result);
     }
 
     public void SetVariable<T>(string variableName, T value)
