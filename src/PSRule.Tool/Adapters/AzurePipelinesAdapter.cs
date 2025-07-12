@@ -4,13 +4,13 @@
 namespace PSRule.Tool.Adapters;
 
 /// <summary>
-/// This is an adapter for handling GitHub Actions specific functionality
-/// for the official PSRule GitHub Action.
+/// This is an adapter for handling Azure Pipelines specific functionality
+/// for the official PSRule Azure Pipelines task.
 /// </summary>
-internal sealed class GitHubActionsAdapter : CIAdapter
+internal sealed class AzurePipelinesAdapter : CIAdapter
 {
     /// <summary>
-    /// Load in environment variables from the GitHub Action context.
+    /// Load in environment variables from the Azure Pipelines task context.
     /// </summary>
     protected override string[] GetArgs(string[] args)
     {
@@ -58,8 +58,6 @@ internal sealed class GitHubActionsAdapter : CIAdapter
                 if (string.IsNullOrWhiteSpace(format))
                     continue;
 
-
-
                 WriteInput("Format", format);
             }
 
@@ -95,9 +93,11 @@ internal sealed class GitHubActionsAdapter : CIAdapter
             WriteInput("OutputPath", outputPath);
         }
 
-        if (Environment.TryString("INPUT_SUMMARY", out var summary) && !string.IsNullOrWhiteSpace(summary) && summary == "true" &&
-            Environment.TryString("GITHUB_STEP_SUMMARY", out var jobSummaryPath) && !string.IsNullOrWhiteSpace(jobSummaryPath))
+        if (Environment.TryString("INPUT_SUMMARY", out var summary) && !string.IsNullOrWhiteSpace(summary) && summary == "true")
         {
+            // Azure Pipelines doesn't have a built-in job summary path like GitHub Actions
+            // We'll use a default path for now
+            var jobSummaryPath = "reports/summary.md";
             result.Add("--job-summary-path");
             result.Add(jobSummaryPath);
             WriteInput("Summary", summary);
