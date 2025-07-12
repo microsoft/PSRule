@@ -36,25 +36,9 @@ static class Program
             return await ClientBuilder.New().InvokeAsync(args);
         };
 
-        if (ShouldUseGitHubActionAdapter(args))
+        if (AdapterBuilder.TryAdapter(args, out var adapterExecute))
         {
-            var adapter = new GitHubActionsAdapter();
-            args = adapter.BuildArgs(args);
-
-            execute = async (string[] args) =>
-            {
-                return await ClientBuilder.New().InvokeAsync(args);
-            };
-        }
-        else if (ShouldUseAzurePipelinesAdapter(args))
-        {
-            var adapter = new AzurePipelinesAdapter();
-            args = adapter.BuildArgs(args);
-
-            execute = async (string[] args) =>
-            {
-                return await ClientBuilder.New().InvokeAsync(args);
-            };
+            execute = adapterExecute;
         }
         else if (ShouldWaitForDebugger(args))
         {
@@ -65,32 +49,6 @@ static class Program
         }
 
         return await execute(args);
-    }
-
-    private static bool ShouldUseGitHubActionAdapter(string[] args)
-    {
-        if (args == null || args.Length == 0)
-            return false;
-
-        foreach (var arg in args)
-        {
-            if (arg.Equals("--in-github-actions", StringComparison.OrdinalIgnoreCase))
-                return true;
-        }
-        return false;
-    }
-
-    private static bool ShouldUseAzurePipelinesAdapter(string[] args)
-    {
-        if (args == null || args.Length == 0)
-            return false;
-
-        foreach (var arg in args)
-        {
-            if (arg.Equals("--in-azure-pipelines", StringComparison.OrdinalIgnoreCase))
-                return true;
-        }
-        return false;
     }
 
     private static bool ShouldWaitForDebugger(string[] args)

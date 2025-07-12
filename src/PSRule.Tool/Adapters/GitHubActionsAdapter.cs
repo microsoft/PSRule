@@ -7,31 +7,12 @@ namespace PSRule.Tool.Adapters;
 /// This is an adapter for handling GitHub Actions specific functionality
 /// for the official PSRule GitHub Action.
 /// </summary>
-internal sealed class GitHubActionsAdapter
+internal sealed class GitHubActionsAdapter : CIAdapter
 {
-    private const char COMMA = ',';
-
-    public string[] BuildArgs(string[] args)
-    {
-        WriteVersion();
-
-        args = GetArgs(args);
-
-        Console.WriteLine("");
-        Console.WriteLine("---");
-
-        return args;
-    }
-
-    private void WriteVersion()
-    {
-        WriteInput("Version", ClientBuilder.Version!);
-    }
-
     /// <summary>
     /// Load in environment variables from the GitHub Action context.
     /// </summary>
-    private string[] GetArgs(string[] args)
+    protected override string[] GetArgs(string[] args)
     {
         var result = new List<string>(args);
 
@@ -139,10 +120,5 @@ internal sealed class GitHubActionsAdapter
         }
 
         return [.. result];
-    }
-
-    private static void WriteInput(string name, string value)
-    {
-        Console.WriteLine($"[info] Using {name}: {value}");
     }
 }

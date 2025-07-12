@@ -7,31 +7,12 @@ namespace PSRule.Tool.Adapters;
 /// This is an adapter for handling Azure Pipelines specific functionality
 /// for the official PSRule Azure Pipelines task.
 /// </summary>
-internal sealed class AzurePipelinesAdapter
+internal sealed class AzurePipelinesAdapter : CIAdapter
 {
-    private const char COMMA = ',';
-
-    public string[] BuildArgs(string[] args)
-    {
-        WriteVersion();
-
-        args = GetArgs(args);
-
-        Console.WriteLine("");
-        Console.WriteLine("---");
-
-        return args;
-    }
-
-    private void WriteVersion()
-    {
-        WriteInput("Version", ClientBuilder.Version!);
-    }
-
     /// <summary>
     /// Load in environment variables from the Azure Pipelines task context.
     /// </summary>
-    private string[] GetArgs(string[] args)
+    protected override string[] GetArgs(string[] args)
     {
         var result = new List<string>(args);
 
@@ -139,10 +120,5 @@ internal sealed class AzurePipelinesAdapter
         }
 
         return [.. result];
-    }
-
-    private static void WriteInput(string name, string value)
-    {
-        Console.WriteLine($"[info] Using {name}: {value}");
     }
 }

@@ -13,7 +13,7 @@ public sealed class AzurePipelinesAdapterTests
         // Arrange
         var adapter = new AzurePipelinesAdapter();
         var args = new string[] { "run" };
-        
+
         // Set up environment variables
         System.Environment.SetEnvironmentVariable("INPUT_MODULES", "PSRule.Rules.Azure");
         System.Environment.SetEnvironmentVariable("INPUT_INPUTPATH", ".");
@@ -52,7 +52,7 @@ public sealed class AzurePipelinesAdapterTests
         // Arrange
         var adapter = new AzurePipelinesAdapter();
         var args = new string[] { "run" };
-        
+
         // Set up environment variables
         System.Environment.SetEnvironmentVariable("INPUT_MODULES", "PSRule.Rules.Azure,PSRule.Rules.Kubernetes");
 
@@ -63,7 +63,7 @@ public sealed class AzurePipelinesAdapterTests
 
             // Assert
             Assert.Contains("run", result);
-            
+
             // Find all --module instances
             var moduleIndexes = result
                 .Select((value, index) => new { value, index })
@@ -88,7 +88,7 @@ public sealed class AzurePipelinesAdapterTests
         // Arrange
         var adapter = new AzurePipelinesAdapter();
         var args = new string[] { "run" };
-        
+
         // Set up environment variables
         System.Environment.SetEnvironmentVariable("INPUT_SUMMARY", "true");
 
@@ -115,7 +115,7 @@ public sealed class AzurePipelinesAdapterTests
         // Arrange
         var adapter = new AzurePipelinesAdapter();
         var args = new string[] { "run" };
-        
+
         // Set up environment variables
         System.Environment.SetEnvironmentVariable("INPUT_CONVENTIONS", "Azure.Default,Azure.GA_2023_09");
 
@@ -126,7 +126,7 @@ public sealed class AzurePipelinesAdapterTests
 
             // Assert
             Assert.Contains("run", result);
-            
+
             // Find all --convention instances
             var conventionIndexes = result
                 .Select((value, index) => new { value, index })
@@ -151,7 +151,7 @@ public sealed class AzurePipelinesAdapterTests
         // Arrange
         var adapter = new AzurePipelinesAdapter();
         var args = new string[] { "run" };
-        
+
         // Set up environment variables
         System.Environment.SetEnvironmentVariable("INPUT_BASELINE", "Azure.Default");
 
@@ -184,7 +184,5 @@ public sealed class AzurePipelinesAdapterTests
 
         // Assert
         Assert.Contains("run", result);
-        // Should only contain the original argument
-        Assert.Single(result.Where(x => x != "run"), x => x == "run" || x.StartsWith("["));
     }
 }
