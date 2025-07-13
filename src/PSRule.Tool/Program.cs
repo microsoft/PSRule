@@ -31,7 +31,7 @@ static class Program
 
         System.Environment.SetEnvironmentVariable("PSModulePath", modulePath, EnvironmentVariableTarget.Process);
 
-        var execute = async (string[] args) =>
+        var execute = async () =>
         {
             return await ClientBuilder.New().InvokeAsync(args);
         };
@@ -48,7 +48,7 @@ static class Program
             System.Diagnostics.Debugger.Break();
         }
 
-        return await execute(args);
+        return await execute();
     }
 
     private static bool ShouldWaitForDebugger(string[] args)

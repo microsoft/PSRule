@@ -12,7 +12,7 @@ namespace PSRule.Tool.Adapters;
 /// </summary>
 internal sealed class AdapterBuilder
 {
-    public static bool TryAdapter(string[] args, [NotNullWhen(true)] out Func<string[], Task<int>>? execute)
+    public static bool TryAdapter(string[] args, [NotNullWhen(true)] out Func<Task<int>>? execute)
     {
         execute = null;
         if (ShouldUseGitHubActionAdapter(args))
@@ -20,7 +20,7 @@ internal sealed class AdapterBuilder
             var adapter = new GitHubActionsAdapter();
             args = adapter.BuildArgs(args);
 
-            execute = async (string[] args) =>
+            execute = async () =>
             {
                 return await ClientBuilder.New().InvokeAsync(args);
             };
@@ -30,7 +30,7 @@ internal sealed class AdapterBuilder
             var adapter = new AzurePipelinesAdapter();
             args = adapter.BuildArgs(args);
 
-            execute = async (string[] args) =>
+            execute = async () =>
             {
                 return await ClientBuilder.New().InvokeAsync(args);
             };
