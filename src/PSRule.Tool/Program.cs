@@ -31,20 +31,14 @@ static class Program
 
         System.Environment.SetEnvironmentVariable("PSModulePath", modulePath, EnvironmentVariableTarget.Process);
 
-        var execute = async (string[] args) =>
+        var execute = async () =>
         {
             return await ClientBuilder.New().InvokeAsync(args);
         };
 
-        if (ShouldUseGitHubActionAdapter(args))
+        if (AdapterBuilder.TryAdapter(args, out var adapterExecute))
         {
-            var adapter = new GitHubActionsAdapter();
-            args = adapter.BuildArgs(args);
-
-            execute = async (string[] args) =>
-            {
-                return await ClientBuilder.New().InvokeAsync(args);
-            };
+            execute = adapterExecute;
         }
         else if (ShouldWaitForDebugger(args))
         {
@@ -54,20 +48,7 @@ static class Program
             System.Diagnostics.Debugger.Break();
         }
 
-        return await execute(args);
-    }
-
-    private static bool ShouldUseGitHubActionAdapter(string[] args)
-    {
-        if (args == null || args.Length == 0)
-            return false;
-
-        foreach (var arg in args)
-        {
-            if (arg.Equals("--in-github-actions", StringComparison.OrdinalIgnoreCase))
-                return true;
-        }
-        return false;
+        return await execute();
     }
 
     private static bool ShouldWaitForDebugger(string[] args)
