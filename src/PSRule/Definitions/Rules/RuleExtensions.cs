@@ -35,7 +35,7 @@ internal static class RuleExtensions
             var ruleName = block.Name;
 
             context.EnterLanguageScope(block.Source);
-            context.LanguageScope!.TryGetOverride(block.Id, out var propertyOverride);
+            context.Scope!.TryGetOverride(block.Id, out var propertyOverride);
             try
             {
                 var info = GetRuleHelpInfo(context, block) ?? new RuleHelpInfo(
@@ -151,7 +151,7 @@ internal static class RuleExtensions
             }
 
             context.EnterLanguageScope(block.Source);
-            context.LanguageScope!.TryGetOverride(block.Id, out var propertyOverride);
+            context.Scope!.TryGetOverride(block.Id, out var propertyOverride);
             try
             {
                 var info = GetRuleHelpInfo(context, block) ?? new RuleHelpInfo(
@@ -213,7 +213,7 @@ internal static class RuleExtensions
         try
         {
             context.EnterLanguageScope(resource.Source);
-            var filter = context.LanguageScope!.GetFilter(ResourceKind.Rule);
+            var filter = context.Scope!.GetFilter(ResourceKind.Rule);
             return filter == null || filter.Match(resource);
         }
         finally

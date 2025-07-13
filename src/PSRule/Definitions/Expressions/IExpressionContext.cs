@@ -14,9 +14,9 @@ internal interface IExpressionContext : IBindingContext, IConfigurableContext
 
     string LanguageScope { get; }
 
-    void Reason(IOperand operand, string text, params object[] args);
+    ILogger Logger { get; }
 
-    void Debug(string message, params object[] args);
+    void Reason(IOperand operand, string text, params object[] args);
 
     ITargetObject Current { get; }
 

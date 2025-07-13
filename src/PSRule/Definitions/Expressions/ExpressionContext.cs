@@ -29,6 +29,8 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
 
     public string LanguageScope { get; }
 
+    public ILogger Logger => Context.Logger!;
+
     public ResourceKind Kind { get; }
 
     public ITargetObject Current { get; }
@@ -48,11 +50,6 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
     bool IBindingContext.GetPathExpression(string path, out PathExpression expression)
     {
         return _NameTokenCache.TryGetValue(path, out expression);
-    }
-
-    public void Debug(string message, params object[] args)
-    {
-        Context.Logger?.LogDebug(EventId.None, message, args);
     }
 
     public void PushScope(RunspaceScope scope)
