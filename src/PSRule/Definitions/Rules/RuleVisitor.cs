@@ -49,7 +49,7 @@ internal sealed class RuleVisitor : ICondition
     public IConditionResult If()
     {
         var context = new ExpressionContext(_Context, Source, ResourceKind.Rule, _Context.TargetObject);
-        context.Debug(PSRuleResources.RuleMatchTrace, Id);
+        context.Logger.LogDebug(EventId.None, PSRuleResources.RuleMatchTrace, Id);
         context.PushScope(RunspaceScope.Rule);
         try
         {

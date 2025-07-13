@@ -49,7 +49,7 @@ internal sealed class SelectorVisitor
     public bool Match(ITargetObject o)
     {
         var context = new ExpressionContext(_Context, Source, ResourceKind.Selector, o);
-        context.Debug(PSRuleResources.SelectorMatchTrace, Id);
+        context.Logger.LogDebug(EventId.None, PSRuleResources.SelectorMatchTrace, Id);
         return _Fn(context, o).GetValueOrDefault(false);
     }
 }

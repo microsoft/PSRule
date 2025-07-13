@@ -97,7 +97,7 @@ internal sealed class LanguageExpressionBuilder(ResourceId id, bool debugger = t
             // Evaluate selector rule pre-condition
             if (!AcceptsRule(context, rule))
             {
-                context.Debug(PSRuleResources.DebugTargetRuleMismatch);
+                context.Logger.LogDebug(EventId.None, PSRuleResources.DebugTargetRuleMismatch);
                 return null;
             }
             return fn(context, o);
@@ -111,7 +111,7 @@ internal sealed class LanguageExpressionBuilder(ResourceId id, bool debugger = t
             // Evaluate selector pre-condition
             if (!AcceptsWith(context, with, o))
             {
-                context.Debug(PSRuleResources.DebugTargetTypeMismatch);
+                context.Logger.LogDebug(EventId.None, PSRuleResources.DebugTargetTypeMismatch);
                 return null;
             }
             return fn(context, o);
@@ -125,7 +125,7 @@ internal sealed class LanguageExpressionBuilder(ResourceId id, bool debugger = t
             // Evaluate type pre-condition
             if (!AcceptsType(context, type))
             {
-                context.Debug(PSRuleResources.DebugTargetTypeMismatch);
+                context.Logger.LogDebug(EventId.None, PSRuleResources.DebugTargetTypeMismatch);
                 return null;
             }
             return fn(context, o);
@@ -143,7 +143,7 @@ internal sealed class LanguageExpressionBuilder(ResourceId id, bool debugger = t
                 // Evaluate sub-selector pre-condition
                 if (!AcceptsSubselector(context, subselector, o))
                 {
-                    context.Debug(PSRuleResources.DebugTargetSubselectorMismatch);
+                    context.Logger.LogDebug(EventId.None, PSRuleResources.DebugTargetSubselectorMismatch);
                     return null;
                 }
             }
@@ -298,7 +298,7 @@ internal sealed class LanguageExpressionBuilder(ResourceId id, bool debugger = t
     {
         var result = expression(context, o);
         var type = context.Kind == ResourceKind.Rule ? 'R' : 'S';
-        context.Debug(PSRuleResources.LanguageExpressionTraceP2, type, path, result);
+        context.Logger.LogDebug(EventId.None, PSRuleResources.LanguageExpressionTraceP2, type, path, result);
         return result;
     }
 
@@ -307,10 +307,10 @@ internal sealed class LanguageExpressionBuilder(ResourceId id, bool debugger = t
         if (type == null || type.Length == 0)
             return true;
 
-        if (!context.Context.LanguageScope.TryGetType(context.Current, out var targetType, out _))
+        if (!context.Context.Scope.TryGetType(context.Current, out var targetType, out _))
             return false;
 
-        var comparer = context.Context.LanguageScope.GetBindingComparer();
+        var comparer = context.Context.Scope.GetBindingComparer();
         for (var i = 0; i < type.Length; i++)
         {
             if (comparer.Equals(targetType, type[i]))
@@ -349,7 +349,7 @@ internal sealed class LanguageExpressionBuilder(ResourceId id, bool debugger = t
         if (rule == null || rule.Length == 0)
             return true;
 
-        var stringComparer = context.Context.LanguageScope.GetBindingComparer();
+        var stringComparer = context.Context.Scope.GetBindingComparer();
         var resourceIdComparer = ResourceIdEqualityComparer.Default;
 
         // Allow short name cases.

@@ -423,7 +423,7 @@ internal static class HostHelper
         try
         {
             context.EnterLanguageScope(resource.Source);
-            var filter = context.LanguageScope!.GetFilter(ResourceKind.Rule);
+            var filter = context.Scope!.GetFilter(ResourceKind.Rule);
             return filter == null || filter.Match(resource);
         }
         finally

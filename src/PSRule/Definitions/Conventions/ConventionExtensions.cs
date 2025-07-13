@@ -49,7 +49,7 @@ internal static class ConventionExtensions
         try
         {
             context.EnterLanguageScope(block.Source);
-            var filter = context.LanguageScope?.GetFilter(ResourceKind.Convention);
+            var filter = context.Scope?.GetFilter(ResourceKind.Convention);
             return filter == null || filter.Match(block);
         }
         finally

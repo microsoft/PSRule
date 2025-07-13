@@ -103,7 +103,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public IEnumerable<Run> Runs { get; private set; } = [];
 
-    public ILanguageScope? LanguageScope { get; private set; }
+    public ILanguageScope? Scope { get; private set; }
 
     public bool IsScope(RunspaceScope scope)
     {
@@ -456,10 +456,10 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         if (!Pipeline.LanguageScope.TryScope(file.Module, out var scope))
             throw new RuntimeScopeException(PSR0022, PSRuleResources.PSR0022);
 
-        LanguageScope = scope;
+        Scope = scope;
 
-        if (TargetObject != null && LanguageScope != null)
-            Binding = LanguageScope.Bind(TargetObject);
+        if (TargetObject != null && Scope != null)
+            Binding = Scope.Bind(TargetObject);
 
         Source = file;
     }
@@ -467,7 +467,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     public void ExitLanguageScope(ISourceFile file)
     {
         // Look at scope popping and validation.
-        LanguageScope = null;
+        Scope = null;
 
         Source = null;
     }
@@ -569,20 +569,20 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     internal void AddService(string id, object service)
     {
-        if (LanguageScope == null) throw new InvalidOperationException("Can not call out of scope.");
+        if (Scope == null) throw new InvalidOperationException("Can not call out of scope.");
 
-        ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
-        if (!StringComparer.OrdinalIgnoreCase.Equals(LanguageScope.Name, scopeName) || string.IsNullOrEmpty(name))
+        ResourceHelper.ParseIdString(Scope.Name, id, out var scopeName, out var name);
+        if (!StringComparer.OrdinalIgnoreCase.Equals(Scope.Name, scopeName) || string.IsNullOrEmpty(name))
             return;
 
-        LanguageScope.AddService(name!, service);
+        Scope.AddService(name!, service);
     }
 
     internal object? GetService(string id)
     {
-        if (LanguageScope == null) throw new InvalidOperationException("Can not call out of scope.");
+        if (Scope == null) throw new InvalidOperationException("Can not call out of scope.");
 
-        ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
+        ResourceHelper.ParseIdString(Scope.Name, id, out var scopeName, out var name);
         return scopeName == null || !Pipeline.LanguageScope.TryScope(scopeName, out var scope) || scope == null || name == null || string.IsNullOrEmpty(name) ? null : scope.GetService(name);
     }
 
@@ -692,7 +692,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         if (string.IsNullOrEmpty(Source?.HelpPath))
             return null;
 
-        var cultures = LanguageScope?.Culture;
+        var cultures = Scope?.Culture;
         if (!_RaisedUsingInvariantCulture && (cultures == null || cultures.Length == 0))
         {
             this.Throw(_InvariantCulture, PSRuleResources.UsingInvariantCulture);
@@ -731,7 +731,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             return false;
 
         // Get from baseline configuration
-        if (LanguageScope != null && LanguageScope.TryConfigurationValue(name, out var result))
+        if (Scope != null && Scope.TryConfigurationValue(name, out var result))
         {
             value = result;
             return true;

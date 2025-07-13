@@ -13,8 +13,6 @@ using PSRule.Runtime.Binding;
 
 namespace PSRule.Runtime;
 
-#nullable enable
-
 [DebuggerDisplay("{Name}")]
 internal sealed class LanguageScope(string name, RuntimeFactoryContainer? container) : ILanguageScope, IRuntimeServiceCollection
 {
@@ -230,5 +228,3 @@ internal sealed class LanguageScope(string name, RuntimeFactoryContainer? contai
 
     #endregion IRuntimeServiceCollection
 }
-
-#nullable restore

@@ -64,7 +64,7 @@ internal static class SelectorExtensions
         try
         {
             context.EnterLanguageScope(resource.Source);
-            var filter = context.LanguageScope!.GetFilter(ResourceKind.Selector);
+            var filter = context.Scope!.GetFilter(ResourceKind.Selector);
             return filter == null || filter.Match(resource);
         }
         finally

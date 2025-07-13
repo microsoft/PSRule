@@ -131,7 +131,7 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
             displayName: Name,
             moduleName: source.Module
         );
-        context.LanguageScope.TryGetOverride(id, out var propertyOverride);
+        context.Scope.TryGetOverride(id, out var propertyOverride);
 
 #pragma warning disable CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
         var block = new RuleBlock(

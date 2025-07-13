@@ -1292,10 +1292,10 @@ internal sealed class LanguageExpressions
         operand = null;
         if (properties.TryGetString(NAME, out var svalue))
         {
-            if (svalue != DOT || context?.Context?.LanguageScope == null)
+            if (svalue != DOT || context?.Context?.Scope == null)
                 return Invalid(context, svalue);
 
-            if (!context.Context.LanguageScope.TryGetName(o, out var name, out var path) ||
+            if (!context.Context.Scope.TryGetName(o, out var name, out var path) ||
                 string.IsNullOrEmpty(name))
                 return Invalid(context, svalue);
 
@@ -1309,10 +1309,10 @@ internal sealed class LanguageExpressions
         operand = null;
         if (properties.TryGetString(TYPE, out var svalue))
         {
-            if (svalue != DOT || context?.Context?.LanguageScope == null)
+            if (svalue != DOT || context?.Context?.Scope == null)
                 return Invalid(context, svalue);
 
-            if (!context.Context.LanguageScope.TryGetType(o, out var type, out var path) ||
+            if (!context.Context.Scope.TryGetType(o, out var type, out var path) ||
                 string.IsNullOrEmpty(type))
                 return Invalid(context, svalue);
 
@@ -1351,7 +1351,7 @@ internal sealed class LanguageExpressions
         operand = null;
         if (properties.TryGetString(SCOPE, out var svalue))
         {
-            if (svalue != DOT || context?.Context?.LanguageScope == null)
+            if (svalue != DOT || context?.Context?.Scope == null)
                 return Invalid(context, svalue);
 
             if (!context.Context.TryGetScope(o.Value, out var scope))

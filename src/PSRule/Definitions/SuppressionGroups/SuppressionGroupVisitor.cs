@@ -99,7 +99,7 @@ internal sealed class SuppressionGroupVisitor
     {
         suppression = null;
         var context = new ExpressionContext(_Context, Source, ResourceKind.SuppressionGroup, o, ruleId);
-        context.Debug(PSRuleResources.SelectorMatchTrace, Id);
+        context.Logger.LogDebug(EventId.None, PSRuleResources.SelectorMatchTrace, Id);
         if (_Fn(context, o).GetValueOrDefault(false))
         {
             _Info.Hit();
