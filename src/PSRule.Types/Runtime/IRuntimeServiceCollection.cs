@@ -33,4 +33,11 @@ public interface IRuntimeServiceCollection : IDisposable
     /// <param name="instanceName">A unique name of the service instance.</param>
     /// <param name="instance">An instance of the service.</param>
     void AddService(string instanceName, object instance);
+
+    /// <summary>
+    /// Add a convention.
+    /// </summary>
+    /// <typeparam name="TConvention">The convention type to add.</typeparam>
+    void AddConvention<TConvention>()
+        where TConvention : class;
 }

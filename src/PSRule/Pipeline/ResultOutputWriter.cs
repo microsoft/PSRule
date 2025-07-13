@@ -13,7 +13,7 @@ internal abstract class ResultOutputWriter<T> : PipelineWriter
     protected ResultOutputWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
         : base(inner, option, shouldProcess)
     {
-        _Result = new List<T>();
+        _Result = [];
     }
 
     public override void WriteObject(object sendToPipeline, bool enumerateCollection)
