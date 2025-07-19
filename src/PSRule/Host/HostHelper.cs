@@ -379,7 +379,7 @@ internal static class HostHelper
         try
         {
             context.EnterLanguageScope(ruleBlock.Source);
-            var invokeResult = condition.If();
+            var invokeResult = condition.If(context, context.TargetObject);
             if (invokeResult == null)
             {
                 ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;

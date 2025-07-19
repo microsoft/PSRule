@@ -26,11 +26,19 @@ internal interface IExpressionContext : IBindingContext, IConfigurableContext
     /// </summary>
     ResourceId? RuleId { get; }
 
-    LegacyRunspaceContext Context { get; }
+    //IExpressionContext Context { get; }
+
+    ILanguageScope? Scope { get; }
+
+    bool IsScope(RunspaceScope scope);
 
     void PushScope(RunspaceScope scope);
 
     void PopScope(RunspaceScope scope);
+
+    void EnterLanguageScope(ISourceFile file);
+
+    bool TryGetScope(object o, out string[]? scope);
 
     /// <summary>
     /// Evaluate a target object to determine if it met the conditions of the selector.
