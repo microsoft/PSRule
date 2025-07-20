@@ -159,7 +159,7 @@ internal sealed class LanguageScope(string name, RuntimeFactoryContainer? contai
             path = result.TargetTypePath;
             return true;
         }
-        
+
         return false;
     }
 
@@ -179,7 +179,7 @@ internal sealed class LanguageScope(string name, RuntimeFactoryContainer? contai
             path = result.TargetNamePath;
             return true;
         }
-        
+
         return false;
     }
 

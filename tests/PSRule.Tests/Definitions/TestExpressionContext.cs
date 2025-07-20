@@ -41,7 +41,7 @@ public sealed class TestExpressionContext(PSRuleOption option, RunspaceScope run
 
     public void Reason(IOperand operand, string text, params object[] args)
     {
-        
+
     }
 
     public bool TryGetConfigurationValue(string name, out object value)
