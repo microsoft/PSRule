@@ -56,7 +56,7 @@ public sealed class TargetBinderTests
 
         m1 = GetBinder(Module1_Binding).Bind(targetObject);
         Equal("Name1", m1.TargetName);
-        Equal("Type1", m1.TargetType);
+        Equal("ManualType", m1.TargetType);
 
         var m3 = GetBinder(Module3_Binding).Bind(targetObject);
         Equal("Name1", m3.TargetName);
