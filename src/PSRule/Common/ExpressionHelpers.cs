@@ -483,9 +483,9 @@ internal static class ExpressionHelpers
         return false;
     }
 
-    private static Regex GetRegularExpression(string pattern, bool caseSensitive)
+    private static Regex? GetRegularExpression(string pattern, bool caseSensitive)
     {
-        if (!TryPipelineCache(caseSensitive ? CACHE_MATCH_C : CACHE_MATCH, pattern, out Regex expression))
+        if (!TryPipelineCache(caseSensitive ? CACHE_MATCH_C : CACHE_MATCH, pattern, out Regex? expression))
         {
             var options = caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
             expression = new Regex(pattern, options, TimeSpan.FromSeconds(5));
@@ -500,9 +500,9 @@ internal static class ExpressionHelpers
     private static bool TryPipelineCache<T>(string prefix, string key, out T? value)
     {
         value = default;
-        if (PipelineContext.CurrentThread.ExpressionCache.TryGetValue(string.Concat(prefix, key), out var ovalue))
+        if (PipelineContext.CurrentThread != null && PipelineContext.CurrentThread.ExpressionCache.TryGetValue(string.Concat(prefix, key), out var o))
         {
-            value = (T)ovalue;
+            value = (T)o;
             return true;
         }
         return false;
@@ -510,6 +510,9 @@ internal static class ExpressionHelpers
 
     private static void SetPipelineCache<T>(string prefix, string key, T value)
     {
+        if (PipelineContext.CurrentThread == null)
+            return;
+
         PipelineContext.CurrentThread.ExpressionCache[string.Concat(prefix, key)] = value;
     }
 

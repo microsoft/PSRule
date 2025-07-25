@@ -307,10 +307,10 @@ internal sealed class LanguageExpressionBuilder(ResourceId id, bool debugger = t
         if (type == null || type.Length == 0)
             return true;
 
-        if (!context.Context.Scope.TryGetType(context.Current, out var targetType, out _))
+        if (!context.Scope.TryGetType(context.Current, out var targetType, out _))
             return false;
 
-        var comparer = context.Context.Scope.GetBindingComparer();
+        var comparer = context.Scope.GetBindingComparer();
         for (var i = 0; i < type.Length; i++)
         {
             if (comparer.Equals(targetType, type[i]))
@@ -349,7 +349,7 @@ internal sealed class LanguageExpressionBuilder(ResourceId id, bool debugger = t
         if (rule == null || rule.Length == 0)
             return true;
 
-        var stringComparer = context.Context.Scope.GetBindingComparer();
+        var stringComparer = context.Scope.GetBindingComparer();
         var resourceIdComparer = ResourceIdEqualityComparer.Default;
 
         // Allow short name cases.
