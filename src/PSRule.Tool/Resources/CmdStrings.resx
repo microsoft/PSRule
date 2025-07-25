@@ -216,4 +216,13 @@
   <data name="Run_Convention_Description" xml:space="preserve">
     <value>The name of one or more conventions.</value>
   </data>
+  <data name="Get_Description" xml:space="preserve">
+    <value>Get information about rules and other PSRule resources.</value>
+  </data>
+  <data name="Get_Rule_Description" xml:space="preserve">
+    <value>Get rule information including metadata such as tags, labels, and annotations.</value>
+  </data>
+  <data name="Get_IncludeDependencies_Description" xml:space="preserve">
+    <value>Include rule dependencies in the output.</value>
+  </data>
 </root>
