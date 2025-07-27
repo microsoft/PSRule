@@ -10,8 +10,6 @@ using static Xunit.Assert;
 
 namespace PSRule.Binding;
 
-#nullable enable
-
 public sealed class TargetBinderTests
 {
     private static readonly BindingOption Module1_Binding = new()
@@ -30,7 +28,7 @@ public sealed class TargetBinderTests
     {
         TargetName = ["name"],
         TargetType = ["type"],
-        PreferTargetInfo = true
+        // PreferTargetInfo = true
     };
 
 
@@ -101,5 +99,3 @@ public sealed class TargetBinderTests
 
     #endregion Helper methods
 }
-
-#nullable restore

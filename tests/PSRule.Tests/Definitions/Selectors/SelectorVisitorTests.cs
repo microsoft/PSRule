@@ -2059,7 +2059,6 @@ public sealed class SelectorVisitorTests : ContextBaseTests
     {
         var option = new PSRuleOption();
         option.Configuration["ConfigArray"] = new string[] { "1", "2", "3", "4", "5" };
-        option.Binding.PreferTargetInfo = true;
         return option;
     }
 

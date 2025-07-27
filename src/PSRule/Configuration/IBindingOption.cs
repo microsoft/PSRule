@@ -38,14 +38,6 @@ public interface IBindingOption : IOption
     string NameSeparator { get; }
 
     /// <summary>
-    /// Determines if binding prefers target info provided by the object over custom configuration.
-    /// </summary>
-    /// <remarks>
-    /// See <see href="https://aka.ms/ps-rule/options#bindingprefertargetinfo"/>.
-    /// </remarks>
-    bool? PreferTargetInfo { get; }
-
-    /// <summary>
     /// Property names to use to bind TargetName.
     /// </summary>
     /// <remarks>

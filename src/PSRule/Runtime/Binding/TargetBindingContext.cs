@@ -8,11 +8,8 @@ using PSRule.Pipeline;
 
 namespace PSRule.Runtime.Binding;
 
-#nullable enable
-
 internal sealed class TargetBindingContext : ITargetBindingContext
 {
-    private readonly bool _PreferTargetInfo;
     private readonly bool _IgnoreCase;
     private readonly bool _UseQualifiedName;
     private readonly FieldMap? _Field;
@@ -26,8 +23,6 @@ internal sealed class TargetBindingContext : ITargetBindingContext
 
     public TargetBindingContext(BindingOption? bindingOption, BindTargetMethod? bindTargetName, BindTargetMethod? bindTargetType, BindTargetMethod? bindField, HashSet<string>? typeFilter)
     {
-        _PreferTargetInfo = true;
-        //bindingOption?.PreferTargetInfo ?? BindingOption.Default.PreferTargetInfo!.Value;
         _IgnoreCase = bindingOption?.IgnoreCase ?? BindingOption.Default.IgnoreCase!.Value;
         _UseQualifiedName = bindingOption?.UseQualifiedName ?? BindingOption.Default.UseQualifiedName!.Value;
         _Field = bindingOption?.Field;
@@ -42,9 +37,9 @@ internal sealed class TargetBindingContext : ITargetBindingContext
 
     public ITargetBindingResult Bind(ITargetObject o)
     {
-        var targetName = o.TryGetName(out var name, out var namePath) ? name : _BindTargetName(_TargetName, !_IgnoreCase, _PreferTargetInfo, o.Value, out namePath);
+        var targetName = o.TryGetName(out var name, out var namePath) ? name : _BindTargetName(_TargetName, !_IgnoreCase, o.Value, out namePath);
         var targetNamePath = namePath ?? ".";
-        var targetType = o.TryGetType(out var type, out var typePath) ? type : _BindTargetType(_TargetType, !_IgnoreCase, _PreferTargetInfo, o.Value, out typePath);
+        var targetType = o.TryGetType(out var type, out var typePath) ? type : _BindTargetType(_TargetType, !_IgnoreCase, o.Value, out typePath);
         var targetTypePath = typePath ?? ".";
         var shouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(targetType));
 
@@ -91,12 +86,14 @@ internal sealed class TargetBindingContext : ITargetBindingContext
                 if (hashtable.ContainsKey(field.Key))
                     continue;
 
-                hashtable.Add(field.Key, bindField(field.Value, caseSensitive, false, o, out _));
+                var value = bindField(field.Value, caseSensitive, o, out var path);
+                if (value == null)
+                    continue;
+
+                hashtable.Add(field.Key, value);
             }
         }
         hashtable.Protect();
         return hashtable;
     }
 }
-
-#nullable restore
