@@ -5,8 +5,6 @@ using System.Collections;
 
 namespace PSRule.Runtime.Binding;
 
-#nullable enable
-
 internal sealed class TargetBindingResult : ITargetBindingResult
 {
     public TargetBindingResult(string targetName, string targetNamePath, string targetType, string targetTypePath, bool shouldFilter, Hashtable? field)
@@ -37,5 +35,3 @@ internal sealed class TargetBindingResult : ITargetBindingResult
     /// <inheritdoc/>
     public Hashtable? Field { get; }
 }
-
-#nullable restore

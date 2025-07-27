@@ -73,9 +73,9 @@ public sealed class InputFileInfo : ITargetInfo
     /// </summary>
     public string? DisplayName { get; }
 
-    string? ITargetInfo.TargetName => DisplayName;
+    string? ITargetInfo.Name => DisplayName;
 
-    string? ITargetInfo.TargetType => _TargetType;
+    string? ITargetInfo.Type => _TargetType;
 
     TargetSourceInfo ITargetInfo.Source => _Source;
 

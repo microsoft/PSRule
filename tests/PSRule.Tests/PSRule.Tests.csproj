@@ -7,6 +7,7 @@
     <IsPackable>false</IsPackable>
     <RootNamespace>PSRule</RootNamespace>
     <DebugType>Full</DebugType>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -22,7 +22,7 @@ public sealed class InputFormatDeserializerTests
         Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
         Assert.Equal(2, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value2"));
         Assert.Equal(2, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
-        Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out var path));
+        Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, actual[0].Value, out var path));
         Assert.Null(path);
 
         // Array item
@@ -44,7 +44,7 @@ public sealed class InputFormatDeserializerTests
         Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
         Assert.Equal(2, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value2"));
         Assert.Equal(3, actual[1].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
-        Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out var path));
+        Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, actual[0].Value, out var path));
         Assert.Null(path);
 
         PSRuleTargetInfo info1 = null;
@@ -79,7 +79,7 @@ public sealed class InputFormatDeserializerTests
         Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
         Assert.Equal(1, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value1"));
         Assert.Equal(2, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<PSObject[]>("array").Length);
-        Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out var path));
+        Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, actual[0].Value, out var path));
         Assert.Null(path);
     }
 
@@ -93,7 +93,7 @@ public sealed class InputFormatDeserializerTests
         Assert.Equal("Test", actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<string>("kind"));
         Assert.Equal(1, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<int>("value1"));
         Assert.Equal(2, actual[0].Value.PropertyValue("spec").PropertyValue("properties").PropertyValue<Array>("array").Length);
-        Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, false, actual[0].Value, out var path));
+        Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, actual[0].Value, out var path));
         Assert.Null(path);
     }
 

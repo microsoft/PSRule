@@ -1290,14 +1290,12 @@ internal sealed class LanguageExpressions
     private static bool TryName(IExpressionContext context, LanguageExpression.PropertyBag properties, ITargetObject o, out IOperand? operand)
     {
         operand = null;
-        if (properties.TryGetString(NAME, out var svalue))
+        if (properties.TryGetString(NAME, out var identifier) && identifier != null)
         {
-            if (svalue != DOT || context?.Context?.Scope == null)
-                return Invalid(context, svalue);
+            if (identifier != DOT) return Invalid(context, identifier);
 
-            if (!context.Context.Scope.TryGetName(o, out var name, out var path) ||
-                string.IsNullOrEmpty(name))
-                return Invalid(context, svalue);
+            if (!context.Scope.TryGetName(o, out var name, out var path) || name == null)
+                return Invalid(context, identifier);
 
             operand = Operand.FromName(name, path);
         }
@@ -1307,14 +1305,12 @@ internal sealed class LanguageExpressions
     private static bool TryType(IExpressionContext context, LanguageExpression.PropertyBag properties, ITargetObject o, out IOperand? operand)
     {
         operand = null;
-        if (properties.TryGetString(TYPE, out var svalue))
+        if (properties.TryGetString(TYPE, out var identifier) && identifier != null)
         {
-            if (svalue != DOT || context?.Context?.Scope == null)
-                return Invalid(context, svalue);
+            if (identifier != DOT) return Invalid(context, identifier);
 
-            if (!context.Context.Scope.TryGetType(o, out var type, out var path) ||
-                string.IsNullOrEmpty(type))
-                return Invalid(context, svalue);
+            if (!context.Scope.TryGetType(o, out var type, out var path) || type == null)
+                return Invalid(context, identifier);
 
             operand = Operand.FromType(type, path);
         }
@@ -1326,7 +1322,7 @@ internal sealed class LanguageExpressions
         operand = null;
         if (properties.TryGetString(SOURCE, out var sourceValue))
         {
-            var source = context?.Context?.TargetObject?.Source[sourceValue];
+            var source = context?.Current.Source.FirstOrDefault(s => StringComparer.OrdinalIgnoreCase.Equals(s.Type, sourceValue));
             if (source == null)
                 return Invalid(context, sourceValue);
 
@@ -1349,15 +1345,11 @@ internal sealed class LanguageExpressions
     private static bool TryScope(IExpressionContext context, LanguageExpression.PropertyBag properties, ITargetObject o, out IOperand? operand)
     {
         operand = null;
-        if (properties.TryGetString(SCOPE, out var svalue))
+        if (properties.TryGetString(SCOPE, out var identifier) && identifier != null)
         {
-            if (svalue != DOT || context?.Context?.Scope == null)
-                return Invalid(context, svalue);
+            if (identifier != DOT) return Invalid(context, identifier);
 
-            if (!context.Context.TryGetScope(o.Value, out var scope))
-                return Invalid(context, svalue);
-
-            operand = Operand.FromScope(scope);
+            operand = Operand.FromScope(o.Scope);
         }
         return operand != null;
     }

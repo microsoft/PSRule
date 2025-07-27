@@ -14,17 +14,15 @@ namespace PSRule.Configuration;
 /// </remarks>
 public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
 {
-    private const bool DEFAULT_IGNORECASE = true;
-    private const bool DEFAULT_PREFERTARGETINFO = false;
-    private const string DEFAULT_NAMESEPARATOR = "/";
-    private const bool DEFAULT_USEQUALIFIEDNAME = false;
+    private const bool DEFAULT_IGNORE_CASE = true;
+    private const string DEFAULT_NAME_SEPARATOR = "/";
+    private const bool DEFAULT_USE_QUALIFIED_NAME = false;
 
     internal static readonly BindingOption Default = new()
     {
-        IgnoreCase = DEFAULT_IGNORECASE,
-        NameSeparator = DEFAULT_NAMESEPARATOR,
-        PreferTargetInfo = DEFAULT_PREFERTARGETINFO,
-        UseQualifiedName = DEFAULT_USEQUALIFIEDNAME
+        IgnoreCase = DEFAULT_IGNORE_CASE,
+        NameSeparator = DEFAULT_NAME_SEPARATOR,
+        UseQualifiedName = DEFAULT_USE_QUALIFIED_NAME
     };
 
     /// <summary>
@@ -35,7 +33,6 @@ public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
         Field = null;
         IgnoreCase = null;
         NameSeparator = null;
-        PreferTargetInfo = null;
         TargetName = null;
         TargetType = null;
         UseQualifiedName = null;
@@ -53,7 +50,6 @@ public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
         Field = option.Field;
         IgnoreCase = option.IgnoreCase;
         NameSeparator = option.NameSeparator;
-        PreferTargetInfo = option.PreferTargetInfo;
         TargetName = option.TargetName;
         TargetType = option.TargetType;
         UseQualifiedName = option.UseQualifiedName;
@@ -72,7 +68,6 @@ public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
             Field == other.Field &&
             IgnoreCase == other.IgnoreCase &&
             NameSeparator == other.NameSeparator &&
-            PreferTargetInfo == other.PreferTargetInfo &&
             TargetName == other.TargetName &&
             TargetType == other.TargetType &&
             UseQualifiedName == other.UseQualifiedName;
@@ -87,7 +82,6 @@ public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
             hash = hash * 23 + (Field != null ? Field.GetHashCode() : 0);
             hash = hash * 23 + (IgnoreCase.HasValue ? IgnoreCase.Value.GetHashCode() : 0);
             hash = hash * 23 + (NameSeparator != null ? NameSeparator.GetHashCode() : 0);
-            hash = hash * 23 + (PreferTargetInfo.HasValue ? PreferTargetInfo.Value.GetHashCode() : 0);
             hash = hash * 23 + (TargetName != null ? TargetName.GetHashCode() : 0);
             hash = hash * 23 + (TargetType != null ? TargetType.GetHashCode() : 0);
             hash = hash * 23 + (UseQualifiedName.HasValue ? UseQualifiedName.Value.GetHashCode() : 0);
@@ -106,7 +100,6 @@ public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
             Field = FieldMap.Combine(o1?.Field, o2?.Field),
             IgnoreCase = o1?.IgnoreCase ?? o2?.IgnoreCase,
             NameSeparator = o1?.NameSeparator ?? o2?.NameSeparator,
-            PreferTargetInfo = o1?.PreferTargetInfo ?? o2?.PreferTargetInfo,
             TargetName = o1?.TargetName ?? o2?.TargetName,
             TargetType = o1?.TargetType ?? o2?.TargetType,
             UseQualifiedName = o1?.UseQualifiedName ?? o2?.UseQualifiedName
@@ -140,15 +133,6 @@ public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
     /// </remarks>
     [DefaultValue(null)]
     public string NameSeparator { get; set; }
-
-    /// <summary>
-    /// Determines if binding prefers target info provided by the object over custom configuration.
-    /// </summary>
-    /// <remarks>
-    /// See <see href="https://aka.ms/ps-rule/options#bindingprefertargetinfo"/>.
-    /// </remarks>
-    [DefaultValue(null)]
-    public bool? PreferTargetInfo { get; set; }
 
     /// <summary>
     /// Property names to use to bind TargetName.
@@ -190,9 +174,6 @@ public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
         if (Environment.TryString("PSRULE_BINDING_NAMESEPARATOR", out var nameSeparator))
             NameSeparator = nameSeparator;
 
-        if (Environment.TryBool("PSRULE_BINDING_PREFERTARGETINFO", out var preferTargetInfo))
-            PreferTargetInfo = preferTargetInfo;
-
         if (Environment.TryStringArray("PSRULE_BINDING_TARGETNAME", out var targetName))
             TargetName = targetName;
 
@@ -214,9 +195,6 @@ public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
 
         if (dictionary.TryPopString("Binding.NameSeparator", out var nameSeparator))
             NameSeparator = nameSeparator;
-
-        if (dictionary.TryPopBool("Binding.PreferTargetInfo", out var preferTargetInfo))
-            PreferTargetInfo = preferTargetInfo;
 
         if (dictionary.TryPopStringArray("Binding.TargetName", out var targetName))
             TargetName = targetName;

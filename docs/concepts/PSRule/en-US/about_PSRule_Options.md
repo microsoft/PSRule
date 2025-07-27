@@ -17,7 +17,6 @@ The following workspace options are available for use:
 - [Binding.Field](#bindingfield)
 - [Binding.IgnoreCase](#bindingignorecase)
 - [Binding.NameSeparator](#bindingnameseparator)
-- [Binding.PreferTargetInfo](#bindingprefertargetinfo)
 - [Binding.TargetName](#bindingtargetname)
 - [Binding.TargetType](#bindingtargettype)
 - [Binding.UseQualifiedName](#bindingusequalifiedname)
@@ -374,57 +373,6 @@ env:
 variables:
 - name: PSRULE_BINDING_NAMESEPARATOR
   value: '::'
-```
-
-### Binding.PreferTargetInfo
-
-Some built-in objects within PSRule perform automatic binding of TargetName and TargetType.
-These built-in objects provide their own target info.
-
-When binding has been configured these values override automatic binding by default.
-This can occur when the built-in object uses one of the fields specified by the custom configuration.
-The common occurrences of this are on fields such as `Name` and `FullName` which are widely used.
-To prefer automatic binding when specified set this option to `$True`.
-
-This option can be specified using:
-
-```powershell
-# PowerShell: Using the BindingPreferTargetInfo parameter
-$option = New-PSRuleOption -BindingPreferTargetInfo $True;
-```
-
-```powershell
-# PowerShell: Using the Binding.PreferTargetInfo hashtable key
-$option = New-PSRuleOption -Option @{ 'Binding.PreferTargetInfo' = $True };
-```
-
-```powershell
-# PowerShell: Using the BindingPreferTargetInfo parameter to set YAML
-Set-PSRuleOption -BindingPreferTargetInfo $True;
-```
-
-```yaml
-# YAML: Using the binding/preferTargetInfo property
-binding:
-  preferTargetInfo: true
-```
-
-```bash
-# Bash: Using environment variable
-export PSRULE_BINDING_PREFERTARGETINFO=false
-```
-
-```yaml
-# GitHub Actions: Using environment variable
-env:
-  PSRULE_BINDING_PREFERTARGETINFO: false
-```
-
-```yaml
-# Azure Pipelines: Using environment variable
-variables:
-- name: PSRULE_BINDING_PREFERTARGETINFO
-  value: false
 ```
 
 ### Binding.TargetName
@@ -3724,7 +3672,6 @@ binding:
     - AlternativeId
   ignoreCase: false
   nameSeparator: '::'
-  preferTargetInfo: true
   targetName:
   - ResourceName
   - AlternateName
@@ -3856,7 +3803,6 @@ binding:
   field: { }
   ignoreCase: true
   nameSeparator: '/'
-  preferTargetInfo: false
   targetName:
   - TargetName
   - Name

@@ -129,7 +129,6 @@ The following options are allowed within a `ModuleConfig`:
 - `Binding.Field`
 - `Binding.IgnoreCase`
 - `Binding.NameSeparator`
-- `Binding.PreferTargetInfo`
 - `Binding.TargetName`
 - `Binding.TargetType`
 - `Binding.UseQualifiedName`
