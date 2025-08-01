@@ -3,6 +3,7 @@
 
 using System.Text;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Resources;
 using PSRule.Rules;
 
@@ -23,12 +24,13 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
     private readonly Encoding _Encoding;
     private readonly JobSummaryFormat _JobSummary;
     private readonly Source[]? _Source;
+    private readonly IJobSummaryContributor[]? _Contributors;
 
     private Stream? _Stream;
-    private StreamWriter _Writer;
+    private StreamWriter? _Writer;
     private bool _IsDisposed;
 
-    public JobSummaryWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess, string? outputPath = null, Stream? stream = null, Source[]? source = null)
+    public JobSummaryWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess, string? outputPath = null, Stream? stream = null, Source[]? source = null, IJobSummaryContributor[]? contributors = null)
         : base(inner, option, shouldProcess)
     {
         _OutputPath = outputPath ?? Environment.GetRootedPath(Option.Output.JobSummaryPath);
@@ -36,6 +38,7 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
         _JobSummary = JobSummaryFormat.Default;
         _Stream = stream;
         _Source = source;
+        _Contributors = contributors;
 
         if (Option.Output.As == ResultFormat.Summary && inner != null)
             inner.WriteError(new PipelineConfigurationException("Output.As", PSRuleResources.PSR0002), "PSRule.Output.AsOutputSerialization", System.Management.Automation.ErrorCategory.InvalidOperation);
@@ -135,6 +138,47 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
         FinalResult(results);
         Source();
         Analysis(results);
+        AdditionalInformation();
+    }
+
+    private void AdditionalInformation()
+    {
+        if (_Contributors == null || _Contributors.Length == 0)
+            return;
+
+        var sections = new List<JobSummarySection>();
+
+        // Collect content from all contributors
+        for (var i = 0; i < _Contributors.Length; i++)
+        {
+            try
+            {
+                var contributorSections = _Contributors[i].GetJobSummaryContent();
+                if (contributorSections != null)
+                {
+                    sections.AddRange(contributorSections);
+                }
+            }
+            catch
+            {
+                // Ignore exceptions from individual contributors to prevent them from breaking the entire job summary
+                continue;
+            }
+        }
+
+        // Write sections if any content was provided
+        if (sections.Count > 0)
+        {
+            foreach (var section in sections)
+            {
+                if (!string.IsNullOrWhiteSpace(section.Title) && section.Content != null && section.Content.HasValue)
+                {
+                    H2(section.Title);
+                    WriteLine(section.Content.Markdown);
+                    WriteLine();
+                }
+            }
+        }
     }
 
     private void Analysis(InvokeResult[] o)
