@@ -45,7 +45,6 @@ public sealed class SuppressionGroupVisitorTests : ContextBaseTests
     {
         var option = new PSRuleOption();
         option.Output.Culture = ["en-US", "en"];
-        option.Binding.PreferTargetInfo = true;
         return option;
     }
 

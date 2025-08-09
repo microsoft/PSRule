@@ -395,45 +395,6 @@ Describe 'New-PSRuleOption' -Tag 'Option','New-PSRuleOption' {
         }
     }
 
-    Context 'Read Binding.PreferTargetInfo' {
-        It 'from default' {
-            $option = New-PSRuleOption -Default;
-            $option.Binding.PreferTargetInfo | Should -Be $False;
-        }
-
-        It 'from Hashtable' {
-            $option = New-PSRuleOption -Option @{ 'Binding.PreferTargetInfo' = $True };
-            $option.Binding.PreferTargetInfo | Should -Be $True;
-        }
-
-        It 'from YAML' {
-            $option = New-PSRuleOption -Option (Join-Path -Path $here -ChildPath 'PSRule.Tests.yml');
-            $option.Binding.PreferTargetInfo | Should -Be $True;
-        }
-
-        It 'from Environment' {
-            try {
-                # With bool
-                $Env:PSRULE_BINDING_PREFERTARGETINFO = 'true';
-                $option = New-PSRuleOption;
-                $option.Binding.PreferTargetInfo | Should -Be $True;
-
-                # With int
-                $Env:PSRULE_BINDING_PREFERTARGETINFO = '1';
-                $option = New-PSRuleOption;
-                $option.Binding.PreferTargetInfo | Should -Be $True;
-            }
-            finally {
-                Remove-Item 'Env:PSRULE_BINDING_PREFERTARGETINFO' -Force;
-            }
-        }
-
-        It 'from parameter' {
-            $option = New-PSRuleOption -BindingPreferTargetInfo $True -Path $emptyOptionsFilePath;
-            $option.Binding.PreferTargetInfo | Should -Be $True;
-        }
-    }
-
     Context 'Read Binding.TargetName' {
         It 'from default' {
             $option = New-PSRuleOption -Default;
@@ -2586,13 +2547,6 @@ Describe 'Set-PSRuleOption' -Tag 'Option','Set-PSRuleOption' {
         It 'from parameter' {
             $option = Set-PSRuleOption -BindingNameSeparator '::' @optionParams;
             $option.Binding.NameSeparator | Should -Be $True;
-        }
-    }
-
-    Context 'Read Binding.PreferTargetInfo' {
-        It 'from parameter' {
-            $option = Set-PSRuleOption -BindingPreferTargetInfo $True @optionParams;
-            $option.Binding.PreferTargetInfo | Should -Be $True;
         }
     }
 

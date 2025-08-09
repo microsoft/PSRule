@@ -5,14 +5,11 @@ using PSRule.Configuration;
 
 namespace PSRule.Runtime.Binding;
 
-#nullable enable
-
 /// <summary>
 /// Builds a TargetBinder.
 /// </summary>
 internal sealed class TargetBinderBuilder
 {
-    private readonly List<ITargetBindingContext> _BindingContext;
     private readonly HashSet<string>? _TypeFilter;
     private readonly BindTargetMethod? _BindTargetName;
     private readonly BindTargetMethod? _BindTargetType;
@@ -23,7 +20,6 @@ internal sealed class TargetBinderBuilder
         _BindTargetName = bindTargetName;
         _BindTargetType = bindTargetType;
         _BindField = bindField;
-        _BindingContext = [];
         if (typeFilter != null && typeFilter.Length > 0)
             _TypeFilter = new HashSet<string>(typeFilter, StringComparer.OrdinalIgnoreCase);
     }
@@ -36,5 +32,3 @@ internal sealed class TargetBinderBuilder
         return new TargetBinder(new TargetBindingContext(bindingOption, _BindTargetName, _BindTargetType, _BindField, _TypeFilter));
     }
 }
-
-#nullable restore
