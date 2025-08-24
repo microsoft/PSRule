@@ -67,6 +67,11 @@ internal interface ILanguageScope : IDisposable
     /// </summary>
     IEnumerable<Type> GetEmitters();
 
+    /// <summary>
+    /// Get any conventions added to the scope.
+    /// </summary>
+    IEnumerable<Type> GetConventions();
+
     ITargetBindingResult? Bind(ITargetObject targetObject);
 
     /// <summary>
