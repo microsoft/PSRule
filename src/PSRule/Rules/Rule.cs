@@ -77,11 +77,13 @@ public sealed class Rule : IDependencyTarget, ITargetInfo, IResource, IRuleV1
     [JsonIgnore, YamlIgnore]
     public IResourceLabels Labels { get; set; }
 
-    string ITargetInfo.TargetName => Name;
+    string ITargetInfo.Name => Name;
 
-    string ITargetInfo.TargetType => typeof(Rule).FullName;
+    string ITargetInfo.Type => typeof(Rule).FullName;
 
     TargetSourceInfo ITargetInfo.Source => new() { File = Source.Path };
+
+    // ITargetSourceMap? ITargetInfo.Source => null;
 
     bool IDependencyTarget.Dependency => Source.IsDependency();
 

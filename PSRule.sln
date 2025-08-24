@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.Tool", "src\PSRule.T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F5173A23-CCEA-4C39-AB8D-EF6E86C11BD7}"
 	ProjectSection(SolutionItems) = preProject
-		src\PSRule.Common.props = src\PSRule.Common.props
+		src\Directory.Build.props = src\Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSRule.MSBuild", "src\PSRule.MSBuild\PSRule.MSBuild.csproj", "{872D2648-2F00-475E-84B5-F08BE07385B7}"

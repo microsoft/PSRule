@@ -285,7 +285,6 @@ The following conceptual topics exist in the `PSRule` module:
   - [Binding.Field](https://aka.ms/ps-rule/options#bindingfield)
   - [Binding.IgnoreCase](https://aka.ms/ps-rule/options#bindingignorecase)
   - [Binding.NameSeparator](https://aka.ms/ps-rule/options#bindingnameseparator)
-  - [Binding.PreferTargetInfo](https://aka.ms/ps-rule/options#bindingprefertargetinfo)
   - [Binding.TargetName](https://aka.ms/ps-rule/options#bindingtargetname)
   - [Binding.TargetType](https://aka.ms/ps-rule/options#bindingtargettype)
   - [Binding.UseQualifiedName](https://aka.ms/ps-rule/options#bindingusequalifiedname)

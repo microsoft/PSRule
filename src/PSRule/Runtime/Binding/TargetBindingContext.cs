@@ -4,14 +4,12 @@
 using System.Collections;
 using PSRule.Configuration;
 using PSRule.Data;
+using PSRule.Pipeline;
 
 namespace PSRule.Runtime.Binding;
 
-#nullable enable
-
 internal sealed class TargetBindingContext : ITargetBindingContext
 {
-    private readonly bool _PreferTargetInfo;
     private readonly bool _IgnoreCase;
     private readonly bool _UseQualifiedName;
     private readonly FieldMap? _Field;
@@ -25,25 +23,24 @@ internal sealed class TargetBindingContext : ITargetBindingContext
 
     public TargetBindingContext(BindingOption? bindingOption, BindTargetMethod? bindTargetName, BindTargetMethod? bindTargetType, BindTargetMethod? bindField, HashSet<string>? typeFilter)
     {
-        _PreferTargetInfo = bindingOption?.PreferTargetInfo ?? BindingOption.Default.PreferTargetInfo!.Value;
         _IgnoreCase = bindingOption?.IgnoreCase ?? BindingOption.Default.IgnoreCase!.Value;
         _UseQualifiedName = bindingOption?.UseQualifiedName ?? BindingOption.Default.UseQualifiedName!.Value;
         _Field = bindingOption?.Field;
         _TargetName = bindingOption?.TargetName;
         _TargetType = bindingOption?.TargetType;
         _NameSeparator = bindingOption?.NameSeparator ?? BindingOption.Default.NameSeparator;
-        _BindTargetName = bindTargetName;
-        _BindTargetType = bindTargetType;
-        _BindField = bindField;
+        _BindTargetName = bindTargetName ?? PipelineHookActions.BindTargetName;
+        _BindTargetType = bindTargetType ?? PipelineHookActions.BindTargetType;
+        _BindField = bindField ?? PipelineHookActions.BindField;
         _TypeFilter = typeFilter;
     }
 
     public ITargetBindingResult Bind(ITargetObject o)
     {
-        var targetNamePath = ".";
-        var targetName = _PreferTargetInfo && o.Name != null ? o.Name : _BindTargetName(_TargetName, !_IgnoreCase, _PreferTargetInfo, o.Value, out targetNamePath);
-        var targetTypePath = ".";
-        var targetType = _PreferTargetInfo && o.Type != null ? o.Type : _BindTargetType(_TargetType, !_IgnoreCase, _PreferTargetInfo, o.Value, out targetTypePath);
+        var targetName = o.TryGetName(out var name, out var namePath) ? name : _BindTargetName(_TargetName, !_IgnoreCase, o.Value, out namePath);
+        var targetNamePath = namePath ?? ".";
+        var targetType = o.TryGetType(out var type, out var typePath) ? type : _BindTargetType(_TargetType, !_IgnoreCase, o.Value, out typePath);
+        var targetTypePath = typePath ?? ".";
         var shouldFilter = !(_TypeFilter == null || _TypeFilter.Contains(targetType));
 
         // Bind custom fields
@@ -89,12 +86,14 @@ internal sealed class TargetBindingContext : ITargetBindingContext
                 if (hashtable.ContainsKey(field.Key))
                     continue;
 
-                hashtable.Add(field.Key, bindField(field.Value, caseSensitive, false, o, out _));
+                var value = bindField(field.Value, caseSensitive, o, out var path);
+                if (value == null)
+                    continue;
+
+                hashtable.Add(field.Key, value);
             }
         }
         hashtable.Protect();
         return hashtable;
     }
 }
-
-#nullable restore
