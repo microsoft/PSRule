@@ -16,6 +16,9 @@ export const StartProgressNotificationType = new lsp.ProgressType<string>();
  * Implements a language server client for communication with PSRule runtime.
  */
 export class PSRuleClient implements vscode.Disposable {
+    private _configurationWatcher?: vscode.Disposable;
+    private _currentOptionsPath?: string;
+    private _optionsFileWatcher?: vscode.FileSystemWatcher;
     public async configure(
         context: vscode.ExtensionContext,
     ): Promise<lsp.LanguageClient> {
@@ -35,6 +38,9 @@ export class PSRuleClient implements vscode.Disposable {
             serverOptions,
             clientOptions,
         );
+        
+        // Get current options path
+        this._currentOptionsPath = configuration.get().optionsPath;
 
         // Register proposed features
         client.registerProposedFeatures();
@@ -56,6 +62,12 @@ export class PSRuleClient implements vscode.Disposable {
         client.onProgress(StartProgressNotificationType, 'server/ready', (arg1) => {
             logger.verbose(`Language server ready and connected: v${arg1}.`);
         });
+
+        // Set up configuration change monitoring
+        this.setupConfigurationWatcher();
+
+        // Set up options file watcher
+        this.updateOptionsFileWatcher();
 
         // Start the server and return the client.
         client.start();
@@ -88,9 +100,13 @@ export class PSRuleClient implements vscode.Disposable {
                     vscode.workspace.createFileSystemWatcher('**/'), // folder changes
                     vscode.workspace.createFileSystemWatcher('**/*.Rule.yaml'), // Rule file changes
                     vscode.workspace.createFileSystemWatcher('**/ps-rule.lock.json'), // Lock file changes
+                    ...this.getOptionsFileWatchers(), // PSRule options file changes
                 ],
+                // Configure additional file change handlers
+                configurationSection: 'PSRule',
             },
         };
+        
         return clientOptions;
     }
 
@@ -129,9 +145,52 @@ export class PSRuleClient implements vscode.Disposable {
         return serverOptions;
     }
 
+    private setupConfigurationWatcher(): void {
+        // Watch for configuration changes that affect the options path
+        this._configurationWatcher = vscode.workspace.onDidChangeConfiguration((e) => {
+            if (e.affectsConfiguration('PSRule.options.path')) {
+                const newOptionsPath = configuration.get().optionsPath;
+                if (newOptionsPath !== this._currentOptionsPath) {
+                    this._currentOptionsPath = newOptionsPath;
+                    this.updateOptionsFileWatcher();
+                    // The server will automatically reload options when it detects file changes
+                    // or when the configuration updates are sent through the LSP protocol
+                }
+            }
+        });
+    }
+
+    private getOptionsFileWatchers(): vscode.FileSystemWatcher[] {
+        const optionsPath = this._currentOptionsPath;
+        if (optionsPath) {
+            // Watch the specific file configured in PSRule.options.path
+            return [vscode.workspace.createFileSystemWatcher(`**/${optionsPath}`)];
+        } else {
+            // Default to watching ps-rule.yaml only
+            return [vscode.workspace.createFileSystemWatcher('**/ps-rule.yaml')];
+        }
+    }
+
+    private updateOptionsFileWatcher(): void {
+        // Dispose existing watcher if any
+        this._optionsFileWatcher?.dispose();
+        
+        const optionsPath = this._currentOptionsPath;
+        if (optionsPath) {
+            // Watch the specific file configured in PSRule.options.path
+            this._optionsFileWatcher = vscode.workspace.createFileSystemWatcher(`**/${optionsPath}`);
+        } else {
+            // Default to watching ps-rule.yaml only
+            this._optionsFileWatcher = vscode.workspace.createFileSystemWatcher('**/ps-rule.yaml');
+        }
+    }
+
     public run(): void { }
 
-    public dispose(): void { }
+    public dispose(): void {
+        this._configurationWatcher?.dispose();
+        this._optionsFileWatcher?.dispose();
+    }
 }
 
 export const client = new PSRuleClient();
