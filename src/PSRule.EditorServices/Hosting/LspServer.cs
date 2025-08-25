@@ -73,6 +73,7 @@ internal sealed class LspServer : IDisposable
     {
         options.WithHandler<UpgradeDependencyCommandHandler>();
         options.WithHandler<RunAnalysisCommandHandler>();
+        options.WithHandler<WorkspaceChangeWatcherHandler>();
     }
 
     /// <summary>

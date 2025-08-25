@@ -14,6 +14,8 @@ namespace PSRule.CommandLine;
 /// </summary>
 public sealed class ClientContext
 {
+    private string? _optionPath;
+
     /// <summary>
     /// 
     /// </summary>
@@ -30,6 +32,7 @@ public sealed class ClientContext
         Verbose = verbose;
         Debug = debug;
         Host = new ClientHost(this, verbose, debug);
+        _optionPath = option;
         Option = GetOption(Host, option);
         CachePath = Path;
         IntegrityAlgorithm = Option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm!.Value).ToIntegrityAlgorithm();
@@ -54,7 +57,7 @@ public sealed class ClientContext
     /// <summary>
     /// 
     /// </summary>
-    public PSRuleOption Option { get; }
+    public PSRuleOption Option { get; private set; }
 
     /// <summary>
     /// Determines if verbose level diagnostic information should be displayed.
@@ -109,5 +112,21 @@ public sealed class ClientContext
         if (eventId == null) return;
 
         LastErrorCode = eventId.Value.Id;
+    }
+
+    /// <summary>
+    /// Update the options path used by this context.
+    /// </summary>
+    public void UpdateOptionsPath(string optionPath)
+    {
+        _optionPath = optionPath;
+    }
+
+    /// <summary>
+    /// Reload the PSRule options from the configured path.
+    /// </summary>
+    public void ReloadOptions()
+    {
+        Option = GetOption(Host, _optionPath);
     }
 }

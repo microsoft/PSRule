@@ -16,6 +16,8 @@ export const StartProgressNotificationType = new lsp.ProgressType<string>();
  * Implements a language server client for communication with PSRule runtime.
  */
 export class PSRuleClient implements vscode.Disposable {
+    private _configurationWatcher?: vscode.Disposable;
+    private _currentOptionsPath?: string;
     public async configure(
         context: vscode.ExtensionContext,
     ): Promise<lsp.LanguageClient> {
@@ -35,6 +37,9 @@ export class PSRuleClient implements vscode.Disposable {
             serverOptions,
             clientOptions,
         );
+        
+        // Get current options path
+        this._currentOptionsPath = configuration.get().optionsPath;
 
         // Register proposed features
         client.registerProposedFeatures();
@@ -56,6 +61,9 @@ export class PSRuleClient implements vscode.Disposable {
         client.onProgress(StartProgressNotificationType, 'server/ready', (arg1) => {
             logger.verbose(`Language server ready and connected: v${arg1}.`);
         });
+
+        // Set up configuration change monitoring
+        this.setupConfigurationWatcher();
 
         // Start the server and return the client.
         client.start();
@@ -88,9 +96,16 @@ export class PSRuleClient implements vscode.Disposable {
                     vscode.workspace.createFileSystemWatcher('**/'), // folder changes
                     vscode.workspace.createFileSystemWatcher('**/*.Rule.yaml'), // Rule file changes
                     vscode.workspace.createFileSystemWatcher('**/ps-rule.lock.json'), // Lock file changes
+                    vscode.workspace.createFileSystemWatcher('**/ps-rule.yaml'), // PSRule options file changes
+                    vscode.workspace.createFileSystemWatcher('**/ps-rule.yml'), // PSRule options file changes (yml)
+                    vscode.workspace.createFileSystemWatcher('**/psrule.yaml'), // PSRule options file changes (alternative name)
+                    vscode.workspace.createFileSystemWatcher('**/psrule.yml'), // PSRule options file changes (alternative name, yml)
                 ],
+                // Configure additional file change handlers
+                configurationSection: 'PSRule',
             },
         };
+        
         return clientOptions;
     }
 
@@ -129,9 +144,25 @@ export class PSRuleClient implements vscode.Disposable {
         return serverOptions;
     }
 
+    private setupConfigurationWatcher(): void {
+        // Watch for configuration changes that affect the options path
+        this._configurationWatcher = vscode.workspace.onDidChangeConfiguration((e) => {
+            if (e.affectsConfiguration('PSRule.options.path')) {
+                const newOptionsPath = configuration.get().optionsPath;
+                if (newOptionsPath !== this._currentOptionsPath) {
+                    this._currentOptionsPath = newOptionsPath;
+                    // The server will automatically reload options when it detects file changes
+                    // or when the configuration updates are sent through the LSP protocol
+                }
+            }
+        });
+    }
+
     public run(): void { }
 
-    public dispose(): void { }
+    public dispose(): void {
+        this._configurationWatcher?.dispose();
+    }
 }
 
 export const client = new PSRuleClient();
