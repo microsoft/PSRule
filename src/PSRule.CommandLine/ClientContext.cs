@@ -115,6 +115,11 @@ public sealed class ClientContext
     }
 
     /// <summary>
+    /// The current options path used by this context.
+    /// </summary>
+    public string? OptionsPath => _optionPath;
+
+    /// <summary>
     /// Update the options path used by this context.
     /// </summary>
     public void UpdateOptionsPath(string optionPath)

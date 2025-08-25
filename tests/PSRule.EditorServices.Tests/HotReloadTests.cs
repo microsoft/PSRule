@@ -100,6 +100,39 @@ execution:
         }
     }
     
+    [Fact]
+    public void ClientContext_OptionsPath_ReturnsConfiguredPath()
+    {
+        var testDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(testDir);
+        
+        try
+        {
+            var optionsPath = Path.Combine(testDir, "custom-options.yaml");
+            
+            // Create options file
+            File.WriteAllText(optionsPath, @"
+execution:
+  aliasReference: Error
+");
+
+            // Create client context with custom options path
+            var context = CreateClientContext(optionsPath, testDir);
+
+            // Verify OptionsPath property returns the configured path
+            Assert.Equal(optionsPath, context.OptionsPath);
+            
+            // Test with null path
+            var contextWithNull = CreateClientContext(null!, testDir);
+            Assert.Null(contextWithNull.OptionsPath);
+        }
+        finally
+        {
+            // Cleanup
+            Directory.Delete(testDir, true);
+        }
+    }
+    
     private static ClientContext CreateClientContext(string optionPath, string workingPath)
     {
         var p = new Parser();

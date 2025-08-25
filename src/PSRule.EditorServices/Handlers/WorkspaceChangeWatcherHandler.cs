@@ -59,11 +59,21 @@ public sealed class WorkspaceChangeWatcherHandler(ClientContext context, ILogger
         return Task.FromResult(Unit.Value);
     }
 
-    private static bool IsOptionsFile(string fileName)
+    private bool IsOptionsFile(string fileName)
     {
-        return fileName.Equals("ps-rule.yaml", StringComparison.OrdinalIgnoreCase) ||
-               fileName.Equals("ps-rule.yml", StringComparison.OrdinalIgnoreCase) ||
-               fileName.Equals("psrule.yaml", StringComparison.OrdinalIgnoreCase) ||
-               fileName.Equals("psrule.yml", StringComparison.OrdinalIgnoreCase);
+        // Get the configured options path from context
+        var configuredPath = _Context.OptionsPath;
+        
+        if (!string.IsNullOrEmpty(configuredPath))
+        {
+            // Check if the changed file matches the configured options path
+            var configuredFileName = System.IO.Path.GetFileName(configuredPath);
+            return fileName.Equals(configuredFileName, StringComparison.OrdinalIgnoreCase);
+        }
+        else
+        {
+            // Default to ps-rule.yaml only
+            return fileName.Equals("ps-rule.yaml", StringComparison.OrdinalIgnoreCase);
+        }
     }
 }
