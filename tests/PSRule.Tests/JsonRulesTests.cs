@@ -102,29 +102,29 @@ public sealed class JsonRulesTests : ContextBaseTests
         // JsonRuleWithPrecondition
         context.EnterTargetObject(actual1);
         context.EnterRuleBlock(subselector1);
-        Assert.True(subselector1.Condition.If().AllOf());
+        Assert.True(subselector1.Condition.If(context, actual1).AllOf());
 
         context.EnterTargetObject(actual2);
         context.EnterRuleBlock(subselector1);
-        Assert.True(subselector1.Condition.If().Skipped());
+        Assert.True(subselector1.Condition.If(context, actual2).Skipped());
 
         // JsonRuleWithSubselector
         context.EnterTargetObject(actual1);
         context.EnterRuleBlock(subselector2);
-        Assert.True(subselector2.Condition.If().AllOf());
+        Assert.True(subselector2.Condition.If(context, actual1).AllOf());
 
         context.EnterTargetObject(actual2);
         context.EnterRuleBlock(subselector2);
-        Assert.False(subselector2.Condition.If().AllOf());
+        Assert.False(subselector2.Condition.If(context, actual2).AllOf());
 
         // JsonRuleWithSubselectorReordered
         context.EnterTargetObject(actual1);
         context.EnterRuleBlock(subselector3);
-        Assert.True(subselector3.Condition.If().AllOf());
+        Assert.True(subselector3.Condition.If(context, actual1).AllOf());
 
         context.EnterTargetObject(actual2);
         context.EnterRuleBlock(subselector3);
-        Assert.True(subselector3.Condition.If().AllOf());
+        Assert.True(subselector3.Condition.If(context, actual2).AllOf());
 
         // JsonRuleWithQuantifier
         var fromFile = GetObjectAsTarget("ObjectFromFile3.json");
@@ -134,15 +134,15 @@ public sealed class JsonRulesTests : ContextBaseTests
 
         context.EnterTargetObject(actual1);
         context.EnterRuleBlock(subselector4);
-        Assert.True(subselector4.Condition.If().AllOf());
+        Assert.True(subselector4.Condition.If(context, actual1).AllOf());
 
         context.EnterTargetObject(actual2);
         context.EnterRuleBlock(subselector4);
-        Assert.False(subselector4.Condition.If().AllOf());
+        Assert.False(subselector4.Condition.If(context, actual2).AllOf());
 
         context.EnterTargetObject(actual3);
         context.EnterRuleBlock(subselector4);
-        Assert.True(subselector4.Condition.If().AllOf());
+        Assert.True(subselector4.Condition.If(context, actual3).AllOf());
     }
 
     #region Helper methods
