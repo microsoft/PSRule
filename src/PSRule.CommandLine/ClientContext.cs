@@ -14,7 +14,7 @@ namespace PSRule.CommandLine;
 /// </summary>
 public sealed class ClientContext
 {
-    private string? _optionPath;
+    private string? _OptionPath;
 
     /// <summary>
     /// 
@@ -32,7 +32,7 @@ public sealed class ClientContext
         Verbose = verbose;
         Debug = debug;
         Host = new ClientHost(this, verbose, debug);
-        _optionPath = option;
+        _OptionPath = option;
         Option = GetOption(Host, option);
         CachePath = Path;
         IntegrityAlgorithm = Option.Execution.HashAlgorithm.GetValueOrDefault(ExecutionOption.Default.HashAlgorithm!.Value).ToIntegrityAlgorithm();
@@ -117,14 +117,14 @@ public sealed class ClientContext
     /// <summary>
     /// The current options path used by this context.
     /// </summary>
-    public string? OptionsPath => _optionPath;
+    public string? OptionsPath => _OptionPath;
 
     /// <summary>
     /// Update the options path used by this context.
     /// </summary>
     public void UpdateOptionsPath(string optionPath)
     {
-        _optionPath = optionPath;
+        _OptionPath = optionPath;
     }
 
     /// <summary>
@@ -132,6 +132,6 @@ public sealed class ClientContext
     /// </summary>
     public void ReloadOptions()
     {
-        Option = GetOption(Host, _optionPath);
+        Option = GetOption(Host, _OptionPath);
     }
 }
