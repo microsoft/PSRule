@@ -151,7 +151,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         ReportIssue(runspaceContext);
 
         // Build selectors
-        Selector = ResourceCache.OfType<ISelector>().ToDictionary(key => key.Id.Value, value => value.ToSelectorVisitor(runspaceContext));
+        Selector = ResourceCache.OfType<ISelector>().ToDictionary(key => key.Id.Value, value => value.ToSelectorVisitor());
 
         // Build suppression groups
         var suppressionGroupFilter = new SuppressionGroupFilter();

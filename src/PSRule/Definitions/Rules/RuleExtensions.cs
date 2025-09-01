@@ -57,7 +57,7 @@ internal static class RuleExtensions
                         },
                         @override: propertyOverride,
                         info: info,
-                        condition: new RuleVisitor(context, block.Id, block.Source, block.Spec),
+                        condition: new RuleVisitor(block.Id, block.Source, block.Spec),
                         alias: block.Alias,
                         tag: block.Metadata.Tags,
                         dependsOn: null,  // No support for DependsOn yet
@@ -173,7 +173,7 @@ internal static class RuleExtensions
                     },
                     @override: propertyOverride,
                     info: info,
-                    condition: new RuleVisitor(context, block.Id, block.Source, block.Spec),
+                    condition: new RuleVisitor(block.Id, block.Source, block.Spec),
                     alias: block.Alias,
                     tag: block.Metadata.Tags,
                     dependsOn: null,  // No support for DependsOn yet

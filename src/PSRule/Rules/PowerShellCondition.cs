@@ -2,32 +2,32 @@
 // Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Management.Automation;
+using PSRule.Data;
 using PSRule.Definitions;
+using PSRule.Definitions.Expressions;
+using PSRule.Runtime;
 
 namespace PSRule.Rules;
 
-internal sealed class PowerShellCondition : ICondition
+/// <summary>
+/// Define a condition implemented as a PowerShell script block.
+/// </summary>
+[DebuggerDisplay("Id: {Id}")]
+internal sealed class PowerShellCondition(ResourceId id, ISourceFile source, PowerShell condition, ActionPreference errorAction) : ICondition
 {
     private const string ERROR_ACTION_PREFERENCE = "ErrorActionPreference";
 
-    private readonly PowerShell _Condition;
+    private readonly PowerShell _Condition = condition;
 
     private bool _Disposed;
 
-    internal PowerShellCondition(ResourceId id, ISourceFile source, PowerShell condition, ActionPreference errorAction)
-    {
-        _Condition = condition;
-        Id = id;
-        Source = source;
-        ErrorAction = errorAction;
-    }
+    public ResourceId Id { get; } = id;
 
-    public ResourceId Id { get; }
+    public ISourceFile Source { get; } = source;
 
-    public ISourceFile Source { get; }
-
-    public ActionPreference ErrorAction { get; }
+    public ActionPreference ErrorAction { get; } = errorAction;
 
     private void Dispose(bool disposing)
     {
@@ -49,14 +49,16 @@ internal sealed class PowerShellCondition : ICondition
         GC.SuppressFinalize(this);
     }
 
-    public IConditionResult If()
+    public IConditionResult? If(IExpressionContext expressionContext, ITargetObject o)
     {
+        var context = new ExpressionContext(expressionContext, Source, ResourceKind.Rule, o);
+
         _Condition.Streams.ClearStreams();
         _Condition.Runspace.SessionStateProxy.SetVariable(ERROR_ACTION_PREFERENCE, ErrorAction);
-        return GetResult(_Condition.Invoke<Runtime.RuleConditionResult>());
+        return GetResult(_Condition.Invoke<RuleConditionResult>());
     }
 
-    private static Runtime.RuleConditionResult? GetResult(Collection<Runtime.RuleConditionResult> value)
+    private static RuleConditionResult? GetResult(Collection<RuleConditionResult> value)
     {
         return value == null || value.Count == 0 ? null : value[0];
     }

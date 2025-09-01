@@ -211,7 +211,6 @@ The following helper methods are available:
   This method can only be called within the `-Initialize` or `-Begin` block of a convention.
   Use this method to expand an object into child objects that will be processed independently.
   Objects imported using this method will be excluded from the `Input.ObjectPath` option if set.
-  When `Binding.PreferTargetInfo` is true, the type will be automatically used as the `TargetType` for the imported object.
 - `AddService(string id, object service)` - Add a service to the current context.
   The service can be retrieved using `$PSRule.GetService(id)`.
   The service object will be available to all rules and cleaned up after all rules are executed.

@@ -14,7 +14,7 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
 
     private List<ResultReason> _Reason;
 
-    internal ExpressionContext(LegacyRunspaceContext context, ISourceFile source, ResourceKind kind, ITargetObject current, ResourceId? ruleId = null)
+    internal ExpressionContext(IExpressionContext context, ISourceFile source, ResourceKind kind, ITargetObject current, ResourceId? ruleId = null)
     {
         Context = context ?? throw new ArgumentNullException(nameof(context));
         Source = source;
@@ -38,7 +38,9 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
     /// <inheritdoc/>
     public ResourceId? RuleId { get; }
 
-    public LegacyRunspaceContext Context { get; }
+    public IExpressionContext Context { get; }
+
+    public ILanguageScope? Scope => Context.Scope;
 
     [DebuggerStepThrough]
     void IBindingContext.CachePathExpression(string path, PathExpression expression)
@@ -52,6 +54,10 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
         return _NameTokenCache.TryGetValue(path, out expression);
     }
 
+    public bool TryGetScope(object o, out string[]? scope) => Context.TryGetScope(o, out scope);
+
+    public bool IsScope(RunspaceScope scope) => Context.IsScope(scope);
+
     public void PushScope(RunspaceScope scope)
     {
         Context.PushScope(scope);
@@ -63,12 +69,17 @@ internal sealed class ExpressionContext : IExpressionContext, IBindingContext
         Context.PopScope(scope);
     }
 
+    public void EnterLanguageScope(ISourceFile file)
+    {
+        Context.EnterLanguageScope(file);
+    }
+
     public void Reason(IOperand operand, string text, params object[] args)
     {
-        if (string.IsNullOrEmpty(text) || !Context.IsScope(RunspaceScope.Rule))
+        if (string.IsNullOrEmpty(text) || !IsScope(RunspaceScope.Rule))
             return;
 
-        AddReason(new ResultReason(Context.TargetObject?.Path, operand, text, args));
+        AddReason(new ResultReason(Current?.Path, operand, text, args));
     }
 
     internal ResultReason[] GetReasons()

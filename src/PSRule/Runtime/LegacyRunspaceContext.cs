@@ -7,12 +7,14 @@ using System.Management.Automation.Language;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
+using PSRule.Definitions.Expressions;
 using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Runs;
 using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime.Binding;
+using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Runtime;
 
@@ -21,7 +23,7 @@ namespace PSRule.Runtime;
 /// <summary>
 /// A context applicable to rule execution.
 /// </summary>
-internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext
+internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext, IExpressionContext
 {
     private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
     private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
@@ -104,6 +106,14 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     public IEnumerable<Run> Runs { get; private set; } = [];
 
     public ILanguageScope? Scope { get; private set; }
+
+    public ResourceKind Kind => throw new NotImplementedException();
+
+    public string LanguageScope => throw new NotImplementedException();
+
+    public ITargetObject Current => TargetObject;
+
+    public ResourceId? RuleId => RuleBlock?.Id;
 
     public bool IsScope(RunspaceScope scope)
     {
@@ -502,10 +512,25 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         if (annotation.TryGetSelectorResult(selector, out var result))
             return result;
 
-        result = selector.Match(targetObject);
+        result = selector.If(this, targetObject);
         annotation.SetSelectorResult(selector, result);
         targetObject.SetAnnotation(annotation);
         return result;
+    }
+
+    public void Reason(IOperand operand, string text, params object[] args)
+    {
+        WriteReason(new ResultReason(null, operand, text, args));
+    }
+
+    public bool GetPathExpression(string path, out PathExpression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void CachePathExpression(string path, PathExpression expression)
+    {
+        throw new NotImplementedException();
     }
 
     /// <summary>
@@ -724,7 +749,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     #region Configuration
 
-    internal bool TryGetConfigurationValue(string name, out object? value)
+    public bool TryGetConfigurationValue(string name, out object? value)
     {
         value = null;
         if (string.IsNullOrEmpty(name))
