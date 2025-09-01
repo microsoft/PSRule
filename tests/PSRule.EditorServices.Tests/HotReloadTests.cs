@@ -131,6 +131,65 @@ execution:
         }
     }
 
+    [Fact]
+    public void ConfigurationChangeHandler_Handle_UpdatesOptionsPath()
+    {
+        var testDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(testDir);
+
+        try
+        {
+            var optionsPath1 = Path.Combine(testDir, "ps-rule1.yaml");
+            var optionsPath2 = Path.Combine(testDir, "ps-rule2.yaml");
+
+            // Create options files
+            File.WriteAllText(optionsPath1, @"
+execution:
+  aliasReference: Error
+");
+
+            File.WriteAllText(optionsPath2, @"
+execution:
+  aliasReference: Warn
+");
+
+            // Create client context with first options
+            var context = CreateClientContext(optionsPath1, testDir);
+            var logger = new TestLogger();
+            var handler = new Handlers.ConfigurationChangeHandler(context, logger);
+
+            // Verify initial options
+            Assert.Equal(Options.ExecutionActionPreference.Error, context.Option.Execution.AliasReference);
+
+            // Create configuration change request with raw JSON string
+            var configJson = $@"{{
+    ""PSRule"": {{
+        ""options"": {{
+            ""path"": ""{optionsPath2.Replace("\\", "\\\\").Replace("\"", "\\\"")}""
+        }}
+    }}
+}}";
+
+            var request = new OmniSharp.Extensions.LanguageServer.Protocol.Models.DidChangeConfigurationParams
+            {
+                Settings = configJson  // Pass the JSON string directly
+            };
+
+            // Handle configuration change
+            var result = handler.Handle(request, CancellationToken.None);
+            Assert.True(result.IsCompletedSuccessfully);
+
+            // Verify options path was updated and options reloaded
+            Assert.Equal(optionsPath2, context.OptionsPath);
+            Assert.Equal(Options.ExecutionActionPreference.Warn, context.Option.Execution.AliasReference);
+        }
+        finally
+        {
+            // Cleanup
+            Directory.Delete(testDir, true);
+        }
+    }
+
     private static ClientContext CreateClientContext(string optionPath, string workingPath)
     {
         var p = new Parser();
@@ -144,5 +203,43 @@ execution:
             debug: false,
             workingPath: workingPath
         );
+    }
+
+    /// <summary>
+    /// A simple test logger for testing purposes.
+    /// </summary>
+    private class TestLogger : PSRule.Runtime.ILogger
+    {
+        public bool IsEnabled(PSRule.Runtime.LogLevel logLevel) => true;
+
+        public void Log<TState>(PSRule.Runtime.LogLevel logLevel, PSRule.Runtime.EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        {
+            // Do nothing for tests
+        }
+
+        public void LogInformation(PSRule.Runtime.EventId eventId, string message, params object[] args)
+        {
+            // Do nothing for tests
+        }
+
+        public void LogError(PSRule.Runtime.EventId eventId, Exception exception, string message, params object[] args)
+        {
+            // Do nothing for tests
+        }
+
+        public void LogWarning(PSRule.Runtime.EventId eventId, string message, params object[] args)
+        {
+            // Do nothing for tests
+        }
+
+        public void LogVerbose(PSRule.Runtime.EventId eventId, string message, params object[] args)
+        {
+            // Do nothing for tests
+        }
+
+        public void LogDebug(PSRule.Runtime.EventId eventId, string message, params object[] args)
+        {
+            // Do nothing for tests
+        }
     }
 }

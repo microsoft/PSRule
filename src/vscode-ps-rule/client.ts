@@ -19,6 +19,7 @@ export class PSRuleClient implements vscode.Disposable {
     private _configurationWatcher?: vscode.Disposable;
     private _currentOptionsPath?: string;
     private _optionsFileWatcher?: vscode.FileSystemWatcher;
+    private _languageClient?: lsp.LanguageClient;
 
     public async configure(
         context: vscode.ExtensionContext,
@@ -43,6 +44,9 @@ export class PSRuleClient implements vscode.Disposable {
         // Get current options path
         this._currentOptionsPath = configuration.get().optionsPath;
 
+        // Store reference to the language client
+        this._languageClient = client;
+
         // Register proposed features
         client.registerProposedFeatures();
 
@@ -62,6 +66,9 @@ export class PSRuleClient implements vscode.Disposable {
 
         client.onProgress(StartProgressNotificationType, 'server/ready', (arg1) => {
             logger.verbose(`Language server ready and connected: v${arg1}.`);
+            
+            // Send initial configuration to the server
+            this.sendConfigurationChange();
         });
 
         // Set up configuration change monitoring
@@ -154,8 +161,9 @@ export class PSRuleClient implements vscode.Disposable {
                 if (newOptionsPath !== this._currentOptionsPath) {
                     this._currentOptionsPath = newOptionsPath;
                     this.updateOptionsFileWatcher();
-                    // The server will automatically reload options when it detects file changes
-                    // or when the configuration updates are sent through the LSP protocol
+                    
+                    // Send configuration change to the language server
+                    this.sendConfigurationChange();
                 }
             }
         });
@@ -183,6 +191,23 @@ export class PSRuleClient implements vscode.Disposable {
         } else {
             // Default to watching ps-rule.yaml only
             this._optionsFileWatcher = vscode.workspace.createFileSystemWatcher('**/ps-rule.yaml');
+        }
+    }
+
+    private sendConfigurationChange(): void {
+        if (this._languageClient) {
+            // Send the current PSRule configuration to the language server
+            const config = {
+                PSRule: {
+                    options: {
+                        path: this._currentOptionsPath || undefined
+                    }
+                }
+            };
+
+            this._languageClient.sendNotification('workspace/didChangeConfiguration', {
+                settings: config
+            });
         }
     }
 
