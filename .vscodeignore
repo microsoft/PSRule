@@ -15,6 +15,7 @@ tests/
 bin/
 obj/
 out/
+sdk/
 server/Modules/
 !out/dist/
 !docs/changelog.md
