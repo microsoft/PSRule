@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 
@@ -56,6 +57,11 @@ public abstract class ContextBaseTests : BaseTests
         }
 
         return languageScopeSet;
+    }
+
+    internal TestExpressionContext GetTestExpressionContext(PSRuleOption? option = default, RunspaceScope scope = RunspaceScope.None)
+    {
+        return new TestExpressionContext(option ?? GetOption(), scope);
     }
 }
 

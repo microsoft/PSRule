@@ -135,7 +135,6 @@ internal static class BaselineYamlSerializationMapper
         MapProperty(emitter, nameof(value.Field), value.Field?.GetFieldMap);
         MapProperty(emitter, nameof(value.IgnoreCase), value.IgnoreCase);
         MapProperty(emitter, nameof(value.NameSeparator), value.NameSeparator);
-        MapProperty(emitter, nameof(value.PreferTargetInfo), value.PreferTargetInfo);
         MapProperty(emitter, nameof(value.TargetName), value.TargetName);
         MapProperty(emitter, nameof(value.TargetType), value.TargetType);
         MapProperty(emitter, nameof(value.UseQualifiedName), value.UseQualifiedName);
