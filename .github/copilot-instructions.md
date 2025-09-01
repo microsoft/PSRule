@@ -4,17 +4,10 @@ Always reference these instructions first and fallback to search or bash command
 
 ## Working Effectively
 
-PSRule is a cross-platform PowerShell module for validating infrastructure as code (IaC) and objects using PowerShell rules. The project includes .NET libraries, a PowerShell module, CLI tools, VS Code extension, and comprehensive documentation.
-
-### Prerequisites and Setup
-- .NET SDK 8.0.400+ (specified in global.json)
-- PowerShell 7.0+ (tested with 7.4.10)
-- Node.js 20+ for VS Code extension (tested with 20.19.4)
-- Python 3.11+ for documentation (tested with 3.12.3)
+PSRule is a cross-platform PowerShell module for validating infrastructure as code (IaC) and objects using PowerShell rules.
+The project includes .NET libraries, a PowerShell module, CLI tools, VS Code extension, and comprehensive documentation.
 
 ### Bootstrap and Build Process
-**NEVER CANCEL builds or long-running commands.** All timing values below include 50% buffer for safety.
-
 1. **Install PowerShell dependencies** (3 seconds, NEVER CANCEL):
    ```bash
    pwsh ./scripts/pipeline-deps.ps1
@@ -138,6 +131,19 @@ Always test functionality after making changes:
 - Serve locally with `mkdocs serve`
 - May show API rate limit warnings (normal in CI environments)
 
+## Quick Reference
+
+| Task                | Command                                                      |
+|---------------------|-------------------------------------------------------------|
+| Install PS deps     | `pwsh ./scripts/pipeline-deps.ps1`                          |
+| Restore .NET deps   | `dotnet restore`                                            |
+| Build Module        | `pwsh -c "Invoke-Build BuildModule -Configuration Release"`  |
+| Build CLI           | `pwsh -c "Invoke-Build BuildCLI -Configuration Release"`     |
+| Build VSCode Ext    | `npm install && npm run build`                              |
+| Build Docs          | `python3 -m pip install -r requirements-docs.txt && mkdocs build` |
+| Run All Tests       | `dotnet test`                                               |
+| Format Validation   | `dotnet format --verify-no-changes`                         |
+
 ## Build Targets
 
 Use `Invoke-Build` with these common targets:
@@ -160,11 +166,27 @@ Use `Invoke-Build` with these common targets:
 3. **Documentation build API errors**: Normal without GitHub token. Use `mkdocs build` without `--strict`.
 4. **Long build times**: Builds can take 60+ seconds total. NEVER cancel early.
 
+### Common Commands
+- **Clean build output**:
+  ```bash
+  rm -rf out/*
+  ```
+- **Reset PowerShell dependencies**:
+  ```bash
+  pwsh ./scripts/pipeline-deps.ps1 -Reset
+  ```
+- **Update .NET SDK**:
+  ```bash
+  dotnet sdk check
+  ```
+- **Rebuild everything**:
+  ```bash
+  pwsh -c "Invoke-Build -Clean; Invoke-Build -All"
+  ```
+
 ### Performance Expectations
 - Complete build cycle: ~80 seconds
 - Incremental module build: ~25 seconds  
 - Unit tests: ~5 seconds (Types), ~60+ seconds (full suite)
 - Documentation build: ~5 seconds
 - VS Code extension: ~15 seconds
-
-Always use appropriate timeouts (60+ minutes for builds, 30+ minutes for tests) and NEVER cancel long-running operations.
