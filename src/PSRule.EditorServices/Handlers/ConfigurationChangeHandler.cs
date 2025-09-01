@@ -97,19 +97,19 @@ public sealed class ConfigurationChangeHandler(ClientContext context, ILogger lo
             if (jsonDoc.RootElement.TryGetProperty("PSRule", out var psruleElement))
             {
                 var result = new Dictionary<string, object>();
-                
+
                 if (psruleElement.TryGetProperty("options", out var optionsElement))
                 {
                     var optionsDict = new Dictionary<string, object>();
-                    
+
                     if (optionsElement.TryGetProperty("path", out var pathElement))
                     {
                         optionsDict["path"] = pathElement.GetString() ?? string.Empty;
                     }
-                    
+
                     result["options"] = optionsDict;
                 }
-                
+
                 return result;
             }
         }
