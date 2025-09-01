@@ -5,8 +5,6 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using PSRule.CommandLine;
-using PSRule.Configuration;
-using Xunit;
 
 namespace PSRule.EditorServices.Tests;
 
@@ -21,11 +19,11 @@ public class HotReloadTests
         // Create a test directory with options file
         var testDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         Directory.CreateDirectory(testDir);
-        
+
         try
         {
             var optionsPath = Path.Combine(testDir, "ps-rule.yaml");
-            
+
             // Create initial options file
             File.WriteAllText(optionsPath, @"
 execution:
@@ -56,24 +54,24 @@ execution:
             Directory.Delete(testDir, true);
         }
     }
-    
+
     [Fact]
     public void ClientContext_UpdateOptionsPath_ChangesPath()
     {
         var testDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         Directory.CreateDirectory(testDir);
-        
+
         try
         {
             var optionsPath1 = Path.Combine(testDir, "ps-rule1.yaml");
             var optionsPath2 = Path.Combine(testDir, "ps-rule2.yaml");
-            
+
             // Create first options file
             File.WriteAllText(optionsPath1, @"
 execution:
   aliasReference: Error
 ");
-            
+
             // Create second options file
             File.WriteAllText(optionsPath2, @"
 execution:
@@ -99,17 +97,17 @@ execution:
             Directory.Delete(testDir, true);
         }
     }
-    
+
     [Fact]
     public void ClientContext_OptionsPath_ReturnsConfiguredPath()
     {
         var testDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         Directory.CreateDirectory(testDir);
-        
+
         try
         {
             var optionsPath = Path.Combine(testDir, "custom-options.yaml");
-            
+
             // Create options file
             File.WriteAllText(optionsPath, @"
 execution:
@@ -121,7 +119,7 @@ execution:
 
             // Verify OptionsPath property returns the configured path
             Assert.Equal(optionsPath, context.OptionsPath);
-            
+
             // Test with null path
             var contextWithNull = CreateClientContext(null!, testDir);
             Assert.Null(contextWithNull.OptionsPath);
@@ -132,13 +130,13 @@ execution:
             Directory.Delete(testDir, true);
         }
     }
-    
+
     private static ClientContext CreateClientContext(string optionPath, string workingPath)
     {
         var p = new Parser();
         var result = p.Parse(string.Empty);
         var invocationContext = new InvocationContext(result);
-        
+
         return new ClientContext(
             invocation: invocationContext,
             option: optionPath,

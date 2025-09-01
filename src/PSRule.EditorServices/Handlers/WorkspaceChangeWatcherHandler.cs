@@ -13,8 +13,7 @@ namespace PSRule.EditorServices.Handlers;
 /// <summary>
 /// Handler for workspace file change notifications to reload PSRule options when they change.
 /// </summary>
-public sealed class WorkspaceChangeWatcherHandler(ClientContext context, ILogger logger)
-    : IDidChangeWatchedFilesHandler
+public sealed class WorkspaceChangeWatcherHandler(ClientContext context, ILogger logger) : IDidChangeWatchedFilesHandler
 {
     private readonly ClientContext _Context = context;
     private readonly ILogger _Logger = logger;
@@ -35,11 +34,11 @@ public sealed class WorkspaceChangeWatcherHandler(ClientContext context, ILogger
         // Check if any of the changed files are options files
         foreach (var change in notification.Changes)
         {
-            var fileName = System.IO.Path.GetFileName(change.Uri.ToString());
+            var fileName = Path.GetFileName(change.Uri.ToString());
             if (IsOptionsFile(fileName))
             {
                 _Logger.LogInformation(EventId.None, "PSRule options file changed: {0}", change.Uri);
-                
+
                 try
                 {
                     // Reload the options from the file
@@ -50,7 +49,7 @@ public sealed class WorkspaceChangeWatcherHandler(ClientContext context, ILogger
                 {
                     _Logger.LogError(EventId.None, ex, "Failed to reload PSRule options: {0}", ex.Message);
                 }
-                
+
                 // Only reload once even if multiple options files changed
                 break;
             }
@@ -63,11 +62,11 @@ public sealed class WorkspaceChangeWatcherHandler(ClientContext context, ILogger
     {
         // Get the configured options path from context
         var configuredPath = _Context.OptionsPath;
-        
+
         if (!string.IsNullOrEmpty(configuredPath))
         {
             // Check if the changed file matches the configured options path
-            var configuredFileName = System.IO.Path.GetFileName(configuredPath);
+            var configuredFileName = Path.GetFileName(configuredPath);
             return fileName.Equals(configuredFileName, StringComparison.OrdinalIgnoreCase);
         }
         else

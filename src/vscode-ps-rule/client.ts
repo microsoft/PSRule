@@ -19,6 +19,7 @@ export class PSRuleClient implements vscode.Disposable {
     private _configurationWatcher?: vscode.Disposable;
     private _currentOptionsPath?: string;
     private _optionsFileWatcher?: vscode.FileSystemWatcher;
+
     public async configure(
         context: vscode.ExtensionContext,
     ): Promise<lsp.LanguageClient> {
@@ -38,7 +39,7 @@ export class PSRuleClient implements vscode.Disposable {
             serverOptions,
             clientOptions,
         );
-        
+
         // Get current options path
         this._currentOptionsPath = configuration.get().optionsPath;
 
@@ -106,7 +107,7 @@ export class PSRuleClient implements vscode.Disposable {
                 configurationSection: 'PSRule',
             },
         };
-        
+
         return clientOptions;
     }
 
@@ -174,7 +175,7 @@ export class PSRuleClient implements vscode.Disposable {
     private updateOptionsFileWatcher(): void {
         // Dispose existing watcher if any
         this._optionsFileWatcher?.dispose();
-        
+
         const optionsPath = this._currentOptionsPath;
         if (optionsPath) {
             // Watch the specific file configured in PSRule.options.path
