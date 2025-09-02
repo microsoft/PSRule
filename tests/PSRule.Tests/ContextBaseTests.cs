@@ -5,6 +5,7 @@ using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Runtime;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule;
 
@@ -35,9 +36,14 @@ public abstract class ContextBaseTests : BaseTests
 
     internal ResourceCache GetResourceCache(PSRuleOption? option = default, ILanguageScopeSet? languageScope = default, Source[]? sources = default, IPipelineWriter? writer = default)
     {
+        option ??= GetOption();
+        writer ??= GetTestWriter(option);
+
         return new ResourceCacheBuilder
         (
-            writer: writer ?? GetTestWriter(option),
+            option: option,
+            writer: writer,
+            runspaceContext: new RunspaceContext(option, writer),
             languageScopeSet: languageScope ?? GetLanguageScopeSet(sources)
         ).Import(sources).Build(unresolved: null);
     }

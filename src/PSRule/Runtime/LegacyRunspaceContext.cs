@@ -46,6 +46,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     private readonly ExecutionActionPreference _UnprocessedObject;
     private readonly ExecutionActionPreference _RuleSuppressed;
     private readonly ExecutionActionPreference _InvariantCulture;
+    private readonly ExecutionActionPreference _DuplicateResourceId;
 
     /// <summary>
     /// Track the current runspace scope.
@@ -80,6 +81,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         _UnprocessedObject = Pipeline.Option.Execution.UnprocessedObject.GetValueOrDefault(ExecutionOption.Default.UnprocessedObject!.Value);
         _RuleSuppressed = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed!.Value);
         _InvariantCulture = Pipeline.Option.Execution.InvariantCulture.GetValueOrDefault(ExecutionOption.Default.InvariantCulture!.Value);
+        _DuplicateResourceId = Pipeline.Option.Execution?.DuplicateResourceId ?? ExecutionOption.Default.DuplicateResourceId!.Value;
 
         _WarnOnce = [];
 
@@ -254,17 +256,29 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         Writer.LogVerbose(EventId.None, string.Concat(GetLogPrefix(), " -- [", pass, "/", count, "] [", outcome, "]"));
     }
 
-    public ExecutionOption GetExecutionOption()
-    {
-        return Pipeline.Option.Execution;
-    }
+    public RestrictScriptSource RestrictScriptSource => Pipeline.Option.Execution.RestrictScriptSource ?? ExecutionOption.Default.RestrictScriptSource!.Value;
 
-    public PowerShell GetPowerShell()
+    public PowerShell? GetPowerShell()
     {
         var result = PowerShell.Create();
         result.Runspace = Pipeline.GetRunspace();
         EnableLogging(result);
         return result;
+    }
+
+    public void ReportIssue(ResourceIssue issue)
+    {
+        switch (issue.Type)
+        {
+            case ResourceIssueType.DuplicateResourceId:
+                Logger?.Throw(_DuplicateResourceId, PSRuleResources.DuplicateResourceId, issue.ResourceId, issue.Args![0]);
+                break;
+            case ResourceIssueType.DuplicateResourceName:
+                Logger?.LogWarning(new EventId(0), PSRuleResources.DuplicateRuleName, issue.Args![0]);
+                break;
+            default:
+                throw new NotImplementedException($"Resource issue '{issue.Type}' is not implemented.");
+        }
     }
 
     private static void EnableLogging(PowerShell ps)
