@@ -17,7 +17,7 @@ public sealed class TargetSourceInfo : IEquatable<TargetSourceInfo>, IFileInfo
     private const string PROPERTY_TYPE = "type";
 
     private const string COLON = ":";
-    private const string COLONSPACE = ": ";
+    private const string COLON_SPACE = ": ";
 
     /// <summary>
     /// Creates an empty source information structure.
@@ -127,7 +127,7 @@ public sealed class TargetSourceInfo : IEquatable<TargetSourceInfo>, IFileInfo
         var file = GetPath(useRelativePath);
         return string.IsNullOrEmpty(type)
             ? string.Concat(file, COLON, Line, COLON, Position)
-            : string.Concat(type, COLONSPACE, file, COLON, Line, COLON, Position);
+            : string.Concat(type, COLON_SPACE, file, COLON, Line, COLON, Position);
     }
 
     internal string? GetPath(bool useRelativePath)

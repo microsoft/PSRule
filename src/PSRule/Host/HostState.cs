@@ -4,6 +4,7 @@
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using PSRule.Commands;
+using PSRule.Options;
 
 namespace PSRule.Host;
 
@@ -45,7 +46,7 @@ internal static class HostState
     /// <summary>
     /// Create a default session state.
     /// </summary>
-    public static InitialSessionState CreateSessionState(Options.SessionState initialSessionState)
+    public static InitialSessionState CreateSessionState(Options.SessionState initialSessionState, LanguageMode languageMode)
     {
         var state = initialSessionState == Options.SessionState.Minimal ?
             InitialSessionState.CreateDefault2() : InitialSessionState.CreateDefault();
@@ -59,6 +60,9 @@ internal static class HostState
 
         // Set execution policy
         SetExecutionPolicy(state, executionPolicy: Microsoft.PowerShell.ExecutionPolicy.RemoteSigned);
+
+        // Set the language mode.
+        state.LanguageMode = languageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
 
         return state;
     }

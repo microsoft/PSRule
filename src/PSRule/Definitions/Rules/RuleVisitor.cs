@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Management.Automation;
+using PSRule.Data;
 using PSRule.Definitions.Expressions;
 using PSRule.Resources;
 using PSRule.Runtime;
@@ -10,53 +11,45 @@ using PSRule.Runtime;
 namespace PSRule.Definitions.Rules;
 
 /// <summary>
-/// A rule visitor.
+/// Define a condition implemented as meta language expressions.
 /// </summary>
 [DebuggerDisplay("Id: {Id}")]
-internal sealed class RuleVisitor : ICondition
+internal sealed class RuleVisitor(ResourceId id, ISourceFile source, IRuleSpec spec) : ICondition
 {
-    private readonly LanguageExpressionOuterFn _Condition;
-    private readonly LegacyRunspaceContext _Context;
-
-    public RuleVisitor(LegacyRunspaceContext context, ResourceId id, ISourceFile source, IRuleSpec spec)
-    {
-        _Context = context;
-        ErrorAction = ActionPreference.Stop;
-        Id = id;
-        Source = source;
-        InstanceId = Guid.NewGuid();
-        var builder = new LanguageExpressionBuilder(id);
-        _Condition = builder
+    private readonly LanguageExpressionOuterFn _Condition = new LanguageExpressionBuilder(id)
             .WithSelector(spec.With)
             .WithType(spec.Type)
             .WithSubselector(spec.Where)
             .Build(spec.Condition);
-    }
 
-    public Guid InstanceId { get; }
+    public Guid InstanceId { get; } = Guid.NewGuid();
 
-    public ISourceFile Source { get; }
+    public ISourceFile Source { get; } = source;
 
-    public ResourceId Id { get; }
+    public ResourceId Id { get; } = id;
 
-    public ActionPreference ErrorAction { get; }
+    public ActionPreference ErrorAction { get; } = ActionPreference.Stop;
 
     public void Dispose()
     {
         // Do nothing
     }
 
-    public IConditionResult If()
+    public IConditionResult? If(IExpressionContext expressionContext, ITargetObject o)
     {
-        var context = new ExpressionContext(_Context, Source, ResourceKind.Rule, _Context.TargetObject);
-        context.Debug(PSRuleResources.RuleMatchTrace, Id);
+        var context = new ExpressionContext(expressionContext, Source, ResourceKind.Rule, o);
+        context.Logger.LogDebug(EventId.None, PSRuleResources.RuleMatchTrace, Id);
         context.PushScope(RunspaceScope.Rule);
         try
         {
-            var result = _Condition(context, _Context.TargetObject);
+            var result = _Condition(context, o);
             if (result.HasValue && !result.Value)
-                _Context.WriteReason(context.GetReasons());
-
+            {
+                foreach (var reason in context.GetReasons())
+                {
+                    expressionContext.Reason(reason.Operand, reason.Text, reason.Args);
+                }
+            }
             return result.HasValue ? new RuleConditionResult(result.Value ? 1 : 0, 1, false) : null;
         }
         finally

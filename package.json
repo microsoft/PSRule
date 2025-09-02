@@ -566,7 +566,7 @@
     "test": "npm run build:dotnet && npm run build:esbuild && vscode-test"
   },
   "dependencies": {
-    "fs-extra": "^11.3.0",
+    "fs-extra": "^11.3.1",
     "vscode-languageclient": "^9.0.1"
   },
   "extensionDependencies": [
@@ -577,17 +577,17 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.15.30",
+    "@types/node": "^22.18.0",
     "@types/vscode": "1.102.0",
-    "@typescript-eslint/eslint-plugin": "^8.36.0",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
     "@typescript-eslint/parser": "^8.32.1",
     "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.6.0",
-    "esbuild": "^0.25.6",
-    "eslint": "^9.30.1",
+    "esbuild": "^0.25.9",
+    "eslint": "^9.34.0",
     "glob": "^11.0.3",
     "mocha": "^11.7.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   }
 }

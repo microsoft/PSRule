@@ -35,7 +35,7 @@ internal static class RuleExtensions
             var ruleName = block.Name;
 
             context.EnterLanguageScope(block.Source);
-            context.LanguageScope!.TryGetOverride(block.Id, out var propertyOverride);
+            context.Scope!.TryGetOverride(block.Id, out var propertyOverride);
             try
             {
                 var info = GetRuleHelpInfo(context, block) ?? new RuleHelpInfo(
@@ -57,7 +57,7 @@ internal static class RuleExtensions
                         },
                         @override: propertyOverride,
                         info: info,
-                        condition: new RuleVisitor(context, block.Id, block.Source, block.Spec),
+                        condition: new RuleVisitor(block.Id, block.Source, block.Spec),
                         alias: block.Alias,
                         tag: block.Metadata.Tags,
                         dependsOn: null,  // No support for DependsOn yet
@@ -151,7 +151,7 @@ internal static class RuleExtensions
             }
 
             context.EnterLanguageScope(block.Source);
-            context.LanguageScope!.TryGetOverride(block.Id, out var propertyOverride);
+            context.Scope!.TryGetOverride(block.Id, out var propertyOverride);
             try
             {
                 var info = GetRuleHelpInfo(context, block) ?? new RuleHelpInfo(
@@ -173,7 +173,7 @@ internal static class RuleExtensions
                     },
                     @override: propertyOverride,
                     info: info,
-                    condition: new RuleVisitor(context, block.Id, block.Source, block.Spec),
+                    condition: new RuleVisitor(block.Id, block.Source, block.Spec),
                     alias: block.Alias,
                     tag: block.Metadata.Tags,
                     dependsOn: null,  // No support for DependsOn yet
@@ -213,7 +213,7 @@ internal static class RuleExtensions
         try
         {
             context.EnterLanguageScope(resource.Source);
-            var filter = context.LanguageScope!.GetFilter(ResourceKind.Rule);
+            var filter = context.Scope!.GetFilter(ResourceKind.Rule);
             return filter == null || filter.Match(resource);
         }
         finally

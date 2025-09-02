@@ -13,8 +13,6 @@ using PSRule.Runtime.Binding;
 
 namespace PSRule.Runtime;
 
-#nullable enable
-
 [DebuggerDisplay("{Name}")]
 internal sealed class LanguageScope(string name, RuntimeFactoryContainer? container) : ILanguageScope, IRuntimeServiceCollection
 {
@@ -155,6 +153,12 @@ internal sealed class LanguageScope(string name, RuntimeFactoryContainer? contai
     /// <inheritdoc/>
     public bool TryGetType(ITargetObject o, out string? type, out string? path)
     {
+        type = default;
+        path = default;
+        if (o == null) return false;
+        if (o.TryGetType(out type, out path))
+            return true;
+
         if (_TargetBinder != null)
         {
             var result = _TargetBinder.Bind(o);
@@ -162,14 +166,19 @@ internal sealed class LanguageScope(string name, RuntimeFactoryContainer? contai
             path = result.TargetTypePath;
             return true;
         }
-        type = default;
-        path = default;
+
         return false;
     }
 
     /// <inheritdoc/>
     public bool TryGetName(ITargetObject o, out string? name, out string? path)
     {
+        name = default;
+        path = default;
+        if (o == null) return false;
+        if (o.TryGetName(out name, out path))
+            return true;
+
         if (_TargetBinder != null)
         {
             var result = _TargetBinder.Bind(o);
@@ -177,8 +186,7 @@ internal sealed class LanguageScope(string name, RuntimeFactoryContainer? contai
             path = result.TargetNamePath;
             return true;
         }
-        name = default;
-        path = default;
+
         return false;
     }
 
@@ -243,5 +251,3 @@ internal sealed class LanguageScope(string name, RuntimeFactoryContainer? contai
 
     #endregion IRuntimeServiceCollection
 }
-
-#nullable restore

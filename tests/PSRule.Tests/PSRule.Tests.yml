@@ -72,7 +72,6 @@ binding:
       - resourceId
   ignoreCase: false
   nameSeparator: '::'
-  preferTargetInfo: true
   targetName:
     - ResourceName
   targetType:
