@@ -50,6 +50,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
         Path = null;
         SarifProblemsOnly = null;
         Style = null;
+        CsvDetailedColumns = null;
     }
 
     /// <summary>
@@ -73,6 +74,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
         Path = option.Path;
         SarifProblemsOnly = option.SarifProblemsOnly;
         Style = option.Style;
+        CsvDetailedColumns = option.CsvDetailedColumns;
     }
 
     /// <inheritdoc/>
@@ -96,7 +98,8 @@ public sealed class OutputOption : IEquatable<OutputOption>
             Outcome == other.Outcome &&
             Path == other.Path &&
             SarifProblemsOnly == other.SarifProblemsOnly &&
-            Style == other.Style;
+            Style == other.Style &&
+            CsvDetailedColumns == other.CsvDetailedColumns;
     }
 
     /// <inheritdoc/>
@@ -117,6 +120,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
             hash = hash * 23 + (Path != null ? Path.GetHashCode() : 0);
             hash = hash * 23 + (SarifProblemsOnly.HasValue ? SarifProblemsOnly.Value.GetHashCode() : 0);
             hash = hash * 23 + (Style.HasValue ? Style.Value.GetHashCode() : 0);
+            hash = hash * 23 + (CsvDetailedColumns != null ? CsvDetailedColumns.GetHashCode() : 0);
             return hash;
         }
     }
@@ -137,6 +141,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
             Path = o1?.Path ?? o2?.Path,
             SarifProblemsOnly = o1?.SarifProblemsOnly ?? o2?.SarifProblemsOnly,
             Style = o1?.Style ?? o2?.Style,
+            CsvDetailedColumns = o1?.CsvDetailedColumns ?? o2?.CsvDetailedColumns,
         };
         return result;
     }
@@ -213,6 +218,12 @@ public sealed class OutputOption : IEquatable<OutputOption>
     [DefaultValue(null)]
     public bool? SarifProblemsOnly { get; set; }
 
+    /// <summary>
+    /// The columns to include in CSV detailed output.
+    /// </summary>
+    [DefaultValue(null)]
+    public string[]? CsvDetailedColumns { get; set; }
+
     internal void Load()
     {
         if (Environment.TryEnum("PSRULE_OUTPUT_AS", out ResultFormat value))
@@ -250,6 +261,9 @@ public sealed class OutputOption : IEquatable<OutputOption>
 
         if (Environment.TryBool("PSRULE_OUTPUT_SARIFPROBLEMSONLY", out var sarifProblemsOnly))
             SarifProblemsOnly = sarifProblemsOnly;
+
+        if (Environment.TryStringArray("PSRULE_OUTPUT_CSVDETAILEDCOLUMNS", out var csvDetailedColumns))
+            CsvDetailedColumns = csvDetailedColumns;
     }
 
     internal void Load(Dictionary<string, object> index)
@@ -289,5 +303,8 @@ public sealed class OutputOption : IEquatable<OutputOption>
 
         if (index.TryPopBool("Output.SarifProblemsOnly", out var sarifProblemsOnly))
             SarifProblemsOnly = sarifProblemsOnly;
+
+        if (index.TryPopStringArray("Output.CsvDetailedColumns", out var csvDetailedColumns))
+            CsvDetailedColumns = csvDetailedColumns;
     }
 }

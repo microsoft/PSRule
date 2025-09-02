@@ -6,6 +6,7 @@ using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Resources;
 using PSRule.Rules;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline.Output;
 
@@ -15,11 +16,21 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
     private const char QUOTE = '"';
 
     private readonly StringBuilder _Builder;
+    private readonly string[] _DetailColumns;
+    private readonly string[] _SummaryColumns;
+
+    // Default columns for backward compatibility
+    private static readonly string[] DefaultDetailColumns = ["RuleName", "TargetName", "TargetType", "Outcome", "OutcomeReason", "Synopsis", "Recommendation"];
+    private static readonly string[] DefaultSummaryColumns = ["RuleName", "Pass", "Fail", "Outcome", "Synopsis", "Recommendation"];
 
     internal CsvOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
         : base(inner, option, shouldProcess)
     {
         _Builder = new StringBuilder();
+        
+        // Use configured columns or default columns
+        _DetailColumns = option.Output.CsvDetailedColumns ?? DefaultDetailColumns;
+        _SummaryColumns = DefaultSummaryColumns; // Summary columns are not configurable yet
     }
 
     protected override string Serialize(object[] o)
@@ -49,35 +60,15 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
 
     private void WriteHeader()
     {
-        _Builder.Append(ViewStrings.RuleName);
-        _Builder.Append(COMMA);
-
-        if (Option.Output.As == ResultFormat.Summary)
+        var columns = Option.Output.As == ResultFormat.Summary ? _SummaryColumns : _DetailColumns;
+        
+        for (var i = 0; i < columns.Length; i++)
         {
-            _Builder.Append(ViewStrings.Pass);
-            _Builder.Append(COMMA);
-            _Builder.Append(ViewStrings.Fail);
+            if (i > 0)
+                _Builder.Append(COMMA);
+                
+            _Builder.Append(GetColumnDisplayName(columns[i]));
         }
-        else
-        {
-            _Builder.Append(ViewStrings.TargetName);
-            _Builder.Append(COMMA);
-            _Builder.Append(ViewStrings.TargetType);
-        }
-
-        _Builder.Append(COMMA);
-        _Builder.Append(ViewStrings.Outcome);
-
-        if (Option.Output.As == ResultFormat.Detail)
-        {
-            _Builder.Append(COMMA);
-            _Builder.Append(ViewStrings.OutcomeReason);
-        }
-
-        _Builder.Append(COMMA);
-        _Builder.Append(ViewStrings.Synopsis);
-        _Builder.Append(COMMA);
-        _Builder.Append(ViewStrings.Recommendation);
         _Builder.Append(System.Environment.NewLine);
     }
 
@@ -86,19 +77,16 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
         if (record == null)
             return;
 
-        WriteColumn(record.RuleName);
-        _Builder.Append(COMMA);
-        WriteColumn(record.TargetName);
-        _Builder.Append(COMMA);
-        WriteColumn(record.TargetType);
-        _Builder.Append(COMMA);
-        WriteColumn(record.Outcome.ToString());
-        _Builder.Append(COMMA);
-        WriteColumn(record.OutcomeReason.ToString());
-        _Builder.Append(COMMA);
-        WriteColumn(record.Info.Synopsis);
-        _Builder.Append(COMMA);
-        WriteColumn(record.Info.Recommendation);
+        var columns = _DetailColumns;
+        
+        for (var i = 0; i < columns.Length; i++)
+        {
+            if (i > 0)
+                _Builder.Append(COMMA);
+                
+            var value = GetColumnValue(record, columns[i]);
+            WriteColumn(value);
+        }
         _Builder.Append(System.Environment.NewLine);
     }
 
@@ -107,17 +95,16 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
         if (record == null)
             return;
 
-        WriteColumn(record.RuleName);
-        _Builder.Append(COMMA);
-        _Builder.Append(record.Pass);
-        _Builder.Append(COMMA);
-        _Builder.Append(record.Fail);
-        _Builder.Append(COMMA);
-        WriteColumn(record.Outcome.ToString());
-        _Builder.Append(COMMA);
-        WriteColumn(record.Info.Synopsis);
-        _Builder.Append(COMMA);
-        WriteColumn(record.Info.Recommendation);
+        var columns = _SummaryColumns;
+        
+        for (var i = 0; i < columns.Length; i++)
+        {
+            if (i > 0)
+                _Builder.Append(COMMA);
+                
+            var value = GetColumnValue(record, columns[i]);
+            WriteColumn(value);
+        }
         _Builder.Append(System.Environment.NewLine);
     }
 
@@ -141,5 +128,80 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
             return;
 
         WriteColumn(value.Text);
+    }
+
+    /// <summary>
+    /// Get the display name for a column in the CSV header.
+    /// </summary>
+    private static string GetColumnDisplayName(string column)
+    {
+        return column switch
+        {
+            "RuleName" => ViewStrings.RuleName,
+            "TargetName" => ViewStrings.TargetName,
+            "TargetType" => ViewStrings.TargetType,
+            "Outcome" => ViewStrings.Outcome,
+            "OutcomeReason" => ViewStrings.OutcomeReason,
+            "Synopsis" => ViewStrings.Synopsis,
+            "Recommendation" => ViewStrings.Recommendation,
+            "Pass" => ViewStrings.Pass,
+            "Fail" => ViewStrings.Fail,
+            _ => column // Use the column name as-is for custom columns
+        };
+    }
+
+    /// <summary>
+    /// Get the value for a specific column from a record.
+    /// </summary>
+    private static string GetColumnValue(object record, string column)
+    {
+        if (record == null)
+            return string.Empty;
+
+        return column switch
+        {
+            // Standard RuleRecord properties
+            "RuleName" when record is RuleRecord ruleRecord => ruleRecord.RuleName,
+            "TargetName" when record is RuleRecord ruleRecord => ruleRecord.TargetName,
+            "TargetType" when record is RuleRecord ruleRecord => ruleRecord.TargetType,
+            "Outcome" when record is RuleRecord ruleRecord => ruleRecord.Outcome.ToString(),
+            "OutcomeReason" when record is RuleRecord ruleRecord => ruleRecord.OutcomeReason.ToString(),
+            "Synopsis" when record is RuleRecord ruleRecord => ruleRecord.Info.Synopsis?.Text ?? string.Empty,
+            "Recommendation" when record is RuleRecord ruleRecord => ruleRecord.Info.Recommendation?.Text ?? string.Empty,
+            
+            // Standard RuleSummaryRecord properties
+            "RuleName" when record is RuleSummaryRecord summaryRecord => summaryRecord.RuleName,
+            "Pass" when record is RuleSummaryRecord summaryRecord => summaryRecord.Pass.ToString(),
+            "Fail" when record is RuleSummaryRecord summaryRecord => summaryRecord.Fail.ToString(),
+            "Outcome" when record is RuleSummaryRecord summaryRecord => summaryRecord.Outcome.ToString(),
+            "Synopsis" when record is RuleSummaryRecord summaryRecord => summaryRecord.Info.Synopsis ?? string.Empty,
+            "Recommendation" when record is RuleSummaryRecord summaryRecord => summaryRecord.Info.Recommendation ?? string.Empty,
+            
+            // For any other column, try to get it via object path (for nested properties)
+            _ => GetNestedColumnValue(record, column)
+        };
+    }
+
+    /// <summary>
+    /// Get a column value using object path notation for nested properties.
+    /// </summary>
+    private static string GetNestedColumnValue(object record, string path)
+    {
+        try
+        {
+            // For nested properties, we need a binding context but we can use a dummy one
+            // since we're just reading from the record object
+            var bindingContext = PipelineContext.CurrentThread;
+            if (bindingContext != null && ObjectHelper.GetPath(bindingContext, record, path, caseSensitive: false, out object value))
+            {
+                return value?.ToString() ?? string.Empty;
+            }
+        }
+        catch
+        {
+            // If we can't get the value via object path, ignore the error and return empty
+        }
+        
+        return string.Empty;
     }
 }
