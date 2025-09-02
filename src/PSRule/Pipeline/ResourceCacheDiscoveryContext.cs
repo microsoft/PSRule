@@ -55,14 +55,12 @@ internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger
 
         Source = file;
         _CurrentLanguageScope = scope;
-        _RunspaceContext.EnterResourceContext(this);
     }
 
     public void ExitLanguageScope(ISourceFile file)
     {
         Source = null;
         _CurrentLanguageScope = null;
-        _RunspaceContext.ExitResourceContext(this);
     }
 
     public PowerShell? GetPowerShell()
@@ -78,6 +76,11 @@ internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger
     public void PushScope(RunspaceScope scope)
     {
 
+    }
+
+    public bool IsScope(RunspaceScope scope)
+    {
+        return true;
     }
 
     public string? GetLocalizedPath(string file, out string? culture)
@@ -119,9 +122,16 @@ internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger
             default:
                 throw new NotImplementedException($"Resource issue '{issue.Type}' is not implemented.");
         }
+    }
 
+    internal void Begin()
+    {
+        _RunspaceContext.EnterResourceContext(this);
+    }
 
-
+    internal void End()
+    {
+        _RunspaceContext.ExitResourceContext(this);
     }
 }
 

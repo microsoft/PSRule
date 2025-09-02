@@ -361,6 +361,26 @@ public sealed partial class PipelineTests : ContextBaseTests
         Assert.NotNull(pipeline);
     }
 
+    [Fact]
+    public void GetRuleHelpPipeline_WithRules_ShouldReturnExpectedHelpInfo()
+    {
+        var option = PSRuleOption.FromDefault();
+
+        var builder = PipelineBuilder.GetHelp(GetSource(
+        [
+            "FromFileBaseline.Rule.ps1"
+        ]), option, null);
+
+        var writer = new TestWriter(option);
+        var pipeline = builder.Build(writer);
+
+        pipeline.Begin();
+        pipeline.Process(null);
+        pipeline.End();
+
+        Assert.Equal(74, writer.Output.OfType<RuleHelpInfo>().Count());
+    }
+
     ///// <summary>
     ///// An Invoke pipeline reading from an input file with File format.
     ///// </summary>

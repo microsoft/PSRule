@@ -8,8 +8,6 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions.Rules;
 
-#nullable enable
-
 /// <summary>
 /// Extensions methods for rules.
 /// </summary>
@@ -24,9 +22,47 @@ internal static class RuleExtensions
 
         var results = new List<IRuleV1>();
 
-        foreach (var block in blocks.OfType<RuleBlock>())
+        foreach (var block in blocks.OfType<RuleV1Script>())
         {
-            results.Add(block);
+            var ruleName = block.Name;
+
+            context.EnterLanguageScope(block.Source);
+            context.Scope!.TryGetOverride(block.Id, out var propertyOverride);
+            try
+            {
+                var info = GetRuleHelpInfo(context, block) ?? new RuleHelpInfo(
+                    ruleName,
+                    ruleName,
+                    block.Source.Module,
+                    synopsis: new InfoString(block.Synopsis)
+                );
+                MergeAnnotations(info, block.Metadata);
+
+                results.Add(new RuleBlock
+                    (
+                        source: block.Source,
+                        id: block.Id,
+                        @ref: block.Ref,
+                        @default: new RuleProperties
+                        {
+                            Level = block.Level
+                        },
+                        @override: propertyOverride,
+                        info: info,
+                        condition: block.Spec.Condition,
+                        alias: block.Alias,
+                        tag: block.Metadata.Tags,
+                        dependsOn: block.Spec.DependsOn,
+                        configuration: block.Spec.Configure,
+                        extent: block.Extent,
+                        flags: block.Flags,
+                        labels: block.Metadata.Labels
+                    ));
+            }
+            finally
+            {
+                context.ExitLanguageScope(block.Source);
+            }
         }
 
         // Process from YAML/ JSON
@@ -62,7 +98,7 @@ internal static class RuleExtensions
                         tag: block.Metadata.Tags,
                         dependsOn: null,  // No support for DependsOn yet
                         configuration: null, // No support for rule configuration use module or workspace config
-                        extent: null,
+                        extent: block.Extent,
                         flags: block.Flags,
                         labels: block.Metadata.Labels
                     ));
@@ -83,17 +119,28 @@ internal static class RuleExtensions
         // Index rules by RuleId
         var results = new Dictionary<string, RuleHelpInfo>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var block in blocks.OfType<RuleBlock>())
+        foreach (var block in blocks.OfType<IRuleV1>())
         {
             context.EnterLanguageScope(block.Source);
+
+            var filter = context.Scope!.GetFilter(ResourceKind.Rule);
+
             try
             {
                 // Ignore rule blocks that don't match
-                if (!Match(context, block))
+                if (filter != null && !filter.Match(block))
                     continue;
 
-                if (!results.ContainsKey(block.Id.Value))
-                    results[block.Id.Value] = block.Info;
+                var id = ((IResource)block).Id;
+                if (!results.ContainsKey(id.Value))
+                {
+                    results[id.Value] = GetRuleHelpInfo(context, block) ?? new RuleHelpInfo(
+                        block.Name,
+                        block.Name,
+                        block.Source.Module,
+                        synopsis: new InfoString(block.Synopsis)
+                    );
+                }
             }
             finally
             {
@@ -115,8 +162,9 @@ internal static class RuleExtensions
         var knownRuleIds = new HashSet<ResourceId>(ResourceIdEqualityComparer.Default);
 
         // Process from PowerShell
-        foreach (var block in blocks.OfType<RuleBlock>())
+        foreach (var block in blocks.OfType<RuleV1Script>())
         {
+            var ruleName = block.Name;
             if (knownRuleIds.ContainsIds(block.Id, block.Ref, block.Alias, out var duplicateId) && duplicateId != null)
             {
                 context.DuplicateResourceId(block.Id, duplicateId.Value);
@@ -129,9 +177,45 @@ internal static class RuleExtensions
                     continue;
             }
 
-            results.TryAdd(block);
-            knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
-            knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
+            context.EnterLanguageScope(block.Source);
+            context.Scope!.TryGetOverride(block.Id, out var propertyOverride);
+            try
+            {
+                var info = GetRuleHelpInfo(context, block) ?? new RuleHelpInfo(
+                    ruleName,
+                    ruleName,
+                    block.Source.Module,
+                    synopsis: new InfoString(block.Synopsis)
+                );
+                MergeAnnotations(info, block.Metadata);
+
+                results.TryAdd(new RuleBlock
+                (
+                    source: block.Source,
+                    id: block.Id,
+                    @ref: block.Ref,
+                    @default: new RuleProperties
+                    {
+                        Level = block.Level
+                    },
+                    @override: propertyOverride,
+                    info: info,
+                    condition: block.Spec.Condition,
+                    alias: block.Alias,
+                    tag: block.Metadata.Tags,
+                    dependsOn: block.Spec.DependsOn,
+                    configuration: block.Spec.Configure,
+                    extent: block.Extent,
+                    flags: block.Flags,
+                    labels: block.Metadata.Labels
+                ));
+                knownRuleNames.AddNames(block.Id, block.Ref, block.Alias);
+                knownRuleIds.AddIds(block.Id, block.Ref, block.Alias);
+            }
+            finally
+            {
+                context.ExitLanguageScope(block.Source);
+            }
         }
 
         // Process from YAML/ JSON
@@ -208,24 +292,8 @@ internal static class RuleExtensions
             info.SetOnlineHelpUrl(metadata.Link);
     }
 
-    private static bool Match(LegacyRunspaceContext context, RuleBlock resource)
-    {
-        try
-        {
-            context.EnterLanguageScope(resource.Source);
-            var filter = context.Scope!.GetFilter(ResourceKind.Rule);
-            return filter == null || filter.Match(resource);
-        }
-        finally
-        {
-            context.ExitLanguageScope(resource.Source);
-        }
-    }
-
     private static RuleHelpInfo GetRuleHelpInfo(LegacyRunspaceContext context, IRuleV1 rule)
     {
         return HostHelper.GetRuleHelpInfo(context, rule.Name, rule.Synopsis, rule.Info.DisplayName, rule.Info.Description, rule.Recommendation);
     }
 }
-
-#nullable restore

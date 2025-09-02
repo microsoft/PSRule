@@ -1523,7 +1523,7 @@ public sealed class Assert
     /// <summary>
     /// Determine line comment prefix by file extension
     /// </summary>
-    private static string DetectLinePrefix(string extension)
+    private static string DetectLinePrefix(string? extension)
     {
         extension = extension?.ToLower();
         switch (extension)
