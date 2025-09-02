@@ -2,9 +2,13 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
+using System.Management.Automation;
+using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Options;
 using PSRule.Resources;
 using PSRule.Runtime;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule.Pipeline;
 
@@ -13,17 +17,24 @@ namespace PSRule.Pipeline;
 /// <summary>
 /// Define a context used for early stage resource discovery.
 /// </summary>
-internal sealed class ResourceCacheDiscoveryContext(ILogger? logger, ILanguageScopeSet languageScopeSet) : IResourceDiscoveryContext
+internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger? logger, IRunspaceContext? runspaceContext, ILanguageScopeSet languageScopeSet) : IScriptResourceDiscoveryContext
 {
     private static readonly EventId PSR0022 = new(22, "PSR0022");
 
+    private readonly ExecutionActionPreference _DuplicateResourceId = option?.Execution?.DuplicateResourceId ?? ExecutionOption.Default.DuplicateResourceId!.Value;
     private readonly ILanguageScopeSet _LanguageScopeSet = languageScopeSet;
+    private readonly IRunspaceContext? _RunspaceContext = runspaceContext;
+    private readonly ExecutionActionPreference _InvariantCulture;
+
+    private bool _RaisedUsingInvariantCulture;
 
     private ILanguageScope? _CurrentLanguageScope;
 
     public ILogger Logger { get; } = logger ?? NullLogger.Instance;
 
     public ISourceFile? Source { get; private set; }
+
+    public RestrictScriptSource RestrictScriptSource => _RunspaceContext == null ? RestrictScriptSource.DisablePowerShell : _RunspaceContext.RestrictScriptSource;
 
     internal ILanguageScope? LanguageScope
     {
@@ -44,12 +55,19 @@ internal sealed class ResourceCacheDiscoveryContext(ILogger? logger, ILanguageSc
 
         Source = file;
         _CurrentLanguageScope = scope;
+        _RunspaceContext.EnterResourceContext(this);
     }
 
     public void ExitLanguageScope(ISourceFile file)
     {
         Source = null;
         _CurrentLanguageScope = null;
+        _RunspaceContext.ExitResourceContext(this);
+    }
+
+    public PowerShell? GetPowerShell()
+    {
+        return _RunspaceContext?.GetPowerShell();
     }
 
     public void PopScope(RunspaceScope scope)
@@ -59,6 +77,50 @@ internal sealed class ResourceCacheDiscoveryContext(ILogger? logger, ILanguageSc
 
     public void PushScope(RunspaceScope scope)
     {
+
+    }
+
+    public string? GetLocalizedPath(string file, out string? culture)
+    {
+        culture = null;
+        if (string.IsNullOrEmpty(Source?.HelpPath))
+            return null;
+
+        var cultures = LanguageScope?.Culture;
+        if (!_RaisedUsingInvariantCulture && (cultures == null || cultures.Length == 0))
+        {
+            Logger?.Throw(_InvariantCulture, PSRuleResources.UsingInvariantCulture);
+            _RaisedUsingInvariantCulture = true;
+            return null;
+        }
+
+        for (var i = 0; cultures != null && i < cultures.Length; i++)
+        {
+            var path = Path.Combine(Source?.HelpPath, cultures[i], file);
+            if (File.Exists(path))
+            {
+                culture = cultures[i];
+                return path;
+            }
+        }
+        return null;
+    }
+
+    public void ReportIssue(ResourceIssue issue)
+    {
+        switch (issue.Type)
+        {
+            case ResourceIssueType.DuplicateResourceId:
+                Logger?.Throw(_DuplicateResourceId, PSRuleResources.DuplicateResourceId, issue.ResourceId, issue.Args![0]);
+                break;
+            case ResourceIssueType.DuplicateResourceName:
+                Logger?.LogWarning(new EventId(0), PSRuleResources.DuplicateRuleName, issue.Args![0]);
+                break;
+            default:
+                throw new NotImplementedException($"Resource issue '{issue.Type}' is not implemented.");
+        }
+
+
 
     }
 }

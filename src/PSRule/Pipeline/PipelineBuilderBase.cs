@@ -13,6 +13,7 @@ using PSRule.Pipeline.Output;
 using PSRule.Pipeline.Runs;
 using PSRule.Resources;
 using PSRule.Runtime;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule.Pipeline;
 
@@ -37,6 +38,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     private PipelineWriter? _Writer;
     private ILanguageScopeSet? _LanguageScopeSet;
     private CapabilitySet? _CapabilitySet;
+    private RunspaceContext _RunspaceContext;
 
     protected readonly HostPipelineWriter _Output;
 
@@ -461,7 +463,12 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     /// </summary>
     private ResourceCache GetResourceCache(List<ResourceRef> unresolved, ILanguageScopeSet languageScopeSet)
     {
-        return new ResourceCacheBuilder(_Writer, languageScopeSet).Import(Source).Build(unresolved);
+        return new ResourceCacheBuilder(Option, _Writer, GetRunspaceContext(), languageScopeSet).Import(Source).Build(unresolved);
+    }
+
+    private RunspaceContext GetRunspaceContext()
+    {
+        return _RunspaceContext ??= new RunspaceContext(Option, _Writer);
     }
 
     protected void EnableFormatsByName(string[]? format)
