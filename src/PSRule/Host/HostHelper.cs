@@ -78,7 +78,7 @@ internal static class HostHelper
         if (source == null || source.Length == 0) return [];
 
         var results = new List<T>();
-        results.AddRange(GetPSLanguageBlocks(context, source).OfType<T>());
+        results.AddRange(GetPSLanguageBlocks(source, context).OfType<T>());
         return results;
     }
 
@@ -147,9 +147,9 @@ internal static class HostHelper
     /// <summary>
     /// Execute PowerShell script files to get language blocks.
     /// </summary>
-    private static ILanguageBlock[] GetPSLanguageBlocks(IScriptResourceDiscoveryContext context, Source[] sources)
+    private static ILanguageBlock[] GetPSLanguageBlocks(Source[] sources, IScriptResourceDiscoveryContext context)
     {
-        if (context.GetExecutionOption().RestrictScriptSource == Options.RestrictScriptSource.DisablePowerShell)
+        if (context.RestrictScriptSource == Options.RestrictScriptSource.DisablePowerShell)
             return [];
 
         var ps = context.GetPowerShell() ?? throw new InvalidOperationException("PowerShell runspace is not available.");
@@ -379,7 +379,7 @@ internal static class HostHelper
         try
         {
             context.EnterLanguageScope(ruleBlock.Source);
-            var invokeResult = condition.If();
+            var invokeResult = condition.If(context, context.TargetObject);
             if (invokeResult == null)
             {
                 ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
@@ -423,7 +423,7 @@ internal static class HostHelper
         try
         {
             context.EnterLanguageScope(resource.Source);
-            var filter = context.LanguageScope!.GetFilter(ResourceKind.Rule);
+            var filter = context.Scope!.GetFilter(ResourceKind.Rule);
             return filter == null || filter.Match(resource);
         }
         finally

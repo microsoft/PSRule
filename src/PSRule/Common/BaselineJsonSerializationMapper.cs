@@ -132,7 +132,6 @@ internal static class BaselineJsonSerializationMapper
         MapProperty(writer, serializer, nameof(value.Field), value.Field?.GetFieldMap);
         MapProperty(writer, serializer, nameof(value.IgnoreCase), value.IgnoreCase);
         MapProperty(writer, nameof(value.NameSeparator), value.NameSeparator);
-        MapProperty(writer, serializer, nameof(value.PreferTargetInfo), value.PreferTargetInfo);
         MapProperty(writer, nameof(value.TargetName), value.TargetName);
         MapProperty(writer, nameof(value.TargetType), value.TargetType);
         MapProperty(writer, serializer, nameof(value.UseQualifiedName), value.UseQualifiedName);

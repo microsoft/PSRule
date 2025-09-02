@@ -98,9 +98,7 @@ Describe 'PSRule -- Conventions' -Tag 'Convention' {
         }
 
         It 'Expands input object' {
-            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention.Expansion' -Option @{
-                'Binding.PreferTargetInfo' = $True
-            });
+            $result = @(Invoke-PSRule @invokeParams -Name 'ConventionTest' -Convention 'Convention.Expansion');
             $result | Should -Not -BeNullOrEmpty;
             $result.Length | Should -Be 5;
             $result[0].TargetName | Should -Be 'TestObject3';

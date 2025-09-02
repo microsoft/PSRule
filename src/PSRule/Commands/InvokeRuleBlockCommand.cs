@@ -32,7 +32,7 @@ internal sealed class InvokeRuleBlockCommand : Cmdlet
 
     protected override void ProcessRecord()
     {
-        var context = LegacyRunspaceContext.CurrentThread;
+        var context = LegacyRunspaceContext.CurrentThread!;
         try
         {
             if (Body == null)
@@ -107,10 +107,10 @@ internal sealed class InvokeRuleBlockCommand : Cmdlet
 
     private bool AcceptsType()
     {
-        if (Type == null)
+        if (Type == null || Type.Length == 0)
             return true;
 
-        var comparer = LegacyRunspaceContext.CurrentThread.LanguageScope.GetBindingComparer();
+        var comparer = LegacyRunspaceContext.CurrentThread.Scope.GetBindingComparer();
         var targetType = LegacyRunspaceContext.CurrentThread.RuleRecord.TargetType;
         for (var i = 0; i < Type.Length; i++)
         {

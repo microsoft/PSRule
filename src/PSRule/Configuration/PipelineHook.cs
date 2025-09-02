@@ -8,5 +8,4 @@ namespace PSRule.Configuration;
 /// </summary>
 public delegate string BindTargetName(object targetObject);
 
-internal delegate string BindTargetMethod(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path);
-internal delegate string BindTargetFunc(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, BindTargetMethod next, out string path);
+internal delegate string? BindTargetMethod(string[] propertyNames, bool caseSensitive, object targetObject, out string? path);

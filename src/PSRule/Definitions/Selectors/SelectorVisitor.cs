@@ -13,11 +13,9 @@ namespace PSRule.Definitions.Selectors;
 internal sealed class SelectorVisitor
 {
     private readonly LanguageExpressionOuterFn _Fn;
-    private readonly LegacyRunspaceContext _Context;
 
-    public SelectorVisitor(LegacyRunspaceContext context, string apiVersion, ResourceId id, ISourceFile source, ISelectorSpec spec)
+    public SelectorVisitor(string apiVersion, ResourceId id, ISourceFile source, ISelectorSpec spec)
     {
-        _Context = context;
         Id = id;
         Source = source;
         InstanceId = Guid.NewGuid();
@@ -46,10 +44,10 @@ internal sealed class SelectorVisitor
 
     public ISourceFile Source { get; }
 
-    public bool Match(ITargetObject o)
+    public bool If(IExpressionContext expressionContext, ITargetObject o)
     {
-        var context = new ExpressionContext(_Context, Source, ResourceKind.Selector, o);
-        context.Debug(PSRuleResources.SelectorMatchTrace, Id);
+        var context = new ExpressionContext(expressionContext, Source, ResourceKind.Selector, o);
+        context.Logger.LogDebug(EventId.None, PSRuleResources.SelectorMatchTrace, Id);
         return _Fn(context, o).GetValueOrDefault(false);
     }
 }
