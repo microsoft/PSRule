@@ -18,7 +18,7 @@ Create options to configure PSRule execution.
 ```text
 New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
  [-SuppressTargetName <SuppressionOption>] [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
- [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
+ [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
  [-Convention <String[]>] [-ExecutionBreak <BreakLevel>] [-DuplicateResourceId <ExecutionActionPreference>]
  [-InitialSessionState <SessionState>] [-RestrictScriptSource <RestrictScriptSource>]
@@ -44,7 +44,7 @@ New-PSRuleOption [[-Path] <String>] [-Configuration <ConfigurationOption>]
 ```text
 New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
  [-SuppressTargetName <SuppressionOption>] [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>]
- [-BindingField <Hashtable>] [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>]
+ [-BindingField <Hashtable>] [-BindingNameSeparator <String>]
  [-TargetName <String[]>] [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>]
  [-Convention <String[]>] [-ExecutionBreak <BreakLevel>] [-DuplicateResourceId <ExecutionActionPreference>]
  [-InitialSessionState <SessionState>] [-RestrictScriptSource <RestrictScriptSource>]
@@ -70,7 +70,7 @@ New-PSRuleOption [-Option] <PSRuleOption> [-Configuration <ConfigurationOption>]
 ```text
 New-PSRuleOption [-Default] [-Configuration <ConfigurationOption>] [-SuppressTargetName <SuppressionOption>]
  [-BaselineGroup <Hashtable>] [-BindingIgnoreCase <Boolean>] [-BindingField <Hashtable>]
- [-BindingNameSeparator <String>] [-BindingPreferTargetInfo <Boolean>] [-TargetName <String[]>]
+ [-BindingNameSeparator <String>] [-TargetName <String[]>]
  [-TargetType <String[]>] [-BindingUseQualifiedName <Boolean>] [-Convention <String[]>]
  [-ExecutionBreak <BreakLevel>] [-DuplicateResourceId <ExecutionActionPreference>]
  [-InitialSessionState <SessionState>] [-RestrictScriptSource <RestrictScriptSource>]
@@ -283,24 +283,6 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -BindingPreferTargetInfo
-
-Sets the option `Binding.PreferTargetInfo`.
-This option specifies if automatic binding is preferred over configured binding options.
-See about_PSRule_Options for more information.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

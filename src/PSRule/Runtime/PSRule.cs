@@ -364,7 +364,7 @@ public sealed class PSRule : ScopedItem
             return;
 
         RequireScope(RunspaceScope.ConventionInitialize);
-        GetContext()?.LanguageScope?.ConfigureServices(configure);
+        GetContext()?.Scope?.ConfigureServices(configure);
     }
 
     /// <summary>

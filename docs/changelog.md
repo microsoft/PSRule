@@ -41,8 +41,10 @@ What's changed since pre-release v3.0.0-B0453:
     [#2892](https://github.com/microsoft/PSRule/issues/2892)
   - Added GitHub Actions support to CLI by @BernieWhite.
     [#2824](https://github.com/microsoft/PSRule/issues/2824)
-  - Bump vscode engine to v1.101.0.
-    [#2949](https://github.com/microsoft/PSRule/pull/2949)
+  - Added Azure Pipelines support to CLI by @BernieWhite.
+    [#2825](https://github.com/microsoft/PSRule/issues/2825)
+  - Bump vscode engine to v1.102.0.
+    [#2981](https://github.com/microsoft/PSRule/pull/2981)
 - Bug fixes:
   - Fixed path handling issue string is missing the terminator with single quote in source paths by @juan-carlos-diaz.
     [#2885](https://github.com/microsoft/PSRule/issues/2885)

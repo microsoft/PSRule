@@ -7,12 +7,14 @@ using System.Management.Automation.Language;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
+using PSRule.Definitions.Expressions;
 using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Runs;
 using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime.Binding;
+using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Runtime;
 
@@ -21,7 +23,7 @@ namespace PSRule.Runtime;
 /// <summary>
 /// A context applicable to rule execution.
 /// </summary>
-internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext
+internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext, IExpressionContext
 {
     private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
     private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
@@ -44,6 +46,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     private readonly ExecutionActionPreference _UnprocessedObject;
     private readonly ExecutionActionPreference _RuleSuppressed;
     private readonly ExecutionActionPreference _InvariantCulture;
+    private readonly ExecutionActionPreference _DuplicateResourceId;
 
     /// <summary>
     /// Track the current runspace scope.
@@ -78,6 +81,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         _UnprocessedObject = Pipeline.Option.Execution.UnprocessedObject.GetValueOrDefault(ExecutionOption.Default.UnprocessedObject!.Value);
         _RuleSuppressed = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed!.Value);
         _InvariantCulture = Pipeline.Option.Execution.InvariantCulture.GetValueOrDefault(ExecutionOption.Default.InvariantCulture!.Value);
+        _DuplicateResourceId = Pipeline.Option.Execution?.DuplicateResourceId ?? ExecutionOption.Default.DuplicateResourceId!.Value;
 
         _WarnOnce = [];
 
@@ -103,7 +107,15 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public IEnumerable<Run> Runs { get; private set; } = [];
 
-    public ILanguageScope? LanguageScope { get; private set; }
+    public ILanguageScope? Scope { get; private set; }
+
+    public ResourceKind Kind => throw new NotImplementedException();
+
+    public string LanguageScope => throw new NotImplementedException();
+
+    public ITargetObject Current => TargetObject;
+
+    public ResourceId? RuleId => RuleBlock?.Id;
 
     public bool IsScope(RunspaceScope scope)
     {
@@ -244,17 +256,29 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         Writer.LogVerbose(EventId.None, string.Concat(GetLogPrefix(), " -- [", pass, "/", count, "] [", outcome, "]"));
     }
 
-    public ExecutionOption GetExecutionOption()
-    {
-        return Pipeline.Option.Execution;
-    }
+    public RestrictScriptSource RestrictScriptSource => Pipeline.Option.Execution.RestrictScriptSource ?? ExecutionOption.Default.RestrictScriptSource!.Value;
 
-    public PowerShell GetPowerShell()
+    public PowerShell? GetPowerShell()
     {
         var result = PowerShell.Create();
         result.Runspace = Pipeline.GetRunspace();
         EnableLogging(result);
         return result;
+    }
+
+    public void ReportIssue(ResourceIssue issue)
+    {
+        switch (issue.Type)
+        {
+            case ResourceIssueType.DuplicateResourceId:
+                Logger?.Throw(_DuplicateResourceId, PSRuleResources.DuplicateResourceId, issue.ResourceId, issue.Args![0]);
+                break;
+            case ResourceIssueType.DuplicateResourceName:
+                Logger?.LogWarning(new EventId(0), PSRuleResources.DuplicateRuleName, issue.Args![0]);
+                break;
+            default:
+                throw new NotImplementedException($"Resource issue '{issue.Type}' is not implemented.");
+        }
     }
 
     private static void EnableLogging(PowerShell ps)
@@ -456,10 +480,10 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         if (!Pipeline.LanguageScope.TryScope(file.Module, out var scope))
             throw new RuntimeScopeException(PSR0022, PSRuleResources.PSR0022);
 
-        LanguageScope = scope;
+        Scope = scope;
 
-        if (TargetObject != null && LanguageScope != null)
-            Binding = LanguageScope.Bind(TargetObject);
+        if (TargetObject != null && Scope != null)
+            Binding = Scope.Bind(TargetObject);
 
         Source = file;
     }
@@ -467,7 +491,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     public void ExitLanguageScope(ISourceFile file)
     {
         // Look at scope popping and validation.
-        LanguageScope = null;
+        Scope = null;
 
         Source = null;
     }
@@ -502,10 +526,25 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         if (annotation.TryGetSelectorResult(selector, out var result))
             return result;
 
-        result = selector.Match(targetObject);
+        result = selector.If(this, targetObject);
         annotation.SetSelectorResult(selector, result);
         targetObject.SetAnnotation(annotation);
         return result;
+    }
+
+    public void Reason(IOperand operand, string text, params object[] args)
+    {
+        WriteReason(new ResultReason(null, operand, text, args));
+    }
+
+    public bool GetPathExpression(string path, out PathExpression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void CachePathExpression(string path, PathExpression expression)
+    {
+        throw new NotImplementedException();
     }
 
     /// <summary>
@@ -569,20 +608,20 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     internal void AddService(string id, object service)
     {
-        if (LanguageScope == null) throw new InvalidOperationException("Can not call out of scope.");
+        if (Scope == null) throw new InvalidOperationException("Can not call out of scope.");
 
-        ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
-        if (!StringComparer.OrdinalIgnoreCase.Equals(LanguageScope.Name, scopeName) || string.IsNullOrEmpty(name))
+        ResourceHelper.ParseIdString(Scope.Name, id, out var scopeName, out var name);
+        if (!StringComparer.OrdinalIgnoreCase.Equals(Scope.Name, scopeName) || string.IsNullOrEmpty(name))
             return;
 
-        LanguageScope.AddService(name!, service);
+        Scope.AddService(name!, service);
     }
 
     internal object? GetService(string id)
     {
-        if (LanguageScope == null) throw new InvalidOperationException("Can not call out of scope.");
+        if (Scope == null) throw new InvalidOperationException("Can not call out of scope.");
 
-        ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
+        ResourceHelper.ParseIdString(Scope.Name, id, out var scopeName, out var name);
         return scopeName == null || !Pipeline.LanguageScope.TryScope(scopeName, out var scope) || scope == null || name == null || string.IsNullOrEmpty(name) ? null : scope.GetService(name);
     }
 
@@ -692,7 +731,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         if (string.IsNullOrEmpty(Source?.HelpPath))
             return null;
 
-        var cultures = LanguageScope?.Culture;
+        var cultures = Scope?.Culture;
         if (!_RaisedUsingInvariantCulture && (cultures == null || cultures.Length == 0))
         {
             this.Throw(_InvariantCulture, PSRuleResources.UsingInvariantCulture);
@@ -724,14 +763,14 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     #region Configuration
 
-    internal bool TryGetConfigurationValue(string name, out object? value)
+    public bool TryGetConfigurationValue(string name, out object? value)
     {
         value = null;
         if (string.IsNullOrEmpty(name))
             return false;
 
         // Get from baseline configuration
-        if (LanguageScope != null && LanguageScope.TryConfigurationValue(name, out var result))
+        if (Scope != null && Scope.TryConfigurationValue(name, out var result))
         {
             value = result;
             return true;

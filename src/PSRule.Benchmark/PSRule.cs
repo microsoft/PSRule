@@ -253,7 +253,7 @@ public class PSRule
     public void DefaultTargetNameBinding()
     {
         for (var i = 0; i < _TargetObject.Length; i++)
-            PipelineHookActions.BindTargetName(null, false, false, _TargetObject[i], out _);
+            PipelineHookActions.BindTargetName(null, false, _TargetObject[i], out _);
     }
 
     [Benchmark]
@@ -261,9 +261,8 @@ public class PSRule
     {
         for (var i = 0; i < _TargetObject.Length; i++)
             PipelineHookActions.BindTargetName(
-                propertyNames: new string[] { "TargetName", "Name" },
+                propertyNames: ["TargetName", "Name"],
                 caseSensitive: true,
-                preferTargetInfo: false,
                 targetObject: _TargetObject[i],
                 path: out _
             );
@@ -274,9 +273,8 @@ public class PSRule
     {
         for (var i = 0; i < _TargetObject.Length; i++)
             PipelineHookActions.BindTargetName(
-                propertyNames: new string[] { "TargetName", "Name" },
+                propertyNames: ["TargetName", "Name"],
                 caseSensitive: true,
-                preferTargetInfo: false,
                 targetObject: _TargetObject[i],
                 path: out _
             );

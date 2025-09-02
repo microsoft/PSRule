@@ -115,8 +115,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         if (_Runspace == null)
         {
             var initialSessionState = Option.Execution.InitialSessionState.GetValueOrDefault(ExecutionOption.Default.InitialSessionState!.Value);
-            var state = HostState.CreateSessionState(initialSessionState);
-            state.LanguageMode = _LanguageMode == LanguageMode.FullLanguage ? PSLanguageMode.FullLanguage : PSLanguageMode.ConstrainedLanguage;
+            var state = HostState.CreateSessionState(initialSessionState, _LanguageMode);
 
             _Runspace = RunspaceFactory.CreateRunspace(state);
             Runspace.DefaultRunspace ??= _Runspace;
@@ -151,7 +150,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         ReportIssue(runspaceContext);
 
         // Build selectors
-        Selector = ResourceCache.OfType<ISelector>().ToDictionary(key => key.Id.Value, value => value.ToSelectorVisitor(runspaceContext));
+        Selector = ResourceCache.OfType<ISelector>().ToDictionary(key => key.Id.Value, value => value.ToSelectorVisitor());
 
         // Build suppression groups
         var suppressionGroupFilter = new SuppressionGroupFilter();

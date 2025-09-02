@@ -27,7 +27,7 @@ internal sealed class TargetSourceCollection : ITargetSourceCollection
 
     internal TargetSourceInfo[] GetSourceInfo()
     {
-        return _Items == null || _Items.Count == 0 ? Array.Empty<TargetSourceInfo>() : _Items.ToArray();
+        return _Items == null || _Items.Count == 0 ? [] : [.. _Items];
     }
 
     internal void AddRange(IEnumerable<TargetSourceInfo> sourceInfo)

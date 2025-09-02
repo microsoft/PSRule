@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Pipeline;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions;
@@ -10,17 +11,17 @@ namespace PSRule.Definitions;
 /// <summary>
 /// A context that is used for discovery of resources.
 /// </summary>
-internal interface IResourceDiscoveryContext
+internal interface IResourceDiscoveryContext : IGetLocalizedPathContext
 {
     /// <summary>
     /// A writer to log messages.
     /// </summary>
-    ILogger Logger { get; }
+    ILogger? Logger { get; }
 
-    /// <summary>
-    /// The current source file.
-    /// </summary>
-    ISourceFile? Source { get; }
+    ///// <summary>
+    ///// The current source file.
+    ///// </summary>
+    //ISourceFile? Source { get; }
 
     /// <summary>
     /// Enter a language scope.
@@ -37,6 +38,8 @@ internal interface IResourceDiscoveryContext
     void PushScope(RunspaceScope scope);
 
     void PopScope(RunspaceScope scope);
+
+    void ReportIssue(ResourceIssue resourceIssue);
 }
 
 #nullable restore

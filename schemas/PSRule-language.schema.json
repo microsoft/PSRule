@@ -797,13 +797,6 @@
           "markdownDescription": "Configures the separator to use for building a qualified name. The default is `/`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingnameseparator)",
           "default": "/"
         },
-        "preferTargetInfo": {
-          "type": "boolean",
-          "title": "Prefer target info",
-          "description": "Determines if binding prefers target info provided by the object over custom configuration. The default is false.",
-          "markdownDescription": "Determines if binding prefers target info provided by the object over custom configuration. The default is `false`. [See help](https://microsoft.github.io/PSRule/v2/concepts/PSRule/en-US/about_PSRule_Options/#bindingprefertargetinfo)",
-          "default": false
-        },
         "targetName": {
           "type": "array",
           "title": "Bind TargetName",

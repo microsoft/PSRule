@@ -2,8 +2,10 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Runtime;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule;
 
@@ -34,9 +36,14 @@ public abstract class ContextBaseTests : BaseTests
 
     internal ResourceCache GetResourceCache(PSRuleOption? option = default, ILanguageScopeSet? languageScope = default, Source[]? sources = default, IPipelineWriter? writer = default)
     {
+        option ??= GetOption();
+        writer ??= GetTestWriter(option);
+
         return new ResourceCacheBuilder
         (
-            writer: writer ?? GetTestWriter(option),
+            option: option,
+            writer: writer,
+            runspaceContext: new RunspaceContext(option, writer),
             languageScopeSet: languageScope ?? GetLanguageScopeSet(sources)
         ).Import(sources).Build(unresolved: null);
     }
@@ -56,6 +63,11 @@ public abstract class ContextBaseTests : BaseTests
         }
 
         return languageScopeSet;
+    }
+
+    internal TestExpressionContext GetTestExpressionContext(PSRuleOption? option = default, RunspaceScope scope = RunspaceScope.None)
+    {
+        return new TestExpressionContext(option ?? GetOption(), scope);
     }
 }
 
