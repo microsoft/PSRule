@@ -7,27 +7,32 @@ using PSRule.Definitions;
 using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime;
+using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Pipeline.Output;
 
-internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
+internal sealed class CsvOutputWriter : SerializationOutputWriter<object>, IBindingContext
 {
     private const char COMMA = ',';
     private const char QUOTE = '"';
 
     private readonly StringBuilder _Builder;
+    private readonly ResultFormat _OutputAs;
     private readonly string[] _DetailColumns;
     private readonly string[] _SummaryColumns;
+    private readonly Dictionary<string, PathExpression> _PathExpressionCache = [];
 
     // Default columns for backward compatibility
     private static readonly string[] DefaultDetailColumns = ["RuleName", "TargetName", "TargetType", "Outcome", "OutcomeReason", "Synopsis", "Recommendation"];
     private static readonly string[] DefaultSummaryColumns = ["RuleName", "Pass", "Fail", "Outcome", "Synopsis", "Recommendation"];
 
-    internal CsvOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
+
+    internal CsvOutputWriter(PipelineWriter inner, PSRuleOption option, ShouldProcess? shouldProcess)
         : base(inner, option, shouldProcess)
     {
         _Builder = new StringBuilder();
-        
+        _OutputAs = Option.Output.As ?? OutputOption.Default.As!.Value;
+
         // Use configured columns or default columns
         _DetailColumns = option.Output.CsvDetailedColumns ?? DefaultDetailColumns;
         _SummaryColumns = DefaultSummaryColumns; // Summary columns are not configurable yet
@@ -36,11 +41,14 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
     protected override string Serialize(object[] o)
     {
         WriteHeader();
-        if (Option.Output.As.GetValueOrDefault(OutputOption.Default.As.Value) == ResultFormat.Detail)
+        if (_OutputAs == ResultFormat.Detail)
+        {
             WriteDetail(o);
+        }
         else
+        {
             WriteSummary(o);
-
+        }
         return _Builder.ToString();
     }
 
@@ -61,12 +69,12 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
     private void WriteHeader()
     {
         var columns = Option.Output.As == ResultFormat.Summary ? _SummaryColumns : _DetailColumns;
-        
+
         for (var i = 0; i < columns.Length; i++)
         {
             if (i > 0)
                 _Builder.Append(COMMA);
-                
+
             _Builder.Append(GetColumnDisplayName(columns[i]));
         }
         _Builder.Append(System.Environment.NewLine);
@@ -78,12 +86,12 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
             return;
 
         var columns = _DetailColumns;
-        
+
         for (var i = 0; i < columns.Length; i++)
         {
             if (i > 0)
                 _Builder.Append(COMMA);
-                
+
             var value = GetColumnValue(record, columns[i]);
             WriteColumn(value);
         }
@@ -96,12 +104,12 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
             return;
 
         var columns = _SummaryColumns;
-        
+
         for (var i = 0; i < columns.Length; i++)
         {
             if (i > 0)
                 _Builder.Append(COMMA);
-                
+
             var value = GetColumnValue(record, columns[i]);
             WriteColumn(value);
         }
@@ -153,10 +161,9 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
     /// <summary>
     /// Get the value for a specific column from a record.
     /// </summary>
-    private static string GetColumnValue(object record, string column)
+    private string GetColumnValue(object record, string column)
     {
-        if (record == null)
-            return string.Empty;
+        if (record == null) return string.Empty;
 
         return column switch
         {
@@ -168,7 +175,7 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
             "OutcomeReason" when record is RuleRecord ruleRecord => ruleRecord.OutcomeReason.ToString(),
             "Synopsis" when record is RuleRecord ruleRecord => ruleRecord.Info.Synopsis?.Text ?? string.Empty,
             "Recommendation" when record is RuleRecord ruleRecord => ruleRecord.Info.Recommendation?.Text ?? string.Empty,
-            
+
             // Standard RuleSummaryRecord properties
             "RuleName" when record is RuleSummaryRecord summaryRecord => summaryRecord.RuleName,
             "Pass" when record is RuleSummaryRecord summaryRecord => summaryRecord.Pass.ToString(),
@@ -176,32 +183,43 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>
             "Outcome" when record is RuleSummaryRecord summaryRecord => summaryRecord.Outcome.ToString(),
             "Synopsis" when record is RuleSummaryRecord summaryRecord => summaryRecord.Info.Synopsis ?? string.Empty,
             "Recommendation" when record is RuleSummaryRecord summaryRecord => summaryRecord.Info.Recommendation ?? string.Empty,
-            
+
             // For any other column, try to get it via object path (for nested properties)
-            _ => GetNestedColumnValue(record, column)
+            _ => GetRecordColumnValue(record, column)
         };
     }
 
     /// <summary>
-    /// Get a column value using object path notation for nested properties.
+    /// Get a column value using object path notation for the record.
     /// </summary>
-    private static string GetNestedColumnValue(object record, string path)
+    private string GetRecordColumnValue(object record, string path)
     {
         try
         {
-            // For nested properties, we need a binding context but we can use a dummy one
-            // since we're just reading from the record object
-            var bindingContext = PipelineContext.CurrentThread;
-            if (bindingContext != null && ObjectHelper.GetPath(bindingContext, record, path, caseSensitive: false, out object value))
+            if (ObjectHelper.GetPath(this, record, path, caseSensitive: false, out object value))
             {
                 return value?.ToString() ?? string.Empty;
             }
         }
         catch
         {
-            // If we can't get the value via object path, ignore the error and return empty
+            // If we can't get the value via object path, ignore the error and return empty.
         }
-        
         return string.Empty;
+    }
+
+    bool IBindingContext.GetPathExpression(string path, out PathExpression expression)
+    {
+        if (_PathExpressionCache.TryGetValue(path, out expression))
+            return true;
+
+        expression = PathExpression.Create(path);
+        _PathExpressionCache[path] = expression;
+        return true;
+    }
+
+    void IBindingContext.CachePathExpression(string path, PathExpression expression)
+    {
+        _PathExpressionCache[path] = expression;
     }
 }

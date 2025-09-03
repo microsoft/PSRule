@@ -975,6 +975,28 @@
             }
           ]
         },
+        "csvDetailedColumns": {
+          "type": "array",
+          "title": "CSV detailed columns",
+          "description": "One or more cultures to be written to detailed CSV output.",
+          "markdownDescription": "One or more cultures to be written to detailed CSV output. [See help](https://microsoft.github.io/PSRule/v3/concepts/PSRule/en-US/about_PSRule_Options/#outputcsvdetailedcolumns)",
+          "items": {
+            "type": "string",
+            "description": "The column to be written to CSV.",
+            "minLength": 2
+          },
+          "uniqueItems": true,
+          "default": [
+            "RuleName",
+            "TargetName",
+            "TargetType",
+            "Outcome",
+            "OutcomeReason",
+            "Synopsis",
+            "Recommendation"
+          ],
+          "minLength": 1
+        },
         "encoding": {
           "type": "string",
           "title": "Encoding",
