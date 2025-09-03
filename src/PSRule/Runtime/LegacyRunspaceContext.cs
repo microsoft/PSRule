@@ -48,10 +48,10 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     private readonly ExecutionActionPreference _InvariantCulture;
     private readonly ExecutionActionPreference _DuplicateResourceId;
 
-    /// <summary>
-    /// Track the current runspace scope.
-    /// </summary>
-    private readonly Stack<RunspaceScope> _Scope;
+    ///// <summary>
+    ///// Track the current runspace scope.
+    ///// </summary>
+    //private readonly Stack<RunspaceScope> _Scope;
 
     /// <summary>
     /// Track common warnings, to only raise once.
@@ -88,10 +88,10 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         _ObjectNumber = -1;
         _RuleTimer = new Stopwatch();
         _Reason = [];
-        _Scope = new Stack<RunspaceScope>();
+        //_Scope = new Stack<RunspaceScope>();
     }
 
-    internal bool HadErrors => _RuleErrors > 0;
+    internal bool HadErrors => _RuleErrors > 0 || Pipeline.RunspaceContext.ErrorCount > 0;
 
     public IPipelineWriter Writer => Pipeline.Writer;
 
@@ -117,31 +117,11 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public ResourceId? RuleId => RuleBlock?.Id;
 
-    public bool IsScope(RunspaceScope scope)
-    {
-        if (scope == RunspaceScope.None && (_Scope == null || _Scope.Count == 0))
-            return true;
+    public bool IsScope(RunspaceScope scope) => Pipeline.RunspaceContext?.IsScope(scope) ?? false;
 
-        if (_Scope == null || _Scope.Count == 0)
-            return false;
+    public void PushScope(RunspaceScope scope) => Pipeline?.RunspaceContext?.PushScope(scope);
 
-        var current = _Scope.Peek();
-        return scope.HasFlag(current);
-    }
-
-    public void PushScope(RunspaceScope scope)
-    {
-        _Scope.Push(scope);
-    }
-
-    public void PopScope(RunspaceScope scope)
-    {
-        var current = _Scope.Peek();
-        if (current != scope)
-            throw new RuntimeScopeException();
-
-        _Scope.Pop();
-    }
+    public void PopScope(RunspaceScope scope) => Pipeline?.RunspaceContext.PopScope(scope);
 
     public void WarnRuleInconclusive(string ruleId)
     {
@@ -256,14 +236,11 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         Writer.LogVerbose(EventId.None, string.Concat(GetLogPrefix(), " -- [", pass, "/", count, "] [", outcome, "]"));
     }
 
-    public RestrictScriptSource RestrictScriptSource => Pipeline.Option.Execution.RestrictScriptSource ?? ExecutionOption.Default.RestrictScriptSource!.Value;
+    public RestrictScriptSource RestrictScriptSource => Pipeline.RunspaceContext.RestrictScriptSource;
 
     public PowerShell? GetPowerShell()
     {
-        var result = PowerShell.Create();
-        result.Runspace = Pipeline.GetRunspace();
-        EnableLogging(result);
-        return result;
+        return Pipeline.RunspaceContext.GetPowerShell();
     }
 
     public void ReportIssue(ResourceIssue issue)
@@ -665,6 +642,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public void Initialize(Source[] source)
     {
+        Pipeline.RunspaceContext.EnterResourceContext(this);
+
         foreach (var languageScope in Pipeline.LanguageScope.Get())
             Pipeline.UpdateLanguageScope(languageScope);
 
@@ -689,12 +668,12 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
         Pipeline.Initialize(this, source);
 
-        _Conventions = Pipeline.ResourceCache.OfType<IConventionV1>().ToArray();
+        var filter = Pipeline.GetConventionFilter();
+
+        _Conventions = [.. Pipeline.ResourceCache.OfType<IConventionV1>().Where(c => filter == null || filter.Match(c))];
         Array.Sort(_Conventions, new ConventionComparer(Pipeline.GetConventionOrder));
 
         RunConventionInitialize();
-
-        //Pipeline.OptionBuilder.Build()
 
         // Split each run based on baselines.
         Runs = new RunCollectionBuilder(Pipeline.Option, Pipeline.RunInstance).Build();
@@ -709,6 +688,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     {
         Output = output;
         RunConventionEnd();
+
+        Pipeline.RunspaceContext.ExitResourceContext(this);
     }
 
     /// <summary>

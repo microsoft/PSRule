@@ -13,7 +13,7 @@ namespace PSRule.Commands;
 /// <summary>
 /// An internal language command used to evaluate a rule script block.
 /// </summary>
-internal sealed class InvokeRuleBlockCommand : Cmdlet
+internal sealed class InvokeRuleBlockCommand : LanguageBlock
 {
     [Parameter()]
     public string[]? Type;

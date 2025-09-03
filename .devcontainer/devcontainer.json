@@ -2,7 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
 {
   "name": "PSRule Developer",
-  "image": "mcr.microsoft.com/devcontainers/dotnet:1-8.0-noble",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:8.0-noble",
   "customizations": {
     "vscode": {
       "settings": {
@@ -14,6 +14,7 @@
         }
       },
       "extensions": [
+        "ms-dotnettools.vscode-dotnet-runtime",
         "ms-dotnettools.csdevkit",
         "ms-vscode.powershell",
         "github.vscode-pull-request-github",
@@ -34,7 +35,7 @@
       "version": "latest"
     }
   },
-  "onCreateCommand": "dotnet tool install --global PowerShell --version 7.4.6 && sudo chown -R vscode:vscode /usr/bin/pwsh && sudo apt-get update -y && sudo apt-get upgrade -y && dotnet restore && pip install -r requirements-docs.txt && ln /usr/bin/pwsh /home/vscode/.dotnet/tools/pwsh --force",
+  "onCreateCommand": "sudo ./dotnet-install.sh --install-dir /usr/lib/dotnet && sudo dotnet workload update && dotnet tool install --global PowerShell --version 7.4.10 && sudo chown -R vscode:vscode /usr/bin/pwsh && sudo apt-get update -y && sudo apt-get upgrade -y && dotnet restore && pip install -r requirements-docs.txt && ln /usr/bin/pwsh /home/vscode/.dotnet/tools/pwsh --force",
   "updateContentCommand": "/usr/bin/pwsh -f .devcontainer/container-build.ps1",
   "postStartCommand": "/usr/bin/pwsh -f .devcontainer/container-start.ps1"
 }

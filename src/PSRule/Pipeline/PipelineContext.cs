@@ -3,19 +3,15 @@
 
 using System.Collections;
 using System.Diagnostics;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
 using PSRule.Configuration;
 using PSRule.Definitions;
-using PSRule.Definitions.Conventions;
-using PSRule.Definitions.Rules;
 using PSRule.Definitions.Selectors;
 using PSRule.Definitions.SuppressionGroups;
-using PSRule.Host;
 using PSRule.Options;
 using PSRule.Resources;
 using PSRule.Runtime;
 using PSRule.Runtime.ObjectPath;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule.Pipeline;
 
@@ -41,8 +37,6 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     private readonly LanguageMode _LanguageMode;
     private readonly Dictionary<string, PathExpression> _PathExpressionCache;
 
-    // Objects kept for caching and disposal
-    private Runspace? _Runspace;
 
     // Track whether Dispose has been called.
     private bool _Disposed;
@@ -66,6 +60,8 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
 
     public ResourceCache ResourceCache { get; }
 
+    internal readonly IRunspaceContext RunspaceContext;
+
     private OptionContext _DefaultOptionContext;
 
     public System.Security.Cryptography.HashAlgorithm ObjectHashAlgorithm { get; }
@@ -77,13 +73,14 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     /// </summary>
     public ILanguageScopeSet LanguageScope { get; }
 
-    private PipelineContext(PSRuleOption option, IHostContext? hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache)
+    private PipelineContext(PSRuleOption option, IHostContext? hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache, IRunspaceContext runspaceContext)
     {
         Option = option ?? throw new ArgumentNullException(nameof(option));
         LanguageScope = languageScope ?? throw new ArgumentNullException(nameof(languageScope));
 
         OptionBuilder = optionBuilder;
         ResourceCache = resourceCache;
+        RunspaceContext = runspaceContext;
 
         HostContext = hostContext;
         _GetReader = reader;
@@ -103,48 +100,22 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         LanguageScope = languageScope;
     }
 
-    public static PipelineContext New(PSRuleOption option, IHostContext? hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache)
+    public static PipelineContext New(PSRuleOption option, IHostContext? hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache, IRunspaceContext runspaceContext)
     {
-        var context = new PipelineContext(option, hostContext, reader, writer, languageScope, optionBuilder, resourceCache);
+        var context = new PipelineContext(option, hostContext, reader, writer, languageScope, optionBuilder, resourceCache, runspaceContext);
         CurrentThread = context;
         return context;
-    }
-
-    internal Runspace GetRunspace()
-    {
-        if (_Runspace == null)
-        {
-            var initialSessionState = Option.Execution.InitialSessionState.GetValueOrDefault(ExecutionOption.Default.InitialSessionState!.Value);
-            var state = HostState.CreateSessionState(initialSessionState, _LanguageMode);
-
-            _Runspace = RunspaceFactory.CreateRunspace(state);
-            Runspace.DefaultRunspace ??= _Runspace;
-
-            _Runspace.Open();
-            _Runspace.SessionStateProxy.PSVariable.Set(new PSRuleVariable());
-            _Runspace.SessionStateProxy.PSVariable.Set(new RuleVariable());
-            _Runspace.SessionStateProxy.PSVariable.Set(new LocalizedDataVariable());
-            _Runspace.SessionStateProxy.PSVariable.Set(new AssertVariable());
-            _Runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable());
-            _Runspace.SessionStateProxy.PSVariable.Set(new ConfigurationVariable());
-            _Runspace.SessionStateProxy.PSVariable.Set(ErrorPreference, ActionPreference.Continue);
-            _Runspace.SessionStateProxy.PSVariable.Set(WarningPreference, ActionPreference.Continue);
-            _Runspace.SessionStateProxy.PSVariable.Set(VerbosePreference, ActionPreference.Continue);
-            _Runspace.SessionStateProxy.PSVariable.Set(DebugPreference, ActionPreference.Continue);
-            _Runspace.SessionStateProxy.Path.SetLocation(Environment.GetWorkingPath());
-        }
-        return _Runspace;
     }
 
     internal void Initialize(LegacyRunspaceContext runspaceContext, Source[] sources)
     {
         // Import PS Language Blocks.
-        var blocks = HostHelper.GetPSResources<ILanguageBlock>(sources, runspaceContext);
-        var conventions = blocks.ToConventionsV1(runspaceContext);
-        var rules = blocks.ToRuleV1(runspaceContext);
+        //var blocks = HostHelper.GetPSResources<ILanguageBlock>(sources, runspaceContext);
+        //var conventions = blocks.ToConventionsV1(runspaceContext);
+        //var rules = blocks.ToRuleV1(runspaceContext);
 
-        ResourceCache.Import(conventions);
-        ResourceCache.Import(rules);
+        //ResourceCache.Import(conventions);
+        //ResourceCache.Import(rules);
 
         ReportUnresolved(runspaceContext);
         ReportIssue(runspaceContext);
@@ -166,6 +137,11 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     {
         var context = OptionBuilder.Build(languageScope.Name);
         languageScope.Configure(context);
+    }
+
+    internal IResourceFilter? GetConventionFilter()
+    {
+        return _DefaultOptionContext.ConventionFilter;
     }
 
     internal int GetConventionOrder(IConventionV1 x)
@@ -224,7 +200,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
             if (disposing)
             {
                 ObjectHashAlgorithm?.Dispose();
-                _Runspace?.Dispose();
+                RunspaceContext?.Dispose();
                 LanguageScope.Dispose();
                 _PathExpressionCache.Clear();
                 LanguageScope.Dispose();

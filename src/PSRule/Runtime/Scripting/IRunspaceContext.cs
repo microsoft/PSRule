@@ -11,7 +11,7 @@ namespace PSRule.Runtime.Scripting;
 /// A context that holds the state of a PowerShell runspace.
 /// This is used to manage the lifecycle of the runspace and its associated resources.
 /// </summary>
-internal interface IRunspaceContext : IDisposable
+internal interface IRunspaceContext : IRunspaceScopedContext, IDisposable
 {
     int ErrorCount { get; }
 
@@ -19,13 +19,13 @@ internal interface IRunspaceContext : IDisposable
 
     RestrictScriptSource RestrictScriptSource { get; }
 
-    IResourceDiscoveryContext? ResourceContext { get; }
+    IResourceContext? ResourceContext { get; }
 
     void ResetErrorCount();
 
     PowerShell GetPowerShell();
 
-    void EnterResourceContext(IResourceDiscoveryContext context);
+    void EnterResourceContext(IResourceContext context);
 
-    void ExitResourceContext(IResourceDiscoveryContext context);
+    void ExitResourceContext(IResourceContext context);
 }
