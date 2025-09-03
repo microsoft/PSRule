@@ -49,6 +49,7 @@ The following workspace options are available for use:
 - [Input.TargetType](#inputtargettype)
 - [Output.As](#outputas)
 - [Output.Banner](#outputbanner)
+- [Output.CsvDetailedColumns](#outputcsvdetailedcolumns)
 - [Output.Culture](#outputculture)
 - [Output.Encoding](#outputencoding)
 - [Output.Footer](#outputfooter)
@@ -2488,6 +2489,70 @@ variables:
   value: en-AU;en-US
 ```
 
+### Output.CsvDetailedColumns
+
+Configures which columns are included when using CSV detailed output format.
+This option allows you to customize the columns included in CSV output, reducing file size and focusing on relevant information.
+
+When this option is not specified, all default columns are included:
+`RuleName`, `TargetName`, `TargetType`, `Outcome`, `OutcomeReason`, `Synopsis`, `Recommendation`.
+
+When this option is specified, only the configured columns are included.
+The column order in the output matches the order specified in the configuration.
+
+Supported column types:
+
+- **Standard properties**: `RuleName`, `TargetName`, `TargetType`, `Outcome`, `OutcomeReason`, `Synopsis`, `Recommendation`
+- **Nested properties**: `Info.Synopsis`, `Info.Recommendation`, `Level` using dotted notation
+- **Custom properties**: Any valid object path for extensibility
+
+Invalid column names result in empty values and do not cause errors.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputCsvDetailedColumns parameter
+$option = New-PSRuleOption -OutputCsvDetailedColumns 'RuleName', 'TargetName', 'Outcome', 'Synopsis';
+```
+
+```powershell
+# PowerShell: Using the Output.CsvDetailedColumns hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.CsvDetailedColumns' = 'RuleName', 'TargetName', 'Outcome', 'Synopsis' };
+```
+
+```powershell
+# PowerShell: Using the OutputCsvDetailedColumns parameter to set YAML
+Set-PSRuleOption -OutputCsvDetailedColumns 'RuleName', 'TargetName', 'Outcome', 'Synopsis';
+```
+
+```yaml
+# YAML: Using the output/csvDetailedColumns property
+output:
+  csvDetailedColumns:
+  - RuleName
+  - TargetName
+  - Outcome
+  - Synopsis
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_OUTPUT_CSVDETAILEDCOLUMNS='RuleName;TargetName;Outcome;Synopsis'
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_OUTPUT_CSVDETAILEDCOLUMNS: 'RuleName;TargetName;Outcome;Synopsis'
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_OUTPUT_CSVDETAILEDCOLUMNS
+  value: 'RuleName;TargetName;Outcome;Synopsis'
+```
+
 ### Output.Encoding
 
 Configures the encoding used when output is written to file.
@@ -3641,6 +3706,11 @@ logging:
 output:
   as: Summary
   banner: Minimal
+  csvDetailedColumns:
+  - RuleName
+  - TargetName
+  - Outcome
+  - Synopsis
   culture:
   - en-US
   encoding: UTF8
@@ -3783,6 +3853,7 @@ logging:
 output:
   as: Detail
   banner: Default
+  csvDetailedColumns: [ ]
   culture: [ ]
   encoding: Default
   footer: Default
