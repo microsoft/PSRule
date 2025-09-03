@@ -39,14 +39,6 @@ internal static class HostHelper
         return builder.GetItems();
     }
 
-    internal static RuleHelpInfo[] GetRuleHelp(LegacyRunspaceContext context)
-    {
-        var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
-        var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: true);
-
-        return blocks.GetAll().ToRuleHelp(context);
-    }
-
     internal static DependencyGraph<RuleBlock> GetRuleBlockGraph(LegacyRunspaceContext context)
     {
         var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
@@ -73,11 +65,22 @@ internal static class HostHelper
     /// <summary>
     /// Get PS resources which are resource defined in PowerShell.
     /// </summary>
-    internal static IEnumerable<T> GetPSResources<T>(Source[] source, LegacyRunspaceContext context) where T : ILanguageBlock
+    internal static IEnumerable<T> GetPSResources<T>(Source[] source, IScriptResourceDiscoveryContext context) where T : ILanguageBlock
     {
         if (source == null || source.Length == 0) return [];
 
         var results = new List<T>();
+        results.AddRange(GetPSLanguageBlocks(source, context).OfType<T>());
+        return results;
+    }
+
+    internal static IEnumerable<T> GetResources<T>(Source[] source, IScriptResourceDiscoveryContext context) where T : ILanguageBlock
+    {
+        if (source == null || source.Length == 0) return [];
+
+        var results = new List<T>();
+        results.AddRange(GetYamlLanguageBlocks(source, context).OfType<T>());
+        results.AddRange(GetJsonLanguageBlocks(source, context).OfType<T>());
         results.AddRange(GetPSLanguageBlocks(source, context).OfType<T>());
         return results;
     }
@@ -469,9 +472,9 @@ internal static class HostHelper
         return info != null;
     }
 
-    internal static RuleHelpInfo GetRuleHelpInfo(LegacyRunspaceContext context, string name, string defaultSynopsis, string defaultDisplayName, InfoString defaultDescription, InfoString defaultRecommendation)
+    internal static RuleHelpInfo GetRuleHelpInfo(IGetLocalizedPathContext context, string name, string defaultSynopsis, string defaultDisplayName, InfoString defaultDescription, InfoString defaultRecommendation)
     {
-        return !TryHelpPath(context, name, out var path, out var culture) || !TryDocument(path, culture, out var document)
+        return !TryHelpPath(context, name, out var path, out var culture) || !TryDocument(path, culture, out var document) || document == null
             ? new RuleHelpInfo(
                 name: name,
                 displayName: defaultDisplayName ?? name,
@@ -482,7 +485,7 @@ internal static class HostHelper
             )
             : new RuleHelpInfo(
                 name: name,
-                displayName: document!.Name ?? defaultDisplayName ?? name,
+                displayName: document.Name ?? defaultDisplayName ?? name,
                 moduleName: context.Source!.Module,
                 synopsis: document.Synopsis ?? new InfoString(defaultSynopsis),
                 description: document.Description ?? defaultDescription,

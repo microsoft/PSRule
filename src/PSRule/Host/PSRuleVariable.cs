@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
-using PSRule.Runtime;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule.Host;
 
@@ -15,10 +15,10 @@ internal sealed class PSRuleVariable : PSVariable
 
     private readonly Runtime.PSRule _Value;
 
-    public PSRuleVariable()
+    public PSRuleVariable(IRunspaceContext runspaceContext)
         : base(VARIABLE_NAME, null, ScopedItemOptions.ReadOnly)
     {
-        _Value = new Runtime.PSRule(LegacyRunspaceContext.CurrentThread);
+        _Value = new Runtime.PSRule(runspaceContext);
     }
 
     public override object Value => _Value;

@@ -7,7 +7,7 @@ using PSRule.Runtime;
 
 namespace PSRule.Commands;
 
-internal sealed class InvokeConventionCommand : Cmdlet
+internal sealed class InvokeConventionCommand : LanguageBlock
 {
     [Parameter()]
     public ScriptBlock? If;

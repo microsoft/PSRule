@@ -2257,10 +2257,8 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
             try {
                 Push-Location $searchPath;
                 $result = @(Get-PSRuleHelp -Path $PWD -Option $options -WarningVariable outWarnings -WarningAction SilentlyContinue);
+                $result.Name | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
                 $result.Length | Should -Be 3;
-                $result[0].Name | Should -Be 'M1.Rule1';
-                $result[1].Name | Should -Be 'M1.Rule2';
-                $result[2].Name | Should -Be 'M1.YamlTestName';
                 ($result | Get-Member).TypeName | Should -BeIn 'PSRule.Rules.RuleHelpInfo+Collection';
 
                 $warningMessages = $outwarnings.ToArray();
@@ -2359,20 +2357,27 @@ Describe 'Get-PSRuleHelp' -Tag 'Get-PSRuleHelp', 'Common' {
     Context 'With -Module' {
         It 'Docs from module' {
             $result = @(Get-PSRuleHelp -Module 'TestModule' -Culture 'en-US');
+            $result.Name | Should -BeIn 'M1.Rule1', 'M1.Rule2', 'M1.YamlTestName';
             $result.Length | Should -Be 3;
-            $result[0].Name | Should -Be 'M1.Rule1';
-            $result[0].DisplayName | Should -Be 'Module Rule1';
-            $result[0].ModuleName | Should -Be 'TestModule';
-            $result[0].Synopsis | Should -Be 'Synopsis en-US.'
-            $result[0].Recommendation | Should -Be 'Recommendation en-US.'
-            $result[1].Name | Should -Be 'M1.Rule2';
-            $result[1].DisplayName | Should -Be 'M1.Rule2';
-            $result[1].ModuleName | Should -Be 'TestModule';
-            $result[2].Name | Should -Be 'M1.YamlTestName';
-            $result[2].DisplayName | Should -Be 'Yaml Test Rule 1';
-            $result[2].ModuleName | Should -Be 'TestModule';
-            $result[2].Synopsis | Should -Be 'This is an example YAML rule.'
-            $result[2].Recommendation | Should -Be 'Use YAML rules they are great.'
+
+            $rule = $result | Where-Object { $_.Name -eq 'M1.Rule1' }
+            $rule.Name | Should -Be 'M1.Rule1';
+            $rule.DisplayName | Should -Be 'Module Rule1';
+            $rule.ModuleName | Should -Be 'TestModule';
+            $rule.Synopsis | Should -Be 'Synopsis en-US.'
+            $rule.Recommendation | Should -Be 'Recommendation en-US.'
+
+            $rule = $result | Where-Object { $_.Name -eq 'M1.Rule2' }
+            $rule.Name | Should -Be 'M1.Rule2';
+            $rule.DisplayName | Should -Be 'M1.Rule2';
+            $rule.ModuleName | Should -Be 'TestModule';
+
+            $rule = $result | Where-Object { $_.Name -eq 'M1.YamlTestName' }
+            $rule.Name | Should -Be 'M1.YamlTestName';
+            $rule.DisplayName | Should -Be 'Yaml Test Rule 1';
+            $rule.ModuleName | Should -Be 'TestModule';
+            $rule.Synopsis | Should -Be 'This is an example YAML rule.'
+            $rule.Recommendation | Should -Be 'Use YAML rules they are great.'
         }
     }
 
