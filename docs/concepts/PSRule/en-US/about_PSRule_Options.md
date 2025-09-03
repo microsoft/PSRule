@@ -2503,8 +2503,7 @@ The column order in the output matches the order specified in the configuration.
 Supported column types:
 
 - **Standard properties**: `RuleName`, `TargetName`, `TargetType`, `Outcome`, `OutcomeReason`, `Synopsis`, `Recommendation`
-- **Nested properties**: `Info.Synopsis`, `Info.Recommendation`, `Level` using dotted notation
-- **Custom properties**: Any valid object path for extensibility
+- **Custom properties**: Properties under `Info.Annotations`, `Tag`, and `Field`
 
 Invalid column names result in empty values and do not cause errors.
 
