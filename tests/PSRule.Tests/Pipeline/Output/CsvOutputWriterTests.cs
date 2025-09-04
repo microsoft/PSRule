@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections;
 using System.Linq;
 using System.Management.Automation;
@@ -69,7 +68,7 @@ public sealed class CsvOutputWriterTests : OutputWriterBaseTests
         var run = GetRun();
         var info = new RuleHelpInfo(
             "rule-003",
-            "Rule 003", 
+            "Rule 003",
             "TestModule",
             synopsis: new InfoString("This is rule 003."),
             recommendation: new InfoString("Recommendation for rule 003")
