@@ -2491,6 +2491,8 @@ variables:
 
 ### Output.CsvDetailedColumns
 
+<!-- module:version 3.0.0 -->
+
 Configures which columns are included when using CSV detailed output format.
 This option allows you to customize the columns included in CSV output, reducing file size and focusing on relevant information.
 
@@ -3852,7 +3854,14 @@ logging:
 output:
   as: Detail
   banner: Default
-  csvDetailedColumns: [ ]
+  csvDetailedColumns:
+    - RuleName
+    - TargetName
+    - TargetType
+    - Outcome
+    - OutcomeReason
+    - Synopsis
+    - Recommendation
   culture: [ ]
   encoding: Default
   footer: Default
