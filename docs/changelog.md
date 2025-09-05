@@ -34,6 +34,12 @@ What's changed since pre-release v3.0.0-B0453:
   - Added support and by default error if rules or input is not found during a run by @BernieWhite.
     [#1778](https://github.com/microsoft/PSRule/issues/1778)
     - Added options for `Execution.NoMatchingRules`, `Execution.NoValidInput`, and `Execution.NoValidSources`.
+  - Added support for customizing CSV output columns by @BernieWhite.
+    [#1165](https://github.com/microsoft/PSRule/issues/1165)
+    - The `Output.CsvDetailedColumns` option can be used to customize the columns included in the CSV output format.
+- General improvements:
+  - Reload language server when options change by @BernieWhite.
+    [#2842](https://github.com/microsoft/PSRule/issues/2842)
 - Engineering:
   - **Important change**: Remove legacy log scopes by @BernieWhite.
     [#2891](https://github.com/microsoft/PSRule/issues/2891)

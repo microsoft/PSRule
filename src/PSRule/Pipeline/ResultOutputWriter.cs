@@ -6,15 +6,9 @@ using PSRule.Rules;
 
 namespace PSRule.Pipeline;
 
-internal abstract class ResultOutputWriter<T> : PipelineWriter
+internal abstract class ResultOutputWriter<T>(IPipelineWriter inner, PSRuleOption option, ShouldProcess? shouldProcess) : PipelineWriter(inner, option, shouldProcess)
 {
-    private readonly List<T> _Result;
-
-    protected ResultOutputWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess)
-        : base(inner, option, shouldProcess)
-    {
-        _Result = new List<T>();
-    }
+    private readonly List<T> _Result = [];
 
     public override void WriteObject(object sendToPipeline, bool enumerateCollection)
     {
@@ -50,6 +44,6 @@ internal abstract class ResultOutputWriter<T> : PipelineWriter
 
     protected T[] GetResults()
     {
-        return _Result.ToArray();
+        return [.. _Result];
     }
 }
