@@ -97,7 +97,7 @@ public sealed class Rule : IDependencyTarget, ITargetInfo, IResource, IRuleV1
 
     IResourceTags IResource.Tags => Tag;
 
-    InfoString IRuleV1.Recommendation => ((IRuleHelpInfoV2)Info)?.Recommendation;
+    InfoString IRuleV1.Recommendation => ((IRuleHelpInfo)Info)?.Recommendation;
 
     /// <inheritdoc/>
     [JsonIgnore, YamlIgnore]

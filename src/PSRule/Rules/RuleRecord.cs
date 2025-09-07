@@ -25,7 +25,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
 
     internal readonly ResultDetail _Detail;
 
-    internal RuleRecord(ResourceId ruleId, string @ref, ITargetObject targetObject, string targetName, string targetType, IResourceTags tag, RuleHelpInfo info, Hashtable? field, RuleProperties @default, ISourceExtent? extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, RuleOverride? @override = null)
+    internal RuleRecord(ResourceId ruleId, string @ref, ITargetObject targetObject, string targetName, string targetType, IResourceTags tag, IRuleHelpInfo info, Hashtable? field, RuleProperties @default, ISourceExtent? extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, RuleOverride? @override = null)
     {
         _TargetObject = targetObject;
         RuleId = ruleId.Value;
@@ -160,7 +160,7 @@ public sealed class RuleRecord : IDetailedRuleResultV2
     /// </summary>
     [DefaultValue(null)]
     [JsonProperty(PropertyName = "info")]
-    public IRuleHelpInfoV2 Info { get; }
+    public IRuleHelpInfo Info { get; }
 
     /// <summary>
     /// The execution time of the rule in millisecond.

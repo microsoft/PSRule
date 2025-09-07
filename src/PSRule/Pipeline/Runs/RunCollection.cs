@@ -5,8 +5,6 @@ using System.Collections;
 
 namespace PSRule.Pipeline.Runs;
 
-#nullable enable
-
 /// <summary>
 /// A collection of runs.
 /// </summary>
@@ -27,6 +25,8 @@ internal sealed class RunCollection : IEnumerable<Run>
         _Runs.Add(run);
     }
 
+    public int RuleCount => _Runs.Sum(r => r.Rules.Count);
+
     #region IEnumerable<Run>
 
     public IEnumerator<Run> GetEnumerator()
@@ -41,5 +41,3 @@ internal sealed class RunCollection : IEnumerable<Run>
 
     #endregion IEnumerable<Run>
 }
-
-#nullable restore

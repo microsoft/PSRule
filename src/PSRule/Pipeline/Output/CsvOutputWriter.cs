@@ -181,8 +181,8 @@ internal sealed class CsvOutputWriter : SerializationOutputWriter<object>, IBind
             "Pass" when record is RuleSummaryRecord summaryRecord => summaryRecord.Pass.ToString(),
             "Fail" when record is RuleSummaryRecord summaryRecord => summaryRecord.Fail.ToString(),
             "Outcome" when record is RuleSummaryRecord summaryRecord => summaryRecord.Outcome.ToString(),
-            "Synopsis" when record is RuleSummaryRecord summaryRecord => summaryRecord.Info.Synopsis ?? string.Empty,
-            "Recommendation" when record is RuleSummaryRecord summaryRecord => summaryRecord.Info.Recommendation ?? string.Empty,
+            "Synopsis" when record is RuleSummaryRecord summaryRecord => summaryRecord.Info?.Synopsis?.Text ?? string.Empty,
+            "Recommendation" when record is RuleSummaryRecord summaryRecord => summaryRecord.Info?.Recommendation?.Text ?? string.Empty,
 
             // For any other column, try to get it via object path (for nested properties)
             _ => GetRecordColumnValue(record, column)

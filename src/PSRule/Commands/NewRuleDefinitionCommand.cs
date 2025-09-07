@@ -118,7 +118,6 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
             line: MyInvocation.ScriptLineNumber,
             position: MyInvocation.OffsetInLine
         );
-        var flags = ResourceFlags.None;
         var id = new ResourceId(source.Module, Name, ResourceIdKind.Id);
         var labels = ResourceLabels.FromHashtable(Labels);
 
@@ -126,12 +125,12 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
 
         CheckDependsOn();
         var ps = GetCondition(runspaceContext, id, source, errorPreference);
-        var info = PSRule.Host.HostHelper.GetRuleHelpInfo(runspaceContext.ResourceContext, Name, commentMetadata.Synopsis, null, null, null) ?? new RuleHelpInfo(
+        var info = new RuleHelpInfo(
             name: Name,
             displayName: Name,
-            moduleName: source.Module
+            moduleName: source.Module,
+            synopsis: commentMetadata.Synopsis == null ? null : new InfoString(commentMetadata.Synopsis)
         );
-        //context.Scope.TryGetOverride(id, out var propertyOverride);
 
         var metadata = new ResourceMetadata
         {
@@ -162,25 +161,6 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
 
         var block = new RuleV1Script("", source, metadata, info, extent, spec);
 
-        // var block = new RuleBlock(
-        //     source: source,
-        //     id: id,
-        //     @ref: ResourceHelper.GetIdNullable(source.Module, Ref, ResourceIdKind.Ref),
-        //     @default: new RuleProperties
-        //     {
-        //         Level = level
-        //     },
-        //     @override: propertyOverride,
-        //     info: info,
-        //     condition: ps,
-        //     tag: tag,
-        //     alias: ResourceHelper.GetResourceId(source.Module, Alias, ResourceIdKind.Alias),
-        //     dependsOn: ResourceHelper.GetResourceId(source.Module, DependsOn, ResourceIdKind.Unknown),
-        //     configuration: Configure,
-        //     extent: extent,
-        //     flags: flags,
-        //     labels: labels
-        // );
 #pragma warning restore CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
 
         WriteObject(block);

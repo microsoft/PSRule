@@ -23,8 +23,6 @@ using YamlDotNet.Serialization.NodeDeserializers;
 
 namespace PSRule.Host;
 
-#nullable enable
-
 internal static class HostHelper
 {
     private const string Markdown_Extension = ".md";
@@ -45,6 +43,16 @@ internal static class HostHelper
         var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: false);
 
         var builder = new DependencyGraphBuilder<RuleBlock>(context, includeDependencies: true, includeDisabled: false);
+        builder.Include(blocks, filter: (b) => Match(context, b));
+        return builder.Build();
+    }
+
+    internal static DependencyGraph<IRuleBlock> GetRuleBlockGraphV2(LegacyRunspaceContext context)
+    {
+        var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
+        var blocks = rules.ToRuleDependencyTargetCollectionV2(context, skipDuplicateName: false);
+
+        var builder = new DependencyGraphBuilder<IRuleBlock>(context, includeDependencies: true, includeDisabled: false);
         builder.Include(blocks, filter: (b) => Match(context, b));
         return builder.Build();
     }
@@ -373,7 +381,7 @@ internal static class HostHelper
         return result.Count == 0 ? [] : [.. result];
     }
 
-    public static void InvokeRuleBlock(LegacyRunspaceContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
+    public static void InvokeRuleBlock(LegacyRunspaceContext context, IRuleBlock ruleBlock, RuleRecord ruleRecord)
     {
         LegacyRunspaceContext.CurrentThread = context;
         var condition = ruleBlock.Condition;
@@ -421,7 +429,7 @@ internal static class HostHelper
         //}
     }
 
-    private static bool Match(LegacyRunspaceContext context, RuleBlock resource)
+    private static bool Match(LegacyRunspaceContext context, IResource resource)
     {
         try
         {
@@ -471,61 +479,4 @@ internal static class HostHelper
         info = lexer.Process(stream).ToInfo();
         return info != null;
     }
-
-    internal static RuleHelpInfo GetRuleHelpInfo(IGetLocalizedPathContext context, string name, string defaultSynopsis, string defaultDisplayName, InfoString defaultDescription, InfoString defaultRecommendation)
-    {
-        return !TryHelpPath(context, name, out var path, out var culture) || !TryDocument(path, culture, out var document) || document == null
-            ? new RuleHelpInfo(
-                name: name,
-                displayName: defaultDisplayName ?? name,
-                moduleName: context.Source!.Module,
-                synopsis: InfoString.Create(defaultSynopsis),
-                description: defaultDescription,
-                recommendation: defaultRecommendation
-            )
-            : new RuleHelpInfo(
-                name: name,
-                displayName: document.Name ?? defaultDisplayName ?? name,
-                moduleName: context.Source!.Module,
-                synopsis: document.Synopsis ?? new InfoString(defaultSynopsis),
-                description: document.Description ?? defaultDescription,
-                recommendation: document.Recommendation ?? defaultRecommendation ?? document.Synopsis ?? InfoString.Create(defaultSynopsis)
-            )
-            {
-                Notes = document.Notes?.Text,
-                Links = GetLinks(document.Links),
-                Annotations = document.Annotations?.ToHashtable()
-            };
-    }
-
-    private static bool TryDocument(string? path, string? culture, out RuleDocument? document)
-    {
-        document = null;
-        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(culture))
-            return false;
-
-        var markdown = File.ReadAllText(path);
-        if (string.IsNullOrEmpty(markdown))
-            return false;
-
-        var reader = new MarkdownReader(yamlHeaderOnly: false);
-        var stream = reader.Read(markdown, path);
-        var lexer = new RuleHelpLexer(culture);
-        document = lexer.Process(stream);
-        return document != null;
-    }
-
-    private static Rules.Link[]? GetLinks(Help.Link[] links)
-    {
-        if (links == null || links.Length == 0)
-            return null;
-
-        var result = new Rules.Link[links.Length];
-        for (var i = 0; i < links.Length; i++)
-            result[i] = new Rules.Link(links[i].Name, links[i].Uri);
-
-        return result;
-    }
 }
-
-#nullable restore
