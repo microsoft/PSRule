@@ -71,13 +71,17 @@ internal sealed class DependencyGraphBuilder<T> where T : IDependencyTarget
             {
                 foreach (var d in item.DependsOn)
                 {
-                    if (!index.TryGet(d, out var dep, out var kind))
+                    if (d == null)
+                        continue;
+
+                    if (!index.TryGet(d, out var dep, out var kind) || dep == null)
                         throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.DependencyNotFound, d, item.Id));
 
+                    // Dependency is referenced by an alias.
                     if (_Context != null && kind == ResourceIdKind.Alias)
                         _Context.WarnAliasReference(ResourceKind.Rule, item.Id.Value, dep.Id.Value, d.Value);
 
-                    // Handle dependencies
+                    // Handle dependencies.
                     if (!_Targets.ContainsKey(dep.Id))
                         Include(index, dep, parentId: item.Id);
                 }

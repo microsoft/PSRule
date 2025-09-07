@@ -3,8 +3,6 @@
 
 namespace PSRule.Definitions;
 
-#nullable enable
-
 /// <summary>
 /// An object that relies on a dependency chain.
 /// </summary>
@@ -35,5 +33,3 @@ public interface IDependencyTarget
     /// </summary>
     bool Dependency { get; }
 }
-
-#nullable restore

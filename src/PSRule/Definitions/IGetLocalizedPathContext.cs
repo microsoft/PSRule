@@ -3,8 +3,6 @@
 
 namespace PSRule.Definitions;
 
-#nullable enable
-
 internal interface IGetLocalizedPathContext
 {
     /// <summary>
@@ -14,5 +12,3 @@ internal interface IGetLocalizedPathContext
 
     string? GetLocalizedPath(string file, out string? culture);
 }
-
-#nullable restore

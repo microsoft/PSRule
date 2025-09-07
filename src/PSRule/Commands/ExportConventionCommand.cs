@@ -5,6 +5,7 @@ using System.Management.Automation;
 using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
 using PSRule.Runtime;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule.Commands;
 
@@ -67,10 +68,9 @@ internal sealed class ExportConventionCommand : LanguageBlock
         //if (!IsScriptScope())
         //    throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordScriptScope, LanguageKeywords.Rule));
 
-        var context = LegacyRunspaceContext.CurrentThread;
-        if (context == null) return;
+        var runspaceContext = SessionState.PSVariable.GetValue("PSRuleRunspaceContext") as IRunspaceContext ?? throw new InvalidOperationException("RunspaceContext is not available.");
 
-        var source = context.Source!;
+        var source = runspaceContext.ResourceContext.Source;
         var errorPreference = GetErrorActionPreference();
         var commentMetadata = GetCommentMetadata(source, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
         var metadata = new ResourceMetadata
@@ -83,7 +83,7 @@ internal sealed class ExportConventionCommand : LanguageBlock
             position: MyInvocation.OffsetInLine
         );
 
-        context.VerboseFoundResource(name: Name, scope: source.Module, scriptName: MyInvocation.ScriptName);
+        runspaceContext.ResourceContext.Logger.VerboseFoundResource(name: Name, moduleName: source.Module, scriptName: MyInvocation.ScriptName);
 
         var helpInfo = new ResourceHelpInfo(Name, Name, new InfoString(commentMetadata.Synopsis), new InfoString());
 
@@ -92,10 +92,10 @@ internal sealed class ExportConventionCommand : LanguageBlock
             source: source,
             metadata: metadata,
             info: helpInfo,
-            initialize: ConventionBlock(context, Initialize, RunspaceScope.ConventionInitialize),
-            begin: ConventionBlock(context, Begin, RunspaceScope.ConventionBegin),
-            process: ConventionBlock(context, Process, RunspaceScope.ConventionProcess),
-            end: ConventionBlock(context, End, RunspaceScope.ConventionEnd),
+            initialize: ConventionBlock(runspaceContext, Initialize, RunspaceScope.ConventionInitialize),
+            begin: ConventionBlock(runspaceContext, Begin, RunspaceScope.ConventionBegin),
+            process: ConventionBlock(runspaceContext, Process, RunspaceScope.ConventionProcess),
+            end: ConventionBlock(runspaceContext, End, RunspaceScope.ConventionEnd),
             errorPreference: errorPreference,
             flags: ResourceFlags.None,
             extent: extent
@@ -104,7 +104,7 @@ internal sealed class ExportConventionCommand : LanguageBlock
         WriteObject(block);
     }
 
-    private LanguageScriptBlock? ConventionBlock(LegacyRunspaceContext context, ScriptBlock? block, RunspaceScope scope)
+    private LanguageScriptBlock? ConventionBlock(IRunspaceContext context, ScriptBlock? block, RunspaceScope scope)
     {
         if (block == null)
             return null;

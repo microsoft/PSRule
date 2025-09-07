@@ -11,8 +11,6 @@ using YamlDotNet.Serialization;
 
 namespace PSRule.Rules;
 
-#nullable enable
-
 internal delegate bool RulePrecondition();
 
 internal delegate RuleConditionResult RuleCondition();
@@ -21,8 +19,10 @@ internal delegate RuleConditionResult RuleCondition();
 /// Define an instance of a rule block. Each rule block has a unique id.
 /// </summary>
 [DebuggerDisplay("{Id} @{Source.Path}")]
-internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable, IResource, IRuleV1
+internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable, IResource, IRuleV1, IRuleBlock
 {
+    private readonly RuleHelpInfo _Info;
+
     internal RuleBlock(ISourceFile source, ResourceId id, ResourceId? @ref, RuleProperties @default, RuleOverride? @override, RuleHelpInfo info, ICondition condition, IResourceTags tag, ResourceId[] alias, ResourceId[]? dependsOn, Hashtable? configuration, ISourceExtent? extent, ResourceFlags flags, IResourceLabels labels)
     {
         Source = source;
@@ -36,7 +36,7 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
         Default = @default;
         Override = @override;
         Level = Override != null && Override.Level.HasValue && Override.Level != SeverityLevel.None ? Override.Level.Value : Default.Level;
-        Info = info;
+        _Info = info;
         Condition = condition;
         Tag = tag;
         DependsOn = dependsOn;
@@ -72,7 +72,7 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     /// </summary>
     [JsonIgnore]
     [YamlIgnore]
-    public readonly ICondition Condition;
+    public ICondition Condition { get; }
 
     /// <summary>
     /// Other rules that must completed successfully before calling this rule.
@@ -93,9 +93,9 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
     /// <remarks>
     /// These defaults are used when the value does not exist in the baseline configuration.
     /// </remarks>
-    public readonly Hashtable? Configuration;
+    public Hashtable? Configuration { get; }
 
-    public readonly RuleHelpInfo Info;
+    public IRuleHelpInfo Info => _Info;
 
     /// <inheritdoc/>
     public ISourceFile Source { get; }
@@ -132,9 +132,9 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
 
     IResourceTags IRuleV1.Tag => Tag;
 
-    string IRuleV1.Synopsis => Info.Synopsis;
+    string IRuleV1.Synopsis => _Info.Synopsis;
 
-    InfoString IRuleV1.Recommendation => ((IRuleHelpInfoV2)Info)!.Recommendation;
+    InfoString IRuleV1.Recommendation => Info!.Recommendation;
 
     #region IDisposable
 
@@ -145,5 +145,3 @@ internal sealed class RuleBlock : ILanguageBlock, IDependencyTarget, IDisposable
 
     #endregion IDisposable
 }
-
-#nullable restore

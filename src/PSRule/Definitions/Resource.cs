@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Diagnostics;
-using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Definitions;
@@ -17,16 +16,16 @@ public abstract class Resource<TSpec> where TSpec : Spec, new()
     /// <summary>
     /// Create a resource.
     /// </summary>
-    protected internal Resource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
+    protected internal Resource(ResourceKind kind, string apiVersion, ISourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
     {
         Kind = kind;
-        ApiVersion = apiVersion;
+        ApiVersion = apiVersion ?? throw new ArgumentNullException(nameof(apiVersion));
         Info = info;
         Source = source ?? throw new ArgumentNullException(nameof(source));
         Extent = extent;
         Spec = spec ?? throw new ArgumentNullException(nameof(spec));
         Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
-        Name = metadata.Name;
+        Name = metadata.Name ?? throw new NullReferenceException(nameof(metadata.Name));
         Id = new ResourceId(Source.Module, Name, ResourceIdKind.Id);
     }
 

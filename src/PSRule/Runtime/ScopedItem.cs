@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule.Runtime;
 
@@ -10,14 +11,14 @@ namespace PSRule.Runtime;
 /// </summary>
 public abstract class ScopedItem
 {
-    private readonly LegacyRunspaceContext? _Context;
+    private readonly IRunspaceContext? _Context;
 
     internal ScopedItem()
     {
 
     }
 
-    internal ScopedItem(LegacyRunspaceContext context)
+    internal ScopedItem(IRunspaceContext context)
     {
         _Context = context;
     }
@@ -26,15 +27,20 @@ public abstract class ScopedItem
 
     internal void RequireScope(RunspaceScope scope)
     {
-        if (GetContext()?.IsScope(scope) == true)
+        if (GetRunspaceContext().IsScope(scope) == true)
             return;
 
         throw new RuntimeScopeException();
     }
 
-    internal LegacyRunspaceContext? GetContext()
+    internal IRunspaceContext? GetRunspaceContext()
     {
-        return _Context ?? LegacyRunspaceContext.CurrentThread;
+        return _Context;
+    }
+
+    internal LegacyRunspaceContext? GetResourceContext()
+    {
+        return _Context.ResourceContext as LegacyRunspaceContext;
     }
 
     #endregion Helper methods

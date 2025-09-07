@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
-using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Definitions.Rules;
@@ -15,7 +14,7 @@ internal sealed class RuleV1 : InternalResource<RuleV1Spec>, IResource, IRuleV1
 {
     // internal const SeverityLevel DEFAULT_LEVEL = SeverityLevel.Error;
 
-    public RuleV1(string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, RuleV1Spec spec)
+    public RuleV1(string apiVersion, ISourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, RuleV1Spec spec)
         : base(ResourceKind.Rule, apiVersion, source, metadata, info, extent, spec)
     {
         Ref = ResourceHelper.GetIdNullable(source.Module, metadata.Ref, ResourceIdKind.Ref);
@@ -54,7 +53,7 @@ internal sealed class RuleV1 : InternalResource<RuleV1Spec>, IResource, IRuleV1
     ResourceId[] IDependencyTarget.Alias => Alias;
 
     // Not supported with resource rules.
-    ResourceId[] IDependencyTarget.DependsOn => Array.Empty<ResourceId>();
+    ResourceId[] IDependencyTarget.DependsOn => [];
 
     /// <inheritdoc/>
     bool IDependencyTarget.Dependency => Source.IsDependency();
