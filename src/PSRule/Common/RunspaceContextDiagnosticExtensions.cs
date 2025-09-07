@@ -41,6 +41,11 @@ internal static class RunspaceContextDiagnosticExtensions
         context.Writer.WriteWarning(PSRuleResources.DuplicateRuleName, ruleName);
     }
 
+    internal static void DuplicateResourceName(this IResourceContext context, ResourceId id, string name)
+    {
+        context.ReportIssue(new ResourceIssue(ResourceIssueType.DuplicateResourceName, id, name));
+    }
+
     internal static void DuplicateResourceId(this LegacyRunspaceContext context, ResourceId id, ResourceId duplicateId)
     {
         if (context == null || context.Pipeline == null)
@@ -48,6 +53,11 @@ internal static class RunspaceContextDiagnosticExtensions
 
         var action = context.Pipeline.Option.Execution.DuplicateResourceId.GetValueOrDefault(ExecutionOption.Default.DuplicateResourceId.Value);
         context.Throw(action, PSRuleResources.DuplicateResourceId, id.Value, duplicateId.Value);
+    }
+
+    internal static void DuplicateResourceId(this IResourceContext context, ResourceId id, ResourceId duplicateId)
+    {
+        context.ReportIssue(new ResourceIssue(ResourceIssueType.DuplicateResourceId, id, duplicateId.Value));
     }
 
     internal static void SuppressionGroupExpired(this LegacyRunspaceContext context, ResourceId suppressionGroupId)
@@ -96,6 +106,11 @@ internal static class RunspaceContextDiagnosticExtensions
         var action = context.Pipeline.Option.Execution.AliasReference.GetValueOrDefault(ExecutionOption.Default.AliasReference.Value);
         Throw(context, action, PSRuleResources.AliasReference, kind.ToString(), resourceId, targetId, alias);
     }
+
+    // internal static void WarnAliasReference(this IResourceContext context, ResourceId id, ResourceId targetId, ResourceKind kind, string alias)
+    // {
+    //     context.ReportIssue(new ResourceIssue(ResourceIssueType.AliasReference, id, targetId.Value, kind.ToString(), alias));
+    // }
 
     internal static void WarnAliasSuppression(this LegacyRunspaceContext context, string targetId, string alias)
     {

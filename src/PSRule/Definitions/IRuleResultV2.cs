@@ -20,7 +20,7 @@ public interface IRuleResultV2 : IResultRecord
     /// <summary>
     /// Help info for the rule.
     /// </summary>
-    IRuleHelpInfoV2 Info { get; }
+    IRuleHelpInfo Info { get; }
 
     /// <summary>
     /// The outcome after the rule processes an object.

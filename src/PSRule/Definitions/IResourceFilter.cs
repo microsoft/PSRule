@@ -3,7 +3,7 @@
 
 namespace PSRule.Definitions;
 
-internal interface IResourceFilter
+public interface IResourceFilter
 {
     ResourceKind Kind { get; }
 

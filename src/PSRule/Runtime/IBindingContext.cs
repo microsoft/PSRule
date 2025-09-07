@@ -5,7 +5,7 @@ using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Runtime;
 
-internal interface IBindingContext
+public interface IBindingContext
 {
     bool GetPathExpression(string path, out PathExpression expression);
 

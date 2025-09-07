@@ -12,8 +12,6 @@ using PSRule.Runtime.Scripting;
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
 /// <summary>
 /// Define a context used for early stage resource discovery.
 /// </summary>
@@ -97,16 +95,10 @@ internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger
             return null;
         }
 
-        for (var i = 0; cultures != null && i < cultures.Length; i++)
-        {
-            var path = Path.Combine(Source?.HelpPath, cultures[i], file);
-            if (File.Exists(path))
-            {
-                culture = cultures[i];
-                return path;
-            }
-        }
-        return null;
+        if (cultures == null || cultures.Length == 0)
+            return null;
+
+        return new LocalizedFileSearch(cultures).GetLocalizedPath(Source!.HelpPath, file, out culture);
     }
 
     public void ReportIssue(ResourceIssue issue)
@@ -134,5 +126,3 @@ internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger
         _RunspaceContext.ExitResourceContext(this);
     }
 }
-
-#nullable restore

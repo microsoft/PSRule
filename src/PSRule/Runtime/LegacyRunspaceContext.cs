@@ -8,6 +8,7 @@ using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
 using PSRule.Definitions.Expressions;
+using PSRule.Definitions.Rules;
 using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Runs;
@@ -18,15 +19,11 @@ using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Runtime;
 
-#nullable enable
-
 /// <summary>
 /// A context applicable to rule execution.
 /// </summary>
-internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext, IExpressionContext
+internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext, IExpressionContext, IRunOverrideContext, IRunBuilderContext
 {
-    private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
-    private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
     private const string ERROR_ID_INVALID_RULE_RESULT = "PSRule.Runtime.InvalidRuleResult";
     private const string WARN_KEY_SEPARATOR = "_";
 
@@ -39,7 +36,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     // Fields exposed to engine
     internal RuleRecord? RuleRecord;
-    internal RuleBlock? RuleBlock;
+    internal IRuleBlock? RuleBlock;
     internal ITargetBindingResult? Binding;
 
     private readonly ExecutionActionPreference _RuleInconclusive;
@@ -105,8 +102,6 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     internal ITargetBinder? TargetBinder { get; private set; }
 
-    public IEnumerable<Run> Runs { get; private set; } = [];
-
     public ILanguageScope? Scope { get; private set; }
 
     public ResourceKind Kind => throw new NotImplementedException();
@@ -115,7 +110,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public ITargetObject Current => TargetObject;
 
-    public ResourceId? RuleId => RuleBlock?.Id;
+    public ResourceId? RuleId => ((ILanguageBlock)RuleBlock)?.Id;
 
     public bool IsScope(RunspaceScope scope) => Pipeline.RunspaceContext?.IsScope(scope) ?? false;
 
@@ -174,7 +169,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             exception: new RuleException(message: string.Format(
                 Thread.CurrentThread.CurrentCulture,
                 PSRuleResources.InvalidRuleResult,
-                RuleBlock?.Id
+                ((ILanguageBlock)RuleBlock)?.Id
             )),
             errorId: ERROR_ID_INVALID_RULE_RESULT,
             errorCategory: ErrorCategory.InvalidResult,
@@ -527,15 +522,15 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     /// <summary>
     /// Enter the rule block scope.
     /// </summary>
-    public RuleRecord EnterRuleBlock(RuleBlock ruleBlock)
+    public RuleRecord EnterRuleBlock(IRuleBlock ruleBlock)
     {
         EnterLanguageScope(ruleBlock.Source);
 
         _RuleErrors = 0;
         RuleBlock = ruleBlock;
         RuleRecord = new RuleRecord(
-            ruleId: ruleBlock.Id,
-            @ref: ruleBlock.Ref.GetValueOrDefault().Name,
+            ruleId: ((ILanguageBlock)ruleBlock).Id,
+            @ref: ((IResource)ruleBlock).Ref.GetValueOrDefault().Name,
             targetObject: TargetObject!,
             targetName: Binding?.TargetName!,
             targetType: Binding?.TargetType!,
@@ -557,7 +552,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     /// <summary>
     /// Exit the rule block scope.
     /// </summary>
-    public void ExitRuleBlock(RuleBlock ruleBlock)
+    public void ExitRuleBlock(IRuleBlock ruleBlock)
     {
         // Stop rule execution time
         _RuleTimer.Stop();
@@ -674,9 +669,6 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         Array.Sort(_Conventions, new ConventionComparer(Pipeline.GetConventionOrder));
 
         RunConventionInitialize();
-
-        // Split each run based on baselines.
-        Runs = new RunCollectionBuilder(Pipeline.Option, Pipeline.RunInstance).Build();
     }
 
     public void Begin()
@@ -720,16 +712,10 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             return null;
         }
 
-        for (var i = 0; cultures != null && i < cultures.Length; i++)
-        {
-            var path = Path.Combine(Source?.HelpPath, cultures[i], file);
-            if (File.Exists(path))
-            {
-                culture = cultures[i];
-                return path;
-            }
-        }
-        return null;
+        if (cultures == null || cultures.Length == 0)
+            return null;
+
+        return new LocalizedFileSearch(cultures).GetLocalizedPath(Source!.HelpPath, file, out culture);
     }
 
     internal bool ShouldWarnOnce(params string[] key)
@@ -740,6 +726,12 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
         _WarnOnce.Add(combinedKey);
         return true;
+    }
+
+    public bool TryGetOverride(ResourceId id, out RuleOverride? propertyOverride)
+    {
+        propertyOverride = null;
+        return Scope?.TryGetOverride(id, out propertyOverride) ?? false;
     }
 
     #region Configuration
@@ -811,5 +803,3 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     #endregion IDisposable
 }
-
-#nullable restore

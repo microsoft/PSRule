@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace PSRule.Runtime.Binding;
 
-internal interface ITargetBindingResult
+public interface ITargetBindingResult
 {
     /// <summary>
     /// The bound TargetName of the target object.
