@@ -7,9 +7,7 @@ using PSRule.Options;
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
-internal sealed class OptionContext(BindTargetMethod? bindTargetName, BindTargetMethod? bindTargetType, BindTargetMethod? bindField, string[]? inputTargetType)
+public sealed class OptionContext(BindTargetMethod? bindTargetName, BindTargetMethod? bindTargetType, BindTargetMethod? bindField, string[]? inputTargetType)
 {
     private ConventionOption? _Convention;
     private List<string>? _ConventionOrder;
@@ -74,5 +72,3 @@ internal sealed class OptionContext(BindTargetMethod? bindTargetName, BindTarget
         return index > -1 ? index : int.MaxValue;
     }
 }
-
-#nullable restore

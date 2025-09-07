@@ -35,7 +35,7 @@ public sealed class FunctionBuilderTests : ContextBaseTests
         context.Initialize(sources);
         context.Begin();
         var selector = resourcesCache.OfType<SelectorV1>().FirstOrDefault(s => s.Id.Name == name);
-        return selector.ToSelectorVisitor(context);
+        return selector.ToSelectorVisitor();
     }
 
     #endregion Helper methods

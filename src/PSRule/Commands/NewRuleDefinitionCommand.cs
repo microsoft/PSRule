@@ -5,10 +5,9 @@ using System.Collections;
 using System.Management.Automation;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
-using PSRule.Pipeline;
-using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule.Commands;
 
@@ -104,13 +103,14 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
 
     protected override void ProcessRecord()
     {
-        if (!IsSourceScope())
-            throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordSourceScope, LanguageKeywords.Rule));
+        var runspaceContext = SessionState.PSVariable.GetValue("PSRuleRunspaceContext") as IRunspaceContext ?? throw new InvalidOperationException("RunspaceContext is not available.");
 
-        var context = LegacyRunspaceContext.CurrentThread;
-        var source = context.Source;
+        //if (!IsSourceScope())
+        //    throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.KeywordSourceScope, LanguageKeywords.Rule));
+
+        var source = runspaceContext.ResourceContext.Source;
         var errorPreference = GetErrorActionPreference();
-        var metadata = GetCommentMetadata(source, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
+        var commentMetadata = GetCommentMetadata(source, MyInvocation.ScriptLineNumber, MyInvocation.OffsetInLine);
         var level = ResourceHelper.GetLevel(Level);
         var tag = GetTag(Tag);
         var extent = new SourceExtent(
@@ -118,46 +118,55 @@ internal sealed class NewRuleDefinitionCommand : LanguageBlock
             line: MyInvocation.ScriptLineNumber,
             position: MyInvocation.OffsetInLine
         );
-        var flags = ResourceFlags.None;
         var id = new ResourceId(source.Module, Name, ResourceIdKind.Id);
         var labels = ResourceLabels.FromHashtable(Labels);
 
-        context.VerboseFoundResource(name: Name, scope: source.Module, scriptName: MyInvocation.ScriptName);
+        runspaceContext.ResourceContext.Logger.VerboseFoundResource(name: Name, moduleName: source.Module, scriptName: MyInvocation.ScriptName);
 
         CheckDependsOn();
-        var ps = GetCondition(context, id, source, errorPreference);
-        var info = PSRule.Host.HostHelper.GetRuleHelpInfo(context, Name, metadata.Synopsis, null, null, null) ?? new RuleHelpInfo(
+        var ps = GetCondition(runspaceContext, id, source, errorPreference);
+        var info = new RuleHelpInfo(
             name: Name,
             displayName: Name,
-            moduleName: source.Module
+            moduleName: source.Module,
+            synopsis: commentMetadata.Synopsis == null ? null : new InfoString(commentMetadata.Synopsis)
         );
-        context.LanguageScope.TryGetOverride(id, out var propertyOverride);
+
+        var metadata = new ResourceMetadata
+        {
+            Name = Name,
+            Ref = Ref,
+            Alias = Alias,
+            Tags = tag,
+            Annotations = null, // Not supported for PowerShell rules.
+            Link = null, // Not supported for PowerShell rules.
+            Labels = labels,
+            Description = null, // Not supported for PowerShell rules.
+            DisplayName = info.DisplayName, // Not supported for PowerShell rules.
+        };
+
+        var dependsOn = ResourceHelper.GetResourceId(source.Module, DependsOn, ResourceIdKind.Unknown);
+
+        var spec = new RuleV1ScriptSpec
+        {
+            Condition = ps,
+            Level = level,
+            Type = Type,
+            With = With,
+            DependsOn = dependsOn,
+            Configure = Configure
+        };
 
 #pragma warning disable CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
-        var block = new RuleBlock(
-            source: source,
-            id: id,
-            @ref: ResourceHelper.GetIdNullable(source.Module, Ref, ResourceIdKind.Ref),
-            @default: new RuleProperties
-            {
-                Level = level
-            },
-            @override: propertyOverride,
-            info: info,
-            condition: ps,
-            tag: tag,
-            alias: ResourceHelper.GetResourceId(source.Module, Alias, ResourceIdKind.Alias),
-            dependsOn: ResourceHelper.GetResourceId(source.Module, DependsOn, ResourceIdKind.Unknown),
-            configuration: Configure,
-            extent: extent,
-            flags: flags,
-            labels: labels
-        );
+
+        var block = new RuleV1Script("", source, metadata, info, extent, spec);
+
 #pragma warning restore CA2000 // Dispose objects before losing scope, needs to be passed to pipeline
+
         WriteObject(block);
     }
 
-    private PowerShellCondition GetCondition(LegacyRunspaceContext context, ResourceId id, ISourceFile source, ActionPreference errorAction)
+    private PowerShellCondition GetCondition(IRunspaceContext context, ResourceId id, ISourceFile source, ActionPreference errorAction)
     {
         var result = context.GetPowerShell();
         result.AddCommand(new CmdletInfo(CmdletName, typeof(InvokeRuleBlockCommand)));

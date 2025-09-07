@@ -25,14 +25,14 @@ internal static class PipelineHookActions
     private const string Property_Name = "Name";
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
-    public static string? BindTargetName(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
+    public static string? BindTargetName(string[] propertyNames, bool caseSensitive, object targetObject, out string? path)
     {
         path = null;
         if (targetObject == null)
             return null;
 
-        if (preferTargetInfo && TryGetInfoTargetName(targetObject, out var targetName))
-            return targetName;
+        // if (preferTargetInfo && TryGetInfoTargetName(targetObject, out var targetName))
+        //     return targetName;
 
         if (propertyNames != null)
             return propertyNames.Any(n => n.Contains('.'))
@@ -43,14 +43,14 @@ internal static class PipelineHookActions
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
-    public static string? BindTargetType(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
+    public static string? BindTargetType(string[] propertyNames, bool caseSensitive, object targetObject, out string? path)
     {
         path = null;
         if (targetObject == null)
             return null;
 
-        if (preferTargetInfo && TryGetInfoTargetType(targetObject, out var targetType))
-            return targetType;
+        // if (preferTargetInfo && TryGetInfoTargetType(targetObject, out var targetType))
+        //     return targetType;
 
         if (propertyNames != null)
             return propertyNames.Any(n => n.Contains('.'))
@@ -60,9 +60,8 @@ internal static class PipelineHookActions
         return DefaultTargetTypeBinding(targetObject);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameter preferTargetInfo is required for matching the delegate type.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0046:Convert to conditional expression", Justification = "Avoid nested conditional expressions that increase complexity.")]
-    public static string? BindField(string[] propertyNames, bool caseSensitive, bool preferTargetInfo, object targetObject, out string path)
+    public static string? BindField(string[] propertyNames, bool caseSensitive, object targetObject, out string? path)
     {
         path = null;
         if (targetObject == null)
@@ -99,10 +98,10 @@ internal static class PipelineHookActions
     /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
     /// <param name="path">The object path that was used for binding.</param>
     /// <returns>The TargetName of the object.</returns>
-    private static string CustomTargetPropertyBinding(string[] propertyNames, bool caseSensitive, object targetObject, BindTargetName next, out string path)
+    private static string CustomTargetPropertyBinding(string[] propertyNames, bool caseSensitive, object targetObject, BindTargetName next, out string? path)
     {
         path = null;
-        string targetName = null;
+        string? targetName = null;
         for (var i = 0; i < propertyNames.Length && targetName == null; i++)
         {
             targetName = ValueAsString(targetObject, propertyName: propertyNames[i], caseSensitive: caseSensitive);
@@ -122,10 +121,10 @@ internal static class PipelineHookActions
     /// <param name="next">The next delegate function to check if all of the property names can not be found.</param>
     /// <param name="path">The object path that was used for binding.</param>
     /// <returns>The TargetName of the object.</returns>
-    private static string NestedTargetPropertyBinding(string[] propertyNames, bool caseSensitive, object targetObject, BindTargetName next, out string path)
+    private static string NestedTargetPropertyBinding(string[] propertyNames, bool caseSensitive, object targetObject, BindTargetName next, out string? path)
     {
         path = null;
-        string targetName = null;
+        string? targetName = null;
         var score = int.MaxValue;
         for (var i = 0; i < propertyNames.Length && score > propertyNames.Length; i++)
         {
@@ -199,7 +198,7 @@ internal static class PipelineHookActions
         return null;
     }
 
-    private static bool TryGetInfoTargetName(object targetObject, out string targetName)
+    private static bool TryGetInfoTargetName(object targetObject, out string? targetName)
     {
         targetName = null;
         var baseObject = ExpressionHelpers.GetBaseObject(targetObject);
@@ -207,12 +206,12 @@ internal static class PipelineHookActions
             targetName = targetInfoMember.TargetName;
 
         if (baseObject is ITargetInfo info)
-            targetName = info.TargetName;
+            targetName = info.Name;
 
         return targetName != null;
     }
 
-    private static bool TryGetInfoTargetType(object targetObject, out string targetType)
+    private static bool TryGetInfoTargetType(object targetObject, out string? targetType)
     {
         targetType = null;
         var baseObject = ExpressionHelpers.GetBaseObject(targetObject);
@@ -220,7 +219,7 @@ internal static class PipelineHookActions
             targetType = targetInfoMember.TargetType;
 
         if (baseObject is ITargetInfo info)
-            targetType = info.TargetType;
+            targetType = info.Type;
 
         return targetType != null;
     }

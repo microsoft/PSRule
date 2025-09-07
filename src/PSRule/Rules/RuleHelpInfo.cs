@@ -12,13 +12,13 @@ namespace PSRule.Rules;
 /// <summary>
 /// Output view helper class for rule help.
 /// </summary>
-public sealed class RuleHelpInfo : IRuleHelpInfoV2
+public sealed class RuleHelpInfo : IRuleHelpInfo
 {
     private readonly InfoString _Synopsis;
     private readonly InfoString _Description;
     private readonly InfoString _Recommendation;
 
-    internal RuleHelpInfo(string name, string displayName, string moduleName, InfoString? synopsis = null, InfoString? description = null, InfoString? recommendation = null)
+    internal RuleHelpInfo(string name, string displayName, string? moduleName, InfoString? synopsis = null, InfoString? description = null, InfoString? recommendation = null)
     {
         Name = name;
         DisplayName = displayName;
@@ -47,7 +47,7 @@ public sealed class RuleHelpInfo : IRuleHelpInfoV2
     /// This will be null if the rule is not contained within a module.
     /// </remarks>
     [JsonProperty(PropertyName = "moduleName")]
-    public string ModuleName { get; private set; }
+    public string? ModuleName { get; private set; }
 
     /// <summary>
     /// The synopsis of the rule.
@@ -87,7 +87,7 @@ public sealed class RuleHelpInfo : IRuleHelpInfoV2
 
     /// <inheritdoc/>
     [JsonIgnore, YamlIgnore]
-    InfoString IRuleHelpInfoV2.Recommendation => _Recommendation;
+    InfoString IRuleHelpInfo.Recommendation => _Recommendation;
 
     /// <inheritdoc/>
     [JsonIgnore, YamlIgnore]

@@ -16,6 +16,10 @@ run:
 requires:
   PSRule.Rules.MSFT.OSS: '>=1.1.0'
 
+execution:
+  break: OnError
+  unprocessedObject: Ignore
+
 capabilities:
   - api-2025-01-01
   - api-v1

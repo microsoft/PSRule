@@ -111,20 +111,9 @@ task BuildDotNet {
 }
 
 task TestDotNet {
-    if ($CodeCoverage) {
-        exec {
-            # Test library
-            # dotnet test --collect:"Code Coverage" --logger trx -r ../../../../../reports/ tests/PSRule.Tests
-            dotnet test
-        }
-    }
-    else {
-        exec {
-            # Test library
-            # dotnet test --logger "console;verbosity=detailed" tests/PSRule.Tests
-            # dotnet test --logger trx -r ../../../../../reports/ tests/PSRule.Tests
-            dotnet test
-        }
+    exec {
+        # Test library
+        dotnet test
     }
 }
 
@@ -334,14 +323,9 @@ task TestModule Dependencies, {
 
 # Synopsis: Run self-test validation.
 task Rules {
-    $assertParams = @{
-        Path = './.ps-rule/'
-        Style = $AssertStyle
-        OutputFormat = 'NUnit3'
-        As = 'Summary'
+    exec {
+        dotnet run --project src/PSRule.Tool -f net8.0 -- run --path ./.ps-rule --output NUnit3 --output-path reports/ps-rule-dotnet.xml --option ./ps-rule-ci.yaml;
     }
-    Import-Module (Join-Path -Path $PWD -ChildPath out/modules/PSRule) -Force;
-    Assert-PSRule @assertParams -OutputPath reports/ps-rule-file.xml -InputPath $PWD -ErrorAction Stop -Option ./ps-rule-ci.yaml;
 }
 
 task Benchmark {

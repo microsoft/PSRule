@@ -23,8 +23,6 @@ using YamlDotNet.Serialization.NodeDeserializers;
 
 namespace PSRule.Host;
 
-#nullable enable
-
 internal static class HostHelper
 {
     private const string Markdown_Extension = ".md";
@@ -39,20 +37,22 @@ internal static class HostHelper
         return builder.GetItems();
     }
 
-    internal static RuleHelpInfo[] GetRuleHelp(LegacyRunspaceContext context)
-    {
-        var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
-        var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: true);
-
-        return blocks.GetAll().ToRuleHelp(context);
-    }
-
     internal static DependencyGraph<RuleBlock> GetRuleBlockGraph(LegacyRunspaceContext context)
     {
         var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
         var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: false);
 
         var builder = new DependencyGraphBuilder<RuleBlock>(context, includeDependencies: true, includeDisabled: false);
+        builder.Include(blocks, filter: (b) => Match(context, b));
+        return builder.Build();
+    }
+
+    internal static DependencyGraph<IRuleBlock> GetRuleBlockGraphV2(LegacyRunspaceContext context)
+    {
+        var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
+        var blocks = rules.ToRuleDependencyTargetCollectionV2(context, skipDuplicateName: false);
+
+        var builder = new DependencyGraphBuilder<IRuleBlock>(context, includeDependencies: true, includeDisabled: false);
         builder.Include(blocks, filter: (b) => Match(context, b));
         return builder.Build();
     }
@@ -73,12 +73,23 @@ internal static class HostHelper
     /// <summary>
     /// Get PS resources which are resource defined in PowerShell.
     /// </summary>
-    internal static IEnumerable<T> GetPSResources<T>(Source[] source, LegacyRunspaceContext context) where T : ILanguageBlock
+    internal static IEnumerable<T> GetPSResources<T>(Source[] source, IScriptResourceDiscoveryContext context) where T : ILanguageBlock
     {
         if (source == null || source.Length == 0) return [];
 
         var results = new List<T>();
-        results.AddRange(GetPSLanguageBlocks(context, source).OfType<T>());
+        results.AddRange(GetPSLanguageBlocks(source, context).OfType<T>());
+        return results;
+    }
+
+    internal static IEnumerable<T> GetResources<T>(Source[] source, IScriptResourceDiscoveryContext context) where T : ILanguageBlock
+    {
+        if (source == null || source.Length == 0) return [];
+
+        var results = new List<T>();
+        results.AddRange(GetYamlLanguageBlocks(source, context).OfType<T>());
+        results.AddRange(GetJsonLanguageBlocks(source, context).OfType<T>());
+        results.AddRange(GetPSLanguageBlocks(source, context).OfType<T>());
         return results;
     }
 
@@ -147,9 +158,9 @@ internal static class HostHelper
     /// <summary>
     /// Execute PowerShell script files to get language blocks.
     /// </summary>
-    private static ILanguageBlock[] GetPSLanguageBlocks(IScriptResourceDiscoveryContext context, Source[] sources)
+    private static ILanguageBlock[] GetPSLanguageBlocks(Source[] sources, IScriptResourceDiscoveryContext context)
     {
-        if (context.GetExecutionOption().RestrictScriptSource == Options.RestrictScriptSource.DisablePowerShell)
+        if (context.RestrictScriptSource == Options.RestrictScriptSource.DisablePowerShell)
             return [];
 
         var ps = context.GetPowerShell() ?? throw new InvalidOperationException("PowerShell runspace is not available.");
@@ -370,7 +381,7 @@ internal static class HostHelper
         return result.Count == 0 ? [] : [.. result];
     }
 
-    public static void InvokeRuleBlock(LegacyRunspaceContext context, RuleBlock ruleBlock, RuleRecord ruleRecord)
+    public static void InvokeRuleBlock(LegacyRunspaceContext context, IRuleBlock ruleBlock, RuleRecord ruleRecord)
     {
         LegacyRunspaceContext.CurrentThread = context;
         var condition = ruleBlock.Condition;
@@ -379,7 +390,7 @@ internal static class HostHelper
         try
         {
             context.EnterLanguageScope(ruleBlock.Source);
-            var invokeResult = condition.If();
+            var invokeResult = condition.If(context, context.TargetObject);
             if (invokeResult == null)
             {
                 ruleRecord.OutcomeReason = RuleOutcomeReason.PreconditionFail;
@@ -418,12 +429,12 @@ internal static class HostHelper
         //}
     }
 
-    private static bool Match(LegacyRunspaceContext context, RuleBlock resource)
+    private static bool Match(LegacyRunspaceContext context, IResource resource)
     {
         try
         {
             context.EnterLanguageScope(resource.Source);
-            var filter = context.LanguageScope!.GetFilter(ResourceKind.Rule);
+            var filter = context.Scope!.GetFilter(ResourceKind.Rule);
             return filter == null || filter.Match(resource);
         }
         finally
@@ -468,61 +479,4 @@ internal static class HostHelper
         info = lexer.Process(stream).ToInfo();
         return info != null;
     }
-
-    internal static RuleHelpInfo GetRuleHelpInfo(LegacyRunspaceContext context, string name, string defaultSynopsis, string defaultDisplayName, InfoString defaultDescription, InfoString defaultRecommendation)
-    {
-        return !TryHelpPath(context, name, out var path, out var culture) || !TryDocument(path, culture, out var document)
-            ? new RuleHelpInfo(
-                name: name,
-                displayName: defaultDisplayName ?? name,
-                moduleName: context.Source!.Module,
-                synopsis: InfoString.Create(defaultSynopsis),
-                description: defaultDescription,
-                recommendation: defaultRecommendation
-            )
-            : new RuleHelpInfo(
-                name: name,
-                displayName: document!.Name ?? defaultDisplayName ?? name,
-                moduleName: context.Source!.Module,
-                synopsis: document.Synopsis ?? new InfoString(defaultSynopsis),
-                description: document.Description ?? defaultDescription,
-                recommendation: document.Recommendation ?? defaultRecommendation ?? document.Synopsis ?? InfoString.Create(defaultSynopsis)
-            )
-            {
-                Notes = document.Notes?.Text,
-                Links = GetLinks(document.Links),
-                Annotations = document.Annotations?.ToHashtable()
-            };
-    }
-
-    private static bool TryDocument(string? path, string? culture, out RuleDocument? document)
-    {
-        document = null;
-        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(culture))
-            return false;
-
-        var markdown = File.ReadAllText(path);
-        if (string.IsNullOrEmpty(markdown))
-            return false;
-
-        var reader = new MarkdownReader(yamlHeaderOnly: false);
-        var stream = reader.Read(markdown, path);
-        var lexer = new RuleHelpLexer(culture);
-        document = lexer.Process(stream);
-        return document != null;
-    }
-
-    private static Rules.Link[]? GetLinks(Help.Link[] links)
-    {
-        if (links == null || links.Length == 0)
-            return null;
-
-        var result = new Rules.Link[links.Length];
-        for (var i = 0; i < links.Length; i++)
-            result[i] = new Rules.Link(links[i].Name, links[i].Uri);
-
-        return result;
-    }
 }
-
-#nullable restore

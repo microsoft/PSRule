@@ -48,7 +48,7 @@ internal static class BaselineExtensions
         try
         {
             context.EnterLanguageScope(resource.Source);
-            var filter = context.LanguageScope!.GetFilter(ResourceKind.Baseline);
+            var filter = context.Scope!.GetFilter(ResourceKind.Baseline);
             return filter == null || filter.Match(resource);
         }
         finally

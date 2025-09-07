@@ -2,8 +2,10 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Runtime;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule;
 
@@ -16,6 +18,7 @@ public abstract class ContextBaseTests : BaseTests
         option ??= GetOption();
         writer ??= GetTestWriter(option);
         languageScope ??= GetLanguageScopeSet(sources);
+        var runspaceContext = new RunspaceContext(option, writer);
         return PipelineContext.New(
             option: option,
             hostContext: null,
@@ -23,7 +26,8 @@ public abstract class ContextBaseTests : BaseTests
             writer: writer,
             languageScope: languageScope,
             optionBuilder: optionBuilder ?? new OptionContextBuilder(),
-            resourceCache: resourceCache ?? GetResourceCache(option, languageScope, sources, writer)
+            resourceCache: resourceCache ?? GetResourceCache(option, languageScope, sources, writer, runspaceContext),
+            runspaceContext: runspaceContext
         );
     }
 
@@ -32,11 +36,17 @@ public abstract class ContextBaseTests : BaseTests
         return new OptionContextBuilder(option: option ?? GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
     }
 
-    internal ResourceCache GetResourceCache(PSRuleOption? option = default, ILanguageScopeSet? languageScope = default, Source[]? sources = default, IPipelineWriter? writer = default)
+    internal ResourceCache GetResourceCache(PSRuleOption? option = default, ILanguageScopeSet? languageScope = default, Source[]? sources = default, IPipelineWriter? writer = default, RunspaceContext? runspaceContext = default)
     {
+        option ??= GetOption();
+        writer ??= GetTestWriter(option);
+        runspaceContext ??= new RunspaceContext(option, writer);
+
         return new ResourceCacheBuilder
         (
-            writer: writer ?? GetTestWriter(option),
+            option: option,
+            writer: writer,
+            runspaceContext: runspaceContext,
             languageScopeSet: languageScope ?? GetLanguageScopeSet(sources)
         ).Import(sources).Build(unresolved: null);
     }
@@ -56,6 +66,11 @@ public abstract class ContextBaseTests : BaseTests
         }
 
         return languageScopeSet;
+    }
+
+    internal TestExpressionContext GetTestExpressionContext(PSRuleOption? option = default, RunspaceScope scope = RunspaceScope.None)
+    {
+        return new TestExpressionContext(option ?? GetOption(), scope);
     }
 }
 

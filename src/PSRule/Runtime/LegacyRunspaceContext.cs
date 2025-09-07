@@ -7,24 +7,23 @@ using System.Management.Automation.Language;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
+using PSRule.Definitions.Expressions;
+using PSRule.Definitions.Rules;
 using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Runs;
 using PSRule.Resources;
 using PSRule.Rules;
 using PSRule.Runtime.Binding;
+using PSRule.Runtime.ObjectPath;
 
 namespace PSRule.Runtime;
-
-#nullable enable
 
 /// <summary>
 /// A context applicable to rule execution.
 /// </summary>
-internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext
+internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext, IExpressionContext, IRunOverrideContext, IRunBuilderContext
 {
-    private const string SOURCE_OUTCOME_FAIL = "Rule.Outcome.Fail";
-    private const string SOURCE_OUTCOME_PASS = "Rule.Outcome.Pass";
     private const string ERROR_ID_INVALID_RULE_RESULT = "PSRule.Runtime.InvalidRuleResult";
     private const string WARN_KEY_SEPARATOR = "_";
 
@@ -37,18 +36,19 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     // Fields exposed to engine
     internal RuleRecord? RuleRecord;
-    internal RuleBlock? RuleBlock;
+    internal IRuleBlock? RuleBlock;
     internal ITargetBindingResult? Binding;
 
     private readonly ExecutionActionPreference _RuleInconclusive;
     private readonly ExecutionActionPreference _UnprocessedObject;
     private readonly ExecutionActionPreference _RuleSuppressed;
     private readonly ExecutionActionPreference _InvariantCulture;
+    private readonly ExecutionActionPreference _DuplicateResourceId;
 
-    /// <summary>
-    /// Track the current runspace scope.
-    /// </summary>
-    private readonly Stack<RunspaceScope> _Scope;
+    ///// <summary>
+    ///// Track the current runspace scope.
+    ///// </summary>
+    //private readonly Stack<RunspaceScope> _Scope;
 
     /// <summary>
     /// Track common warnings, to only raise once.
@@ -78,16 +78,17 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         _UnprocessedObject = Pipeline.Option.Execution.UnprocessedObject.GetValueOrDefault(ExecutionOption.Default.UnprocessedObject!.Value);
         _RuleSuppressed = Pipeline.Option.Execution.RuleSuppressed.GetValueOrDefault(ExecutionOption.Default.RuleSuppressed!.Value);
         _InvariantCulture = Pipeline.Option.Execution.InvariantCulture.GetValueOrDefault(ExecutionOption.Default.InvariantCulture!.Value);
+        _DuplicateResourceId = Pipeline.Option.Execution?.DuplicateResourceId ?? ExecutionOption.Default.DuplicateResourceId!.Value;
 
         _WarnOnce = [];
 
         _ObjectNumber = -1;
         _RuleTimer = new Stopwatch();
         _Reason = [];
-        _Scope = new Stack<RunspaceScope>();
+        //_Scope = new Stack<RunspaceScope>();
     }
 
-    internal bool HadErrors => _RuleErrors > 0;
+    internal bool HadErrors => _RuleErrors > 0 || Pipeline.RunspaceContext.ErrorCount > 0;
 
     public IPipelineWriter Writer => Pipeline.Writer;
 
@@ -101,35 +102,21 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     internal ITargetBinder? TargetBinder { get; private set; }
 
-    public IEnumerable<Run> Runs { get; private set; } = [];
+    public ILanguageScope? Scope { get; private set; }
 
-    public ILanguageScope? LanguageScope { get; private set; }
+    public ResourceKind Kind => throw new NotImplementedException();
 
-    public bool IsScope(RunspaceScope scope)
-    {
-        if (scope == RunspaceScope.None && (_Scope == null || _Scope.Count == 0))
-            return true;
+    public string LanguageScope => throw new NotImplementedException();
 
-        if (_Scope == null || _Scope.Count == 0)
-            return false;
+    public ITargetObject Current => TargetObject;
 
-        var current = _Scope.Peek();
-        return scope.HasFlag(current);
-    }
+    public ResourceId? RuleId => ((ILanguageBlock)RuleBlock)?.Id;
 
-    public void PushScope(RunspaceScope scope)
-    {
-        _Scope.Push(scope);
-    }
+    public bool IsScope(RunspaceScope scope) => Pipeline.RunspaceContext?.IsScope(scope) ?? false;
 
-    public void PopScope(RunspaceScope scope)
-    {
-        var current = _Scope.Peek();
-        if (current != scope)
-            throw new RuntimeScopeException();
+    public void PushScope(RunspaceScope scope) => Pipeline?.RunspaceContext?.PushScope(scope);
 
-        _Scope.Pop();
-    }
+    public void PopScope(RunspaceScope scope) => Pipeline?.RunspaceContext.PopScope(scope);
 
     public void WarnRuleInconclusive(string ruleId)
     {
@@ -182,7 +169,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             exception: new RuleException(message: string.Format(
                 Thread.CurrentThread.CurrentCulture,
                 PSRuleResources.InvalidRuleResult,
-                RuleBlock?.Id
+                ((ILanguageBlock)RuleBlock)?.Id
             )),
             errorId: ERROR_ID_INVALID_RULE_RESULT,
             errorCategory: ErrorCategory.InvalidResult,
@@ -244,17 +231,26 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         Writer.LogVerbose(EventId.None, string.Concat(GetLogPrefix(), " -- [", pass, "/", count, "] [", outcome, "]"));
     }
 
-    public ExecutionOption GetExecutionOption()
+    public RestrictScriptSource RestrictScriptSource => Pipeline.RunspaceContext.RestrictScriptSource;
+
+    public PowerShell? GetPowerShell()
     {
-        return Pipeline.Option.Execution;
+        return Pipeline.RunspaceContext.GetPowerShell();
     }
 
-    public PowerShell GetPowerShell()
+    public void ReportIssue(ResourceIssue issue)
     {
-        var result = PowerShell.Create();
-        result.Runspace = Pipeline.GetRunspace();
-        EnableLogging(result);
-        return result;
+        switch (issue.Type)
+        {
+            case ResourceIssueType.DuplicateResourceId:
+                Logger?.Throw(_DuplicateResourceId, PSRuleResources.DuplicateResourceId, issue.ResourceId, issue.Args![0]);
+                break;
+            case ResourceIssueType.DuplicateResourceName:
+                Logger?.LogWarning(new EventId(0), PSRuleResources.DuplicateRuleName, issue.Args![0]);
+                break;
+            default:
+                throw new NotImplementedException($"Resource issue '{issue.Type}' is not implemented.");
+        }
     }
 
     private static void EnableLogging(PowerShell ps)
@@ -456,10 +452,10 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         if (!Pipeline.LanguageScope.TryScope(file.Module, out var scope))
             throw new RuntimeScopeException(PSR0022, PSRuleResources.PSR0022);
 
-        LanguageScope = scope;
+        Scope = scope;
 
-        if (TargetObject != null && LanguageScope != null)
-            Binding = LanguageScope.Bind(TargetObject);
+        if (TargetObject != null && Scope != null)
+            Binding = Scope.Bind(TargetObject);
 
         Source = file;
     }
@@ -467,7 +463,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     public void ExitLanguageScope(ISourceFile file)
     {
         // Look at scope popping and validation.
-        LanguageScope = null;
+        Scope = null;
 
         Source = null;
     }
@@ -502,24 +498,39 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         if (annotation.TryGetSelectorResult(selector, out var result))
             return result;
 
-        result = selector.Match(targetObject);
+        result = selector.If(this, targetObject);
         annotation.SetSelectorResult(selector, result);
         targetObject.SetAnnotation(annotation);
         return result;
     }
 
+    public void Reason(IOperand operand, string text, params object[] args)
+    {
+        WriteReason(new ResultReason(null, operand, text, args));
+    }
+
+    public bool GetPathExpression(string path, out PathExpression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void CachePathExpression(string path, PathExpression expression)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Enter the rule block scope.
     /// </summary>
-    public RuleRecord EnterRuleBlock(RuleBlock ruleBlock)
+    public RuleRecord EnterRuleBlock(IRuleBlock ruleBlock)
     {
         EnterLanguageScope(ruleBlock.Source);
 
         _RuleErrors = 0;
         RuleBlock = ruleBlock;
         RuleRecord = new RuleRecord(
-            ruleId: ruleBlock.Id,
-            @ref: ruleBlock.Ref.GetValueOrDefault().Name,
+            ruleId: ((ILanguageBlock)ruleBlock).Id,
+            @ref: ((IResource)ruleBlock).Ref.GetValueOrDefault().Name,
             targetObject: TargetObject!,
             targetName: Binding?.TargetName!,
             targetType: Binding?.TargetType!,
@@ -541,7 +552,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     /// <summary>
     /// Exit the rule block scope.
     /// </summary>
-    public void ExitRuleBlock(RuleBlock ruleBlock)
+    public void ExitRuleBlock(IRuleBlock ruleBlock)
     {
         // Stop rule execution time
         _RuleTimer.Stop();
@@ -569,20 +580,20 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     internal void AddService(string id, object service)
     {
-        if (LanguageScope == null) throw new InvalidOperationException("Can not call out of scope.");
+        if (Scope == null) throw new InvalidOperationException("Can not call out of scope.");
 
-        ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
-        if (!StringComparer.OrdinalIgnoreCase.Equals(LanguageScope.Name, scopeName) || string.IsNullOrEmpty(name))
+        ResourceHelper.ParseIdString(Scope.Name, id, out var scopeName, out var name);
+        if (!StringComparer.OrdinalIgnoreCase.Equals(Scope.Name, scopeName) || string.IsNullOrEmpty(name))
             return;
 
-        LanguageScope.AddService(name!, service);
+        Scope.AddService(name!, service);
     }
 
     internal object? GetService(string id)
     {
-        if (LanguageScope == null) throw new InvalidOperationException("Can not call out of scope.");
+        if (Scope == null) throw new InvalidOperationException("Can not call out of scope.");
 
-        ResourceHelper.ParseIdString(LanguageScope.Name, id, out var scopeName, out var name);
+        ResourceHelper.ParseIdString(Scope.Name, id, out var scopeName, out var name);
         return scopeName == null || !Pipeline.LanguageScope.TryScope(scopeName, out var scope) || scope == null || name == null || string.IsNullOrEmpty(name) ? null : scope.GetService(name);
     }
 
@@ -626,6 +637,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public void Initialize(Source[] source)
     {
+        Pipeline.RunspaceContext.EnterResourceContext(this);
+
         foreach (var languageScope in Pipeline.LanguageScope.Get())
             Pipeline.UpdateLanguageScope(languageScope);
 
@@ -650,15 +663,12 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
         Pipeline.Initialize(this, source);
 
-        _Conventions = Pipeline.ResourceCache.OfType<IConventionV1>().ToArray();
+        var filter = Pipeline.GetConventionFilter();
+
+        _Conventions = [.. Pipeline.ResourceCache.OfType<IConventionV1>().Where(c => filter == null || filter.Match(c))];
         Array.Sort(_Conventions, new ConventionComparer(Pipeline.GetConventionOrder));
 
         RunConventionInitialize();
-
-        //Pipeline.OptionBuilder.Build()
-
-        // Split each run based on baselines.
-        Runs = new RunCollectionBuilder(Pipeline.Option, Pipeline.RunInstance).Build();
     }
 
     public void Begin()
@@ -670,6 +680,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     {
         Output = output;
         RunConventionEnd();
+
+        Pipeline.RunspaceContext.ExitResourceContext(this);
     }
 
     /// <summary>
@@ -692,7 +704,7 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         if (string.IsNullOrEmpty(Source?.HelpPath))
             return null;
 
-        var cultures = LanguageScope?.Culture;
+        var cultures = Scope?.Culture;
         if (!_RaisedUsingInvariantCulture && (cultures == null || cultures.Length == 0))
         {
             this.Throw(_InvariantCulture, PSRuleResources.UsingInvariantCulture);
@@ -700,16 +712,10 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             return null;
         }
 
-        for (var i = 0; cultures != null && i < cultures.Length; i++)
-        {
-            var path = Path.Combine(Source?.HelpPath, cultures[i], file);
-            if (File.Exists(path))
-            {
-                culture = cultures[i];
-                return path;
-            }
-        }
-        return null;
+        if (cultures == null || cultures.Length == 0)
+            return null;
+
+        return new LocalizedFileSearch(cultures).GetLocalizedPath(Source!.HelpPath, file, out culture);
     }
 
     internal bool ShouldWarnOnce(params string[] key)
@@ -722,16 +728,22 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         return true;
     }
 
+    public bool TryGetOverride(ResourceId id, out RuleOverride? propertyOverride)
+    {
+        propertyOverride = null;
+        return Scope?.TryGetOverride(id, out propertyOverride) ?? false;
+    }
+
     #region Configuration
 
-    internal bool TryGetConfigurationValue(string name, out object? value)
+    public bool TryGetConfigurationValue(string name, out object? value)
     {
         value = null;
         if (string.IsNullOrEmpty(name))
             return false;
 
         // Get from baseline configuration
-        if (LanguageScope != null && LanguageScope.TryConfigurationValue(name, out var result))
+        if (Scope != null && Scope.TryConfigurationValue(name, out var result))
         {
             value = result;
             return true;
@@ -791,5 +803,3 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     #endregion IDisposable
 }
-
-#nullable restore

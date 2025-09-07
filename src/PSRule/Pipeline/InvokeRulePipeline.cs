@@ -15,7 +15,8 @@ namespace PSRule.Pipeline;
 internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
 {
     private readonly RuleOutcome _Outcome;
-    private readonly DependencyGraph<RuleBlock> _RuleGraph;
+    private readonly RunCollection _Runs;
+    private readonly DependencyGraph<IRuleBlock> _RuleGraph;
 
     // A per rule summary of rules that have been processed and the outcome
     private readonly Dictionary<string, RuleSummaryRecord> _Summary;
@@ -32,8 +33,10 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     internal InvokeRulePipeline(PipelineContext context, Source[] source, RuleOutcome outcome)
         : base(context, source)
     {
-        _RuleGraph = HostHelper.GetRuleBlockGraph(Context);
-        RuleCount = _RuleGraph.Count;
+        _RuleGraph = HostHelper.GetRuleBlockGraphV2(Context);
+        _Runs = new RunCollectionBuilder(context.Option, context.RunInstance).WithDefaultRun(_RuleGraph).Build();
+        RuleCount = _Runs.RuleCount;
+
         if (RuleCount == 0)
         {
             context.Writer.LogNoMatchingRules(context.Option.Execution?.NoMatchingRules ?? ExecutionOption.Default.NoMatchingRules!.Value);
@@ -118,7 +121,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
         try
         {
             Context.EnterTargetObject(targetObject);
-            foreach (var run in Context.Runs)
+            foreach (var run in _Runs)
             {
                 var result = InvokeRun(run, targetObject);
                 _Completed.Add(result);
@@ -142,10 +145,12 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
         var suppressionGroupCounter = new Dictionary<ISuppressionInfo, int>(new ISuppressionInfoComparer());
 
         // Process rule blocks ordered by dependency graph
-        foreach (var ruleBlockTarget in _RuleGraph.GetSingleTarget())
+        foreach (var ruleBlockTarget in run.Rules.GetSingleTarget())
         {
+            var ruleBlock = ruleBlockTarget.Value;
+
             // Enter rule block scope
-            var ruleRecord = Context.EnterRuleBlock(ruleBlock: ruleBlockTarget.Value);
+            var ruleRecord = Context.EnterRuleBlock(ruleBlock: ruleBlock);
             ruleCounter++;
 
             try
@@ -159,7 +164,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
                     ruleRecord.OutcomeReason = RuleOutcomeReason.DependencyFail;
                 }
                 // Check for suppression
-                else if (_SuppressionFilter.Match(id: ruleBlockTarget.Value.Id, targetName: ruleRecord.TargetName))
+                else if (_SuppressionFilter.Match(id: ((ILanguageBlock)ruleBlock).Id, targetName: ruleRecord.TargetName))
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
                     suppressedRuleCounter++;
@@ -168,17 +173,21 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
                         Context.RuleSuppressed(ruleId: ruleRecord.RuleId);
                 }
                 // Check for suppression group
-                else if (_SuppressionGroupFilter.TrySuppressionGroup(ruleId: ruleBlockTarget.Value.Id, targetObject, out var suppression))
+                else if (_SuppressionGroupFilter.TrySuppressionGroup(ruleId: ((ILanguageBlock)ruleBlock).Id, targetObject, out var suppression))
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
                     if (!_IsSummary)
+                    {
                         Context.RuleSuppressionGroup(ruleId: ruleRecord.RuleId, suppression);
+                    }
                     else
+                    {
                         suppressionGroupCounter[suppression] = suppressionGroupCounter.TryGetValue(suppression, out var count) ? ++count : 1;
+                    }
                 }
                 else
                 {
-                    HostHelper.InvokeRuleBlock(context: Context, ruleBlock: ruleBlockTarget.Value, ruleRecord: ruleRecord);
+                    HostHelper.InvokeRuleBlock(context: Context, ruleBlock: ruleBlock, ruleRecord: ruleRecord);
                     if (ruleRecord.OutcomeReason == RuleOutcomeReason.PreconditionFail)
                         ruleCounter--;
                 }
@@ -232,20 +241,20 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     /// <summary>
     /// Add rule result to summary.
     /// </summary>
-    private void AddToSummary(RuleBlock ruleBlock, RuleOutcome outcome)
+    private void AddToSummary(IRuleBlock ruleBlock, RuleOutcome outcome)
     {
-        if (!_IsSummary || ruleBlock == null)
+        if (!_IsSummary || ruleBlock is not ILanguageBlock languageBlock)
             return;
 
-        if (!_Summary.TryGetValue(ruleBlock.Id.Value, out var s))
+        if (!_Summary.TryGetValue(languageBlock.Id.Value, out var s))
         {
             s = new RuleSummaryRecord(
-                ruleId: ruleBlock.Id.Value,
+                ruleId: languageBlock.Id.Value,
                 ruleName: ruleBlock.Name,
                 tag: ruleBlock.Tag,
                 info: ruleBlock.Info
             );
-            _Summary.Add(ruleBlock.Id.Value, s);
+            _Summary.Add(languageBlock.Id.Value, s);
         }
         s.Add(outcome);
     }

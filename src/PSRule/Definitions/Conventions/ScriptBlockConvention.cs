@@ -2,13 +2,13 @@
 // Licensed under the MIT License.
 
 using System.Collections;
+using System.Diagnostics;
 using System.Management.Automation;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions.Conventions;
 
-#nullable enable
-
+[DebuggerDisplay("Kind = {Kind}, ApiVersion = {ApiVersion}, Id = {Id}")]
 internal sealed class ScriptBlockConvention : BaseConvention, IConventionV1, IDisposable
 {
     private readonly LanguageScriptBlock? _Initialize;
@@ -46,9 +46,9 @@ internal sealed class ScriptBlockConvention : BaseConvention, IConventionV1, IDi
 
     public ISourceExtent Extent { get; }
 
-    ResourceKind IResource.Kind => ResourceKind.Convention;
+    public ResourceKind Kind => ResourceKind.Convention;
 
-    string IResource.ApiVersion => Specs.V1;
+    public string ApiVersion => Specs.V1;
 
     // Not supported with conventions.
     ResourceId? IResource.Ref => null;
@@ -125,5 +125,3 @@ internal sealed class ScriptBlockConvention : BaseConvention, IConventionV1, IDi
 
     #endregion IDisposable
 }
-
-#nullable restore

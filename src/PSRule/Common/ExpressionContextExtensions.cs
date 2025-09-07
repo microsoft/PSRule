@@ -3,6 +3,7 @@
 
 using PSRule.Definitions.Expressions;
 using PSRule.Resources;
+using PSRule.Runtime;
 
 namespace PSRule;
 
@@ -11,14 +12,14 @@ internal static class ExpressionContextExtensions
     public static bool ExpressionTrace(this IExpressionContext context, string name, object operand, object value)
     {
         var type = context.Kind == Definitions.ResourceKind.Rule ? 'R' : 'S';
-        context.Debug(PSRuleResources.LanguageExpressionTraceP3, type, name, operand, value);
+        context.Logger.LogDebug(EventId.None, PSRuleResources.LanguageExpressionTraceP3, type, name, operand, value);
         return true;
     }
 
     public static bool ExpressionTrace(this IExpressionContext context, string name, object value)
     {
         var type = context.Kind == Definitions.ResourceKind.Rule ? 'R' : 'S';
-        context.Debug(PSRuleResources.LanguageExpressionTraceP2, type, name, value);
+        context.Logger.LogDebug(EventId.None, PSRuleResources.LanguageExpressionTraceP2, type, name, value);
         return true;
     }
 }

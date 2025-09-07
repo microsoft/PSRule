@@ -19,7 +19,7 @@ internal delegate bool PathExpressionFilterFn(IPathExpressionContext context, ob
 /// A path expression using JSONPath inspired syntax.
 /// </summary>
 [DebuggerDisplay("{Path}")]
-internal sealed class PathExpression
+public sealed class PathExpression
 {
     private readonly PathExpressionFn _Expression;
 
@@ -55,7 +55,7 @@ internal sealed class PathExpression
     /// Use the expression to return an array of results.
     /// </summary>
     [DebuggerStepThrough]
-    public bool TryGet(object o, bool caseSensitive, out object[] value)
+    public bool TryGet(object o, bool caseSensitive, out object[]? value)
     {
         value = null;
         if (!TryGet(o, caseSensitive, out var result, out _))
@@ -69,7 +69,7 @@ internal sealed class PathExpression
     /// Use the expression to return a single or an array of results.
     /// </summary>
     [DebuggerStepThrough]
-    public bool TryGet(object o, bool caseSensitive, out object value)
+    public bool TryGet(object o, bool caseSensitive, out object? value)
     {
         value = null;
         if (!TryGet(o, caseSensitive, out var result, out var enumerable))

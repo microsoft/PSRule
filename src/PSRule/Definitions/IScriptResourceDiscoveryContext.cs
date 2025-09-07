@@ -11,7 +11,7 @@ namespace PSRule.Definitions;
 /// </summary>
 internal interface IScriptResourceDiscoveryContext : IResourceDiscoveryContext
 {
-    PowerShell GetPowerShell();
+    PowerShell? GetPowerShell();
 
-    ExecutionOption GetExecutionOption();
+    RestrictScriptSource RestrictScriptSource { get; }
 }

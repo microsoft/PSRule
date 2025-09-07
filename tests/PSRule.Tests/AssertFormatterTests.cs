@@ -382,69 +382,73 @@ public sealed class AssertFormatterTests
 
     private static InvokeResult GetPassResult()
     {
-        var run = new Run("run-001", new InfoString("Test run", null), Guid.Empty.ToString());
-        var result = new InvokeResult(run);
-        result.Add(new RuleRecord
-        (
-            ruleId: ResourceId.Parse(".\\Test"),
-            @ref: "",
-            targetObject: new TargetObject(new PSObject()),
-            targetName: "TestObject",
-            targetType: "TestType",
-            tag: new ResourceTags(),
-            info: new RuleHelpInfo("Test", "Test rule", null),
-            field: null,
-            @default: new RuleProperties
-            {
-                Level = SeverityLevel.Error
-            },
-            extent: null,
-            outcome: RuleOutcome.Pass,
-            reason: RuleOutcomeReason.Processed
-        ));
+        var run = new Run("run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph());
+        var result = new InvokeResult(run)
+        {
+            new RuleRecord
+            (
+                ruleId: ResourceId.Parse(".\\Test"),
+                @ref: "",
+                targetObject: new TargetObject(new PSObject()),
+                targetName: "TestObject",
+                targetType: "TestType",
+                tag: new ResourceTags(),
+                info: new RuleHelpInfo("Test", "Test rule", null),
+                field: null,
+                @default: new RuleProperties
+                {
+                    Level = SeverityLevel.Error
+                },
+                extent: null,
+                outcome: RuleOutcome.Pass,
+                reason: RuleOutcomeReason.Processed
+            )
+        };
         return result;
     }
 
     private static InvokeResult GetFailResult(SeverityLevel level = SeverityLevel.Error)
     {
-        var run = new Run("run-001", new InfoString("Test run", null), Guid.Empty.ToString());
-        var result = new InvokeResult(run);
-        result.Add(new RuleRecord
-        (
-            ruleId: ResourceId.Parse(".\\Test1"),
-            @ref: "",
-            targetObject: new TargetObject(new PSObject()),
-            targetName: "TestObject",
-            targetType: "TestType",
-            tag: new ResourceTags(),
-            info: new RuleHelpInfo("Test1", "Test rule", null),
-            field: null,
-            @default: new RuleProperties
-            {
-                Level = level
-            },
-            extent: null,
-            outcome: RuleOutcome.Fail,
-            reason: RuleOutcomeReason.Processed
-        ));
-        result.Add(new RuleRecord
-        (
-            ruleId: ResourceId.Parse(".\\Test2"),
-            @ref: "",
-            targetObject: new TargetObject(new PSObject()),
-            targetName: "TestObject",
-            targetType: "TestType",
-            tag: new ResourceTags(),
-            info: new RuleHelpInfo("Test2", "Test rule", null),
-            field: null,
-            @default: new RuleProperties
-            {
-                Level = level
-            },
-            extent: null,
-            outcome: RuleOutcome.Fail,
-            reason: RuleOutcomeReason.Processed
-        ));
+        var run = new Run("run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph());
+        var result = new InvokeResult(run)
+        {
+            new RuleRecord
+            (
+                ruleId: ResourceId.Parse(".\\Test1"),
+                @ref: "",
+                targetObject: new TargetObject(new PSObject()),
+                targetName: "TestObject",
+                targetType: "TestType",
+                tag: new ResourceTags(),
+                info: new RuleHelpInfo("Test1", "Test rule", null),
+                field: null,
+                @default: new RuleProperties
+                {
+                    Level = level
+                },
+                extent: null,
+                outcome: RuleOutcome.Fail,
+                reason: RuleOutcomeReason.Processed
+            ),
+            new RuleRecord
+            (
+                ruleId: ResourceId.Parse(".\\Test2"),
+                @ref: "",
+                targetObject: new TargetObject(new PSObject()),
+                targetName: "TestObject",
+                targetType: "TestType",
+                tag: new ResourceTags(),
+                info: new RuleHelpInfo("Test2", "Test rule", null),
+                field: null,
+                @default: new RuleProperties
+                {
+                    Level = level
+                },
+                extent: null,
+                outcome: RuleOutcome.Fail,
+                reason: RuleOutcomeReason.Processed
+            )
+        };
         return result;
     }
 

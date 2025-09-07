@@ -13,6 +13,7 @@ using PSRule.Pipeline.Output;
 using PSRule.Pipeline.Runs;
 using PSRule.Resources;
 using PSRule.Runtime;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule.Pipeline;
 
@@ -37,6 +38,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     private PipelineWriter? _Writer;
     private ILanguageScopeSet? _LanguageScopeSet;
     private CapabilitySet? _CapabilitySet;
+    private RunspaceContext _RunspaceContext;
 
     protected readonly HostPipelineWriter _Output;
 
@@ -261,7 +263,8 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             unresolved.Add(new BaselineRef(ResolveBaselineGroup(baselineRef.Name), ScopeType.Explicit));
 
         var languageScopeSet = GetLanguageScopeSet();
-        var resourceCache = GetResourceCache(unresolved, languageScopeSet);
+        var runspaceContext = GetRunspaceContext(Option, writer);
+        var resourceCache = GetResourceCache(Option, writer, unresolved, languageScopeSet, runspaceContext);
         var options = GetOptionBuilder(resourceCache, binding);
 
         foreach (var scope in languageScopeSet.Get())
@@ -281,7 +284,8 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             writer: writer,
             languageScope: languageScopeSet,
             optionBuilder: options,
-            resourceCache: resourceCache
+            resourceCache: resourceCache,
+            runspaceContext: runspaceContext
         );
     }
 
@@ -459,9 +463,14 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     /// <summary>
     /// Load sources into a resource cache.
     /// </summary>
-    private ResourceCache GetResourceCache(List<ResourceRef> unresolved, ILanguageScopeSet languageScopeSet)
+    private ResourceCache GetResourceCache(PSRuleOption option, IPipelineWriter writer, List<ResourceRef> unresolved, ILanguageScopeSet languageScopeSet, RunspaceContext runspaceContext)
     {
-        return new ResourceCacheBuilder(_Writer, languageScopeSet).Import(Source).Build(unresolved);
+        return new ResourceCacheBuilder(option, writer, runspaceContext, languageScopeSet).Import(Source).Build(unresolved);
+    }
+
+    private RunspaceContext GetRunspaceContext(PSRuleOption option, IPipelineWriter writer)
+    {
+        return _RunspaceContext ??= new RunspaceContext(option, writer);
     }
 
     protected void EnableFormatsByName(string[]? format)

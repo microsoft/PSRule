@@ -17,7 +17,6 @@ The following workspace options are available for use:
 - [Binding.Field](#bindingfield)
 - [Binding.IgnoreCase](#bindingignorecase)
 - [Binding.NameSeparator](#bindingnameseparator)
-- [Binding.PreferTargetInfo](#bindingprefertargetinfo)
 - [Binding.TargetName](#bindingtargetname)
 - [Binding.TargetType](#bindingtargettype)
 - [Binding.UseQualifiedName](#bindingusequalifiedname)
@@ -50,6 +49,7 @@ The following workspace options are available for use:
 - [Input.TargetType](#inputtargettype)
 - [Output.As](#outputas)
 - [Output.Banner](#outputbanner)
+- [Output.CsvDetailedColumns](#outputcsvdetailedcolumns)
 - [Output.Culture](#outputculture)
 - [Output.Encoding](#outputencoding)
 - [Output.Footer](#outputfooter)
@@ -374,57 +374,6 @@ env:
 variables:
 - name: PSRULE_BINDING_NAMESEPARATOR
   value: '::'
-```
-
-### Binding.PreferTargetInfo
-
-Some built-in objects within PSRule perform automatic binding of TargetName and TargetType.
-These built-in objects provide their own target info.
-
-When binding has been configured these values override automatic binding by default.
-This can occur when the built-in object uses one of the fields specified by the custom configuration.
-The common occurrences of this are on fields such as `Name` and `FullName` which are widely used.
-To prefer automatic binding when specified set this option to `$True`.
-
-This option can be specified using:
-
-```powershell
-# PowerShell: Using the BindingPreferTargetInfo parameter
-$option = New-PSRuleOption -BindingPreferTargetInfo $True;
-```
-
-```powershell
-# PowerShell: Using the Binding.PreferTargetInfo hashtable key
-$option = New-PSRuleOption -Option @{ 'Binding.PreferTargetInfo' = $True };
-```
-
-```powershell
-# PowerShell: Using the BindingPreferTargetInfo parameter to set YAML
-Set-PSRuleOption -BindingPreferTargetInfo $True;
-```
-
-```yaml
-# YAML: Using the binding/preferTargetInfo property
-binding:
-  preferTargetInfo: true
-```
-
-```bash
-# Bash: Using environment variable
-export PSRULE_BINDING_PREFERTARGETINFO=false
-```
-
-```yaml
-# GitHub Actions: Using environment variable
-env:
-  PSRULE_BINDING_PREFERTARGETINFO: false
-```
-
-```yaml
-# Azure Pipelines: Using environment variable
-variables:
-- name: PSRULE_BINDING_PREFERTARGETINFO
-  value: false
 ```
 
 ### Binding.TargetName
@@ -2540,6 +2489,71 @@ variables:
   value: en-AU;en-US
 ```
 
+### Output.CsvDetailedColumns
+
+<!-- module:version 3.0.0 -->
+
+Configures which columns are included when using CSV detailed output format.
+This option allows you to customize the columns included in CSV output, reducing file size and focusing on relevant information.
+
+When this option is not specified, all default columns are included:
+`RuleName`, `TargetName`, `TargetType`, `Outcome`, `OutcomeReason`, `Synopsis`, `Recommendation`.
+
+When this option is specified, only the configured columns are included.
+The column order in the output matches the order specified in the configuration.
+
+Supported column types:
+
+- **Standard properties**: `RuleName`, `TargetName`, `TargetType`, `Outcome`, `OutcomeReason`, `Synopsis`, `Recommendation`
+- **Custom properties**: Properties under `Info.Annotations`, `Tag`, and `Field`
+
+Invalid column names result in empty values and do not cause errors.
+
+This option can be specified using:
+
+```powershell
+# PowerShell: Using the OutputCsvDetailedColumns parameter
+$option = New-PSRuleOption -OutputCsvDetailedColumns 'RuleName', 'TargetName', 'Outcome', 'Synopsis';
+```
+
+```powershell
+# PowerShell: Using the Output.CsvDetailedColumns hashtable key
+$option = New-PSRuleOption -Option @{ 'Output.CsvDetailedColumns' = 'RuleName', 'TargetName', 'Outcome', 'Synopsis' };
+```
+
+```powershell
+# PowerShell: Using the OutputCsvDetailedColumns parameter to set YAML
+Set-PSRuleOption -OutputCsvDetailedColumns 'RuleName', 'TargetName', 'Outcome', 'Synopsis';
+```
+
+```yaml
+# YAML: Using the output/csvDetailedColumns property
+output:
+  csvDetailedColumns:
+  - RuleName
+  - TargetName
+  - Outcome
+  - Synopsis
+```
+
+```bash
+# Bash: Using environment variable
+export PSRULE_OUTPUT_CSVDETAILEDCOLUMNS='RuleName;TargetName;Outcome;Synopsis'
+```
+
+```yaml
+# GitHub Actions: Using environment variable
+env:
+  PSRULE_OUTPUT_CSVDETAILEDCOLUMNS: 'RuleName;TargetName;Outcome;Synopsis'
+```
+
+```yaml
+# Azure Pipelines: Using environment variable
+variables:
+- name: PSRULE_OUTPUT_CSVDETAILEDCOLUMNS
+  value: 'RuleName;TargetName;Outcome;Synopsis'
+```
+
 ### Output.Encoding
 
 Configures the encoding used when output is written to file.
@@ -3693,6 +3707,11 @@ logging:
 output:
   as: Summary
   banner: Minimal
+  csvDetailedColumns:
+  - RuleName
+  - TargetName
+  - Outcome
+  - Synopsis
   culture:
   - en-US
   encoding: UTF8
@@ -3724,7 +3743,6 @@ binding:
     - AlternativeId
   ignoreCase: false
   nameSeparator: '::'
-  preferTargetInfo: true
   targetName:
   - ResourceName
   - AlternateName
@@ -3836,6 +3854,14 @@ logging:
 output:
   as: Detail
   banner: Default
+  csvDetailedColumns:
+    - RuleName
+    - TargetName
+    - TargetType
+    - Outcome
+    - OutcomeReason
+    - Synopsis
+    - Recommendation
   culture: [ ]
   encoding: Default
   footer: Default
@@ -3856,7 +3882,6 @@ binding:
   field: { }
   ignoreCase: true
   nameSeparator: '/'
-  preferTargetInfo: false
   targetName:
   - TargetName
   - Name

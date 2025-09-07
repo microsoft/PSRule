@@ -6,6 +6,7 @@ using System.Management.Automation;
 using PSRule.Badges;
 using PSRule.Data;
 using PSRule.Pipeline;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule.Runtime;
 
@@ -22,53 +23,55 @@ public sealed class PSRule : ScopedItem
     private IBadgeBuilder? _BadgeBuilder;
     private IRepositoryRuntimeInfo? _Repository;
 
+    private readonly string _InstanceId = Guid.NewGuid().ToString();
+
     /// <summary>
     /// Create an empty instance.
     /// </summary>
     public PSRule() { }
 
-    internal PSRule(LegacyRunspaceContext context)
+    internal PSRule(IRunspaceContext context)
         : base(context) { }
 
     private sealed class PSRuleSource : ScopedItem, ITargetSourceCollection
     {
-        internal PSRuleSource(LegacyRunspaceContext context)
+        internal PSRuleSource(IRunspaceContext context)
             : base(context) { }
 
         public TargetSourceInfo? this[string type]
         {
             get
             {
-                return GetContext().TargetObject?.Source[type];
+                return GetResourceContext().TargetObject?.Source[type];
             }
         }
     }
 
     private sealed class PSRuleIssue : ScopedItem, ITargetIssueCollection
     {
-        internal PSRuleIssue(LegacyRunspaceContext context)
+        internal PSRuleIssue(IRunspaceContext context)
             : base(context) { }
 
         public TargetIssueInfo[]? Get(string? type = null)
         {
-            return GetContext().TargetObject?.Issue?.Get(type);
+            return GetResourceContext().TargetObject?.Issue?.Get(type);
         }
 
         public bool Any(string? type = null)
         {
-            return GetContext().TargetObject?.Issue?.Any(type) ?? false;
+            return GetResourceContext().TargetObject?.Issue?.Any(type) ?? false;
         }
     }
 
     private sealed class PSRuleInput : ScopedItem, IInputCollection
     {
-        internal PSRuleInput(LegacyRunspaceContext context)
+        internal PSRuleInput(IRunspaceContext context)
             : base(context) { }
 
         /// <inheritdoc/>
         public void Add(string path)
         {
-            var context = GetContext();
+            var context = GetResourceContext();
             if (string.IsNullOrEmpty(path) || context.Pipeline.Reader == null)
                 return;
 
@@ -80,11 +83,11 @@ public sealed class PSRule : ScopedItem
     {
         private InputFileInfoCollection? _ChangedFiles;
 
-        internal PSRuleRepository(LegacyRunspaceContext context)
+        internal PSRuleRepository(IRunspaceContext context)
             : base(context)
         {
-            Url = GetContext().Pipeline.Option.Repository.Url;
-            BaseRef = GetContext().Pipeline.Option.Repository.BaseRef;
+            Url = GetResourceContext().Pipeline.Option.Repository.Url;
+            BaseRef = GetResourceContext().Pipeline.Option.Repository.BaseRef;
         }
 
         /// <inheritdoc/>
@@ -100,6 +103,8 @@ public sealed class PSRule : ScopedItem
             return _ChangedFiles;
         }
     }
+
+    internal string InstanceId => _InstanceId;
 
     /// <summary>
     /// Exposes the badge API for used within conventions.
@@ -122,7 +127,7 @@ public sealed class PSRule : ScopedItem
         get
         {
             RequireScope(RunspaceScope.Rule | RunspaceScope.Precondition | RunspaceScope.ConventionBegin | RunspaceScope.ConventionProcess);
-            return GetContext()?.TargetObject?.RequireData();
+            return GetResourceContext()?.TargetObject?.RequireData();
         }
     }
 
@@ -140,7 +145,7 @@ public sealed class PSRule : ScopedItem
         get
         {
             RequireScope(RunspaceScope.Rule | RunspaceScope.Precondition);
-            return GetContext().RuleRecord?.Field;
+            return GetResourceContext().RuleRecord?.Field;
         }
     }
 
@@ -174,7 +179,7 @@ public sealed class PSRule : ScopedItem
         get
         {
             RequireScope(RunspaceScope.ConventionEnd);
-            return GetContext().Output;
+            return GetResourceContext().Output;
         }
     }
 
@@ -191,22 +196,22 @@ public sealed class PSRule : ScopedItem
     /// <summary>
     /// The current target object.
     /// </summary>
-    public object? TargetObject => GetContext().TargetObject?.Value;
+    public object? TargetObject => GetResourceContext().TargetObject?.Value;
 
     /// <summary>
     /// The bound name of the target object.
     /// </summary>
-    public string? TargetName => GetContext().RuleRecord?.TargetName;
+    public string? TargetName => GetResourceContext().RuleRecord?.TargetName;
 
     /// <summary>
     /// The bound type of the target object.
     /// </summary>
-    public string? TargetType => GetContext().RuleRecord?.TargetType;
+    public string? TargetType => GetResourceContext().RuleRecord?.TargetType;
 
     /// <summary>
     /// The bound scope of the target object.
     /// </summary>
-    public string[]? Scope => GetContext().TargetObject?.Scope;
+    public string[]? Scope => GetResourceContext().TargetObject?.Scope;
 
     /// <summary>
     /// Attempts to read content from disk.
@@ -221,7 +226,7 @@ public sealed class PSRule : ScopedItem
             return [sourceObject];
 
         var cacheKey = baseObject.ToString();
-        if (GetContext().Pipeline.ContentCache.TryGetValue(cacheKey, out var result))
+        if (GetResourceContext().Pipeline.ContentCache.TryGetValue(cacheKey, out var result))
             return result;
 
         var items = PipelineReceiverActions.DetectInputFormat(new TargetObject(new PSObject(baseObject)), PipelineReceiverActions.PassThru).ToArray();
@@ -229,7 +234,7 @@ public sealed class PSRule : ScopedItem
         for (var i = 0; i < items.Length; i++)
             result[i] = items[i].Value;
 
-        GetContext().Pipeline.ContentCache.Add(cacheKey, result);
+        GetResourceContext().Pipeline.ContentCache.Add(cacheKey, result);
         return result;
     }
 
@@ -282,7 +287,7 @@ public sealed class PSRule : ScopedItem
     public object[] GetPath(object sourceObject, string path)
     {
         return (!ObjectHelper.GetPath(
-            bindingContext: GetContext()?.Pipeline,
+            bindingContext: GetResourceContext()?.Pipeline,
             targetObject: sourceObject,
             path: path,
             caseSensitive: false,
@@ -326,7 +331,7 @@ public sealed class PSRule : ScopedItem
             if (sourceObject[i] == null)
                 continue;
 
-            GetContext().Pipeline.Reader?.Enqueue(sourceObject[i], targetType: type, skipExpansion: true);
+            GetResourceContext().Pipeline.Reader?.Enqueue(sourceObject[i], targetType: type, skipExpansion: true);
         }
     }
 
@@ -348,7 +353,7 @@ public sealed class PSRule : ScopedItem
             return;
 
         RequireScope(RunspaceScope.ConventionInitialize);
-        GetContext().AddService(id, service);
+        GetResourceContext().AddService(id, service);
     }
 
     /// <summary>
@@ -364,7 +369,7 @@ public sealed class PSRule : ScopedItem
             return;
 
         RequireScope(RunspaceScope.ConventionInitialize);
-        GetContext()?.LanguageScope?.ConfigureServices(configure);
+        GetResourceContext()?.Scope?.ConfigureServices(configure);
     }
 
     /// <summary>
@@ -381,7 +386,7 @@ public sealed class PSRule : ScopedItem
             return null;
 
         RequireScope(RunspaceScope.Runtime);
-        return GetContext().GetService(id);
+        return GetResourceContext().GetService(id);
     }
 
     #region Helper methods
@@ -389,27 +394,27 @@ public sealed class PSRule : ScopedItem
     private ITargetSourceCollection GetSource()
     {
         RequireScope(RunspaceScope.Target);
-        _Source ??= new PSRuleSource(GetContext());
+        _Source ??= new PSRuleSource(GetRunspaceContext());
         return _Source;
     }
 
     private IInputCollection GetInput()
     {
         RequireScope(RunspaceScope.ConventionInitialize);
-        _Input ??= new PSRuleInput(GetContext());
+        _Input ??= new PSRuleInput(GetRunspaceContext());
         return _Input;
     }
 
     private ITargetIssueCollection GetIssue()
     {
         RequireScope(RunspaceScope.Target);
-        _Issue ??= new PSRuleIssue(GetContext());
+        _Issue ??= new PSRuleIssue(GetRunspaceContext());
         return _Issue;
     }
 
     private IRepositoryRuntimeInfo GetRepository()
     {
-        _Repository ??= new PSRuleRepository(GetContext());
+        _Repository ??= new PSRuleRepository(GetRunspaceContext());
         return _Repository;
     }
 
