@@ -53,4 +53,22 @@ public sealed class CommandTests
         var output = console.Out.ToString();
         Assert.NotNull(output);
     }
+
+    [Fact]
+    public async Task GetRule()
+    {
+        var console = new TestConsole();
+        var builder = ClientBuilder.New();
+        var get = builder.Subcommands.FirstOrDefault(c => c.Name == "get");
+
+        Assert.NotNull(get);
+        Assert.NotNull(get.Subcommands.FirstOrDefault(c => c.Name == "rule"));
+
+        await builder.InvokeAsync("get rule", console);
+
+        var output = console.Out.ToString();
+        Assert.NotNull(output);
+        Assert.Contains("PSRule get rule command", output);
+        Assert.Contains("\"rules\":", output); // Should contain JSON with rules array
+    }
 }
