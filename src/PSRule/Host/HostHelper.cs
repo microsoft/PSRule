@@ -13,6 +13,7 @@ using PSRule.Definitions.Baselines;
 using PSRule.Definitions.Rules;
 using PSRule.Help;
 using PSRule.Pipeline;
+using PSRule.Pipeline.Runs;
 using PSRule.Rules;
 using PSRule.Runtime;
 using YamlDotNet.Core;
@@ -47,13 +48,13 @@ internal static class HostHelper
         return builder.Build();
     }
 
-    internal static DependencyGraph<IRuleBlock> GetRuleBlockGraphV2(LegacyRunspaceContext context)
+    internal static DependencyGraph<IRuleBlock> GetRuleBlockGraphV2(IRunBuilderContext context, IResourceCache resourceCache)
     {
-        var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
+        var rules = resourceCache.OfType<IRuleV1>();
         var blocks = rules.ToRuleDependencyTargetCollectionV2(context, skipDuplicateName: false);
 
         var builder = new DependencyGraphBuilder<IRuleBlock>(context, includeDependencies: true, includeDisabled: false);
-        builder.Include(blocks, filter: (b) => Match(context, b));
+        builder.Include(blocks, filter: context.Match);
         return builder.Build();
     }
 
@@ -429,7 +430,7 @@ internal static class HostHelper
         //}
     }
 
-    private static bool Match(LegacyRunspaceContext context, IResource resource)
+    internal static bool Match(LegacyRunspaceContext context, IResource resource)
     {
         try
         {
