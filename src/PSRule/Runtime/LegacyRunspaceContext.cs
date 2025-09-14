@@ -9,6 +9,7 @@ using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
 using PSRule.Definitions.Expressions;
 using PSRule.Definitions.Rules;
+using PSRule.Host;
 using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Runs;
@@ -248,9 +249,22 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             case ResourceIssueType.DuplicateResourceName:
                 Logger?.LogWarning(new EventId(0), PSRuleResources.DuplicateRuleName, issue.Args![0]);
                 break;
+            case ResourceIssueType.RuleExcluded:
+                var preference1 = Pipeline.Option.Execution.RuleExcluded ?? ExecutionOption.Default.RuleExcluded!.Value;
+                Logger?.Throw(preference1, PSRuleResources.RuleExcluded, issue.ResourceId.Value);
+                break;
+            case ResourceIssueType.AliasReference:
+                var preference2 = Pipeline.Option.Execution.AliasReference ?? ExecutionOption.Default.AliasReference!.Value;
+                Logger?.Throw(preference2, PSRuleResources.AliasReference, issue?.Args[1], issue.ResourceId.Value, issue?.Args[0], issue?.Args[2]);
+                break;
             default:
                 throw new NotImplementedException($"Resource issue '{issue.Type}' is not implemented.");
         }
+    }
+
+    public bool Match(IResource resource)
+    {
+        return HostHelper.Match(this, resource);
     }
 
     private static void EnableLogging(PowerShell ps)

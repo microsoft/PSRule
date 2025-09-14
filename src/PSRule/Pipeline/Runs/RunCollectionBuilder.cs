@@ -11,12 +11,13 @@ namespace PSRule.Pipeline.Runs;
 /// <summary>
 /// A builder to create a <see cref="RunCollection"/>.
 /// </summary>
-internal sealed class RunCollectionBuilder(PSRuleOption? option, string instance)
+internal sealed class RunCollectionBuilder(IResourceCache resourceCache, PSRuleOption? option, string instance)
 {
     private const char SLASH = '/';
     private const char SPACE = ' ';
     private const char DOT = '.';
 
+    private readonly IResourceCache _ResourceCache = resourceCache ?? throw new ArgumentNullException(nameof(resourceCache));
     private readonly string _Category = NormalizeCategory(option?.Run?.Category);
     private readonly string _Description = option?.Run?.Description ?? RunOption.Default.Description!;
     private readonly string _Instance = instance ?? throw new ArgumentNullException(nameof(instance));

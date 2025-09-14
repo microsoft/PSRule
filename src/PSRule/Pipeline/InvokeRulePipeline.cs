@@ -33,8 +33,8 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     internal InvokeRulePipeline(PipelineContext context, Source[] source, RuleOutcome outcome)
         : base(context, source)
     {
-        _RuleGraph = HostHelper.GetRuleBlockGraphV2(Context);
-        _Runs = new RunCollectionBuilder(context.Option, context.RunInstance).WithDefaultRun(_RuleGraph).Build();
+        _RuleGraph = HostHelper.GetRuleBlockGraphV2(Context, Pipeline.ResourceCache);
+        _Runs = new RunCollectionBuilder(Pipeline.ResourceCache, context.Option, context.RunInstance).WithDefaultRun(_RuleGraph).Build();
         RuleCount = _Runs.RuleCount;
 
         if (RuleCount == 0)
