@@ -8,7 +8,7 @@ namespace PSRule;
 
 internal sealed class TestResourceName : IResource
 {
-    public TestResourceName(ResourceId id, ResourceTags resourceTags = null, ResourceLabels resourceLabels = null)
+    public TestResourceName(ResourceId id, ResourceTags? resourceTags = null, ResourceLabels? resourceLabels = null)
     {
         Id = id;
         Name = Id.Name;

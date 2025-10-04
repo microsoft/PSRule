@@ -5,5 +5,5 @@ namespace PSRule.Pipeline;
 
 public sealed class TestObject
 {
-    public string Name { get; set; }
+    public string? Name { get; set; }
 }

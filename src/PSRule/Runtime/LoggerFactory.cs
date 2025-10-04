@@ -8,7 +8,7 @@ namespace PSRule.Runtime;
 /// </summary>
 internal sealed class LoggerFactory : ILoggerFactory
 {
-    public ILogger Create(string categoryName)
+    public ILogger? Create(string categoryName)
     {
         return LegacyRunspaceContext.CurrentThread == null ? LegacyRunspaceContext.CurrentThread : NullLogger.Instance;
     }

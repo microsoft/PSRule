@@ -406,7 +406,7 @@ public sealed partial class PipelineTests : ContextBaseTests
 
     #region Helper methods
 
-    private static Source[] GetSource(string[] files = null)
+    private static Source[] GetSource(string[]? files = null)
     {
         var builder = new SourcePipelineBuilder(null, null);
         builder.Directory(GetSourcePath("FromFile.Rule.ps1"));
@@ -416,7 +416,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         return builder.Build();
     }
 
-    private static PSRuleOption GetOption(string path = null, ExecutionActionPreference ruleExcludedAction = ExecutionActionPreference.None)
+    private static PSRuleOption GetOption(string? path = null, ExecutionActionPreference ruleExcludedAction = ExecutionActionPreference.None)
     {
         var option = path == null ? new PSRuleOption() : PSRuleOption.FromFile(path);
         option.Rule.IncludeLocal = false;

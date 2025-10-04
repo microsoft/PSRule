@@ -61,7 +61,7 @@ internal sealed class RuleV1Script(string apiVersion, ISourceFile source, Resour
     IResourceTags IRuleV1.Tag => Metadata.Tags;
 
     /// <inheritdoc/>
-    InfoString IRuleV1.Recommendation => null; // Not supported for PowerShell rules.
+    InfoString? IRuleV1.Recommendation => null; // Not supported for PowerShell rules.
 
     private void Dispose(bool disposing)
     {

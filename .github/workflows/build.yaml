@@ -63,7 +63,7 @@ jobs:
       - name: Lint .NET
         shell: pwsh
         timeout-minutes: 5
-        run: dotnet format --verify-no-changes
+        run: dotnet format --verify-no-changes --severity error
 
       - name: Upload module
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
