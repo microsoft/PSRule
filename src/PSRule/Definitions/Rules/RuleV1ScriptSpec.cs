@@ -11,7 +11,7 @@ internal sealed class RuleV1ScriptSpec : Spec, IDisposable
 {
     private bool _Disposed;
 
-    public PowerShellCondition Condition { get; internal set; }
+    public PowerShellCondition? Condition { get; internal set; }
     public SeverityLevel Level { get; internal set; }
     public ResourceId[]? DependsOn { get; internal set; }
     public string[]? Type { get; internal set; }

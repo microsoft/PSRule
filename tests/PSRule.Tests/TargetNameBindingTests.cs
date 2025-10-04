@@ -13,23 +13,23 @@ public sealed class TargetNameBindingTests : ContextBaseTests
 {
     internal class TestModel1
     {
-        public string NotName { get; set; }
+        public string? NotName { get; set; }
     }
 
     internal class TestModel2
     {
-        public string NotName { get; set; }
+        public string? NotName { get; set; }
     }
 
     internal class TestModel3 : ITargetInfo
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         string ITargetInfo.Name => "TestModel3";
 
         string ITargetInfo.Type => "TestModel3";
 
-        TargetSourceInfo ITargetInfo.Source => null;
+        TargetSourceInfo? ITargetInfo.Source => null;
     }
 
     [Fact]

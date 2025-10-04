@@ -71,7 +71,7 @@ internal sealed class Operand : IOperand
         return IsEmptyPath(p2) ? p1 : string.Concat(p1, Dot, p2);
     }
 
-    public override string ToString()
+    public override string? ToString()
     {
         return string.IsNullOrEmpty(Path) || Kind == OperandKind.Target ? null : OperandString();
     }

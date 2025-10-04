@@ -17,7 +17,7 @@ internal sealed class RuleHelpLexer : HelpLexer
         // Look for yaml header
         stream.MoveTo(0);
         var metadata = YamlHeader(stream);
-        RuleDocument doc = null;
+        RuleDocument? doc = null;
 
         // Process sections
         while (!stream.EOF)

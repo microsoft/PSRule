@@ -117,7 +117,7 @@ public sealed class OptionContextTests : BaseTests
 
     #region Helper methods
 
-    private static PSRuleOption GetOption(string[] culture = null, string[] ruleInclude = null)
+    private static PSRuleOption GetOption(string[]? culture = null, string[]? ruleInclude = null)
     {
         var option = new PSRuleOption();
 
@@ -137,7 +137,7 @@ public sealed class OptionContextTests : BaseTests
         return PSRuleOption.FromFileOrEmpty(GetSourcePath(file));
     }
 
-    private static BaselineSpec GetBaseline(string[] targetType = null, string[] ruleInclude = null)
+    private static BaselineSpec GetBaseline(string[]? targetType = null, string[]? ruleInclude = null)
     {
         ruleInclude ??= ["rule1"];
         return new BaselineSpec
