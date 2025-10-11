@@ -578,7 +578,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.18.9",
-    "@types/vscode": "1.103.0",
+    "@types/vscode": "1.105.0",
     "@typescript-eslint/eslint-plugin": "^8.46.0",
     "@typescript-eslint/parser": "^8.32.1",
     "@vscode/test-cli": "^0.0.11",
