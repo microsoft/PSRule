@@ -577,7 +577,7 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.18.9",
+    "@types/node": "^22.18.10",
     "@types/vscode": "1.105.0",
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.32.1",
