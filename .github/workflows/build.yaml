@@ -66,7 +66,7 @@ jobs:
         run: dotnet format --verify-no-changes --severity error
 
       - name: Upload module
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: Module
           path: ./out/modules/PSRule/*
@@ -74,7 +74,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload packages
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: Packages
           path: ./out/nuget/PSRule/*
@@ -82,7 +82,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload PSRule Results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: always()
         with:
           name: Results-PSRule
@@ -197,7 +197,7 @@ jobs:
           npm run package -- 0.0.1
 
       - name: Upload extension
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: Extension
           path: out/package/vscode-ps-rule-*.vsix
@@ -315,7 +315,7 @@ jobs:
           option: ps-rule-ci.yaml
 
       - name: Upload results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: always()
         with:
           name: test-action-sarif
@@ -352,7 +352,7 @@ jobs:
           sarif_file: reports/ps-rule-results.sarif
 
       - name: Upload results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: always()
         with:
           name: PSRule-Sarif
@@ -383,7 +383,7 @@ jobs:
           sarif_file: devskim-results.sarif
 
       - name: Upload results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: always()
         with:
           name: DevSkim-Sarif
@@ -415,7 +415,7 @@ jobs:
         id: codeql-analyze
 
       - name: Upload results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: always()
         with:
           name: CodeQL-Sarif
