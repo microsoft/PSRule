@@ -18,6 +18,7 @@ public abstract class ContextBaseTests : BaseTests
         option ??= GetOption();
         writer ??= GetTestWriter(option);
         languageScope ??= GetLanguageScopeSet(sources);
+        var runspaceContext = new RunspaceContext(option, writer);
         return PipelineContext.New(
             option: option,
             hostContext: null,
@@ -25,7 +26,8 @@ public abstract class ContextBaseTests : BaseTests
             writer: writer,
             languageScope: languageScope,
             optionBuilder: optionBuilder ?? new OptionContextBuilder(),
-            resourceCache: resourceCache ?? GetResourceCache(option, languageScope, sources, writer)
+            resourceCache: resourceCache ?? GetResourceCache(option, languageScope, sources, writer, runspaceContext),
+            runspaceContext: runspaceContext
         );
     }
 
@@ -34,16 +36,17 @@ public abstract class ContextBaseTests : BaseTests
         return new OptionContextBuilder(option: option ?? GetOption(), bindTargetName: PipelineHookActions.BindTargetName, bindTargetType: PipelineHookActions.BindTargetType, bindField: PipelineHookActions.BindField);
     }
 
-    internal ResourceCache GetResourceCache(PSRuleOption? option = default, ILanguageScopeSet? languageScope = default, Source[]? sources = default, IPipelineWriter? writer = default)
+    internal ResourceCache GetResourceCache(PSRuleOption? option = default, ILanguageScopeSet? languageScope = default, Source[]? sources = default, IPipelineWriter? writer = default, RunspaceContext? runspaceContext = default)
     {
         option ??= GetOption();
         writer ??= GetTestWriter(option);
+        runspaceContext ??= new RunspaceContext(option, writer);
 
         return new ResourceCacheBuilder
         (
             option: option,
             writer: writer,
-            runspaceContext: new RunspaceContext(option, writer),
+            runspaceContext: runspaceContext,
             languageScopeSet: languageScope ?? GetLanguageScopeSet(sources)
         ).Import(sources).Build(unresolved: null);
     }

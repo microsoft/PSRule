@@ -9,13 +9,11 @@ using PSRule.Runtime.Binding;
 
 namespace PSRule.Runtime;
 
-#nullable enable
-
 /// <summary>
 /// A named scope for language elements.
 /// Any elements in a language scope are not visible to language elements in another scope.
 /// </summary>
-internal interface ILanguageScope : IDisposable
+public interface ILanguageScope : IDisposable
 {
     /// <summary>
     /// The name of the scope.
@@ -90,5 +88,3 @@ internal interface ILanguageScope : IDisposable
     /// <returns>Returns an <see cref="IConfiguration"/> instance.</returns>
     IConfiguration ToConfiguration();
 }
-
-#nullable restore

@@ -15,7 +15,7 @@ public abstract class OutputWriterBaseTests : ContextBaseTests
 {
     protected internal static IRun GetRun()
     {
-        return new Run("run-001", new InfoString("Test run", null), Guid.Empty.ToString());
+        return new Run("run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph());
     }
 
     protected static RuleRecord GetPass()

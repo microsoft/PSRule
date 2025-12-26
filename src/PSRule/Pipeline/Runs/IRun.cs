@@ -6,8 +6,6 @@ using PSRule.Runtime;
 
 namespace PSRule.Pipeline.Runs;
 
-#nullable enable
-
 /// <summary>
 /// A logical run.
 /// Multiple runs can be created for a single pipeline execution.
@@ -28,6 +26,9 @@ public interface IRun : IConfiguration
     /// A correlation identifier for all related runs.
     /// </summary>
     string CorrelationGuid { get; }
-}
 
-#nullable restore
+    /// <summary>
+    /// A list of rules that are part of the run.
+    /// </summary>
+    IRuleGraph Rules { get; }
+}

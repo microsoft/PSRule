@@ -80,7 +80,7 @@ internal static class PipelineHookActions
     /// </summary>
     /// <param name="targetObject">A PSObject to bind.</param>
     /// <returns>The TargetName of the object.</returns>
-    private static string DefaultTargetNameBinding(object targetObject)
+    private static string? DefaultTargetNameBinding(object targetObject)
     {
         return TryGetInfoTargetName(targetObject, out var targetName) ||
             TryGetTargetName(targetObject, propertyName: Property_TargetName, targetName: out targetName) ||
@@ -179,7 +179,7 @@ internal static class PipelineHookActions
     /// </summary>
     /// <param name="targetObject">A PSObject to bind.</param>
     /// <returns>The TargetObject of the object.</returns>
-    private static string DefaultTargetTypeBinding(object targetObject)
+    private static string? DefaultTargetTypeBinding(object targetObject)
     {
         return TryGetInfoTargetType(targetObject, out var targetType) ? targetType : GetTypeNames(targetObject);
     }

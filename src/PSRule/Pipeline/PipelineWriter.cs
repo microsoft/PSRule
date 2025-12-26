@@ -12,7 +12,7 @@ namespace PSRule.Pipeline;
 /// <summary>
 /// A base class for pipeline writers that passes through to an inner writer.
 /// </summary>
-internal abstract class PipelineWriter(IPipelineWriter? inner, PSRuleOption option, ShouldProcess shouldProcess) : IPipelineWriter
+internal abstract class PipelineWriter(IPipelineWriter? inner, PSRuleOption option, ShouldProcess? shouldProcess) : IPipelineWriter
 {
     protected const string ErrorPreference = "ErrorActionPreference";
     protected const string WarningPreference = "WarningPreference";
@@ -21,7 +21,7 @@ internal abstract class PipelineWriter(IPipelineWriter? inner, PSRuleOption opti
     protected const string DebugPreference = "DebugPreference";
 
     private readonly IPipelineWriter? _Inner = inner;
-    private readonly ShouldProcess _ShouldProcess = shouldProcess;
+    private readonly ShouldProcess? _ShouldProcess = shouldProcess;
     protected readonly PSRuleOption Option = option;
 
     private bool _IsDisposed;

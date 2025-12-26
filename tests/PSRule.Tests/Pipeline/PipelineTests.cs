@@ -361,6 +361,26 @@ public sealed partial class PipelineTests : ContextBaseTests
         Assert.NotNull(pipeline);
     }
 
+    [Fact]
+    public void GetRuleHelpPipeline_WithRules_ShouldReturnExpectedHelpInfo()
+    {
+        var option = PSRuleOption.FromDefault();
+
+        var builder = PipelineBuilder.GetHelp(GetSource(
+        [
+            "FromFileBaseline.Rule.ps1"
+        ]), option, null);
+
+        var writer = new TestWriter(option);
+        var pipeline = builder.Build(writer);
+
+        pipeline.Begin();
+        pipeline.Process(null);
+        pipeline.End();
+
+        Assert.Equal(74, writer.Output.OfType<RuleHelpInfo>().Count());
+    }
+
     ///// <summary>
     ///// An Invoke pipeline reading from an input file with File format.
     ///// </summary>
@@ -386,7 +406,7 @@ public sealed partial class PipelineTests : ContextBaseTests
 
     #region Helper methods
 
-    private static Source[] GetSource(string[] files = null)
+    private static Source[] GetSource(string[]? files = null)
     {
         var builder = new SourcePipelineBuilder(null, null);
         builder.Directory(GetSourcePath("FromFile.Rule.ps1"));
@@ -396,7 +416,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         return builder.Build();
     }
 
-    private static PSRuleOption GetOption(string path = null, ExecutionActionPreference ruleExcludedAction = ExecutionActionPreference.None)
+    private static PSRuleOption GetOption(string? path = null, ExecutionActionPreference ruleExcludedAction = ExecutionActionPreference.None)
     {
         var option = path == null ? new PSRuleOption() : PSRuleOption.FromFile(path);
         option.Rule.IncludeLocal = false;

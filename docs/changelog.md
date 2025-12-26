@@ -34,6 +34,12 @@ What's changed since pre-release v3.0.0-B0453:
   - Added support and by default error if rules or input is not found during a run by @BernieWhite.
     [#1778](https://github.com/microsoft/PSRule/issues/1778)
     - Added options for `Execution.NoMatchingRules`, `Execution.NoValidInput`, and `Execution.NoValidSources`.
+  - Added support for customizing CSV output columns by @BernieWhite.
+    [#1165](https://github.com/microsoft/PSRule/issues/1165)
+    - The `Output.CsvDetailedColumns` option can be used to customize the columns included in the CSV output format.
+- General improvements:
+  - Reload language server when options change by @BernieWhite.
+    [#2842](https://github.com/microsoft/PSRule/issues/2842)
 - Engineering:
   - **Important change**: Remove legacy log scopes by @BernieWhite.
     [#2891](https://github.com/microsoft/PSRule/issues/2891)
@@ -43,8 +49,8 @@ What's changed since pre-release v3.0.0-B0453:
     [#2824](https://github.com/microsoft/PSRule/issues/2824)
   - Added Azure Pipelines support to CLI by @BernieWhite.
     [#2825](https://github.com/microsoft/PSRule/issues/2825)
-  - Bump vscode engine to v1.102.0.
-    [#2981](https://github.com/microsoft/PSRule/pull/2981)
+  - Bump vscode engine to v1.107.0.
+    [#3144](https://github.com/microsoft/PSRule/pull/3144)
 - Bug fixes:
   - Fixed path handling issue string is missing the terminator with single quote in source paths by @juan-carlos-diaz.
     [#2885](https://github.com/microsoft/PSRule/issues/2885)

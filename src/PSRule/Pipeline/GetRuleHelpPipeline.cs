@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Host;
+using PSRule.Definitions.Rules;
 
 namespace PSRule.Pipeline;
 
@@ -17,7 +17,9 @@ internal sealed class GetRuleHelpPipeline : RulePipeline, IPipeline
 
     public override void End()
     {
-        Pipeline.Writer.WriteObject(HostHelper.GetRuleHelp(Context), true);
+        var blocks = Pipeline.ResourceCache.OfType<IRuleV1>().ToRuleDependencyTargetCollection(Context, skipDuplicateName: true);
+
+        Pipeline.Writer.WriteObject(blocks.GetAll().ToRuleHelp(Context), true);
     }
 }
 

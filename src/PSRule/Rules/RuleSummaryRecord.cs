@@ -15,7 +15,7 @@ namespace PSRule.Rules;
 [DebuggerDisplay("{RuleId}, Outcome = {Outcome}")]
 public sealed class RuleSummaryRecord
 {
-    internal RuleSummaryRecord(string ruleId, string ruleName, IResourceTags tag, RuleHelpInfo info)
+    internal RuleSummaryRecord(string ruleId, string ruleName, IResourceTags tag, IRuleHelpInfo info)
     {
         RuleId = ruleId;
         RuleName = ruleName;
@@ -84,7 +84,7 @@ public sealed class RuleSummaryRecord
     /// </summary>
     [DefaultValue(null)]
     [JsonProperty(PropertyName = "info")]
-    public RuleHelpInfo Info { get; internal set; }
+    public IRuleHelpInfo Info { get; internal set; }
 
     /// <summary>
     /// Determines if the overall outcome is successful or a failure.

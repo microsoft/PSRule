@@ -85,24 +85,24 @@ public sealed class ObjectHelperTests
 
     public sealed class TestObject1
     {
-        public string Name;
+        public string? Name;
 
-        public TestObject2 Value;
+        public TestObject2? Value;
 
-        public string[] Value2;
+        public string[]? Value2;
 
-        public Hashtable Metadata;
+        public Hashtable? Metadata;
 
-        public IList<string> Value3;
+        public IList<string>? Value3;
 
-        public ICollection<string> Value4;
+        public ICollection<string>? Value4;
 
-        public TestObject3 Value5;
+        public TestObject3? Value5;
     }
 
     public sealed class TestObject2
     {
-        public string Value1;
+        public string? Value1;
     }
 
     public sealed class TestObject3

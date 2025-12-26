@@ -115,11 +115,12 @@ public sealed class PSRuleOptionTests : ContextBaseTests
     private Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
     {
         var optionBuilder = new OptionContextBuilder(option);
-        var context = new Runtime.LegacyRunspaceContext(GetPipelineContext(option: option, optionBuilder: optionBuilder));
+        var pipeline = GetPipelineContext(option: option, optionBuilder: optionBuilder);
+        var context = new Runtime.LegacyRunspaceContext(pipeline);
         context.Initialize(null);
         context.Begin();
         context.EnterLanguageScope(GetSource()[0].File[0]);
-        return new Runtime.Configuration(context);
+        return new Runtime.Configuration(pipeline.RunspaceContext);
     }
 
     private static Source[] GetSource()

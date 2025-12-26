@@ -23,9 +23,19 @@ internal sealed class ResourceCacheBuilder(PSRuleOption option, IPipelineWriter?
     {
         if (sources == null || sources.Length == 0) return this;
 
+        var context = new ResourceCacheDiscoveryContext(option, _Writer, runspaceContext, languageScopeSet);
 
-        _Resources = HostHelper.GetMetaResources<IResource>(sources, new ResourceCacheDiscoveryContext(option, _Writer, runspaceContext, languageScopeSet));
+        context.Begin();
 
+        try
+        {
+            _Resources = HostHelper.GetMetaResources<IResource>(sources, context);
+            _Resources = HostHelper.GetResources<IResource>(sources, context);
+        }
+        finally
+        {
+            context.End();
+        }
         return this;
     }
 

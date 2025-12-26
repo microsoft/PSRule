@@ -22,6 +22,13 @@ updates:
           - Microsoft.PowerShell.SDK
     ignore:
       - dependency-name: gitversion.tool
+
+      # Don't auto-update to new major versions, we need to migrate code first.
+      # https://github.com/microsoft/PSRule/issues/3158
+      - dependency-name: Microsoft.CodeAnalysis.Common
+        update-types:
+          - version-update:semver-major
+
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: github-actions
     directory: '/'
@@ -29,6 +36,12 @@ updates:
       interval: daily
     labels:
       - dependencies
+    groups:
+      github:
+        patterns:
+          - actions/*
+          - github/*
+
   # Maintain dependencies for Python
   - package-ecosystem: pip
     directory: '/'
@@ -36,25 +49,39 @@ updates:
       interval: daily
     labels:
       - dependencies
+    groups:
+      docs:
+        patterns:
+          - mkdocs*
+          - mdx-truly-sane-lists
+          - mike
+          - semver
+
   # Maintain dependencies for npm.
   - package-ecosystem: npm
     directory: '/'
     schedule:
       interval: daily
     labels:
-      - 'dependencies'
+      - dependencies
     groups:
       # Group linting dependencies
-      dev-linting:
+      dev-common:
         patterns:
           - esbuild
           - eslint
+          - mocha
           - '@typescript-eslint/*'
-      dev-types:
-        patterns:
           - '@types/*'
         exclude-patterns:
           - '@types/vscode'
+    ignore:
+      # Don't auto-update major versions of Node.js types.
+      # This will be manually updated when needed.
+      - dependency-name: '@types/node'
+        update-types:
+          - version-update:semver-major
+
   # Maintain dependencies for Dev Containers
   - package-ecosystem: devcontainers
     directory: '/'
@@ -62,6 +89,7 @@ updates:
       interval: weekly
     labels:
       - dependencies
+
   # Maintain dependencies for Docker
   - package-ecosystem: docker
     directory: '/'

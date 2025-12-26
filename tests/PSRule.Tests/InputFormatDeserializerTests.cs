@@ -47,10 +47,10 @@ public sealed class InputFormatDeserializerTests
         Assert.Equal("TestObject1", PipelineHookActions.BindTargetName(null, false, actual[0].Value, out var path));
         Assert.Null(path);
 
-        PSRuleTargetInfo info1 = null;
+        PSRuleTargetInfo? info1 = null;
         Assert.True(actual[0].Value is PSObject pSObject1 && pSObject1.TryTargetInfo(out info1));
 
-        PSRuleTargetInfo info2 = null;
+        PSRuleTargetInfo? info2 = null;
         Assert.True(actual[1].Value is PSObject pSObject2 && pSObject2.TryTargetInfo(out info2));
 
         Assert.Equal("some-file.json", info1.Source[0].File);

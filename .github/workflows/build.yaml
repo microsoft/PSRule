@@ -35,12 +35,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+        uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
         with:
           global-json-file: global.json
 
@@ -63,10 +63,10 @@ jobs:
       - name: Lint .NET
         shell: pwsh
         timeout-minutes: 5
-        run: dotnet format --verify-no-changes
+        run: dotnet format --verify-no-changes --severity error
 
       - name: Upload module
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: Module
           path: ./out/modules/PSRule/*
@@ -74,7 +74,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload packages
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: Packages
           path: ./out/nuget/PSRule/*
@@ -82,7 +82,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload PSRule Results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
           name: Results-PSRule
@@ -124,10 +124,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+        uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
         with:
           global-json-file: global.json
 
@@ -144,7 +144,7 @@ jobs:
         run: ./scripts/pipeline-deps.ps1
 
       - name: Download module
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: Module
           path: ./out/modules/PSRule
@@ -168,17 +168,17 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
 
       - name: Setup node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+        uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
         with:
           global-json-file: global.json
 
@@ -197,7 +197,7 @@ jobs:
           npm run package -- 0.0.1
 
       - name: Upload extension
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: Extension
           path: out/package/vscode-ps-rule-*.vsix
@@ -221,15 +221,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Setup node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+        uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
         with:
           global-json-file: global.json
 
@@ -259,12 +259,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
 
       - name: Setup Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
         with:
           python-version: '3.11'
           architecture: 'x64'
@@ -289,15 +289,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+        uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
         with:
           global-json-file: global.json
 
       - name: Download packages
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: Packages
           path: ./out/nuget/PSRule
@@ -315,7 +315,7 @@ jobs:
           option: ps-rule-ci.yaml
 
       - name: Upload results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
           name: test-action-sarif
@@ -334,7 +334,7 @@ jobs:
       security-events: write
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Run PSRule analysis
         uses: microsoft/ps-rule@46451b8f5258c41beb5ae69ed7190ccbba84112c # v2.9.0
@@ -346,13 +346,13 @@ jobs:
           option: ps-rule-ci.yaml
 
       - name: Upload results to security tab
-        uses: github/codeql-action/upload-sarif@3c3833e0f8c1c83d449a7478aa59c036a9165498 # v3.29.5
+        uses: github/codeql-action/upload-sarif@5d4e8d1aca955e8d8589aabd499c5cae939e33c7 # v3.29.5
         if: always()
         with:
           sarif_file: reports/ps-rule-results.sarif
 
       - name: Upload results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
           name: PSRule-Sarif
@@ -369,7 +369,7 @@ jobs:
       security-events: write
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Run DevSkim scanner
         uses: microsoft/DevSkim-Action@4b5047945a44163b94642a1cecc0d93a3f428cc6 # v1.0.16
@@ -377,13 +377,13 @@ jobs:
           directory-to-scan: .
 
       - name: Upload results to security tab
-        uses: github/codeql-action/upload-sarif@3c3833e0f8c1c83d449a7478aa59c036a9165498 # v3.29.5
+        uses: github/codeql-action/upload-sarif@5d4e8d1aca955e8d8589aabd499c5cae939e33c7 # v3.29.5
         if: always()
         with:
           sarif_file: devskim-results.sarif
 
       - name: Upload results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
           name: DevSkim-Sarif
@@ -400,22 +400,22 @@ jobs:
       security-events: write
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@3c3833e0f8c1c83d449a7478aa59c036a9165498 # v3.29.5
+        uses: github/codeql-action/init@5d4e8d1aca955e8d8589aabd499c5cae939e33c7 # v3.29.5
         with:
           languages: 'csharp'
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@3c3833e0f8c1c83d449a7478aa59c036a9165498 # v3.29.5
+        uses: github/codeql-action/autobuild@5d4e8d1aca955e8d8589aabd499c5cae939e33c7 # v3.29.5
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@3c3833e0f8c1c83d449a7478aa59c036a9165498 # v3.29.5
+        uses: github/codeql-action/analyze@5d4e8d1aca955e8d8589aabd499c5cae939e33c7 # v3.29.5
         id: codeql-analyze
 
       - name: Upload results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
           name: CodeQL-Sarif

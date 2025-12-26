@@ -12,4 +12,8 @@ internal enum ResourceIssueType
     DuplicateResourceId,
 
     DuplicateResourceName,
+
+    AliasReference,
+
+    RuleExcluded
 }
