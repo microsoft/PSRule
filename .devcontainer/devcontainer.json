@@ -33,6 +33,9 @@
     },
     "ghcr.io/devcontainers/features/python:1": {
       "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
     }
   },
   "onCreateCommand": "sudo ./dotnet-install.sh --install-dir /usr/lib/dotnet && sudo dotnet workload update && dotnet tool install --global PowerShell --version 7.4.10 && sudo chown -R vscode:vscode /usr/bin/pwsh && sudo apt-get update -y && sudo apt-get upgrade -y && dotnet restore && pip install -r requirements-docs.txt && ln /usr/bin/pwsh /home/vscode/.dotnet/tools/pwsh --force",
