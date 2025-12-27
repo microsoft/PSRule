@@ -29,6 +29,11 @@ updates:
         update-types:
           - version-update:semver-major
 
+      # Upgrade to newer major versions are not compatible with .NET Standard 2.0.
+      - dependency-name: Microsoft.Extensions.DependencyInjection
+        update-types:
+          - version-update:semver-major
+
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: github-actions
     directory: '/'
