@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine.Invocation;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace PSRule.BuildTool;
@@ -20,24 +20,28 @@ internal sealed class BadgeResourceOption
 [SupportedOSPlatform("windows")]
 internal sealed class BadgeResource
 {
-    public static void Build(BadgeResourceOption options, InvocationContext invocation)
+    public static int Build(BadgeResourceOption options, ClientContext clientContext)
     {
         // Guard non-Windows platforms.
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            invocation.Console.Error.Write("This tool supports execution on Windows platforms only.");
-            invocation.ExitCode = 1;
-            return;
+            clientContext.Logger.LogError("This tool supports execution on Windows platforms only.");
+            return 1;
         }
 
         var c = GetChars();
         var set = new object[c.Length][];
         var padding = GetPadding();
+
         for (var i = 0; i < c.Length; i++)
-            set[i] = new object[2] { c[i], Measure(c[i]) - padding };
+        {
+            set[i] = [c[i], Measure(c[i]) - padding];
+        }
 
         var json = JsonConvert.SerializeObject(set);
         File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), options.OutputPath ?? "en.json"), json);
+
+        return 0;
     }
 
     private static char[] GetChars()
