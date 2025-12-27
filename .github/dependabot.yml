@@ -95,13 +95,7 @@ updates:
     labels:
       - dependencies
 
-  # Maintain dependencies for Docker
-  - package-ecosystem: docker
-    directory: '/'
-    schedule:
-      interval: weekly
-    labels:
-      - dependencies
+  # Maintain dependencies for .NET SDK
   - package-ecosystem: dotnet-sdk
     directory: /
     schedule:
