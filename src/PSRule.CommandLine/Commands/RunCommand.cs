@@ -92,7 +92,7 @@ public sealed class RunCommand
         builder.Formats(operationOptions.Formats);
 
         using var pipeline = builder.Build();
-        if (pipeline != null)
+        if (pipeline != null && clientContext.Host.ExitCode == 0)
         {
             pipeline.Begin();
             pipeline.Process(null);

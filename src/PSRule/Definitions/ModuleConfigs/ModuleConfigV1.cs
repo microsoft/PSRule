@@ -14,7 +14,6 @@ namespace PSRule.Definitions.ModuleConfigs;
 internal sealed class ModuleConfigV1(string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, ModuleConfigV1Spec spec)
     : InternalResource<ModuleConfigV1Spec>(ResourceKind.ModuleConfig, apiVersion, source, metadata, info, extent, spec), IModuleConfig
 {
-
     /// <summary>
     /// A human readable block of text, used to identify the purpose of the module config.
     /// </summary>
@@ -23,4 +22,8 @@ internal sealed class ModuleConfigV1(string apiVersion, SourceFile source, Resou
     public string Synopsis => Info.Synopsis.Text;
 
     IModuleConfigSpec IResource<IModuleConfigSpec>.Spec => Spec;
+
+    ResourceId IScopeConfig.Id => Id;
+
+    IDictionary<string, object>? IScopeConfig.Configuration => Spec?.Configuration;
 }

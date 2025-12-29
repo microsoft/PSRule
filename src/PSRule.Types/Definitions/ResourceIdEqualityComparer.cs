@@ -16,6 +16,12 @@ internal sealed class ResourceIdEqualityComparer : IEqualityComparer<ResourceId>
             EqualOrNull(x.Name, y.Name);
     }
 
+    public static bool IdEquals(ResourceId x, ResourceIdReference y)
+    {
+        return EqualOrNull(x.Scope, y.Scope) &&
+            EqualOrNull(x.Name, y.Name);
+    }
+
     public static bool IdEquals(ResourceId x, string y)
     {
         return x.Equals(y);

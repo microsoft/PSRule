@@ -5,6 +5,7 @@ using System.Management.Automation;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Pipeline;
 using PSRule.Runtime.ObjectPath;
 
@@ -57,7 +58,7 @@ public class PSRule
     private void PrepareGetPipeline()
     {
         var option = new PSRuleOption();
-        option.Rule.Include = new string[] { "Benchmark" };
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["Benchmark"]);
         var builder = PipelineBuilder.Get(GetSource(), option, _HostContext);
         _GetPipeline = builder.Build();
     }
@@ -65,8 +66,8 @@ public class PSRule
     private void PrepareGetHelpPipeline()
     {
         var option = new PSRuleOption();
-        option.Rule.Include = new string[] { "BenchmarkHelp" };
-        option.Output.Culture = new string[] { "en-ZZ" };
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["BenchmarkHelp"]);
+        option.Output.Culture = ["en-ZZ"];
         var builder = PipelineBuilder.GetHelp(GetSource(), option, _HostContext);
         _GetHelpPipeline = builder.Build();
     }
@@ -74,7 +75,7 @@ public class PSRule
     private void PrepareInvokePipeline()
     {
         var option = new PSRuleOption();
-        option.Rule.Include = new string[] { "Benchmark" };
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["Benchmark"]);
         var builder = PipelineBuilder.Invoke(GetSource(), option, _HostContext);
         _InvokePipeline = builder.Build();
     }
@@ -82,7 +83,7 @@ public class PSRule
     private void PrepareInvokeIfPipeline()
     {
         var option = new PSRuleOption();
-        option.Rule.Include = new string[] { "BenchmarkIf" };
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["BenchmarkIf"]);
         var builder = PipelineBuilder.Invoke(GetSource(), option, _HostContext);
         _InvokeIfPipeline = builder.Build();
     }
@@ -90,7 +91,7 @@ public class PSRule
     private void PrepareInvokeTypePipeline()
     {
         var option = new PSRuleOption();
-        option.Rule.Include = new string[] { "BenchmarkType" };
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["BenchmarkType"]);
         var builder = PipelineBuilder.Invoke(GetSource(), option, _HostContext);
         _InvokeTypePipeline = builder.Build();
     }
@@ -98,7 +99,7 @@ public class PSRule
     private void PrepareInvokeSummaryPipeline()
     {
         var option = new PSRuleOption();
-        option.Rule.Include = new string[] { "Benchmark" };
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["Benchmark"]);
         option.Output.As = ResultFormat.Summary;
         var builder = PipelineBuilder.Invoke(GetSource(), option, _HostContext);
         _InvokeSummaryPipeline = builder.Build();
@@ -107,7 +108,7 @@ public class PSRule
     private void PrepareAssertPipeline()
     {
         var option = new PSRuleOption();
-        option.Rule.Include = new string[] { "Benchmark" };
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["Benchmark"]);
         var builder = PipelineBuilder.Assert(GetSource(), option, _HostContext);
         _AssertPipeline = builder.Build();
     }
@@ -115,7 +116,7 @@ public class PSRule
     private void PrepareInvokeWithinPipeline()
     {
         var option = new PSRuleOption();
-        option.Rule.Include = new string[] { "BenchmarkWithin" };
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["BenchmarkWithin"]);
         var builder = PipelineBuilder.Invoke(GetWithinSource(), option, _HostContext);
         _InvokeWithinPipeline = builder.Build();
     }
@@ -123,7 +124,7 @@ public class PSRule
     private void PrepareInvokeWithinBulkPipeline()
     {
         var option = new PSRuleOption();
-        option.Rule.Include = new string[] { "BenchmarkWithinBulk" };
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["BenchmarkWithinBulk"]);
         var builder = PipelineBuilder.Invoke(GetWithinSource(), option, _HostContext);
         _InvokeWithinBulkPipeline = builder.Build();
     }
@@ -131,7 +132,7 @@ public class PSRule
     private void PrepareInvokeWithinLikePipeline()
     {
         var option = new PSRuleOption();
-        option.Rule.Include = new string[] { "BenchmarkWithinLike" };
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["BenchmarkWithinLike"]);
         var builder = PipelineBuilder.Invoke(GetWithinSource(), option, _HostContext);
         _InvokeWithinLikePipeline = builder.Build();
     }
@@ -139,7 +140,7 @@ public class PSRule
     private void PrepareAssertHasFieldValuePipeline()
     {
         var option = new PSRuleOption();
-        option.Rule.Include = new string[] { "Assert.HasFieldValue" };
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["Assert.HasFieldValue"]);
         var builder = PipelineBuilder.Invoke(GetSource(), option, _HostContext);
         _AssertHasFieldValuePipeline = builder.Build();
     }

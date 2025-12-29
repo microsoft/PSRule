@@ -32,6 +32,8 @@ internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger
 
     public ISourceFile? Source { get; private set; }
 
+    public string? Scope => _CurrentLanguageScope?.Name;
+
     public RestrictScriptSource RestrictScriptSource => _RunspaceContext == null ? RestrictScriptSource.DisablePowerShell : _RunspaceContext.RestrictScriptSource;
 
     internal ILanguageScope? LanguageScope

@@ -8,6 +8,7 @@ using System.Management.Automation;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Definitions.Rules;
 using PSRule.Options;
 using PSRule.Resources;
@@ -22,7 +23,7 @@ public sealed partial class PipelineTests : ContextBaseTests
     {
         var testObject1 = new TestObject { Name = "TestObject1" };
         var option = GetOption();
-        option.Rule.Include = ["FromFile1"];
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["FromFile1"]);
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
         var writer = GetTestWriter(option);
         var pipeline = builder.Build(writer);
@@ -56,7 +57,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         };
 
         var option = GetOption();
-        option.Rule.Include = ["ScriptReasonTest"];
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["ScriptReasonTest"]);
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
         var writer = GetTestWriter(option);
         var pipeline = builder.Build(writer);
@@ -100,7 +101,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         };
 
         var option = GetOption();
-        option.Rule.Include = ["WithPathPrefix"];
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["WithPathPrefix"]);
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
         var writer = GetTestWriter(option);
         var pipeline = builder.Build(writer);
@@ -124,8 +125,8 @@ public sealed partial class PipelineTests : ContextBaseTests
     public void InvokePipeline_WithExclude()
     {
         var option = GetOption(ruleExcludedAction: ExecutionActionPreference.Warn);
-        option.Rule.Include = ["FromFile1"];
-        option.Rule.Exclude = ["FromFile2"];
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["FromFile1"]);
+        option.Rule.Exclude = ResourceHelper.GetResourceIdReference(["FromFile2"]);
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
         var writer = new TestWriter(GetOption());
         var pipeline = builder.Build(writer);
@@ -138,7 +139,127 @@ public sealed partial class PipelineTests : ContextBaseTests
     }
 
     [Fact]
-    public void GetRuleWithBaseline()
+    public void Invoke_WithBaseline()
+    {
+        var testObject1 = GetObject(
+            (name: "AlternateName", value: "TestObject1"),
+            (name: "Kind", value: "TestObjectType"),
+            (name: "Id", value: "1")
+        );
+
+        var option = PSRuleOption.FromDefault();
+        option.Execution.InvariantCulture = ExecutionActionPreference.Ignore;
+        option.Binding.TargetName = ["AlternateName"];
+        option.Binding.TargetType = ["Kind"];
+
+        var builder = PipelineBuilder.Invoke(GetSource(
+        [
+            "Baseline.Rule.yaml",
+            "FromFileBaseline.Rule.ps1"
+        ]), option, null);
+        builder.Baseline(Configuration.BaselineOption.FromString(".\\TestBaseline1"));
+        var writer = new TestWriter(option);
+        var pipeline = builder.Build(writer);
+
+        pipeline.Begin();
+        pipeline.Process(testObject1);
+        pipeline.End();
+
+        Assert.Single(writer.Output);
+        var result = writer.Output.FirstOrDefault() as InvokeResult;
+
+        Assert.NotNull(result);
+        var record = result.AsRecord().FirstOrDefault();
+
+        Assert.NotNull(record);
+        Assert.Equal(RuleOutcome.Pass, record.Outcome);
+        Assert.Equal("WithBaseline", record.RuleName);
+        Assert.Equal("TestObject1", record.TargetName);
+        Assert.Equal("TestObjectType", record.TargetType);
+    }
+
+    [Fact]
+    public void Invoke_WithNonObsoleteBaseline_ShouldNotReturnWarning()
+    {
+        var testObject1 = GetObject(
+            (name: "Name", value: "TestObject1"),
+            (name: "Type", value: "TestObjectType"),
+            (name: "Id", value: "1")
+        );
+
+        var option = PSRuleOption.FromDefault();
+        var builder = PipelineBuilder.Invoke(GetSource(
+        [
+            "Baseline.Rule.yaml",
+            "FromFileBaseline.Rule.ps1"
+        ]), option, null);
+
+        builder.Baseline(Configuration.BaselineOption.FromString(".\\TestBaseline1"));
+        var writer = new TestWriter(option);
+        var pipeline = builder.Build(writer);
+
+        pipeline.Begin();
+        pipeline.Process(testObject1);
+        pipeline.End();
+
+        Assert.Single(writer.Output);
+
+        Assert.DoesNotContain(writer.Warnings, s => s.Contains("is obsolete."));
+    }
+
+    [Fact]
+    public void Invoke_WithObsoleteBaseline_ShouldReturnWarning()
+    {
+        var testObject1 = GetObject(
+            (name: "Name", value: "TestObject1"),
+            (name: "Type", value: "TestObjectType"),
+            (name: "Id", value: "1")
+        );
+
+        var option = PSRuleOption.FromDefault();
+        var builder = PipelineBuilder.Invoke(GetSource(
+        [
+            "Baseline.Rule.yaml",
+            "FromFileBaseline.Rule.ps1"
+        ]), option, null);
+
+        builder.Baseline(Configuration.BaselineOption.FromString(".\\TestBaseline5"));
+        var writer = new TestWriter(option);
+        var pipeline = builder.Build(writer);
+
+        pipeline.Begin();
+        pipeline.Process(testObject1);
+        pipeline.End();
+
+        Assert.Single(writer.Output);
+
+        Assert.Contains(writer.Warnings, s => s == "PSR0005: The Baseline '.\\TestBaseline5' is obsolete.");
+    }
+
+    [Fact]
+    public void Get_WithBaseline()
+    {
+        var option = PSRuleOption.FromDefault();
+        option.Execution.InvariantCulture = ExecutionActionPreference.Ignore;
+
+        var builder = PipelineBuilder.Get(GetSource(
+        [
+            "Baseline.Rule.yaml",
+            "FromFileBaseline.Rule.ps1"
+        ]), option, null);
+        builder.Baseline(Configuration.BaselineOption.FromString(".\\TestBaseline1"));
+        var writer = new TestWriter(option);
+        var pipeline = builder.Build(writer);
+
+        pipeline.Begin();
+        pipeline.Process(null);
+        pipeline.End();
+
+        Assert.Single(writer.Output);
+    }
+
+    [Fact]
+    public void GetRuleWithBaselineGroup()
     {
         var option = PSRuleOption.FromDefault();
         option.Baseline.Group = new Data.StringArrayMap();
@@ -233,7 +354,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         {
             Enabled = true,
         };
-        option.Rule.Include = ["FromFile1"];
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["FromFile1"]);
         option.Input.PathIgnore =
         [
             "**/ObjectFromFile*.json",
@@ -259,7 +380,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         Assert.True(items[3].HasSource());
 
         // With reason full path
-        option.Rule.Include = ["ScriptReasonTest"];
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["ScriptReasonTest"]);
         writer = GetTestWriter(option);
         builder = PipelineBuilder.Invoke(GetSource(), option, null);
         PipelineBuilder.Invoke(GetSource(), option, null);
@@ -283,7 +404,7 @@ public sealed partial class PipelineTests : ContextBaseTests
         Assert.Equal("Name", items[3].Detail.Reason.First().Path);
 
         // With IgnoreObjectSource
-        option.Rule.Include = ["FromFile1"];
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["FromFile1"]);
         option.Input.IgnoreObjectSource = true;
         writer = GetTestWriter(option);
         builder = PipelineBuilder.Invoke(GetSource(), option, null);

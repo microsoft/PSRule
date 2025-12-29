@@ -123,6 +123,24 @@ internal static class BaselineYamlSerializationMapper
     }
 
     /// <summary>
+    /// Map a <see cref="ResourceIdReference"/> array property.
+    /// </summary>
+    private static void MapProperty(IEmitter emitter, string propertyName, ResourceIdReference[]? value)
+    {
+        if (value == null)
+            return;
+
+        MapPropertyName(emitter, propertyName);
+
+        emitter.Emit(new SequenceStart(anchor: null, tag: null, isImplicit: false, style: SequenceStyle.Block));
+
+        foreach (var item in value)
+            emitter.Emit(new Scalar(item.Raw));
+
+        emitter.Emit(new SequenceEnd());
+    }
+
+    /// <summary>
     /// Map a BindingOption property.
     /// </summary>
     private static void MapProperty(IEmitter emitter, string propertyName, BindingOption value)

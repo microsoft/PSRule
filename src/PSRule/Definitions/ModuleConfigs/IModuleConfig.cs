@@ -6,6 +6,6 @@ namespace PSRule.Definitions.ModuleConfigs;
 /// <summary>
 /// A base interface for a module configuration resource.
 /// </summary>
-internal interface IModuleConfig : IResource<IModuleConfigSpec>
+internal interface IModuleConfig : IResource<IModuleConfigSpec>, IScopeConfig
 {
 }

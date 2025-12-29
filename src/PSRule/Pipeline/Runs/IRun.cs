@@ -13,9 +13,14 @@ namespace PSRule.Pipeline.Runs;
 public interface IRun : IConfiguration
 {
     /// <summary>
-    /// A unique identifier for the run.
+    /// An identifier for the run.
     /// </summary>
     string Id { get; }
+
+    /// <summary>
+    /// A unique identifier for the run instance.
+    /// </summary>
+    string Guid { get; }
 
     /// <summary>
     /// A description of the logical run.
