@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Dynamic;
+using PSRule.Runtime.Scripting;
 
 namespace PSRule.Runtime;
 
@@ -13,9 +14,9 @@ namespace PSRule.Runtime;
 /// </summary>
 public sealed class Configuration : DynamicObject, IScriptRuntimeConfiguration
 {
-    private readonly LegacyRunspaceContext _Context;
+    private readonly IRunspaceContext _Context;
 
-    internal Configuration(LegacyRunspaceContext context)
+    internal Configuration(IRunspaceContext context)
     {
         _Context = context;
     }
@@ -102,7 +103,7 @@ public sealed class Configuration : DynamicObject, IScriptRuntimeConfiguration
     public bool TryConfigurationValue(string name, out object? value)
     {
         value = default;
-        return _Context != null && _Context.TryGetConfigurationValue(name, out value);
+        return _Context != null && _Context.ResourceContext is LegacyRunspaceContext lc && lc.TryGetConfigurationValue(name, out value);
     }
 
     private static bool TryBool(object o, out bool? value)

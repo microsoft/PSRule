@@ -6,8 +6,6 @@ using PSRule.Rules;
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
 internal abstract class SerializationOutputWriter<T>(IPipelineWriter inner, PSRuleOption option, ShouldProcess? shouldProcess)
     : ResultOutputWriter<T>(inner, option, shouldProcess)
 {
@@ -47,5 +45,3 @@ internal abstract class SerializationOutputWriter<T>(IPipelineWriter inner, PSRu
         }
     }
 }
-
-#nullable restore

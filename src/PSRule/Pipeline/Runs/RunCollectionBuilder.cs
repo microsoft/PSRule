@@ -4,20 +4,20 @@
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Options;
+using PSRule.Rules;
 
 namespace PSRule.Pipeline.Runs;
-
-#nullable enable
 
 /// <summary>
 /// A builder to create a <see cref="RunCollection"/>.
 /// </summary>
-internal sealed class RunCollectionBuilder(PSRuleOption? option, string instance)
+internal sealed class RunCollectionBuilder(IResourceCache resourceCache, PSRuleOption? option, string instance)
 {
     private const char SLASH = '/';
     private const char SPACE = ' ';
     private const char DOT = '.';
 
+    private readonly IResourceCache _ResourceCache = resourceCache ?? throw new ArgumentNullException(nameof(resourceCache));
     private readonly string _Category = NormalizeCategory(option?.Run?.Category);
     private readonly string _Description = option?.Run?.Description ?? RunOption.Default.Description!;
     private readonly string _Instance = instance ?? throw new ArgumentNullException(nameof(instance));
@@ -27,20 +27,26 @@ internal sealed class RunCollectionBuilder(PSRuleOption? option, string instance
     /// </summary>
     private readonly string _CorrelationGuid = Guid.NewGuid().ToString();
 
+    private readonly RunCollection _Runs = [];
+
     /// <summary>
     /// Build a <see cref="RunCollection"/>.
     /// </summary>
     public RunCollection Build()
     {
-        var result = new RunCollection();
+        return _Runs;
+    }
 
-        result.Add(new Run(
+    public RunCollectionBuilder WithDefaultRun(DependencyGraph<IRuleBlock> graph)
+    {
+        _Runs.Add(new Run(
             id: NormalizeId(_Category, string.Empty, _Instance),
             description: new InfoString(_Description),
-            correlationGuid: _CorrelationGuid
+            correlationGuid: _CorrelationGuid,
+            graph: new RuleGraph(graph)
         ));
 
-        return result;
+        return this;
     }
 
     /// <summary>
@@ -67,5 +73,3 @@ internal sealed class RunCollectionBuilder(PSRuleOption? option, string instance
             : string.Concat(category, SLASH, name, SLASH, instance);
     }
 }
-
-#nullable restore

@@ -281,7 +281,7 @@ internal static class PathTokenizer
             if (!IsLogicalOperator(Current(pos)))
                 return;
 
-            IPathToken token = null;
+            IPathToken? token = null;
             var c1 = ConsumeChar(ref pos);
             var c2 = ConsumeChar(ref pos);
 

@@ -12,8 +12,6 @@ using PSRule.Runtime.Scripting;
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
 /// <summary>
 /// Define a context used for early stage resource discovery.
 /// </summary>
@@ -55,14 +53,12 @@ internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger
 
         Source = file;
         _CurrentLanguageScope = scope;
-        _RunspaceContext.EnterResourceContext(this);
     }
 
     public void ExitLanguageScope(ISourceFile file)
     {
         Source = null;
         _CurrentLanguageScope = null;
-        _RunspaceContext.ExitResourceContext(this);
     }
 
     public PowerShell? GetPowerShell()
@@ -80,6 +76,11 @@ internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger
 
     }
 
+    public bool IsScope(RunspaceScope scope)
+    {
+        return true;
+    }
+
     public string? GetLocalizedPath(string file, out string? culture)
     {
         culture = null;
@@ -94,16 +95,10 @@ internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger
             return null;
         }
 
-        for (var i = 0; cultures != null && i < cultures.Length; i++)
-        {
-            var path = Path.Combine(Source?.HelpPath, cultures[i], file);
-            if (File.Exists(path))
-            {
-                culture = cultures[i];
-                return path;
-            }
-        }
-        return null;
+        if (cultures == null || cultures.Length == 0)
+            return null;
+
+        return new LocalizedFileSearch(cultures).GetLocalizedPath(Source!.HelpPath, file, out culture);
     }
 
     public void ReportIssue(ResourceIssue issue)
@@ -119,10 +114,15 @@ internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger
             default:
                 throw new NotImplementedException($"Resource issue '{issue.Type}' is not implemented.");
         }
+    }
 
+    internal void Begin()
+    {
+        _RunspaceContext.EnterResourceContext(this);
+    }
 
-
+    internal void End()
+    {
+        _RunspaceContext.ExitResourceContext(this);
     }
 }
-
-#nullable restore

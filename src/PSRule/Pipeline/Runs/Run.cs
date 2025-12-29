@@ -16,7 +16,7 @@ namespace PSRule.Pipeline.Runs;
 /// An instance of a run.
 /// </summary>
 [DebuggerDisplay("{Id}")]
-internal sealed class Run(string id, InfoString description, string correlationGuid) : IRun
+internal sealed class Run(string id, InfoString description, string correlationGuid, IRuleGraph graph) : IRun
 {
     private ITargetBinder _TargetBinder;
     private WildcardMap<RuleOverride>? _Override;
@@ -45,6 +45,9 @@ internal sealed class Run(string id, InfoString description, string correlationG
     /// Get an ordered culture preference list which will be tries for finding help.
     /// </summary>
     public string[]? Culture { get; private set; }
+
+    /// <inheritdoc/>
+    public IRuleGraph Rules { get; } = graph;
 
     #region IConfiguration
 

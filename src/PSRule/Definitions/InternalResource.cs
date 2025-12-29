@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Definitions;
@@ -14,7 +13,7 @@ public abstract class InternalResource<TSpec> : Resource<TSpec>, IResource, IAnn
 {
     private readonly Dictionary<Type, ResourceAnnotation> _Annotations;
 
-    private protected InternalResource(ResourceKind kind, string apiVersion, SourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
+    private protected InternalResource(ResourceKind kind, string apiVersion, ISourceFile source, ResourceMetadata metadata, IResourceHelpInfo info, ISourceExtent extent, TSpec spec)
         : base(kind, apiVersion, source, metadata, info, extent, spec)
     {
         _Annotations = [];
@@ -48,7 +47,7 @@ public abstract class InternalResource<TSpec> : Resource<TSpec>, IResource, IAnn
 
     TAnnotation IAnnotated<ResourceAnnotation>.GetAnnotation<TAnnotation>()
     {
-        return _Annotations.TryGetValue(typeof(TAnnotation), out var annotation) ? (TAnnotation)annotation : null;
+        return _Annotations.TryGetValue(typeof(TAnnotation), out var annotation) ? (TAnnotation)annotation : default;
     }
 
     void IAnnotated<ResourceAnnotation>.SetAnnotation<TAnnotation>(TAnnotation annotation)

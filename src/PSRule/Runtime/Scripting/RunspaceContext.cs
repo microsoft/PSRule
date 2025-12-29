@@ -7,6 +7,7 @@ using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Host;
 using PSRule.Options;
+using PSRule.Pipeline;
 
 namespace PSRule.Runtime.Scripting;
 
@@ -25,11 +26,17 @@ internal sealed class RunspaceContext : IRunspaceContext
     private readonly LanguageMode _LanguageMode;
     private readonly Options.SessionState _SessionState;
     private readonly ILogger _Logger;
-    private readonly Stack<IResourceDiscoveryContext> _ContextStack = new();
+    private readonly Stack<IResourceContext> _ContextStack = new();
+
+    /// <summary>
+    /// Track the current runspace scope.
+    /// </summary>
+    private readonly Stack<RunspaceScope> _Scope = new();
 
     private Runspace? _Runspace;
     private bool _Disposed;
-    private IResourceDiscoveryContext? _CurrentContext;
+    private IResourceContext? _CurrentContext;
+
 
     public RunspaceContext(PSRuleOption option, ILogger? logger)
     {
@@ -59,7 +66,7 @@ internal sealed class RunspaceContext : IRunspaceContext
     /// </summary>
     public RestrictScriptSource RestrictScriptSource { get; }
 
-    public IResourceDiscoveryContext? ResourceContext => _CurrentContext;
+    public IResourceContext? ResourceContext => _CurrentContext;
 
     public void ResetErrorCount()
     {
@@ -82,19 +89,45 @@ internal sealed class RunspaceContext : IRunspaceContext
         return result;
     }
 
-    public void EnterResourceContext(IResourceDiscoveryContext context)
+    public void EnterResourceContext(IResourceContext context)
     {
         _ContextStack.Push(context);
         _CurrentContext = context;
     }
 
-    public void ExitResourceContext(IResourceDiscoveryContext context)
+    public void ExitResourceContext(IResourceContext context)
     {
         if (_ContextStack.Count == 0) throw new InvalidOperationException("No resource context to exit.");
         if (_ContextStack.Peek() != context) throw new InvalidOperationException("Resource context mismatch.");
 
         _ContextStack.Pop();
         _CurrentContext = _ContextStack.Count > 0 ? _ContextStack.Peek() : null;
+    }
+
+    public bool IsScope(RunspaceScope scope)
+    {
+        if (scope == RunspaceScope.None && (_Scope == null || _Scope.Count == 0))
+            return true;
+
+        if (_Scope == null || _Scope.Count == 0)
+            return false;
+
+        var current = _Scope.Peek();
+        return scope.HasFlag(current);
+    }
+
+    public void PushScope(RunspaceScope scope)
+    {
+        _Scope.Push(scope);
+    }
+
+    public void PopScope(RunspaceScope scope)
+    {
+        var current = _Scope.Peek();
+        if (current != scope)
+            throw new RuntimeScopeException();
+
+        _Scope.Pop();
     }
 
     private Runspace GetRunspace()
@@ -109,17 +142,17 @@ internal sealed class RunspaceContext : IRunspaceContext
         Runspace.DefaultRunspace ??= runspace;
 
         runspace.Open();
-        runspace.SessionStateProxy.PSVariable.Set(new PSRuleVariable());
+        runspace.SessionStateProxy.PSVariable.Set(new PSRuleVariable(this));
         runspace.SessionStateProxy.PSVariable.Set(new RuleVariable());
         runspace.SessionStateProxy.PSVariable.Set(new LocalizedDataVariable());
         runspace.SessionStateProxy.PSVariable.Set(new AssertVariable());
         runspace.SessionStateProxy.PSVariable.Set(new TargetObjectVariable());
-        runspace.SessionStateProxy.PSVariable.Set(new ConfigurationVariable());
+        runspace.SessionStateProxy.PSVariable.Set(new ConfigurationVariable(this));
         runspace.SessionStateProxy.PSVariable.Set(ErrorPreference, ActionPreference.Continue);
         runspace.SessionStateProxy.PSVariable.Set(WarningPreference, ActionPreference.Continue);
         runspace.SessionStateProxy.PSVariable.Set(VerbosePreference, ActionPreference.Continue);
         runspace.SessionStateProxy.PSVariable.Set(DebugPreference, ActionPreference.Continue);
-        runspace.SessionStateProxy.PSVariable.Set(new PSVariable("RunspaceContext", this, ScopedItemOptions.ReadOnly));
+        runspace.SessionStateProxy.PSVariable.Set(new PSVariable("PSRuleRunspaceContext", this, ScopedItemOptions.ReadOnly));
 
         runspace.SessionStateProxy.Path.SetLocation(Environment.GetWorkingPath());
 

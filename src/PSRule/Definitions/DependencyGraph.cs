@@ -3,20 +3,20 @@
 
 namespace PSRule.Definitions;
 
-internal sealed class DependencyGraph<T> : IDisposable where T : IDependencyTarget
+internal class DependencyGraph<T> : IDisposable where T : IDependencyTarget
 {
-    private readonly Dictionary<string, DependencyTarget> _Index;
-    private readonly DependencyTarget[] _Targets;
-    private readonly Dictionary<DependencyTarget, DependencyTargetState> _State;
+    private readonly Dictionary<string, DependencyNode> _Index;
+    private readonly DependencyNode[] _Targets;
+    private readonly Dictionary<DependencyNode, DependencyTargetState> _State;
 
     // Track whether Dispose has been called.
     private bool _Disposed;
 
     public DependencyGraph(T[] targets)
     {
-        _Targets = new DependencyTarget[targets.Length];
-        _Index = new Dictionary<string, DependencyTarget>(targets.Length);
-        _State = new Dictionary<DependencyTarget, DependencyTargetState>(targets.Length);
+        _Targets = new DependencyNode[targets.Length];
+        _Index = new Dictionary<string, DependencyNode>(targets.Length);
+        _State = new Dictionary<DependencyNode, DependencyTargetState>(targets.Length);
         Prepare(targets);
     }
 
@@ -33,16 +33,10 @@ internal sealed class DependencyGraph<T> : IDisposable where T : IDependencyTarg
         DependencyFail = 3
     }
 
-    internal sealed class DependencyTarget
+    internal sealed class DependencyNode(DependencyGraph<T> graph, T value) : IDependencyNode<T>
     {
-        public readonly DependencyGraph<T> Graph;
-        public readonly T Value;
-
-        public DependencyTarget(DependencyGraph<T> graph, T value)
-        {
-            Graph = graph;
-            Value = value;
-        }
+        public DependencyGraph<T> Graph { get; } = graph;
+        public T Value { get; } = value;
 
         private DependencyTargetState State
         {
@@ -72,7 +66,7 @@ internal sealed class DependencyGraph<T> : IDisposable where T : IDependencyTarg
         }
     }
 
-    public IEnumerable<DependencyTarget> GetSingleTarget()
+    public IEnumerable<IDependencyNode<T>> GetSingleTarget()
     {
         _State.Clear();
         for (var t = 0; t < _Targets.Length; t++)
@@ -112,7 +106,7 @@ internal sealed class DependencyGraph<T> : IDisposable where T : IDependencyTarg
     {
         for (var i = 0; i < targets.Length; i++)
         {
-            _Targets[i] = new DependencyTarget(this, targets[i]);
+            _Targets[i] = new DependencyNode(this, targets[i]);
             _Index.Add(targets[i].Id.Value, _Targets[i]);
         }
     }

@@ -2,22 +2,22 @@
 // Licensed under the MIT License.
 
 using PSRule.Pipeline;
+using PSRule.Pipeline.Runs;
 using PSRule.Resources;
 using PSRule.Rules;
-using PSRule.Runtime;
 
 namespace PSRule.Definitions;
 
 internal sealed class DependencyGraphBuilder<T> where T : IDependencyTarget
 {
-    private readonly LegacyRunspaceContext _Context;
+    private readonly IRunBuilderContext _Context;
     private readonly IEqualityComparer<ResourceId> _Comparer;
     private readonly Dictionary<ResourceId, T> _Targets;
     private readonly Stack<ResourceId> _Stack;
     private readonly bool _IncludeDependencies;
     private readonly bool _IncludeDisabled;
 
-    public DependencyGraphBuilder(LegacyRunspaceContext context, bool includeDependencies, bool includeDisabled)
+    public DependencyGraphBuilder(IRunBuilderContext context, bool includeDependencies, bool includeDisabled)
     {
         _Context = context;
         _Comparer = ResourceIdEqualityComparer.Default;
@@ -71,13 +71,17 @@ internal sealed class DependencyGraphBuilder<T> where T : IDependencyTarget
             {
                 foreach (var d in item.DependsOn)
                 {
-                    if (!index.TryGet(d, out var dep, out var kind))
+                    if (d == null)
+                        continue;
+
+                    if (!index.TryGet(d, out var dep, out var kind) || dep == null)
                         throw new RuleException(string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.DependencyNotFound, d, item.Id));
 
+                    // Dependency is referenced by an alias.
                     if (_Context != null && kind == ResourceIdKind.Alias)
-                        _Context.WarnAliasReference(ResourceKind.Rule, item.Id.Value, dep.Id.Value, d.Value);
+                        _Context.WarnAliasReference(item.Id, dep.Id, ResourceKind.Rule, d.Value);
 
-                    // Handle dependencies
+                    // Handle dependencies.
                     if (!_Targets.ContainsKey(dep.Id))
                         Include(index, dep, parentId: item.Id);
                 }

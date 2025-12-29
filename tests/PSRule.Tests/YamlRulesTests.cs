@@ -37,8 +37,8 @@ public sealed class YamlRulesTests : ContextBaseTests
         Assert.NotNull(actual.Info.Annotations);
         Assert.Equal("test123", actual.Info.Annotations["test_value"]);
         Assert.Equal("Basic YAML rule", actual.Info.DisplayName);
-        Assert.Equal("This is a description of a basic rule.", actual.Info.Description);
-        Assert.Equal("A YAML rule recommendation for testing.", actual.Info.Recommendation);
+        Assert.Equal("This is a description of a basic rule.", actual.Info.Description.Text);
+        Assert.Equal("A YAML rule recommendation for testing.", actual.Info.Recommendation.Text);
         Assert.Equal("https://aka.ms/ps-rule", actual.Info.GetOnlineHelpUrl());
     }
 
@@ -64,8 +64,8 @@ public sealed class YamlRulesTests : ContextBaseTests
         Assert.NotNull(actual.Info.Annotations);
         Assert.Equal("test123", actual.Info.Annotations["test_value"]);
         Assert.Equal("Basic YAML rule", actual.Info.DisplayName);
-        Assert.Equal("This is a description of a basic rule.", actual.Info.Description);
-        Assert.Equal("A YAML rule recommendation for testing.", actual.Info.Recommendation);
+        Assert.Equal("This is a description of a basic rule.", actual.Info.Description.Text);
+        Assert.Equal("A YAML rule recommendation for testing.", actual.Info.Recommendation.Text);
         Assert.Equal("https://aka.ms/ps-rule", actual.Info.GetOnlineHelpUrl());
     }
 

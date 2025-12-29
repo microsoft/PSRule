@@ -7,7 +7,7 @@
     },
     "ps-rule run": {
       "commandName": "Project",
-      "commandLineArgs": "run -m PSRule.Rules.Azure",
+      "commandLineArgs": "run --path ./.ps-rule --output NUnit3 --output-path reports/ps-rule-dotnet.xml --option ./ps-rule-ci.yaml;",
       "workingDirectory": "../../"
     },
     "ps-rule module restore": {

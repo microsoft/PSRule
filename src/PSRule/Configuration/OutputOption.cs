@@ -42,6 +42,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
         As = null;
         Banner = null;
         Culture = null;
+        CsvDetailedColumns = null;
         Encoding = null;
         Footer = null;
         Format = null;
@@ -64,6 +65,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
         As = option.As;
         Banner = option.Banner;
         Culture = option.Culture;
+        CsvDetailedColumns = option.CsvDetailedColumns;
         Encoding = option.Encoding;
         Footer = option.Footer;
         Format = option.Format;
@@ -88,6 +90,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
             As == other.As &&
             Banner == other.Banner &&
             Culture == other.Culture &&
+            CsvDetailedColumns == other.CsvDetailedColumns &&
             Encoding == other.Encoding &&
             Footer == other.Footer &&
             Format == other.Format &&
@@ -108,6 +111,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
             hash = hash * 23 + (As.HasValue ? As.Value.GetHashCode() : 0);
             hash = hash * 23 + (Banner.HasValue ? Banner.Value.GetHashCode() : 0);
             hash = hash * 23 + (Culture != null ? Culture.GetHashCode() : 0);
+            hash = hash * 23 + (CsvDetailedColumns != null ? CsvDetailedColumns.GetHashCode() : 0);
             hash = hash * 23 + (Encoding.HasValue ? Encoding.Value.GetHashCode() : 0);
             hash = hash * 23 + (Footer.HasValue ? Footer.Value.GetHashCode() : 0);
             hash = hash * 23 + (Format.HasValue ? Format.Value.GetHashCode() : 0);
@@ -128,6 +132,7 @@ public sealed class OutputOption : IEquatable<OutputOption>
             As = o1?.As ?? o2?.As,
             Banner = o1?.Banner ?? o2?.Banner,
             Culture = o1?.Culture ?? o2?.Culture,
+            CsvDetailedColumns = o1?.CsvDetailedColumns ?? o2?.CsvDetailedColumns,
             Encoding = o1?.Encoding ?? o2?.Encoding,
             Footer = o1?.Footer ?? o2?.Footer,
             Format = o1?.Format ?? o2?.Format,
@@ -158,6 +163,12 @@ public sealed class OutputOption : IEquatable<OutputOption>
     /// </summary>
     [DefaultValue(null)]
     public string[]? Culture { get; set; }
+
+    /// <summary>
+    /// The columns to include in CSV detailed output.
+    /// </summary>
+    [DefaultValue(null)]
+    public string[]? CsvDetailedColumns { get; set; }
 
     /// <summary>
     /// The encoding to use when writing results to file.
@@ -224,6 +235,9 @@ public sealed class OutputOption : IEquatable<OutputOption>
         if (Environment.TryStringArray("PSRULE_OUTPUT_CULTURE", out var culture))
             Culture = culture;
 
+        if (Environment.TryStringArray("PSRULE_OUTPUT_CSVDETAILEDCOLUMNS", out var csvDetailedColumns))
+            CsvDetailedColumns = csvDetailedColumns;
+
         if (Environment.TryEnum("PSRULE_OUTPUT_ENCODING", out OutputEncoding encoding))
             Encoding = encoding;
 
@@ -262,6 +276,9 @@ public sealed class OutputOption : IEquatable<OutputOption>
 
         if (index.TryPopStringArray("Output.Culture", out var culture))
             Culture = culture;
+
+        if (index.TryPopStringArray("Output.CsvDetailedColumns", out var csvDetailedColumns))
+            CsvDetailedColumns = csvDetailedColumns;
 
         if (index.TryPopEnum("Output.Encoding", out OutputEncoding encoding))
             Encoding = encoding;

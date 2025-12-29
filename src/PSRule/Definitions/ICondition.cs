@@ -10,7 +10,7 @@ namespace PSRule.Definitions;
 /// <summary>
 /// A language condition.
 /// </summary>
-internal interface ICondition : ILanguageBlock, IDisposable
+public interface ICondition : ILanguageBlock, IDisposable
 {
     /// <summary>
     /// Invoke the condition to get a result.
