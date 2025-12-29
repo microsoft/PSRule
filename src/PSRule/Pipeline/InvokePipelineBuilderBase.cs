@@ -81,9 +81,6 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
         Option.Output.Path = option.Output.Path ?? OutputOption.Default.Path;
         Option.Output.JsonIndent = NormalizeJsonIndentRange(option.Output.JsonIndent);
 
-        if (option.Rule != null)
-            Option.Rule = new(option.Rule);
-
         if (option.Configuration != null)
             Option.Configuration = new(option.Configuration);
 

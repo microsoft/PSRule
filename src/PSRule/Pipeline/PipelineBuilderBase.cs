@@ -10,7 +10,6 @@ using PSRule.Definitions.Baselines;
 using PSRule.Definitions.ModuleConfigs;
 using PSRule.Options;
 using PSRule.Pipeline.Output;
-using PSRule.Pipeline.Runs;
 using PSRule.Resources;
 using PSRule.Runtime;
 using PSRule.Runtime.Scripting;
@@ -65,6 +64,8 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             return;
 
         _Include = name;
+        Option.Rule ??= new();
+        Option.Rule.Include = ResourceHelper.GetResourceIdReference(_Include);
     }
 
     /// <inheritdoc/>
@@ -74,6 +75,8 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             return;
 
         _Tag = tag;
+        Option.Rule ??= new();
+        Option.Rule.Tag = _Tag;
     }
 
     /// <inheritdoc/>
@@ -106,6 +109,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         Option.Override = new OverrideOption(option.Override);
         Option.Repository = GetRepository(option.Repository);
         Option.Run = GetRun(option.Run);
+        Option.Rule = RuleOption.Combine(Option.Rule, option.Rule);
         return this;
     }
 
@@ -267,12 +271,26 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
         var resourceCache = GetResourceCache(Option, writer, unresolved, languageScopeSet, runspaceContext);
         var options = GetOptionBuilder(resourceCache, binding);
 
+        var baselines = Array.Empty<Baseline>();
+        if (_Baseline is Configuration.BaselineOption.BaselineRef baselineRef2 && baselineRef2 != null)
+        {
+            var list = new List<Baseline>();
+
+            // Only one baseline currently possible.
+            var name = ResolveBaselineGroup(baselineRef2.Name);
+
+            var b = resourceCache.OfType<Baseline>().FirstOrDefault(r => ResourceIdEqualityComparer.IdEquals(r.Id, name));
+            if (b != null)
+            {
+                list.Add(b);
+            }
+            baselines = [.. list];
+        }
+
         foreach (var scope in languageScopeSet.Get())
         {
             scope.Configure(options.Build(scope.Name));
         }
-
-        // var runs = GetRunCollection();
 
         if (checkModuleCapabilities && !RequireModuleCapabilities(resourceCache))
             return null;
@@ -285,13 +303,9 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             languageScope: languageScopeSet,
             optionBuilder: options,
             resourceCache: resourceCache,
-            runspaceContext: runspaceContext
+            runspaceContext: runspaceContext,
+            baselines: baselines
         );
-    }
-
-    private IEnumerable<IRun> GetRunCollection()
-    {
-        throw new NotImplementedException();
     }
 
     protected ILanguageScopeSet GetLanguageScopeSet()
@@ -502,9 +516,10 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             builder.ModuleConfig(moduleConfig.Source.Module, moduleConfig.Name, moduleConfig.Spec);
         }
 
-        foreach (var kv in resourceCache.Baselines)
+        foreach (var kv in resourceCache.OfType<Baseline>())
         {
-            builder.Baseline(kv.Value.baselineRef.Type, kv.Value.baseline.BaselineId, kv.Value.baseline.Source.Module, kv.Value.baseline.Spec, kv.Value.baseline.Obsolete);
+            //builder.Baseline();
+            // builder.Baseline(kv.Value.baselineRef.Type, kv.Value.baseline.BaselineId, kv.Value.baseline.Source.Module, kv.Value.baseline.Spec, kv.Value.baseline.Obsolete);
         }
 
         return builder;

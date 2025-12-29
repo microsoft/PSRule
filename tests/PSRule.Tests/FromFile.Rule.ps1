@@ -214,6 +214,8 @@ Rule 'WithRuleVariable' {
 
 # Synopsis: Test $Configuration automatic variables
 Rule 'WithConfiguration' {
+    Write-Verbose "Writing configuration: $($Configuration | ConvertTo-Json -Depth 5)"
+
     $Configuration.Value1 -eq 1
     $Configuration.Value2 -eq 2
 } -Configure @{ Value1 = 2; Value2 = 2; }

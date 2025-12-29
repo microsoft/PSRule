@@ -19,12 +19,24 @@ internal sealed class RunCollection : IEnumerable<Run>
 
     /// <summary>
     /// Add a run to the collection.
+    /// Ignoring runs with no rules.
     /// </summary>
     public void Add(Run run)
     {
+        if (run == null || run.Rules.Count == 0)
+            return;
+
         _Runs.Add(run);
     }
 
+    /// <summary>
+    /// The number of runs in the collection.
+    /// </summary>
+    public int Count => _Runs.Count;
+
+    /// <summary>
+    /// The number of rules in the collection.
+    /// </summary>
     public int RuleCount => _Runs.Sum(r => r.Rules.Count);
 
     #region IEnumerable<Run>

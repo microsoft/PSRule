@@ -5,6 +5,7 @@ using System.Collections;
 using System.Diagnostics;
 using PSRule.Converters;
 using PSRule.Data;
+using PSRule.Definitions;
 
 namespace PSRule;
 
@@ -100,6 +101,48 @@ public static class DictionaryExtensions
             return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Try to get a <see cref="ResourceIdReference"/> and remove it from the dictionary.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryPopResourceIdReference(this IDictionary<string, object> dictionary, string key, out ResourceIdReference? value)
+    {
+        value = default;
+
+        if (TryPopValue(dictionary, key, out var v) && v is string s && ResourceIdReference.TryParse(s, out var reference))
+        {
+            value = reference;
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Try to get an array of <see cref="ResourceIdReference"/> and remove it from the dictionary.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool TryPopResourceIdReferenceArray(this IDictionary<string, object> dictionary, string key, out ResourceIdReference[]? value)
+    {
+        value = default;
+
+        if (TryPopStringArray(dictionary, key, out var strings) && strings != null)
+        {
+            var list = new List<ResourceIdReference>();
+            foreach (var s in strings)
+            {
+                if (ResourceIdReference.TryParse(s, out var reference) && reference != null)
+                {
+                    list.Add(reference.Value);
+                }
+            }
+
+            value = [.. list];
+        }
+
+        return value != default;
     }
 
     /// <summary>

@@ -3,6 +3,8 @@
 
 # Synopsis: Test scoped configuration.
 Rule 'M9BTestConfig' {
+    Write-Verbose "Writing configuration: $($Configuration | ConvertTo-Json -Depth 5)"
+
     $Configuration.ConfigB -eq 'ValueB'
 }
 

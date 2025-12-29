@@ -7,9 +7,12 @@ kind: ModuleConfig
 metadata:
   name: TestModule7
 spec:
+  configuration:
+    key1: moduleConfig
+    key2: moduleConfig
   output:
     culture:
-    - 'en-US'
+      - 'en-US'
   rule:
     baseline: 'TestModule7\Module7'
 
@@ -19,10 +22,13 @@ apiVersion: github.com/microsoft/PSRule/v1
 kind: Baseline
 metadata:
   name: Module7
+  description: 'An example baseline including rules from TestModule7.'
 spec:
+  configuration:
+    key1: baselineConfig
   rule:
     include:
-    - 'TestModule7\M7.Rule2'
+      - 'TestModule7\M7.Rule2'
 
 ---
 # Synopsis: An example rule

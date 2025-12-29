@@ -5,8 +5,11 @@ using System;
 using System.Linq;
 using System.Management.Automation;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Definitions.Expressions;
 using PSRule.Pipeline;
+using PSRule.Pipeline.Runs;
+using PSRule.Runtime;
 
 namespace PSRule;
 
@@ -615,8 +618,16 @@ public sealed class FunctionTests : ContextBaseTests
         return builder.Build();
     }
 
+    private IRun GetRun(PSRuleOption? option)
+    {
+        var o = option ?? GetOption();
+        var runConfig = new RunConfiguration(o.Configuration.ToDictionary());
+        return new Run(NullLogger.Instance, ".", "run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph(), runConfig);
+    }
+
     private ExpressionContext GetContext()
     {
+        var option = GetOption();
         var targetObject = new PSObject();
         targetObject.Properties.Add(new PSNoteProperty("name", "TestObject1"));
         var sources = GetSource();
@@ -625,6 +636,7 @@ public sealed class FunctionTests : ContextBaseTests
         context.Initialize(sources);
         context.Begin();
         context.PushScope(Runtime.RunspaceScope.Precondition);
+        context.EnterRun(GetRun(option));
         context.EnterLanguageScope(sources[0].File[0]);
         context.EnterTargetObject(new TargetObject(targetObject));
         return result;

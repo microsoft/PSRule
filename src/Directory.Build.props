@@ -16,6 +16,13 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <RestoreLockedMode Condition="'$(CI)' == 'true' And '$(GITHUB_ACTIONS)' != 'true'">true</RestoreLockedMode>
+    
+    <!--
+      Disable warnings that are not relevant while we still need to maintain compatibility.
+      Some keyword usages and attributes appear fine in the IDE but can't be compiled by with netstandard2.0.
+      Including readonly structs and properties.
+    -->
+    <NoWarn>IDE0250,IDE0251</NoWarn>
   </PropertyGroup>
 
   <!-- Package metadata -->

@@ -85,7 +85,7 @@ internal class OptionScope
         {
             Rule = new RuleOption
             {
-                Include = ruleInclude,
+                Include = ResourceHelper.GetResourceIdReference(ruleInclude),
                 Tag = ruleTag,
                 IncludeLocal = includeLocal,
             },

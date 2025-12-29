@@ -5,6 +5,7 @@ using System.Collections;
 using System.Diagnostics;
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Baselines;
 using PSRule.Definitions.Selectors;
 using PSRule.Definitions.SuppressionGroups;
 using PSRule.Options;
@@ -14,8 +15,6 @@ using PSRule.Runtime.ObjectPath;
 using PSRule.Runtime.Scripting;
 
 namespace PSRule.Pipeline;
-
-#nullable enable
 
 /// <summary>
 /// Context applicable to the whole pipeline, including during early stage setup.
@@ -60,6 +59,8 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
 
     public ResourceCache ResourceCache { get; }
 
+    public Baseline[] Baselines { get; }
+
     internal readonly IRunspaceContext RunspaceContext;
 
     private OptionContext _DefaultOptionContext;
@@ -73,7 +74,7 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
     /// </summary>
     public ILanguageScopeSet LanguageScope { get; }
 
-    private PipelineContext(PSRuleOption option, IHostContext? hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache, IRunspaceContext runspaceContext)
+    private PipelineContext(PSRuleOption option, IHostContext? hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache, IRunspaceContext runspaceContext, Baseline[] baselines)
     {
         Option = option ?? throw new ArgumentNullException(nameof(option));
         LanguageScope = languageScope ?? throw new ArgumentNullException(nameof(languageScope));
@@ -98,11 +99,12 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
         RunTime = Stopwatch.StartNew();
         _DefaultOptionContext = OptionBuilder.Build(null);
         LanguageScope = languageScope;
+        Baselines = baselines ?? [];
     }
 
-    public static PipelineContext New(PSRuleOption option, IHostContext? hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache, IRunspaceContext runspaceContext)
+    public static PipelineContext New(PSRuleOption option, IHostContext? hostContext, Func<IPipelineReader> reader, IPipelineWriter writer, ILanguageScopeSet languageScope, OptionContextBuilder optionBuilder, ResourceCache resourceCache, IRunspaceContext runspaceContext, Baseline[] baselines)
     {
-        var context = new PipelineContext(option, hostContext, reader, writer, languageScope, optionBuilder, resourceCache, runspaceContext);
+        var context = new PipelineContext(option, hostContext, reader, writer, languageScope, optionBuilder, resourceCache, runspaceContext, baselines);
         CurrentThread = context;
         return context;
     }
@@ -217,5 +219,3 @@ internal sealed class PipelineContext : IPipelineContext, IBindingContext
 
     #endregion IDisposable
 }
-
-#nullable restore

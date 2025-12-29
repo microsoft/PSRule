@@ -83,6 +83,7 @@ public sealed class CsvOutputWriterTests : OutputWriterBaseTests
         tags["category"] = "security";
 
         return new RuleRecord(
+            run: run,
             ruleId: ResourceId.Parse("TestModule\\rule-003"),
             @ref: "rid-003",
             targetObject: new TargetObject(new PSObject()),
@@ -103,7 +104,6 @@ public sealed class CsvOutputWriterTests : OutputWriterBaseTests
             reason: RuleOutcomeReason.Processed
         )
         {
-            RunId = run.Id,
             Time = 1000
         };
     }

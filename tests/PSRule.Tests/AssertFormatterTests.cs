@@ -10,6 +10,7 @@ using PSRule.Pipeline;
 using PSRule.Pipeline.Formatters;
 using PSRule.Pipeline.Runs;
 using PSRule.Rules;
+using PSRule.Runtime;
 
 namespace PSRule;
 
@@ -382,11 +383,12 @@ public sealed class AssertFormatterTests
 
     private static InvokeResult GetPassResult()
     {
-        var run = new Run("run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph());
+        var run = new Run(NullLogger.Instance, ".", "run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph());
         var result = new InvokeResult(run)
         {
             new RuleRecord
             (
+                run: run,
                 ruleId: ResourceId.Parse(".\\Test"),
                 @ref: "",
                 targetObject: new TargetObject(new PSObject()),
@@ -409,11 +411,12 @@ public sealed class AssertFormatterTests
 
     private static InvokeResult GetFailResult(SeverityLevel level = SeverityLevel.Error)
     {
-        var run = new Run("run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph());
+        var run = new Run(NullLogger.Instance, ".", "run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph());
         var result = new InvokeResult(run)
         {
             new RuleRecord
             (
+                run: run,
                 ruleId: ResourceId.Parse(".\\Test1"),
                 @ref: "",
                 targetObject: new TargetObject(new PSObject()),
@@ -432,6 +435,7 @@ public sealed class AssertFormatterTests
             ),
             new RuleRecord
             (
+                run: run,
                 ruleId: ResourceId.Parse(".\\Test2"),
                 @ref: "",
                 targetObject: new TargetObject(new PSObject()),

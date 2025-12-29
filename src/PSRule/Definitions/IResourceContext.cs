@@ -22,6 +22,11 @@ internal interface IResourceContext : IGetLocalizedPathContext //, IRunspaceScop
     //ISourceFile? Source { get; }
 
     /// <summary>
+    /// The name of the current scope.
+    /// </summary>
+    string? Scope { get; }
+
+    /// <summary>
     /// Enter a language scope.
     /// </summary>
     /// <param name="file">The source file to enter.</param>

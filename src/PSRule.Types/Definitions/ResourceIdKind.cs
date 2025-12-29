@@ -6,7 +6,7 @@ namespace PSRule.Definitions;
 /// <summary>
 /// Additional information about the type of identifier if available.
 /// </summary>
-internal enum ResourceIdKind
+public enum ResourceIdKind
 {
     /// <summary>
     /// Not specified.
