@@ -8,7 +8,7 @@
     "name": "Microsoft"
   },
   "engines": {
-    "vscode": "^1.102.0"
+    "vscode": "^1.107.0"
   },
   "channel": "stable",
   "license": "SEE LICENSE IN LICENSE",
@@ -566,7 +566,7 @@
     "test": "npm run build:dotnet && npm run build:esbuild && vscode-test"
   },
   "dependencies": {
-    "fs-extra": "^11.3.1",
+    "fs-extra": "^11.3.3",
     "vscode-languageclient": "^9.0.1"
   },
   "extensionDependencies": [
@@ -577,17 +577,17 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.18.1",
-    "@types/vscode": "1.102.0",
-    "@typescript-eslint/eslint-plugin": "^8.42.0",
-    "@typescript-eslint/parser": "^8.32.1",
-    "@vscode/test-cli": "^0.0.11",
+    "@types/node": "^24.10.4",
+    "@types/vscode": "1.107.0",
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
+    "@typescript-eslint/parser": "^8.50.1",
+    "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
-    "@vscode/vsce": "^3.6.0",
-    "esbuild": "^0.25.9",
-    "eslint": "^9.34.0",
-    "glob": "^11.0.3",
-    "mocha": "^11.7.2",
-    "typescript": "^5.9.2"
+    "@vscode/vsce": "^3.7.1",
+    "esbuild": "^0.27.2",
+    "eslint": "^9.39.2",
+    "glob": "^13.0.0",
+    "mocha": "^11.7.5",
+    "typescript": "^5.9.3"
   }
 }

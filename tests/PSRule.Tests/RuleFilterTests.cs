@@ -92,7 +92,7 @@ public sealed partial class RuleFilterTests
 
     #region Helper Methods
 
-    private static IResource GetResource(string id, ResourceTags resourceTags = null, ResourceLabels resourceLabels = null)
+    private static IResource GetResource(string id, ResourceTags? resourceTags = null, ResourceLabels? resourceLabels = null)
     {
         return new TestResourceName(ResourceId.Parse(id), resourceTags, resourceLabels);
     }

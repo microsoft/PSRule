@@ -12,7 +12,7 @@ internal sealed class ResourceHelpLexer : HelpLexer
         // Look for yaml header
         stream.MoveTo(0);
         var metadata = YamlHeader(stream);
-        ResourceHelpDocument doc = null;
+        ResourceHelpDocument? doc = null;
 
         // Process sections
         while (!stream.EOF)

@@ -4,6 +4,7 @@
 using PSRule.Definitions;
 using PSRule.Options;
 using PSRule.Pipeline;
+using PSRule.Pipeline.Runs;
 using PSRule.Resources;
 using PSRule.Runtime;
 
@@ -33,26 +34,9 @@ internal static class RunspaceContextDiagnosticExtensions
         context.Writer.WriteWarning(PSRuleResources.DeprecatedOption, option);
     }
 
-    internal static void WarnDuplicateRuleName(this LegacyRunspaceContext context, string ruleName)
-    {
-        if (context == null || context.Writer == null || !context.Writer.IsEnabled(LogLevel.Warning))
-            return;
-
-        context.Writer.WriteWarning(PSRuleResources.DuplicateRuleName, ruleName);
-    }
-
     internal static void DuplicateResourceName(this IResourceContext context, ResourceId id, string name)
     {
         context.ReportIssue(new ResourceIssue(ResourceIssueType.DuplicateResourceName, id, name));
-    }
-
-    internal static void DuplicateResourceId(this LegacyRunspaceContext context, ResourceId id, ResourceId duplicateId)
-    {
-        if (context == null || context.Pipeline == null)
-            return;
-
-        var action = context.Pipeline.Option.Execution.DuplicateResourceId.GetValueOrDefault(ExecutionOption.Default.DuplicateResourceId.Value);
-        context.Throw(action, PSRuleResources.DuplicateResourceId, id.Value, duplicateId.Value);
     }
 
     internal static void DuplicateResourceId(this IResourceContext context, ResourceId id, ResourceId duplicateId)
@@ -69,13 +53,12 @@ internal static class RunspaceContextDiagnosticExtensions
         context.Throw(action, PSRuleResources.SuppressionGroupExpired, suppressionGroupId.Value);
     }
 
-    internal static void RuleExcluded(this LegacyRunspaceContext context, ResourceId ruleId)
+    internal static void RuleExcluded(this IRunBuilderContext context, ResourceId ruleId)
     {
-        if (context == null || context.Pipeline == null)
+        if (context == null)
             return;
 
-        var action = context.Pipeline.Option.Execution.RuleExcluded.GetValueOrDefault(ExecutionOption.Default.RuleExcluded.Value);
-        context.Throw(action, PSRuleResources.RuleExcluded, ruleId.Value);
+        context.ReportIssue(new ResourceIssue(ResourceIssueType.RuleExcluded, ruleId));
     }
 
     internal static void Throw(this LegacyRunspaceContext context, ExecutionActionPreference action, string message, params object[] args)
@@ -101,16 +84,12 @@ internal static class RunspaceContextDiagnosticExtensions
         context.Writer.WriteDebug(PSRuleResources.DebugPropertyObsolete, context.RuleBlock.Name, variableName, propertyName);
     }
 
-    internal static void WarnAliasReference(this LegacyRunspaceContext context, ResourceKind kind, string resourceId, string targetId, string alias)
+    internal static void WarnAliasReference(this IRunBuilderContext context, ResourceId id, ResourceId targetId, ResourceKind kind, string alias)
     {
-        var action = context.Pipeline.Option.Execution.AliasReference.GetValueOrDefault(ExecutionOption.Default.AliasReference.Value);
-        Throw(context, action, PSRuleResources.AliasReference, kind.ToString(), resourceId, targetId, alias);
-    }
+        if (context == null) return;
 
-    // internal static void WarnAliasReference(this IResourceContext context, ResourceId id, ResourceId targetId, ResourceKind kind, string alias)
-    // {
-    //     context.ReportIssue(new ResourceIssue(ResourceIssueType.AliasReference, id, targetId.Value, kind.ToString(), alias));
-    // }
+        context.ReportIssue(new ResourceIssue(ResourceIssueType.AliasReference, id, targetId.Value, kind.ToString(), alias));
+    }
 
     internal static void WarnAliasSuppression(this LegacyRunspaceContext context, string targetId, string alias)
     {
