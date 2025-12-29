@@ -1645,7 +1645,7 @@
       "Microsoft.PSRule.Badges": {
         "type": "Project",
         "dependencies": {
-          "Newtonsoft.Json": "[13.0.3, )"
+          "Newtonsoft.Json": "[13.0.4, )"
         }
       },
       "Microsoft.PSRule.CommandLine": {
@@ -1680,7 +1680,7 @@
       "Microsoft.PSRule.Types": {
         "type": "Project",
         "dependencies": {
-          "Newtonsoft.Json": "[13.0.3, )",
+          "Newtonsoft.Json": "[13.0.4, )",
           "YamlDotNet": "[16.3.0, )"
         }
       }
