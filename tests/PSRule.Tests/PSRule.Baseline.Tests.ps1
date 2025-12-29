@@ -708,7 +708,7 @@ Describe 'Baseline' -Tag 'Baseline' {
 
             # Module default via manifest and config
             $Null = Import-Module (Join-Path $here -ChildPath 'TestModule6') -Force;
-            $result = @(Get-PSRule -Module TestModule6 -WarningVariable outWarn -WarningAction SilentlyContinue -Verbose -Debug);
+            $result = @(Get-PSRule -Module TestModule6 -WarningVariable outWarn -WarningAction SilentlyContinue);
             $result | Should -Not -BeNullOrEmpty;
             $result.Name | Should -BeIn 'M6.Rule1', 'M6.Rule2';
             $result.Length | Should -Be 2;
@@ -730,7 +730,7 @@ Describe 'Baseline' -Tag 'Baseline' {
             $Null = Import-Module (Join-Path $here -ChildPath 'TestModule9b') -Force;
 
             # Each module
-            $result = @($testObject | Invoke-PSRule -Module TestModule9a, TestModule9b -Debug -Verbose);
+            $result = @($testObject | Invoke-PSRule -Module TestModule9a, TestModule9b);
             $result.Length | Should -Be 4;
             $result.Outcome | Should -BeIn 'Pass';
 
