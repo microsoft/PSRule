@@ -35,7 +35,7 @@ internal sealed class PSRuleTargetInfo : PSMemberInfo
         Issue = targetInfo.Issue;
     }
 
-    public string File
+    public string? File
     {
         get
         {

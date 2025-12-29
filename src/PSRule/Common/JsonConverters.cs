@@ -386,7 +386,7 @@ internal sealed class FieldMapJsonConverter : JsonConverter
         if (reader.TokenType != JsonToken.StartObject || !reader.Read())
             throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
-        string propertyName = null;
+        string? propertyName = null;
         while (reader.TokenType != JsonToken.EndObject)
         {
             if (reader.TokenType == JsonToken.PropertyName)
@@ -517,7 +517,7 @@ internal sealed class EnumMapJsonConverter<T> : JsonConverter where T : struct, 
         if (reader.TokenType != JsonToken.StartObject || !reader.Read())
             throw new PipelineSerializationException(PSRuleResources.ReadJsonFailed);
 
-        string propertyName = null;
+        string? propertyName = null;
         while (reader.TokenType != JsonToken.EndObject)
         {
             if (reader.TokenType == JsonToken.PropertyName)

@@ -47,7 +47,7 @@ public abstract class InternalResource<TSpec> : Resource<TSpec>, IResource, IAnn
 
     TAnnotation IAnnotated<ResourceAnnotation>.GetAnnotation<TAnnotation>()
     {
-        return _Annotations.TryGetValue(typeof(TAnnotation), out var annotation) ? (TAnnotation)annotation : null;
+        return _Annotations.TryGetValue(typeof(TAnnotation), out var annotation) ? (TAnnotation)annotation : default;
     }
 
     void IAnnotated<ResourceAnnotation>.SetAnnotation<TAnnotation>(TAnnotation annotation)

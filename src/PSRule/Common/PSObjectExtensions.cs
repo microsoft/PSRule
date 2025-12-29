@@ -24,7 +24,7 @@ internal static class PSObjectExtensions
     private const string PROPERTY_POSITION = "position";
     private const string PROPERTY_MESSAGE = "message";
 
-    public static T PropertyValue<T>(this PSObject o, string propertyName)
+    public static T? PropertyValue<T>(this PSObject o, string propertyName)
     {
         return o.BaseObject is Hashtable hashtable
             ? ConvertValue<T>(hashtable[propertyName])
