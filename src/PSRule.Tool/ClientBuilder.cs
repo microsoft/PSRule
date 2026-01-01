@@ -74,11 +74,13 @@ internal sealed class ClientBuilder
         _Global_WaitForDebugger = new Option<bool>("--wait-for-debugger")
         {
             Description = string.Empty,
+            Recursive = true,
             Hidden = true,
         };
         _Global_InGitHubActions = new Option<bool>("--in-github-actions")
         {
             Description = string.Empty,
+            Recursive = true,
             Hidden = true,
         };
 
