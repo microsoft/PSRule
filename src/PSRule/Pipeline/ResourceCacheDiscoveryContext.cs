@@ -120,11 +120,11 @@ internal sealed class ResourceCacheDiscoveryContext(PSRuleOption option, ILogger
 
     internal void Begin()
     {
-        _RunspaceContext.EnterResourceContext(this);
+        _RunspaceContext?.EnterResourceContext(this);
     }
 
     internal void End()
     {
-        _RunspaceContext.ExitResourceContext(this);
+        _RunspaceContext?.ExitResourceContext(this);
     }
 }

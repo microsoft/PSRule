@@ -16,8 +16,6 @@ using PSRule.Runtime.Scripting;
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
 /// <summary>
 /// A base instance for a pipeline builder.
 /// </summary>
@@ -37,7 +35,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     private PipelineWriter? _Writer;
     private ILanguageScopeSet? _LanguageScopeSet;
     private CapabilitySet? _CapabilitySet;
-    private RunspaceContext _RunspaceContext;
+    private RunspaceContext? _RunspaceContext;
 
     protected readonly HostPipelineWriter _Output;
 
@@ -359,7 +357,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             return _Writer;
 
         var output = GetOutput();
-        _Writer = Option.Output.Format switch
+        return _Writer = Option.Output.Format switch
         {
             OutputFormat.Csv => new CsvOutputWriter(output, Option, ShouldProcess),
             OutputFormat.Json => new JsonOutputWriter(output, Option, ShouldProcess),
@@ -370,7 +368,6 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             OutputFormat.Sarif => new SarifOutputWriter(Source, output, Option, ShouldProcess),
             _ => output,
         };
-        return _Writer;
     }
 
     protected virtual PipelineWriter GetOutput(bool writeHost = false)
@@ -419,10 +416,10 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
     protected static RepositoryOption GetRepository(RepositoryOption option)
     {
         var result = new RepositoryOption(option);
-        if (string.IsNullOrEmpty(result.Url) && GitHelper.TryRepository(out var url))
+        if (string.IsNullOrEmpty(result.Url) && GitHelper.TryRepository(out var url) && url != null)
             result.Url = url;
 
-        if (string.IsNullOrEmpty(result.BaseRef) && GitHelper.TryBaseRef(out var baseRef))
+        if (string.IsNullOrEmpty(result.BaseRef) && GitHelper.TryBaseRef(out var baseRef) && baseRef != null)
             result.BaseRef = baseRef;
 
         return result;
@@ -430,8 +427,7 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
 
     protected static RunOption GetRun(RunOption option)
     {
-        var result = RunOption.Combine(option, RunOption.Default);
-        return result;
+        return RunOption.Combine(option, RunOption.Default);
     }
 
     /// <summary>
@@ -580,5 +576,3 @@ internal abstract class PipelineBuilderBase : IPipelineBuilder
             OutputStyle.Client;
     }
 }
-
-#nullable restore

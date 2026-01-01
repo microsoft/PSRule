@@ -5,7 +5,7 @@ namespace PSRule.Runtime.ObjectPath;
 
 internal interface ITokenWriter
 {
-    IPathToken Last { get; }
+    IPathToken? Last { get; }
 
     void Add(IPathToken token);
 }

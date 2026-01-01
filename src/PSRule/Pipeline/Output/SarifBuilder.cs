@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Sarif;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
+using PSRule.Converters.Json;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
@@ -215,6 +216,7 @@ internal sealed class SarifBuilder
     private void AddOptions(Run run)
     {
         var s = new JsonSerializer();
+        s.Converters.Add(new StringMapJsonConverter<FormatType>());
         s.Converters.Add(new PSObjectJsonConverter());
         s.NullValueHandling = NullValueHandling.Ignore;
 
