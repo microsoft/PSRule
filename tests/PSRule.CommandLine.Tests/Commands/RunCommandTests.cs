@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine.IO;
 using PSRule.CommandLine.Models;
+using Xunit.Abstractions;
 
 namespace PSRule.CommandLine.Commands;
 
-public sealed class RunCommandTests : BaseTests
+public sealed class RunCommandTests(ITestOutputHelper testOutput) : BaseTests
 {
     [Fact]
     public async Task RunAsync_WithDefault_ShouldRunSuccessfully()
@@ -59,7 +59,7 @@ public sealed class RunCommandTests : BaseTests
     [Fact]
     public async Task RunAsync_WithNoInput_ShouldError()
     {
-        var console = new TestConsole();
+        var console = new TestOutputWriter(testOutput);
         var context = ClientContext
         (
             option: GetSourcePath("../../../../../ps-rule-ci.yaml"),
@@ -68,7 +68,7 @@ public sealed class RunCommandTests : BaseTests
         );
 
         var operation = OperationOptions();
-        operation.InputPath = ["./out/"];
+        operation.InputPath = ["./tests/empty/"];
 
         var output = await RunCommand.RunAsync(operation, context);
         Assert.Equal(17, output.ExitCode);

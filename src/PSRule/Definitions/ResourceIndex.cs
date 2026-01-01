@@ -38,7 +38,7 @@ internal sealed class ResourceIndex(IEnumerable<IResource> items)
             foreach (var id in ids)
                 results.Add(new IndexEntry(id, item.Id));
         }
-        return results.ToArray();
+        return [.. results];
     }
 
     public bool IsEmpty()

@@ -120,6 +120,25 @@ internal static class BaselineJsonSerializationMapper
     }
 
     /// <summary>
+    /// Map a <see cref="ResourceIdReference"/> array property.
+    /// </summary>
+    private static void MapProperty(JsonWriter writer, string propertyName, ResourceIdReference[]? value)
+    {
+        if (value == null)
+            return;
+
+        MapPropertyName(writer, propertyName);
+        writer.WriteStartArray();
+
+        foreach (var item in value)
+        {
+            writer.WriteValue(item.Raw);
+        }
+
+        writer.WriteEndArray();
+    }
+
+    /// <summary>
     /// Map a BindingOption property.
     /// </summary>
     private static void MapProperty(JsonWriter writer, JsonSerializer serializer, string propertyName, BindingOption value)

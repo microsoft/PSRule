@@ -13,29 +13,18 @@ namespace PSRule.Configuration;
 /// </summary>
 public class BaselineOption
 {
-    internal sealed class BaselineRef : BaselineOption
+    internal sealed class BaselineRef(string name) : BaselineOption
     {
-        public readonly string Name;
-
-        public BaselineRef(string name)
-        {
-            Name = name;
-        }
+        public readonly string Name = name;
     }
 
-    internal sealed class BaselineInline : BaselineOption, IBaselineV1Spec
+    internal sealed class BaselineInline() : BaselineOption, IBaselineV1Spec
     {
-        public BaselineInline()
-        {
-            Configuration = new ConfigurationOption();
-            Rule = new RuleOption();
-        }
-
-        public ConfigurationOption Configuration { get; set; }
+        public ConfigurationOption Configuration { get; set; } = [];
 
         public OverrideOption Override { get; set; }
 
-        public RuleOption Rule { get; set; }
+        public RuleOption Rule { get; set; } = new RuleOption();
     }
 
     /// <summary>
@@ -90,16 +79,16 @@ public class BaselineOption
     /// </summary>
     internal static void Load(IBaselineV1Spec option)
     {
-        if (Environment.TryString("PSRULE_RULE_BASELINE", out var baseline))
+        if (Environment.TryResourceIdReference("PSRULE_RULE_BASELINE", out var baseline))
             option.Rule.Baseline = baseline;
 
-        if (Environment.TryStringArray("PSRULE_RULE_EXCLUDE", out var exclude))
+        if (Environment.TryResourceIdReferenceArray("PSRULE_RULE_EXCLUDE", out var exclude))
             option.Rule.Exclude = exclude;
 
         if (Environment.TryBool("PSRULE_RULE_INCLUDELOCAL", out var includeLocal))
             option.Rule.IncludeLocal = includeLocal;
 
-        if (Environment.TryStringArray("PSRULE_RULE_INCLUDE", out var include))
+        if (Environment.TryResourceIdReferenceArray("PSRULE_RULE_INCLUDE", out var include))
             option.Rule.Include = include;
 
         // Rule.Tag - currently not supported
@@ -114,19 +103,19 @@ public class BaselineOption
     /// </summary>
     internal static void Load(IBaselineV1Spec option, Dictionary<string, object> properties)
     {
-        if (properties.TryPopString("Rule.Baseline", out var baseline))
+        if (properties.TryPopResourceIdReference("Rule.Baseline", out var baseline))
             option.Rule.Baseline = baseline;
 
-        if (properties.TryPopStringArray("Rule.Exclude", out var exclude))
+        if (properties.TryPopResourceIdReferenceArray("Rule.Exclude", out var exclude))
             option.Rule.Exclude = exclude;
 
         if (properties.TryPopBool("Rule.IncludeLocal", out var includeLocal))
             option.Rule.IncludeLocal = includeLocal;
 
-        if (properties.TryPopStringArray("Rule.Include", out var include))
+        if (properties.TryPopResourceIdReferenceArray("Rule.Include", out var include))
             option.Rule.Include = include;
 
-        if (properties.TryPopValue("Rule.Tag", out Hashtable tag))
+        if (properties.TryPopValue("Rule.Tag", out Hashtable? tag) && tag != null)
             option.Rule.Tag = tag;
 
         // Process configuration values

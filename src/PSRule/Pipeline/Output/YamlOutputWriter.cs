@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Converters.Yaml;
 using PSRule.Definitions.Baselines;
 using PSRule.Definitions.Rules;
 using YamlDotNet.Core;
@@ -36,6 +37,8 @@ internal sealed class YamlOutputWriter : SerializationOutputWriter<object>
             .WithTypeConverter(new FieldMapYamlTypeConverter())
             .WithTypeConverter(new InfoStringYamlTypeConverter())
             .WithTypeConverter(new EnumMapYamlTypeConverter<SeverityLevel>())
+            //.WithTypeConverter(new ResourceIdYamlConverter())
+            .WithTypeConverter(new ResourceIdReferenceYamlConverter())
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
             .Build();

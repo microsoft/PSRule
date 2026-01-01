@@ -12,11 +12,11 @@ namespace PSRule.Configuration;
 /// </summary>
 public sealed class RuleOption : IEquatable<RuleOption>
 {
-    private const bool DEFAULT_INCLUDELOCAL = false;
+    private const bool DEFAULT_INCLUDE_LOCAL = false;
 
     internal static readonly RuleOption Default = new()
     {
-        IncludeLocal = DEFAULT_INCLUDELOCAL
+        IncludeLocal = DEFAULT_INCLUDE_LOCAL
     };
 
     /// <summary>
@@ -36,7 +36,7 @@ public sealed class RuleOption : IEquatable<RuleOption>
     /// Create a rule option by copying an existing instance.
     /// </summary>
     /// <param name="option">The option instance to copy.</param>
-    public RuleOption(RuleOption option)
+    public RuleOption(RuleOption? option)
     {
         if (option == null)
             return;
@@ -84,10 +84,10 @@ public sealed class RuleOption : IEquatable<RuleOption>
     }
 
     /// <summary>
-    /// Merge two option instances by repacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
+    /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
     /// Values from <paramref name="o1"/> that are set are not overridden.
     /// </summary>
-    internal static RuleOption Combine(RuleOption o1, RuleOption o2)
+    internal static RuleOption Combine(RuleOption? o1, RuleOption? o2)
     {
         var result = new RuleOption(o1)
         {
@@ -105,13 +105,13 @@ public sealed class RuleOption : IEquatable<RuleOption>
     /// The name of a baseline to use.
     /// </summary>
     [DefaultValue(null)]
-    public string Baseline { get; set; }
+    public ResourceIdReference? Baseline { get; set; }
 
     /// <summary>
     /// A set of rules to exclude for execution.
     /// </summary>
     [DefaultValue(null)]
-    public string[] Exclude { get; set; }
+    public ResourceIdReference[]? Exclude { get; set; }
 
     /// <summary>
     /// Automatically include all local rules in the search path unless they have been explicitly excluded.
@@ -123,7 +123,7 @@ public sealed class RuleOption : IEquatable<RuleOption>
     /// A set of rules to include for execution.
     /// </summary>
     [DefaultValue(null)]
-    public string[] Include { get; set; }
+    public ResourceIdReference[]? Include { get; set; }
 
     /// <summary>
     /// A set of rule tags to include for execution.

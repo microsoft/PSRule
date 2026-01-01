@@ -28,7 +28,7 @@ public sealed class RunCommand
     /// <summary>
     /// Call <c>run</c>.
     /// </summary>
-    public static async Task<RunCommandOutput> RunAsync(RunOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
+    public static async Task<CommandResult<IReadOnlyCollection<InvokeResult>>> RunAsync(RunOptions operationOptions, ClientContext clientContext, CancellationToken cancellationToken = default)
     {
         var exitCode = 0;
         var workingPath = operationOptions.WorkspacePath ?? Environment.GetWorkingPath();
@@ -92,7 +92,7 @@ public sealed class RunCommand
         builder.Formats(operationOptions.Formats);
 
         using var pipeline = builder.Build();
-        if (pipeline != null)
+        if (pipeline != null && clientContext.Host.ExitCode == 0)
         {
             pipeline.Begin();
             pipeline.Process(null);
@@ -108,6 +108,6 @@ public sealed class RunCommand
         }
 
         clientContext.LogVerbose("[PSRule][R] -- Completed run with exit code {0}.", exitCode);
-        return await Task.FromResult(new RunCommandOutput(exitCode, results));
+        return await Task.FromResult(new CommandResult<IReadOnlyCollection<InvokeResult>>(exitCode) { Value = results });
     }
 }

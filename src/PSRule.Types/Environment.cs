@@ -8,6 +8,7 @@ using System.Security;
 using System.Text;
 using Newtonsoft.Json;
 using PSRule.Data;
+using PSRule.Definitions;
 
 namespace PSRule;
 
@@ -193,6 +194,42 @@ public static class Environment
             return false;
 
         value = new NetworkCredential(DEFAULT_CREDENTIAL_USERNAME, variable).SecurePassword;
+        return true;
+    }
+
+    /// <summary>
+    /// Try to get the environment variable as a <see cref="ResourceIdReference"/>.
+    /// </summary>
+    public static bool TryResourceIdReference(string key, out ResourceIdReference? value)
+    {
+        value = null;
+        if (!TryString(key, out var variable) || !ResourceIdReference.TryParse(variable, out var reference))
+            return false;
+
+        value = reference;
+        return true;
+    }
+
+    /// <summary>
+    /// Try to get the environment variable as a <see cref="ResourceIdReference"/> array.
+    /// </summary>
+    public static bool TryResourceIdReferenceArray(string key, out ResourceIdReference[]? value)
+    {
+        value = null;
+        if (!TryStringArray(key, out var variables) || variables == null)
+            return false;
+
+        var list = new List<ResourceIdReference>();
+
+        foreach (var variable in variables)
+        {
+            if (ResourceIdReference.TryParse(variable, out var reference) && reference != null)
+            {
+                list.Add(reference.Value);
+            }
+        }
+
+        value = [.. list];
         return true;
     }
 

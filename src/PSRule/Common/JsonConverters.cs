@@ -8,7 +8,6 @@ using PSRule.Configuration;
 using PSRule.Converters;
 using PSRule.Converters.Json;
 using PSRule.Data;
-using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Emitters;
 using PSRule.Resources;
@@ -466,23 +465,6 @@ internal sealed class StringArrayJsonConverter : JsonConverter
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         throw new NotImplementedException();
-    }
-}
-
-/// <summary>
-/// A converter for converting <see cref="ResourceId"/> to/ from JSON.
-/// </summary>
-internal sealed class ResourceIdConverter : JsonConverter<ResourceId>
-{
-    public override ResourceId ReadJson(JsonReader reader, Type objectType, ResourceId existingValue, bool hasExistingValue, JsonSerializer serializer)
-    {
-        var value = reader.ReadAsString();
-        return value != null ? ResourceId.Parse(value) : default;
-    }
-
-    public override void WriteJson(JsonWriter writer, ResourceId value, JsonSerializer serializer)
-    {
-        writer.WriteValue(value.Value);
     }
 }
 

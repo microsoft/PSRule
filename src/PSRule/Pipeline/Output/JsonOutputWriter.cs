@@ -4,11 +4,10 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using PSRule.Configuration;
+using PSRule.Converters.Json;
 using PSRule.Definitions.Baselines;
 
 namespace PSRule.Pipeline.Output;
-
-#nullable enable
 
 internal sealed class JsonOutputWriter : SerializationOutputWriter<object>
 {
@@ -46,7 +45,8 @@ internal sealed class JsonOutputWriter : SerializationOutputWriter<object>
         jsonSerializer.Converters.Add(new ErrorCategoryJsonConverter());
         jsonSerializer.Converters.Add(new PSObjectJsonConverter());
         jsonSerializer.Converters.Add(new StringEnumConverter());
-        jsonSerializer.Converters.Add(new ResourceIdConverter());
+        jsonSerializer.Converters.Add(new ResourceIdJsonConverter());
+        jsonSerializer.Converters.Add(new ResourceIdReferenceJsonConverter());
 
         // To avoid writing baselines with an extra outer array
         // We can serialize the first object which has all the baselines
@@ -63,5 +63,3 @@ internal sealed class JsonOutputWriter : SerializationOutputWriter<object>
         return stringWriter.ToString();
     }
 }
-
-#nullable restore

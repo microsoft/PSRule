@@ -174,7 +174,7 @@ internal sealed class OptionContextBuilder
         //    _Parameter?.Tag == null &&
         //    _Parameter?.Labels == null &&
         //    (_WorkspaceBaseline == null || !_WorkspaceBaseline.IncludeLocal.HasValue) ? true : _WorkspaceBaseline?.IncludeLocal;
-        return new RuleFilter(option.Include, option.Tag, option.Exclude, option.IncludeLocal, option.Labels);
+        return new RuleFilter(option.Include, option.Tag, option.Exclude, option.IncludeLocal, option.Labels, null);
     }
 
     private static IResourceFilter GetConventionFilter(string languageScope, List<OptionScope> scopes)

@@ -8,6 +8,7 @@ using PSRule.Definitions;
 using PSRule.Definitions.Rules;
 using PSRule.Pipeline.Runs;
 using PSRule.Rules;
+using PSRule.Runtime;
 
 namespace PSRule.Pipeline.Output;
 
@@ -15,7 +16,7 @@ public abstract class OutputWriterBaseTests : ContextBaseTests
 {
     protected internal static IRun GetRun()
     {
-        return new Run("run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph());
+        return new Run(NullLogger.Instance, ".", "run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph());
     }
 
     protected static RuleRecord GetPass()
@@ -23,6 +24,7 @@ public abstract class OutputWriterBaseTests : ContextBaseTests
         var run = GetRun();
         return new RuleRecord
         (
+            run: run,
             ruleId: ResourceId.Parse("TestModule\\rule-001"),
             @ref: null,
             targetObject: new TargetObject(new PSObject()),
@@ -47,7 +49,6 @@ public abstract class OutputWriterBaseTests : ContextBaseTests
             reason: RuleOutcomeReason.Processed
         )
         {
-            RunId = run.Id,
             Time = 500
         };
     }
@@ -74,6 +75,7 @@ public abstract class OutputWriterBaseTests : ContextBaseTests
         };
 
         return new RuleRecord(
+            run: run,
             ruleId: ResourceId.Parse(ruleId),
             @ref: ruleRef,
             targetObject: new TargetObject(new PSObject()),
@@ -95,7 +97,6 @@ public abstract class OutputWriterBaseTests : ContextBaseTests
             reason: RuleOutcomeReason.Processed
         )
         {
-            RunId = run.Id,
             Time = 1000
         };
     }

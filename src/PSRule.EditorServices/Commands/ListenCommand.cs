@@ -53,7 +53,7 @@ internal sealed class ListenCommand
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            clientContext.Console.Out.WriteLine(ex.Message);
             return ERROR_SERVER_EXCEPTION;
         }
 
@@ -82,8 +82,8 @@ internal sealed class ListenCommand
             {
                 WithServices(options, clientContext);
 
-                options.WithInput(Console.OpenStandardInput())
-                    .WithOutput(Console.OpenStandardOutput());
+                options.WithInput(clientContext.Console.OpenStandardInput())
+                    .WithOutput(clientContext.Console.OpenStandardOutput());
             });
         }
 

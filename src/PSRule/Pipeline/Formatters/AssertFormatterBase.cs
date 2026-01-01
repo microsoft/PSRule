@@ -359,6 +359,7 @@ internal abstract class AssertFormatterBase : PipelineLoggerBase, IAssertFormatt
         if (!Option.Output.Footer.GetValueOrDefault(FooterFormat.Default).HasFlag(FooterFormat.RuleCount))
             return;
 
+        BreakIfUnbrokenContent();
         WriteLineFormat(FormatterStrings.FooterRuleCount, total, fail, error);
     }
 

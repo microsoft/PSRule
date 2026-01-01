@@ -90,4 +90,24 @@ internal static class ResourceHelper
     {
         return scope == null || string.IsNullOrEmpty(scope) ? STANDALONE_SCOPE_NAME : scope;
     }
+
+    /// <summary>
+    /// Create an array of <see cref="ResourceIdReference"/> from an array of strings.
+    /// </summary>
+    /// <param name="rawArray">One or more raw resource identifier strings.</param>
+    public static ResourceIdReference[]? GetResourceIdReference(string[]? rawArray)
+    {
+        if (rawArray == null)
+            return null;
+
+        var list = new List<ResourceIdReference>(rawArray.Length);
+
+        foreach (var raw in rawArray)
+        {
+            if (ResourceIdReference.TryParse(raw, out var reference) && reference != null)
+                list.Add(reference.Value);
+        }
+
+        return [.. list];
+    }
 }

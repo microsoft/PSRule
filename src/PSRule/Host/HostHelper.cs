@@ -6,6 +6,7 @@ using System.Management.Automation;
 using System.Text;
 using Newtonsoft.Json;
 using PSRule.Annotations;
+using PSRule.Configuration;
 using PSRule.Converters.Json;
 using PSRule.Converters.Yaml;
 using PSRule.Definitions;
@@ -33,8 +34,12 @@ internal static class HostHelper
         var rules = context.Pipeline.ResourceCache.OfType<IRuleV1>();
         var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: false);
 
+        var baseline = context.Pipeline.Baselines?.FirstOrDefault();
+        var ruleOption = RuleOption.Combine(baseline?.Spec?.Rule, context?.Pipeline?.Option?.Rule);
+        var filter = new RuleFilter(ruleOption.Include, ruleOption.Tag, ruleOption.Exclude, ruleOption.IncludeLocal, ruleOption.Labels, null);
+
         var builder = new DependencyGraphBuilder<RuleBlock>(context, includeDependencies, includeDisabled: true);
-        builder.Include(blocks, filter: (b) => Match(context, b));
+        builder.Include(blocks, filter: filter.Match);
         return builder.GetItems();
     }
 
@@ -44,17 +49,17 @@ internal static class HostHelper
         var blocks = rules.ToRuleDependencyTargetCollection(context, skipDuplicateName: false);
 
         var builder = new DependencyGraphBuilder<RuleBlock>(context, includeDependencies: true, includeDisabled: false);
-        builder.Include(blocks, filter: (b) => Match(context, b));
+        builder.Include(blocks, filter: context.Match);
         return builder.Build();
     }
 
-    internal static DependencyGraph<IRuleBlock> GetRuleBlockGraphV2(IRunBuilderContext context, IResourceCache resourceCache)
+    internal static DependencyGraph<IRuleBlock> GetRuleBlockGraphV2(IRunBuilderContext context, Func<IRuleBlock, bool> filter, IResourceCache resourceCache)
     {
         var rules = resourceCache.OfType<IRuleV1>();
         var blocks = rules.ToRuleDependencyTargetCollectionV2(context, skipDuplicateName: false);
 
         var builder = new DependencyGraphBuilder<IRuleBlock>(context, includeDependencies: true, includeDisabled: false);
-        builder.Include(blocks, filter: context.Match);
+        builder.Include(blocks, filter: filter);
         return builder.Build();
     }
 
@@ -257,6 +262,7 @@ internal static class HostHelper
             .WithTypeConverter(new PSObjectYamlTypeConverter())
             .WithTypeConverter(new EnumMapYamlTypeConverter<SeverityLevel>())
             .WithTypeConverter(new CapabilityOptionYamlConverter())
+            .WithTypeConverter(new ResourceIdReferenceYamlConverter())
             .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
             .WithNodeDeserializer(
                 inner => new ResourceNodeDeserializer(context, new LanguageExpressionDeserializer(context, inner)),
@@ -327,6 +333,7 @@ internal static class HostHelper
         deserializer.Converters.Add(new LanguageExpressionJsonConverter(context));
         deserializer.Converters.Add(new EnumMapJsonConverter<SeverityLevel>());
         deserializer.Converters.Add(new CapabilityOptionJsonConverter());
+        deserializer.Converters.Add(new ResourceIdReferenceJsonConverter());
 
         try
         {
@@ -428,20 +435,6 @@ internal static class HostHelper
         //{
         //    context.ExitSourceScope();
         //}
-    }
-
-    internal static bool Match(LegacyRunspaceContext context, IResource resource)
-    {
-        try
-        {
-            context.EnterLanguageScope(resource.Source);
-            var filter = context.Scope!.GetFilter(ResourceKind.Rule);
-            return filter == null || filter.Match(resource);
-        }
-        finally
-        {
-            context.ExitLanguageScope(resource.Source);
-        }
     }
 
     internal static void UpdateHelpInfo(IGetLocalizedPathContext context, IResource resource)

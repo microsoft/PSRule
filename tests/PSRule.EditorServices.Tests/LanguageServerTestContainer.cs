@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 using System.IO.Pipelines;
 using Microsoft.Extensions.DependencyInjection;
 using OmniSharp.Extensions.LanguageServer.Client;
@@ -19,7 +16,7 @@ internal sealed class LanguageServerTestContainer(LspServer server, LanguageClie
     public LspServer Server { get; } = server;
     public LanguageClient Client { get; } = client;
 
-    public static async Task<LanguageServerTestContainer> CreateAsync(string? workingPath = default, CancellationToken cancellationToken = default)
+    public static async Task<LanguageServerTestContainer> CreateAsync(string? workingPath = default, IConsole? console = null, CancellationToken cancellationToken = default)
     {
         var clientPipe = new Pipe();
         var serverPipe = new Pipe();
@@ -31,8 +28,7 @@ internal sealed class LanguageServerTestContainer(LspServer server, LanguageClie
                 .WithOutput(clientPipe.Writer)
                 .WithServices(services =>
                 {
-                    services.AddSingleton(new ClientContext(InvocationContext(), null, false, false, workingPath));
-
+                    services.AddSingleton(new ClientContext(console ?? new TestConsole(), null, false, false, workingPath));
                 });
         });
 
@@ -73,12 +69,5 @@ internal sealed class LanguageServerTestContainer(LspServer server, LanguageClie
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
-    }
-
-    private static InvocationContext InvocationContext(IConsole? console = null)
-    {
-        var p = new Parser();
-        var result = p.Parse(string.Empty);
-        return new InvocationContext(result, console);
     }
 }

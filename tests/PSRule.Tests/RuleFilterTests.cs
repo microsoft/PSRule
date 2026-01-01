@@ -16,7 +16,7 @@ public sealed partial class RuleFilterTests
     [Fact]
     public void MatchInclude()
     {
-        var filter = new RuleFilter(["rule1", "rule2"], null, null, null, null);
+        var filter = new RuleFilter(ResourceHelper.GetResourceIdReference(["rule1", "rule2"]), null, null, null, null, null);
         Assert.True(filter.Match(GetResource("rule1")));
         Assert.True(filter.Match(GetResource("Rule2")));
         Assert.False(filter.Match(GetResource("rule3")));
@@ -25,7 +25,7 @@ public sealed partial class RuleFilterTests
     [Fact]
     public void MatchExclude()
     {
-        var filter = new RuleFilter(null, null, ["rule3"], null, null);
+        var filter = new RuleFilter(null, null, ResourceHelper.GetResourceIdReference(["rule3"]), null, null, null);
         Assert.True(filter.Match(GetResource("rule1")));
         Assert.True(filter.Match(GetResource("rule2")));
         Assert.False(filter.Match(GetResource("Rule3")));
@@ -42,7 +42,7 @@ public sealed partial class RuleFilterTests
         {
             ["category"] = new string[] { "group1", "group2" }
         };
-        var filter = new RuleFilter(null, tag, null, null, null);
+        var filter = new RuleFilter(null, tag, null, null, null, null);
 
         // Check basic match
         resourceTags["category"] = "group2";
@@ -54,7 +54,7 @@ public sealed partial class RuleFilterTests
         Assert.False(filter.Match(GetResource("rule")));
 
         // Include local
-        filter = new RuleFilter(null, tag, null, true, null);
+        filter = new RuleFilter(null, tag, null, true, null, null);
         resourceTags["category"] = "group1";
         Assert.True(filter.Match(GetResource("module1\\rule", ResourceTags.FromHashtable(resourceTags))));
         resourceTags["category"] = "group3";
@@ -76,7 +76,7 @@ public sealed partial class RuleFilterTests
         {
             ["framework.v1/control"] = ["c-1", "c-2"]
         };
-        var filter = new RuleFilter(null, null, null, null, labels);
+        var filter = new RuleFilter(null, null, null, null, labels, null);
 
         resourceLabels["framework.v1/control"] = new string[] { "c-2", "c-1" };
         Assert.True(filter.Match(GetResource("rule", null, ResourceLabels.FromHashtable(resourceLabels))));
@@ -88,6 +88,15 @@ public sealed partial class RuleFilterTests
         Assert.False(filter.Match(GetResource("rule", null, ResourceLabels.FromHashtable(resourceLabels))));
         resourceLabels["framework.v1/control"] = Array.Empty<string>();
         Assert.False(filter.Match(GetResource("rule", null, ResourceLabels.FromHashtable(resourceLabels))));
+    }
+
+    [Fact]
+    public void WithScope_ShouldOnlyMatchRulesWithScope()
+    {
+        var filter = new RuleFilter(null, null, null, null, null, "test");
+
+        Assert.True(filter.Match(GetResource("test\\rule", null, null)));
+        Assert.False(filter.Match(GetResource("other\\rule", null, null)));
     }
 
     #region Helper Methods

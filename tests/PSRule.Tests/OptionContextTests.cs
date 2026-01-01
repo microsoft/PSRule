@@ -92,13 +92,13 @@ public sealed class OptionContextTests : BaseTests
 
         Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
         Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
-        Assert.Equal(new[] { "rule1", "rule2" }, context.Rule.Include);
+        Assert.Equal(ResourceHelper.GetResourceIdReference(["rule1", "rule2"]), context.Rule.Include);
 
         context = builder.Build("Module1");
 
         Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
         Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
-        Assert.Equal(new[] { "rule1", "rule2" }, context.Rule.Include);
+        Assert.Equal(ResourceHelper.GetResourceIdReference(["rule1", "rule2"]), context.Rule.Include);
 
         // With explicit baseline
         builder.Baseline(ScopeType.Explicit, "BaselineExplicit", "Module1", GetBaseline(), false);
@@ -106,13 +106,13 @@ public sealed class OptionContextTests : BaseTests
 
         Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
         Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
-        Assert.Equal(new[] { "rule1" }, context.Rule.Include);
+        Assert.Equal(ResourceHelper.GetResourceIdReference(["rule1"]), context.Rule.Include);
 
         context = builder.Build("Module1");
 
         Assert.Equal(new[] { "ResourceName", "AlternateName" }, context.Binding.TargetName);
         Assert.Equal(new[] { "ResourceType", "kind" }, context.Binding.TargetType);
-        Assert.Equal(new[] { "rule1" }, context.Rule.Include);
+        Assert.Equal(ResourceHelper.GetResourceIdReference(["rule1"]), context.Rule.Include);
     }
 
     #region Helper methods
@@ -124,7 +124,7 @@ public sealed class OptionContextTests : BaseTests
         // Specify a culture otherwise it varies within CI.
         option.Output.Culture = culture ?? ["en-ZZ"];
 
-        option.Rule.Include = ruleInclude;
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(ruleInclude);
 
         // Add a configuration option.
         option.Configuration.Add("option6", "value6");
@@ -144,7 +144,7 @@ public sealed class OptionContextTests : BaseTests
         {
             Rule = new RuleOption
             {
-                Include = ruleInclude
+                Include = ResourceHelper.GetResourceIdReference(ruleInclude)
             }
         };
     }

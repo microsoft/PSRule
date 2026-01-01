@@ -45,7 +45,7 @@ public sealed class RunAnalysisCommandHandler(ClientContext context, ISerializer
         try
         {
             var output = await RunCommand.RunAsync(options, _Context, cancellationToken);
-            var problems = GetOnlyProblemRecords(output.Results);
+            var problems = GetOnlyProblemRecords(output.Value);
 
             return new RunAnalysisCommandHandlerOutput(output.ExitCode, problems);
         }
@@ -57,8 +57,11 @@ public sealed class RunAnalysisCommandHandler(ClientContext context, ISerializer
         return new RunAnalysisCommandHandlerOutput(1);
     }
 
-    private static IEnumerable<RunAnalysisCommandHandlerRecord> GetOnlyProblemRecords(IReadOnlyCollection<InvokeResult> results)
+    private static IEnumerable<RunAnalysisCommandHandlerRecord> GetOnlyProblemRecords(IReadOnlyCollection<InvokeResult>? results)
     {
+        if (results == null)
+            yield break;
+
         foreach (var result in results)
         {
             if (result.IsSuccess())
