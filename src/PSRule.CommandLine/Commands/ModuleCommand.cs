@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Collections;
-using System.CommandLine.IO;
 using System.Diagnostics.CodeAnalysis;
 using System.Management.Automation;
 using Newtonsoft.Json;
@@ -442,7 +441,7 @@ public sealed class ModuleCommand
 
     private static void ListModules(ClientContext context, IEnumerable<ModuleRecord> results)
     {
-        context.Invocation.Console.Out.WriteLine(JsonConvert.SerializeObject(results, new JsonSerializerSettings
+        context.Console.Out.WriteLine(JsonConvert.SerializeObject(results, new JsonSerializerSettings
         {
             Formatting = Formatting.Indented
         }));

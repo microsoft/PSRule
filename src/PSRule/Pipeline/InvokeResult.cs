@@ -142,7 +142,6 @@ public sealed class InvokeResult : IEnumerable<RuleRecord>
             _Level = _Level.GetWorstCase(ruleRecord.Level);
         }
 
-        ruleRecord.RunId = Run.Id;
         _Record.Add(ruleRecord);
     }
 

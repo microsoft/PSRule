@@ -335,6 +335,7 @@ public sealed class PSRuleOption : IEquatable<PSRuleOption>, IBaselineV1Spec
                 .WithTypeConverter(new SuppressionRuleYamlTypeConverter())
                 .WithTypeConverter(new PSObjectYamlTypeConverter())
                 .WithTypeConverter(new CapabilityOptionYamlConverter())
+                .WithTypeConverter(new ResourceIdReferenceYamlConverter())
                 .WithNodeTypeResolver(new PSOptionYamlTypeResolver())
                 .Build();
 

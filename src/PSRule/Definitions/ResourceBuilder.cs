@@ -28,6 +28,8 @@ internal sealed class ResourceBuilder
             .WithTypeConverter(new FieldMapYamlTypeConverter())
             .WithTypeConverter(new StringArrayMapConverter())
             .WithTypeConverter(new StringArrayConverter())
+            .WithTypeConverter(new CapabilityOptionYamlConverter())
+            .WithTypeConverter(new ResourceIdReferenceYamlConverter())
             .WithNodeDeserializer(
                 inner => new ResourceNodeDeserializer(context, new LanguageExpressionDeserializer(context, inner)),
                 s => s.InsteadOf<ObjectNodeDeserializer>())
@@ -51,6 +53,6 @@ internal sealed class ResourceBuilder
 
     internal IEnumerable<ILanguageBlock> Build()
     {
-        return _Output.Count == 0 ? Array.Empty<ILanguageBlock>() : _Output.ToArray();
+        return _Output.Count == 0 ? [] : _Output.ToArray();
     }
 }

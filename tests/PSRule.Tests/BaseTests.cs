@@ -60,6 +60,13 @@ public abstract class BaseTests
         return builder.Build();
     }
 
+    protected static Source[] GetSourceAsModule(string cachePath, string name, string version)
+    {
+        var builder = new SourcePipelineBuilder(null, null, GetSourcePath(cachePath));
+        builder.ModuleByName(name, version);
+        return builder.Build();
+    }
+
     protected static SourceFile GetSourceFile(string path)
     {
         switch (Path.GetExtension(path))

@@ -6,34 +6,33 @@ using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
 using PSRule.Options;
+using PSRule.Runtime;
 using PSRule.Runtime.Binding;
 
 namespace PSRule.Pipeline.Runs;
 
-#nullable enable
-
 /// <summary>
 /// An instance of a run.
 /// </summary>
-[DebuggerDisplay("{Id}")]
-internal sealed class Run(string id, InfoString description, string correlationGuid, IRuleGraph graph) : IRun
+[DebuggerDisplay("{Guid}: {Id}")]
+internal sealed class Run(ILogger logger, string? scope, string id, InfoString description, string correlationGuid, IRuleGraph graph, RunConfiguration? configuration = null) : IRun
 {
+    private readonly ILogger _Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly RunConfiguration? _RunConfiguration = configuration;
+
     private ITargetBinder _TargetBinder;
     private WildcardMap<RuleOverride>? _Override;
 
-    /// <summary>
-    /// A unique identifier for the run.
-    /// </summary>
+    /// <inheritdoc/>
     public string Id { get; } = id;
 
-    /// <summary>
-    /// A correlation identifier for all related runs.
-    /// </summary>
+    /// <inheritdoc/>
+    public string Guid { get; } = System.Guid.NewGuid().ToString();
+
+    /// <inheritdoc/>
     public string CorrelationGuid { get; } = correlationGuid;
 
-    /// <summary>
-    /// A description of the logical run.
-    /// </summary>
+    /// <inheritdoc/>
     public InfoString Description { get; } = description;
 
     /// <summary>
@@ -49,18 +48,23 @@ internal sealed class Run(string id, InfoString description, string correlationG
     /// <inheritdoc/>
     public IRuleGraph Rules { get; } = graph;
 
+    public string? Scope { get; } = scope;
+
     #region IConfiguration
 
     /// <inheritdoc/>
     public object? GetValueOrDefault(string configurationKey, object? defaultValue = null)
     {
-        throw new NotImplementedException();
+        return TryConfigurationValue(configurationKey, out var value) ? value : defaultValue;
     }
 
     /// <inheritdoc/>
     public bool TryConfigurationValue(string configurationKey, out object? value)
     {
-        throw new NotImplementedException();
+        value = null;
+        _Logger.LogDebug(EventId.None, "Run '{0}': Retrieving configuration key '{1}' from '{2}'", Guid, configurationKey, _RunConfiguration?.Guid);
+
+        return _RunConfiguration != null && _RunConfiguration.Configuration.TryGetValue(configurationKey, out value);
     }
 
     #endregion IConfiguration
@@ -103,5 +107,3 @@ internal sealed class Run(string id, InfoString description, string correlationG
         return new WildcardMap<RuleOverride>(overrides);
     }
 }
-
-#nullable restore

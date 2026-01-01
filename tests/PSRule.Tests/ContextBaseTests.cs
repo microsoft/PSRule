@@ -9,8 +9,6 @@ using PSRule.Runtime.Scripting;
 
 namespace PSRule;
 
-#nullable enable
-
 public abstract class ContextBaseTests : BaseTests
 {
     internal PipelineContext GetPipelineContext(PSRuleOption? option = default, IPipelineWriter? writer = default, ILanguageScopeSet? languageScope = default, OptionContextBuilder? optionBuilder = default, Source[]? sources = default, ResourceCache? resourceCache = default)
@@ -27,7 +25,8 @@ public abstract class ContextBaseTests : BaseTests
             languageScope: languageScope,
             optionBuilder: optionBuilder ?? new OptionContextBuilder(),
             resourceCache: resourceCache ?? GetResourceCache(option, languageScope, sources, writer, runspaceContext),
-            runspaceContext: runspaceContext
+            runspaceContext: runspaceContext,
+            baselines: []
         );
     }
 
@@ -73,5 +72,3 @@ public abstract class ContextBaseTests : BaseTests
         return new TestExpressionContext(option ?? GetOption(), scope);
     }
 }
-
-#nullable restore

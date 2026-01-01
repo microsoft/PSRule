@@ -1,12 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using Newtonsoft.Json;
+using PSRule.Definitions;
 using PSRule.Host;
 using PSRule.Pipeline;
+using PSRule.Pipeline.Runs;
 using PSRule.Rules;
 using PSRule.Runtime;
 
@@ -96,34 +99,36 @@ public sealed class JsonRulesTests : ContextBaseTests
         var subselector4 = GetRuleVisitor(context, "JsonRuleWithQuantifier");
         context.EnterLanguageScope(subselector1.Source);
 
+        var run = GetRun();
+
         var actual1 = GetObject((name: "kind", value: "test"), (name: "resources", value: new string[] { "abc", "abc" }));
         var actual2 = GetObject((name: "resources", value: new string[] { "abc", "123", "abc" }));
 
         // JsonRuleWithPrecondition
         context.EnterTargetObject(actual1);
-        context.EnterRuleBlock(subselector1);
+        context.EnterRuleBlock(run, subselector1);
         Assert.True(subselector1.Condition.If(context, actual1).AllOf());
 
         context.EnterTargetObject(actual2);
-        context.EnterRuleBlock(subselector1);
+        context.EnterRuleBlock(run, subselector1);
         Assert.True(subselector1.Condition.If(context, actual2).Skipped());
 
         // JsonRuleWithSubselector
         context.EnterTargetObject(actual1);
-        context.EnterRuleBlock(subselector2);
+        context.EnterRuleBlock(run, subselector2);
         Assert.True(subselector2.Condition.If(context, actual1).AllOf());
 
         context.EnterTargetObject(actual2);
-        context.EnterRuleBlock(subselector2);
+        context.EnterRuleBlock(run, subselector2);
         Assert.False(subselector2.Condition.If(context, actual2).AllOf());
 
         // JsonRuleWithSubselectorReordered
         context.EnterTargetObject(actual1);
-        context.EnterRuleBlock(subselector3);
+        context.EnterRuleBlock(run, subselector3);
         Assert.True(subselector3.Condition.If(context, actual1).AllOf());
 
         context.EnterTargetObject(actual2);
-        context.EnterRuleBlock(subselector3);
+        context.EnterRuleBlock(run, subselector3);
         Assert.True(subselector3.Condition.If(context, actual2).AllOf());
 
         // JsonRuleWithQuantifier
@@ -133,19 +138,24 @@ public sealed class JsonRulesTests : ContextBaseTests
         var actual3 = fromFile[2];
 
         context.EnterTargetObject(actual1);
-        context.EnterRuleBlock(subselector4);
+        context.EnterRuleBlock(run, subselector4);
         Assert.True(subselector4.Condition.If(context, actual1).AllOf());
 
         context.EnterTargetObject(actual2);
-        context.EnterRuleBlock(subselector4);
+        context.EnterRuleBlock(run, subselector4);
         Assert.False(subselector4.Condition.If(context, actual2).AllOf());
 
         context.EnterTargetObject(actual3);
-        context.EnterRuleBlock(subselector4);
+        context.EnterRuleBlock(run, subselector4);
         Assert.True(subselector4.Condition.If(context, actual3).AllOf());
     }
 
     #region Helper methods
+
+    private static IRun GetRun()
+    {
+        return new Run(NullLogger.Instance, ".", "run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph());
+    }
 
     private new static Source[] GetSource(string path)
     {

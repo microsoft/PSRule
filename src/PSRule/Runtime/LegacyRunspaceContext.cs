@@ -9,7 +9,6 @@ using PSRule.Definitions;
 using PSRule.Definitions.Conventions;
 using PSRule.Definitions.Expressions;
 using PSRule.Definitions.Rules;
-using PSRule.Host;
 using PSRule.Options;
 using PSRule.Pipeline;
 using PSRule.Pipeline.Runs;
@@ -97,6 +96,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     internal IEnumerable<InvokeResult>? Output { get; private set; }
 
+    public IRun? Run { get; private set; }
+
     internal TargetObject? TargetObject { get; private set; }
 
     public ISourceFile? Source { get; private set; }
@@ -104,6 +105,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     internal ITargetBinder? TargetBinder { get; private set; }
 
     public ILanguageScope? Scope { get; private set; }
+
+    string? IResourceContext.Scope => Scope?.Name;
 
     public ResourceKind Kind => throw new NotImplementedException();
 
@@ -264,80 +267,16 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public bool Match(IResource resource)
     {
-        return HostHelper.Match(this, resource);
-    }
-
-    private static void EnableLogging(PowerShell ps)
-    {
-        ps.Streams.Error.DataAdded += Error_DataAdded;
-        ps.Streams.Warning.DataAdded += Warning_DataAdded;
-        ps.Streams.Verbose.DataAdded += Verbose_DataAdded;
-        ps.Streams.Information.DataAdded += Information_DataAdded;
-        ps.Streams.Debug.DataAdded += Debug_DataAdded;
-    }
-
-    private static void Debug_DataAdded(object sender, DataAddedEventArgs e)
-    {
-        if (CurrentThread?.Logger == null)
-            return;
-
-        if (sender is not PSDataCollection<DebugRecord> collection)
-            return;
-
-        var record = collection[e.Index];
-        CurrentThread.Logger.LogDebug(EventId.None, record.Message);
-    }
-
-    private static void Information_DataAdded(object sender, DataAddedEventArgs e)
-    {
-        if (CurrentThread?.Logger == null)
-            return;
-
-        if (sender is not PSDataCollection<InformationRecord> collection)
-            return;
-
-        var record = collection[e.Index];
-        CurrentThread.Logger.LogInformation(EventId.None, record.MessageData.ToString());
-    }
-
-    private static void Verbose_DataAdded(object sender, DataAddedEventArgs e)
-    {
-        if (CurrentThread?.Logger == null)
-            return;
-
-        if (sender is not PSDataCollection<VerboseRecord> collection)
-            return;
-
-        var record = collection[e.Index];
-        CurrentThread.Logger.LogVerbose(EventId.None, record.Message);
-    }
-
-    private static void Warning_DataAdded(object sender, DataAddedEventArgs e)
-    {
-        if (CurrentThread?.Logger == null)
-            return;
-
-        if (sender is not PSDataCollection<WarningRecord> collection)
-            return;
-
-        var record = collection[e.Index];
-        CurrentThread.Logger.LogWarning(EventId.None, record.Message);
-    }
-
-    private static void Error_DataAdded(object sender, DataAddedEventArgs e)
-    {
-        if (CurrentThread == null)
-            return;
-
-        CurrentThread._RuleErrors++;
-        if (CurrentThread.Logger == null)
-            return;
-
-        if (sender is not PSDataCollection<ErrorRecord> collection)
-            return;
-
-        var record = collection[e.Index];
-        CurrentThread.Logger.LogError(record);
+        try
+        {
+            EnterLanguageScope(resource.Source);
+            var filter = Scope!.GetFilter(ResourceKind.Rule);
+            return filter == null || filter.Match(resource);
+        }
+        finally
+        {
+            ExitLanguageScope(resource.Source);
+        }
     }
 
     public void Error(ActionPreferenceStopException ex)
@@ -533,16 +472,23 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         throw new NotImplementedException();
     }
 
+    public void EnterRun(IRun run)
+    {
+        Run = run;
+    }
+
     /// <summary>
     /// Enter the rule block scope.
     /// </summary>
-    public RuleRecord EnterRuleBlock(IRuleBlock ruleBlock)
+    public RuleRecord EnterRuleBlock(IRun run, IRuleBlock ruleBlock)
     {
+        EnterRun(run);
         EnterLanguageScope(ruleBlock.Source);
 
         _RuleErrors = 0;
         RuleBlock = ruleBlock;
         RuleRecord = new RuleRecord(
+            run: run,
             ruleId: ((ILanguageBlock)ruleBlock).Id,
             @ref: ((IResource)ruleBlock).Ref.GetValueOrDefault().Name,
             targetObject: TargetObject!,
@@ -756,18 +702,18 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         if (string.IsNullOrEmpty(name))
             return false;
 
-        // Get from baseline configuration
-        if (Scope != null && Scope.TryConfigurationValue(name, out var result))
+        // Get from run.
+        if (Run != null && Run.TryConfigurationValue(name, out var result))
         {
             value = result;
             return true;
         }
 
-        // Check if value exists in Rule definition defaults
+        // Check if value exists in Rule definition defaults.
         if (RuleBlock == null || RuleBlock.Configuration == null || !RuleBlock.Configuration.ContainsKey(name))
             return false;
 
-        // Get from rule default
+        // Get from rule default.
         value = RuleBlock.Configuration[name];
         return true;
     }

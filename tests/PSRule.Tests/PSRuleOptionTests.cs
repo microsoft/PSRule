@@ -3,10 +3,14 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Definitions.Rules;
 using PSRule.Pipeline;
+using PSRule.Pipeline.Runs;
+using PSRule.Runtime;
 
 namespace PSRule;
 
@@ -112,13 +116,22 @@ public sealed class PSRuleOptionTests : ContextBaseTests
 
     #region Helper methods
 
+    private IRun GetRun(PSRuleOption? option)
+    {
+        var o = option ?? GetOption();
+        var runConfig = new RunConfiguration(o.Configuration.ToDictionary());
+        return new Run(NullLogger.Instance, ".", "run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph(), runConfig);
+    }
+
     private Runtime.Configuration GetConfigurationHelper(PSRuleOption option)
     {
+        var run = GetRun(option);
         var optionBuilder = new OptionContextBuilder(option);
         var pipeline = GetPipelineContext(option: option, optionBuilder: optionBuilder);
         var context = new Runtime.LegacyRunspaceContext(pipeline);
         context.Initialize(null);
         context.Begin();
+        context.EnterRun(run);
         context.EnterLanguageScope(GetSource()[0].File[0]);
         return new Runtime.Configuration(pipeline.RunspaceContext);
     }

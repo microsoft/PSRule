@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using PSRule.Options;
 using PSRule.Pipeline;
 
@@ -80,7 +81,7 @@ public sealed class SourcePipelineBuilderTests : BaseTests
     }
 
     [Theory]
-    [InlineData("", 29)]
+    [InlineData("", 33)]
     [InlineData("John's Documents", 1)]
     public void Directory_WithDirectory_ShouldFindCount(string path, int count)
     {
@@ -93,7 +94,7 @@ public sealed class SourcePipelineBuilderTests : BaseTests
     }
 
     [Theory]
-    [InlineData("", 21)]
+    [InlineData("", 23)]
     public void Directory_WithDirectoryAndDisablePowerShell_ShouldFindCount(string path, int count)
     {
         var option = GetOption();
@@ -104,10 +105,16 @@ public sealed class SourcePipelineBuilderTests : BaseTests
 
         Assert.Single(sources);
         Assert.Equal(count, sources[0].File.Length);
+
+        Array.ForEach(sources[0].File, file =>
+        {
+            Assert.False(file.Path.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase));
+            Assert.False(file.Path.EndsWith(".psd1", StringComparison.OrdinalIgnoreCase));
+        });
     }
 
     [Theory]
-    [InlineData("", 21)]
+    [InlineData("", 23)]
     public void Directory_WithDirectoryAndModuleOnly_ShouldFindCount(string path, int count)
     {
         var option = GetOption();

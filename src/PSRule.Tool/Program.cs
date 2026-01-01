@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine;
-using System.CommandLine.Parsing;
 using System.Management.Automation;
 using PSRule.Tool.Adapters;
 
@@ -33,7 +31,7 @@ static class Program
 
         var execute = async () =>
         {
-            return await ClientBuilder.New().InvokeAsync(args);
+            return await ClientBuilder.New().Parse(args).InvokeAsync();
         };
 
         if (AdapterBuilder.TryAdapter(args, out var adapterExecute))

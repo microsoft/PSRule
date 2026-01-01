@@ -16,7 +16,7 @@ public sealed class ConventionTests : BaseTests
     {
         var testObject1 = new TestObject { Name = "TestObject1" };
         var option = GetOption();
-        option.Rule.Include = ["ConventionTest"];
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["ConventionTest"]);
         option.Convention.Include = ["Convention1"];
 
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);
@@ -38,7 +38,7 @@ public sealed class ConventionTests : BaseTests
     {
         var testObject1 = new TestObject { Name = "TestObject1" };
         var option = GetOption();
-        option.Rule.Include = ["ConventionTest"];
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["ConventionTest"]);
 
         // Order 1
         option.Convention.Include = ["Convention1", "Convention2"];
@@ -73,7 +73,7 @@ public sealed class ConventionTests : BaseTests
     {
         var testObject1 = new TestObject { Name = "TestObject1" };
         var option = GetOption();
-        option.Rule.Include = ["WithLocalizedDataPrecondition"];
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["WithLocalizedDataPrecondition"]);
         option.Convention.Include = ["Convention.WithLocalizedData"];
         var writer = new TestWriter(option);
         var builder = PipelineBuilder.Invoke(GetSource(), option, null);

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections;
+using System.Diagnostics;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
 using PSRule.Definitions.ModuleConfigs;
@@ -10,11 +11,10 @@ using PSRule.Definitions.SuppressionGroups;
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
 /// <summary>
 /// Define a cache for resources.
 /// </summary>
+[DebuggerDisplay("Count = {Baselines.Count + _Resources.Count}, Unresolved = {_Unresolved.Count}, Issues = {_TrackedIssues.Count}")]
 internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceCache
 {
     /// <summary>
@@ -32,7 +32,7 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
     /// </summary>
     private readonly List<IResource> _Resources = [];
 
-    internal readonly Dictionary<string, (Baseline baseline, BaselineRef baselineRef)> Baselines = new(StringComparer.OrdinalIgnoreCase);
+    // private readonly Dictionary<string, (Baseline baseline, BaselineRef baselineRef)> _Baselines = new(StringComparer.OrdinalIgnoreCase);
 
     public IEnumerable<ResourceIssue> Issues => _TrackedIssues;
 
@@ -47,11 +47,11 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
         {
 
         }
-        else if (TryBaseline(resource, out var baseline) && TryBaselineRef(resource.Id, out var baselineRef))
+        else if (TryBaseline(resource, out var baseline))
         {
-            RemoveBaselineRef(resource.Id);
+            UntrackUnresolved(resource.Kind, resource.Id);
             _Resources.Add(baseline!);
-            Baselines.Add(resource.Id.Value, (baseline!, baselineRef!));
+            // _Baselines.Add(resource.Id.Value, (baseline!, baselineRef!));
             return true;
         }
         else if (TrySelector(resource, out var selector))
@@ -63,12 +63,12 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
         {
             switch (moduleConfig!.Spec)
             {
-                case IModuleConfigV1Spec v1:
-                    TrackUnresolvedBaseline(moduleConfig.Source.Module, v1.Rule?.Baseline);
+                case IModuleConfigV1Spec v1 when v1?.Rule?.Baseline != null:
+                    TrackUnresolved(ResourceKind.Baseline, moduleConfig.Source.Module, v1.Rule.Baseline.Value);
                     break;
 
-                case IModuleConfigV2Spec v2:
-                    TrackUnresolvedBaseline(moduleConfig.Source.Module, v2.Rule?.Baseline);
+                case IModuleConfigV2Spec v2 when v2?.Rule?.Baseline != null:
+                    TrackUnresolved(ResourceKind.Baseline, moduleConfig.Source.Module, v2.Rule.Baseline.Value);
                     break;
             }
 
@@ -94,15 +94,42 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
         return false;
     }
 
-    private void TrackUnresolvedBaseline(string? module, string? baseline)
+    /// <inheritdoc/>
+    public bool TryGet<T>(string? id, out T? resource) where T : IResource
     {
-        if (!string.IsNullOrEmpty(baseline) && baseline != null && module != null)
+        resource = default;
+        if (string.IsNullOrEmpty(id))
+            return false;
+
+        resource = _Resources.OfType<T>().FirstOrDefault(r => ResourceIdEqualityComparer.IdEquals(r.Id, id));
+        return resource != null;
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetType<T>() where T : IResource
+    {
+        return _Resources.OfType<T>();
+    }
+
+    private void TrackUnresolved(ResourceKind kind, string defaultScope, ResourceIdReference reference)
+    {
+        var id = reference.AsResourceId(ResourceIdKind.Unknown, defaultScope);
+        if (_Resources.Where(r => r.Kind == kind).FirstOrDefault(r => ResourceIdEqualityComparer.IdEquals(r.Id, id)) != null)
+            return;
+
+        var r = new ResourceRef(id.Value, kind);
+        if (_Unresolved.Contains(r))
+            return;
+
+        _Unresolved.Add(r);
+    }
+
+    private void UntrackUnresolved(ResourceKind kind, ResourceId resourceId)
+    {
+        foreach (var r in _Unresolved.ToArray())
         {
-            var baselineId = ResourceHelper.GetIdString(module, baseline);
-            if (!Baselines.ContainsKey(baselineId))
-            {
-                _Unresolved.Add(new BaselineRef(baselineId, ScopeType.Baseline));
-            }
+            if (r.Kind == kind && ResourceIdEqualityComparer.IdEquals(r.Id, resourceId.Value))
+                _Unresolved.Remove(r);
         }
     }
 
@@ -145,15 +172,6 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
 
         baselineRef = br;
         return true;
-    }
-
-    private void RemoveBaselineRef(ResourceId resourceId)
-    {
-        foreach (var r in _Unresolved.ToArray())
-        {
-            if (ResourceIdEqualityComparer.IdEquals(r.Id, resourceId.Value))
-                _Unresolved.Remove(r);
-        }
     }
 
     private static bool TryBaseline(IResource resource, out Baseline? baseline)
@@ -214,5 +232,3 @@ internal sealed class ResourceCache(IList<ResourceRef>? unresolved) : IResourceC
 
     #endregion IEnumerable<IResource>
 }
-
-#nullable restore

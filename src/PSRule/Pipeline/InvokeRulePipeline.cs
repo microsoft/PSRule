@@ -4,6 +4,7 @@
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Definitions;
+using PSRule.Definitions.Rules;
 using PSRule.Host;
 using PSRule.Options;
 using PSRule.Pipeline.Runs;
@@ -16,7 +17,6 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
 {
     private readonly RuleOutcome _Outcome;
     private readonly RunCollection _Runs;
-    private readonly DependencyGraph<IRuleBlock> _RuleGraph;
 
     // A per rule summary of rules that have been processed and the outcome
     private readonly Dictionary<string, RuleSummaryRecord> _Summary;
@@ -28,13 +28,15 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     private readonly ExecutionActionPreference _ExecutionNoValidInputOption;
 
     // Track whether Dispose has been called.
-    private bool _Disposed;
+    // private bool _Disposed;
 
     internal InvokeRulePipeline(PipelineContext context, Source[] source, RuleOutcome outcome)
         : base(context, source)
     {
-        _RuleGraph = HostHelper.GetRuleBlockGraphV2(Context, Pipeline.ResourceCache);
-        _Runs = new RunCollectionBuilder(Pipeline.ResourceCache, context.Option, context.RunInstance).WithDefaultRun(_RuleGraph).Build();
+        var runBuilder = new RunCollectionBuilder(Pipeline.ResourceCache, Pipeline.Writer, context.Option, context.LanguageScope, context.RunInstance);
+
+        _Runs = runBuilder.WithBaselinesOrDefault(Context).Build();
+
         RuleCount = _Runs.RuleCount;
 
         if (RuleCount == 0)
@@ -56,8 +58,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     {
         base.Begin();
 
-        var allRuleBlocks = _RuleGraph.GetAll();
-        var resourceIndex = new ResourceIndex(allRuleBlocks);
+        var resourceIndex = new ResourceIndex(Pipeline.ResourceCache.OfType<IRuleV1>());
 
         _SuppressionFilter = new SuppressionFilter(Context, Pipeline.Option.Suppression, resourceIndex);
         _SuppressionGroupFilter = new SuppressionFilter(Pipeline.SuppressionGroup, resourceIndex);
@@ -150,7 +151,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
             var ruleBlock = ruleBlockTarget.Value;
 
             // Enter rule block scope
-            var ruleRecord = Context.EnterRuleBlock(ruleBlock: ruleBlock);
+            var ruleRecord = Context.EnterRuleBlock(run, ruleBlock: ruleBlock);
             ruleCounter++;
 
             try
@@ -259,15 +260,15 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
         s.Add(outcome);
     }
 
-    protected override void Dispose(bool disposing)
-    {
-        if (!_Disposed)
-        {
-            if (disposing)
-                _RuleGraph.Dispose();
+    // protected override void Dispose(bool disposing)
+    // {
+    //     if (!_Disposed)
+    //     {
+    //         // if (disposing)
+    //         //     _Runs.Dispose();
 
-            _Disposed = true;
-        }
-        base.Dispose(disposing);
-    }
+    //         _Disposed = true;
+    //     }
+    //     base.Dispose(disposing);
+    // }
 }

@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
 using System.Management.Automation;
+using PSRule.CommandLine;
 using PSRule.Pipeline;
 using PSRule.Runtime;
 
@@ -15,19 +13,19 @@ namespace PSRule.EditorServices.Hosting;
 /// </summary>
 internal sealed class ServerHostContext : HostContext
 {
-    private readonly InvocationContext _Invocation;
+    private readonly ClientContext _ClientContext;
     private readonly bool _Verbose;
     private readonly bool _Debug;
 
-    public ServerHostContext(InvocationContext invocation, bool verbose, bool debug)
+    public ServerHostContext(ClientContext clientContext, bool verbose, bool debug)
     {
-        _Invocation = invocation;
+        _ClientContext = clientContext;
         _Verbose = verbose;
         _Debug = debug;
 
         if (_Verbose)
         {
-            _Invocation.Console.WriteLine($"Using working path: {Directory.GetCurrentDirectory()}");
+            _ClientContext.Console.Out.WriteLine($"Using working path: {Directory.GetCurrentDirectory()}");
         }
     }
 
@@ -72,20 +70,20 @@ internal sealed class ServerHostContext : HostContext
         switch (logLevel)
         {
             case LogLevel.Trace:
-                _Invocation.Console.WriteLine(formatter(state, exception));
+                _ClientContext.Console.Out.WriteLine(formatter(state, exception));
                 break;
             case LogLevel.Debug:
-                _Invocation.Console.WriteLine(formatter(state, exception));
+                _ClientContext.Console.Out.WriteLine(formatter(state, exception));
                 break;
             case LogLevel.Information:
-                _Invocation.Console.WriteLine(formatter(state, exception));
+                _ClientContext.Console.Out.WriteLine(formatter(state, exception));
                 break;
             case LogLevel.Warning:
-                _Invocation.Console.WriteLine(formatter(state, exception));
+                _ClientContext.Console.Out.WriteLine(formatter(state, exception));
                 break;
             case LogLevel.Error:
             case LogLevel.Critical:
-                _Invocation.Console.WriteLine(formatter(state, exception));
+                _ClientContext.Console.Error.WriteLine(formatter(state, exception));
                 base.Log(logLevel, eventId, state, exception, formatter);
                 break;
         }

@@ -282,7 +282,7 @@
           <TableRowEntry>
             <TableColumnItems>
               <TableColumnItem>
-                <PropertyName>Name</PropertyName>
+                <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Outcome</PropertyName>
@@ -326,7 +326,7 @@
             <Wrap/>
             <TableColumnItems>
               <TableColumnItem>
-                <PropertyName>Name</PropertyName>
+                <PropertyName>RuleName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Outcome</PropertyName>

@@ -367,6 +367,7 @@ internal sealed class SarifBuilder
         return new RunAutomationDetails
         {
             Id = run.Id,
+            Guid = run.Guid,
             CorrelationGuid = run.CorrelationGuid,
             Description = run.Description?.Text != null ? GetMessage(run.Description?.Text!) : null,
         };

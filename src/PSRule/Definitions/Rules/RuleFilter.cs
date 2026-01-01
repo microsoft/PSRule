@@ -13,12 +13,17 @@ namespace PSRule.Definitions.Rules;
 /// </summary>
 internal sealed class RuleFilter : IResourceFilter
 {
-    internal readonly string[] Include;
-    internal readonly string[] Excluded;
-    internal readonly Hashtable Tag;
-    internal readonly ResourceLabels Labels;
+    internal readonly ResourceIdReference[]? Include;
+    internal readonly ResourceIdReference[]? Excluded;
+    internal readonly Hashtable? Tag;
+    internal readonly ResourceLabels? Labels;
     internal readonly bool IncludeLocal;
-    internal readonly WildcardPattern WildcardMatch;
+    internal readonly WildcardPattern? WildcardMatch;
+
+    /// <summary>
+    /// A scope to limit rule matching.
+    /// </summary>
+    public string? Scope { get; }
 
     /// <summary>
     /// Filter rules by id or tag.
@@ -28,21 +33,23 @@ internal sealed class RuleFilter : IResourceFilter
     /// <param name="exclude">Rule that are always excluded by name.</param>
     /// <param name="includeLocal">Determine if local rules are automatically included.</param>
     /// <param name="labels">Only accept rules that have these labels.</param>
-    public RuleFilter(string[] include, Hashtable tag, string[] exclude, bool? includeLocal, ResourceLabels labels)
+    /// <param name="scope">Limit to a specific scope.</param>
+    public RuleFilter(ResourceIdReference[]? include, Hashtable? tag, ResourceIdReference[]? exclude, bool? includeLocal, ResourceLabels? labels, string? scope)
     {
         Include = include == null || include.Length == 0 ? null : include;
         Excluded = exclude == null || exclude.Length == 0 ? null : exclude;
         Tag = tag ?? null;
         Labels = labels ?? null;
-        IncludeLocal = includeLocal ?? RuleOption.Default.IncludeLocal.Value;
+        IncludeLocal = includeLocal ?? RuleOption.Default.IncludeLocal!.Value;
         WildcardMatch = null;
+        Scope = scope;
 
-        if (include != null && include.Length > 0 && WildcardPattern.ContainsWildcardCharacters(include[0]))
+        if (include != null && include.Length > 0 && WildcardPattern.ContainsWildcardCharacters(include[0].Raw))
         {
             if (include.Length > 1)
                 throw new NotSupportedException(PSRuleResources.MatchSingleName);
 
-            WildcardMatch = new WildcardPattern(include[0]);
+            WildcardMatch = new WildcardPattern(include[0].Raw);
         }
     }
 
@@ -60,7 +67,7 @@ internal sealed class RuleFilter : IResourceFilter
 
     private bool IsExcluded(IEnumerable<ResourceId> ids)
     {
-        if (Excluded == null)
+        if (Excluded == null || Excluded.Length == 0)
             return false;
 
         foreach (var id in ids)
@@ -75,6 +82,9 @@ internal sealed class RuleFilter : IResourceFilter
     {
         foreach (var id in ids)
         {
+            if (!string.IsNullOrEmpty(Scope) && !string.Equals(id.Scope, Scope, StringComparison.OrdinalIgnoreCase))
+                continue;
+
             if (Include == null || Contains(id, Include) || MatchWildcard(id.Name))
                 return TagEquals(tag) && LabelEquals(labels);
         }
@@ -113,7 +123,7 @@ internal sealed class RuleFilter : IResourceFilter
         return true;
     }
 
-    private static bool Contains(ResourceId id, string[] set)
+    private static bool Contains(ResourceId id, ResourceIdReference[] set)
     {
         for (var i = 0; set != null && i < set.Length; i++)
         {

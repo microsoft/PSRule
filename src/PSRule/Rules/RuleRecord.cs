@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
+using PSRule.Pipeline.Runs;
 using YamlDotNet.Serialization;
 
 namespace PSRule.Rules;
@@ -25,8 +26,9 @@ public sealed class RuleRecord : IDetailedRuleResultV2
 
     internal readonly ResultDetail _Detail;
 
-    internal RuleRecord(ResourceId ruleId, string @ref, ITargetObject targetObject, string targetName, string targetType, IResourceTags tag, IRuleHelpInfo info, Hashtable? field, RuleProperties @default, ISourceExtent? extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, RuleOverride? @override = null)
+    internal RuleRecord(IRun run, ResourceId ruleId, string @ref, ITargetObject targetObject, string targetName, string targetType, IResourceTags tag, IRuleHelpInfo info, Hashtable? field, RuleProperties @default, ISourceExtent? extent, RuleOutcome outcome = RuleOutcome.None, RuleOutcomeReason reason = RuleOutcomeReason.None, RuleOverride? @override = null)
     {
+        Run = run;
         _TargetObject = targetObject;
         RuleId = ruleId.Value;
         RuleName = ruleId.Name;
@@ -51,11 +53,15 @@ public sealed class RuleRecord : IDetailedRuleResultV2
             Field = field;
     }
 
+    [JsonIgnore]
+    [YamlIgnore]
+    public IRun Run { get; }
+
     /// <summary>
     /// A unique identifier for the run.
     /// </summary>
     [JsonProperty(PropertyName = "runId")]
-    public string? RunId { get; internal set; }
+    public string? RunId => Run.Id;
 
     /// <summary>
     /// A unique identifier for the rule.

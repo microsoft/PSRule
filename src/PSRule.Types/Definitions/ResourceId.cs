@@ -83,7 +83,7 @@ public struct ResourceId : IEquatable<ResourceId>, IEquatable<string>
     /// <inheritdoc/>
     public bool Equals(string id)
     {
-        return TryParse(id, out var scope, out var name) &&
+        return TryParseComponents(id, out var scope, out var name) &&
             EqualOrNull(Scope, scope) &&
             EqualOrNull(Name, name);
     }
@@ -128,10 +128,10 @@ public struct ResourceId : IEquatable<ResourceId>, IEquatable<string>
         return TryParse(id, kind, out var value) && value != null ? value.Value : default;
     }
 
-    private static bool TryParse(string id, ResourceIdKind kind, out ResourceId? value)
+    internal static bool TryParse(string id, ResourceIdKind kind, out ResourceId? value)
     {
         value = null;
-        if (string.IsNullOrEmpty(id) || !TryParse(id, out var scope, out var name) || name == null)
+        if (string.IsNullOrEmpty(id) || !TryParseComponents(id, out var scope, out var name) || name == null)
             return false;
 
         scope ??= ResourceHelper.STANDALONE_SCOPE_NAME;
@@ -139,16 +139,38 @@ public struct ResourceId : IEquatable<ResourceId>, IEquatable<string>
         return true;
     }
 
-    private static bool TryParse(string id, out string? scope, out string? name)
+    internal static bool TryParse(string id, ResourceIdKind kind, string? defaultScope, out ResourceId? value)
+    {
+        value = null;
+        if (string.IsNullOrEmpty(id) || !TryParseComponents(id, out var scope, out var name) || name == null)
+            return false;
+
+        scope ??= defaultScope ?? ResourceHelper.STANDALONE_SCOPE_NAME;
+        value = new ResourceId(id, scope, name, kind);
+        return true;
+    }
+
+    /// <summary>
+    /// Parses a resource identifier into its scope and name components.
+    /// </summary>
+    /// <param name="raw">The raw resource identifier string.</param>
+    /// <param name="scope">The scope component of the resource identifier.</param>
+    /// <param name="name">The name component of the resource identifier.</param>
+    /// <returns>Returns <c>true</c> if the resource identifier was successfully parsed; otherwise, <c>false</c>.</returns>
+    internal static bool TryParseComponents(string raw, out string? scope, out string? name)
     {
         scope = null;
         name = null;
-        if (string.IsNullOrEmpty(id))
+        if (string.IsNullOrEmpty(raw))
             return false;
 
-        var scopeSeparatorIndex = id.IndexOf(SCOPE_SEPARATOR);
-        scope = scopeSeparatorIndex >= 0 ? id.Substring(0, scopeSeparatorIndex) : null;
-        name = id.Substring(scopeSeparatorIndex + 1);
-        return true;
+        var scopeSeparatorIndex = raw.IndexOf(SCOPE_SEPARATOR);
+        scope = scopeSeparatorIndex >= 0 ? raw.Substring(0, scopeSeparatorIndex) : null;
+        name = raw.Substring(scopeSeparatorIndex + 1);
+
+        if (string.IsNullOrEmpty(name))
+            name = null;
+
+        return name != null;
     }
 }
