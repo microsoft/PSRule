@@ -1,12 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 using PSRule.CommandLine;
 
-namespace PSRule.EditorServices.Tests;
+namespace PSRule.EditorServices;
 
 /// <summary>
 /// Tests for hot reload functionality.
@@ -190,14 +187,10 @@ execution:
         }
     }
 
-    private static ClientContext CreateClientContext(string optionPath, string workingPath)
+    private static ClientContext CreateClientContext(string optionPath, string workingPath, IConsole? console = null)
     {
-        var p = new Parser();
-        var result = p.Parse(string.Empty);
-        var invocationContext = new InvocationContext(result);
-
         return new ClientContext(
-            invocation: invocationContext,
+            console: console ?? new TestConsole(),
             option: optionPath,
             verbose: false,
             debug: false,
@@ -208,36 +201,36 @@ execution:
     /// <summary>
     /// A simple test logger for testing purposes.
     /// </summary>
-    private class TestLogger : PSRule.Runtime.ILogger
+    private class TestLogger : Runtime.ILogger
     {
-        public bool IsEnabled(PSRule.Runtime.LogLevel logLevel) => true;
+        public bool IsEnabled(Runtime.LogLevel logLevel) => true;
 
-        public void Log<TState>(PSRule.Runtime.LogLevel logLevel, PSRule.Runtime.EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        public void Log<TState>(Runtime.LogLevel logLevel, Runtime.EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
             // Do nothing for tests
         }
 
-        public void LogInformation(PSRule.Runtime.EventId eventId, string message, params object[] args)
+        public void LogInformation(Runtime.EventId eventId, string message, params object[] args)
         {
             // Do nothing for tests
         }
 
-        public void LogError(PSRule.Runtime.EventId eventId, Exception exception, string message, params object[] args)
+        public void LogError(Runtime.EventId eventId, Exception exception, string message, params object[] args)
         {
             // Do nothing for tests
         }
 
-        public void LogWarning(PSRule.Runtime.EventId eventId, string message, params object[] args)
+        public void LogWarning(Runtime.EventId eventId, string message, params object[] args)
         {
             // Do nothing for tests
         }
 
-        public void LogVerbose(PSRule.Runtime.EventId eventId, string message, params object[] args)
+        public void LogVerbose(Runtime.EventId eventId, string message, params object[] args)
         {
             // Do nothing for tests
         }
 
-        public void LogDebug(PSRule.Runtime.EventId eventId, string message, params object[] args)
+        public void LogDebug(Runtime.EventId eventId, string message, params object[] args)
         {
             // Do nothing for tests
         }

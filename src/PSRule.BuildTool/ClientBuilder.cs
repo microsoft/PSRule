@@ -27,6 +27,8 @@ internal sealed class ClientBuilder
         {
             // Description = CmdStrings.Badge_OutputPath_Description,
         };
+
+        Command.Options.Add(_Global_Debug);
     }
 
     /// <summary>

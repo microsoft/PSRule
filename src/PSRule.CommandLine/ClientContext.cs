@@ -1,11 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine.Invocation;
 using PSRule.Configuration;
 using PSRule.Options;
 using PSRule.Pipeline.Dependencies;
-using PSRule.Runtime;
 
 namespace PSRule.CommandLine;
 
@@ -19,16 +17,16 @@ public sealed class ClientContext
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="invocation"></param>
+    /// <param name="console"></param>
     /// <param name="option"></param>
     /// <param name="verbose"></param>
     /// <param name="debug"></param>
     /// <param name="workingPath"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public ClientContext(InvocationContext invocation, string? option, bool verbose, bool debug, string? workingPath = null)
+    public ClientContext(IConsole console, string? option, bool verbose, bool debug, string? workingPath = null)
     {
         Path = AppDomain.CurrentDomain.BaseDirectory;
-        Invocation = invocation ?? throw new ArgumentNullException(nameof(invocation));
+        Console = console ?? throw new ArgumentNullException(nameof(console));
         Verbose = verbose;
         Debug = debug;
         Host = new ClientHost(this, verbose, debug);
@@ -45,9 +43,9 @@ public sealed class ClientContext
     public string Path { get; }
 
     /// <summary>
-    /// 
+    /// The console for this context.
     /// </summary>
-    public InvocationContext Invocation { get; }
+    public IConsole Console { get; }
 
     /// <summary>
     /// 
@@ -107,7 +105,7 @@ public sealed class ClientContext
     /// <summary>
     /// Set the last error code for the current context.
     /// </summary>
-    internal void SetLastErrorCode(EventId? eventId)
+    internal void SetLastErrorCode(Runtime.EventId? eventId)
     {
         if (eventId == null) return;
 
