@@ -67,8 +67,8 @@ internal sealed class ClientBuilder
         };
         _Global_Path = new Option<string[]>("--path", "-p")
         {
-            Recursive = true,
             Description = CmdStrings.Global_Path_Description,
+            Recursive = true,
         };
 
         // Arguments that are hidden because they are intercepted early in the process.
@@ -165,6 +165,7 @@ internal sealed class ClientBuilder
         cmd.Options.Add(_Global_Option);
         cmd.Options.Add(_Global_Verbose);
         cmd.Options.Add(_Global_Debug);
+        cmd.Options.Add(_Global_Path);
         cmd.Options.Add(_Global_WaitForDebugger);
         cmd.Options.Add(_Global_InGitHubActions);
     }
