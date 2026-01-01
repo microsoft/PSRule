@@ -43,6 +43,11 @@ internal sealed class ClientBuilder
     private readonly Option<string[]> _Run_Outcome;
     private readonly Option<bool> _Run_NoRestore;
     private readonly Option<string> _Run_JobSummaryPath;
+    private readonly Option<string[]> _Get_Module;
+    private readonly Option<string[]> _Get_Name;
+    private readonly Option<string> _Get_Baseline;
+    private readonly Option<bool> _Get_IncludeDependencies;
+    private readonly Option<bool> _Get_NoRestore;
 
     private ClientBuilder(RootCommand cmd)
     {
@@ -154,6 +159,28 @@ internal sealed class ClientBuilder
             description: CmdStrings.Module_Restore_Force_Description
         );
 
+        // Options for the get command.
+        _Get_Module = new Option<string[]>(
+            ["-m", "--module"],
+            description: CmdStrings.Run_Module_Description
+        );
+        _Get_Name = new Option<string[]>(
+            ["--name"],
+            description: CmdStrings.Run_Name_Description
+        );
+        _Get_Baseline = new Option<string>(
+            ["--baseline"],
+            description: CmdStrings.Run_Baseline_Description
+        );
+        _Get_IncludeDependencies = new Option<bool>(
+            ["--include-dependencies"],
+            description: "Include rule dependencies in the output."
+        );
+        _Get_NoRestore = new Option<bool>(
+            "--no-restore",
+            description: "Do not restore modules before getting rules."
+        );
+
         cmd.AddGlobalOption(_Global_Option);
         cmd.AddGlobalOption(_Global_Verbose);
         cmd.AddGlobalOption(_Global_Debug);
@@ -171,6 +198,7 @@ internal sealed class ClientBuilder
         };
         var builder = new ClientBuilder(cmd);
         builder.AddRun();
+        builder.AddGet();
         builder.AddModule();
         builder.AddRestore();
         return builder.Command;
@@ -215,6 +243,42 @@ internal sealed class ClientBuilder
             var output = await RunCommand.RunAsync(option, client);
             invocation.ExitCode = output.ExitCode;
         });
+        Command.AddCommand(cmd);
+    }
+
+    /// <summary>
+    /// Add the <c>get</c> command.
+    /// </summary>
+    private void AddGet()
+    {
+        var cmd = new Command("get", "Get information about rules and other PSRule resources.");
+
+        // Add the rule subcommand
+        var ruleCmd = new Command("rule", "Get rule information including metadata such as tags, labels, and annotations.");
+        ruleCmd.AddOption(_Global_Path);
+        ruleCmd.AddOption(_Get_Module);
+        ruleCmd.AddOption(_Get_Name);
+        ruleCmd.AddOption(_Get_Baseline);
+        ruleCmd.AddOption(_Get_IncludeDependencies);
+        ruleCmd.AddOption(_Get_NoRestore);
+        
+        ruleCmd.SetHandler(async (invocation) =>
+        {
+            var option = new GetRuleOptions
+            {
+                Path = invocation.ParseResult.GetValueForOption(_Global_Path),
+                Module = invocation.ParseResult.GetValueForOption(_Get_Module),
+                Name = invocation.ParseResult.GetValueForOption(_Get_Name),
+                Baseline = invocation.ParseResult.GetValueForOption(_Get_Baseline),
+                IncludeDependencies = invocation.ParseResult.GetValueForOption(_Get_IncludeDependencies),
+                NoRestore = invocation.ParseResult.GetValueForOption(_Get_NoRestore),
+            };
+
+            var client = GetClientContext(invocation);
+            invocation.ExitCode = await GetCommand.GetRuleAsync(option, client);
+        });
+
+        cmd.AddCommand(ruleCmd);
         Command.AddCommand(cmd);
     }
 
