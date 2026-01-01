@@ -1,11 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace PSRule.Options;
 
 /// <summary>
 /// Determine the rule severity level at which to break the pipeline.
 /// </summary>
+[JsonConverter(typeof(StringEnumConverter))]
 public enum BreakLevel
 {
     /// <summary>
