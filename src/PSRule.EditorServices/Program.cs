@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine;
-using System.CommandLine.Parsing;
 using System.Management.Automation;
 
 namespace PSRule.EditorServices;
@@ -20,6 +18,6 @@ static class Program
        );
 
         System.Environment.SetEnvironmentVariable("PSModulePath", modulePath, EnvironmentVariableTarget.Process);
-        return await ClientBuilder.New().InvokeAsync(args);
+        return await ClientBuilder.New().Parse(args).InvokeAsync();
     }
 }

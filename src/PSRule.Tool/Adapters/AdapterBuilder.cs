@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine;
 using System.Diagnostics.CodeAnalysis;
 
 namespace PSRule.Tool.Adapters;
@@ -22,7 +21,7 @@ internal sealed class AdapterBuilder
 
             execute = async () =>
             {
-                return await ClientBuilder.New().InvokeAsync(args);
+                return await ClientBuilder.New().Parse(args).InvokeAsync();
             };
         }
         else if (ShouldUseAzurePipelinesAdapter(args))
@@ -32,7 +31,7 @@ internal sealed class AdapterBuilder
 
             execute = async () =>
             {
-                return await ClientBuilder.New().InvokeAsync(args);
+                return await ClientBuilder.New().Parse(args).InvokeAsync();
             };
         }
 

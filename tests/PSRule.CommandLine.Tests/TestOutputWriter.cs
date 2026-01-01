@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine;
-using System.CommandLine.IO;
 using System.Text;
 using Xunit.Abstractions;
 
@@ -24,6 +22,16 @@ internal sealed class TestOutputWriter(ITestOutputHelper testOutput) : IConsole
 
     /// <inheritdoc />
     public bool IsInputRedirected { get; }
+
+    public Stream OpenStandardInput()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Stream OpenStandardOutput()
+    {
+        throw new NotImplementedException();
+    }
 
     internal sealed class StandardStreamWriter(ITestOutputHelper testOutput) : TextWriter, IStandardStreamWriter
     {

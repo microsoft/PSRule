@@ -1,8 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine;
-using System.CommandLine.IO;
+using PSRule.CommandLine;
 
 namespace PSRule.Tool;
 
@@ -12,10 +11,10 @@ public sealed class CommandTests
     public async Task Run()
     {
         var console = new TestConsole();
-        var builder = ClientBuilder.New();
+        var builder = ClientBuilder.New(console);
         Assert.NotNull(builder.Subcommands.FirstOrDefault(c => c.Name == "run"));
 
-        await builder.InvokeAsync("run", console);
+        await builder.Parse("run").InvokeAsync();
         var output = console.Out.ToString();
 
         Assert.NotNull(output);
@@ -26,13 +25,13 @@ public sealed class CommandTests
     public async Task ModuleInit()
     {
         var console = new TestConsole();
-        var builder = ClientBuilder.New();
+        var builder = ClientBuilder.New(console);
         var module = builder.Subcommands.FirstOrDefault(c => c.Name == "module");
 
         Assert.NotNull(module);
         Assert.NotNull(module.Subcommands.FirstOrDefault(c => c.Name == "init"));
 
-        await builder.InvokeAsync("module init", console);
+        await builder.Parse("module init").InvokeAsync();
 
         var output = console.Out.ToString();
         Assert.NotNull(output);
@@ -42,13 +41,13 @@ public sealed class CommandTests
     public async Task ModuleRestore()
     {
         var console = new TestConsole();
-        var builder = ClientBuilder.New();
+        var builder = ClientBuilder.New(console);
         var module = builder.Subcommands.FirstOrDefault(c => c.Name == "module");
 
         Assert.NotNull(module);
         Assert.NotNull(module.Subcommands.FirstOrDefault(c => c.Name == "restore"));
 
-        await builder.InvokeAsync("module restore", console);
+        await builder.Parse("module restore").InvokeAsync();
 
         var output = console.Out.ToString();
         Assert.NotNull(output);

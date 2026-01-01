@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.CommandLine;
-using System.CommandLine.IO;
 using System.Management.Automation;
 using PSRule.Pipeline;
 using PSRule.Runtime;
@@ -31,8 +29,8 @@ public sealed class ClientHost : HostContext
         _Context = context;
         _Verbose = verbose;
         _Debug = debug;
-        _BackgroundColor = Console.BackgroundColor;
-        _ForegroundColor = Console.ForegroundColor;
+        _BackgroundColor = System.Console.BackgroundColor;
+        _ForegroundColor = System.Console.ForegroundColor;
 
         _Context.LogVerbose($"[PSRule] -- Using working path: {Directory.GetCurrentDirectory()}");
     }
@@ -67,21 +65,21 @@ public sealed class ClientHost : HostContext
     /// <inheritdoc/>
     public override void WriteHost(string message, ConsoleColor? backgroundColor = null, ConsoleColor? foregroundColor = null, bool? noNewLine = null)
     {
-        Console.BackgroundColor = backgroundColor.GetValueOrDefault(_BackgroundColor);
-        Console.ForegroundColor = foregroundColor.GetValueOrDefault(_ForegroundColor);
+        System.Console.BackgroundColor = backgroundColor.GetValueOrDefault(_BackgroundColor);
+        System.Console.ForegroundColor = foregroundColor.GetValueOrDefault(_ForegroundColor);
 
         if (noNewLine.GetValueOrDefault(false))
-            _Context.Invocation.Console.Write(message);
+            _Context.Console.Out.Write(message);
         else
-            _Context.Invocation.Console.WriteLine(message);
+            _Context.Console.Out.WriteLine(message);
 
         RevertConsole();
     }
 
     private void RevertConsole()
     {
-        Console.BackgroundColor = _BackgroundColor;
-        Console.ForegroundColor = _ForegroundColor;
+        System.Console.BackgroundColor = _BackgroundColor;
+        System.Console.ForegroundColor = _ForegroundColor;
     }
 
     /// <summary>
@@ -126,13 +124,13 @@ public sealed class ClientHost : HostContext
                 _Context.LogVerbose(formatter(state, exception));
                 break;
             case LogLevel.Debug:
-                _Context.Invocation.Console.WriteLine(formatter(state, exception));
+                _Context.LogDebug(formatter(state, exception));
                 break;
             case LogLevel.Information:
-                _Context.Invocation.Console.WriteLine(formatter(state, exception));
+                _Context.Console.Out.WriteLine(formatter(state, exception));
                 break;
             case LogLevel.Warning:
-                _Context.Invocation.Console.WriteLine(formatter(state, exception));
+                _Context.Console.Out.WriteLine(formatter(state, exception));
                 break;
             case LogLevel.Error:
             case LogLevel.Critical:

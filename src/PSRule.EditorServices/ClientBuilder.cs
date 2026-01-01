@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.Reflection;
 using PSRule.CommandLine;
 using PSRule.CommandLine.Commands;
@@ -48,97 +47,101 @@ internal sealed class ClientBuilder
         Command = cmd;
 
         // Global options.
-        _Global_Option = new Option<string>(
-            ["--option"],
-            getDefaultValue: () => "ps-rule.yaml",
-            description: CmdStrings.Global_Option_Description
-        );
-        _Global_Verbose = new Option<bool>(
-            ["--verbose"],
-            description: CmdStrings.Global_Verbose_Description
-        );
-        _Global_Debug = new Option<bool>(
-            ["--debug"],
-            description: CmdStrings.Global_Debug_Description
-        );
-        _Global_Path = new Option<string[]>(
-            ["-p", "--path"],
-            description: CmdStrings.Global_Path_Description
-        );
+        _Global_Option = new Option<string>("--option")
+        {
+            Description = CmdStrings.Global_Option_Description,
+            DefaultValueFactory = _ => "ps-rule.yaml",
+            Recursive = true,
+        };
+        _Global_Verbose = new Option<bool>("--verbose")
+        {
+            Description = CmdStrings.Global_Verbose_Description,
+            Recursive = true,
+        };
+        _Global_Debug = new Option<bool>("--debug")
+        {
+            Description = CmdStrings.Global_Debug_Description,
+            Recursive = true,
+        };
+        _Global_Path = new Option<string[]>("--path", "-p")
+        {
+            Description = CmdStrings.Global_Path_Description,
+        };
 
         // Options for the run command.
-        _Run_OutputPath = new Option<string>(
-            ["--output-path"],
-            description: CmdStrings.Run_OutputPath_Description
-        );
-        _Run_OutputFormat = new Option<string>(
-            ["-o", "--output"],
-            description: CmdStrings.Run_OutputFormat_Description
-        ).FromAmong("Yaml", "Json", "Markdown", "NUnit3", "Csv", "Sarif");
-        _Run_InputPath = new Option<string[]>(
-            ["-f", "--input-path"],
-            description: CmdStrings.Run_InputPath_Description
-        );
-        _Run_Module = new Option<string[]>(
-            ["-m", "--module"],
-            description: CmdStrings.Run_Module_Description
-        );
-        _Run_Baseline = new Option<string>(
-            ["--baseline"],
-            description: CmdStrings.Run_Baseline_Description
-        );
-        _Run_Formats = new Option<string[]>(
-            ["--formats"],
-            description: CmdStrings.Run_Formats_Description
-        );
+        _Run_OutputPath = new Option<string>("--output-path")
+        {
+            Description = CmdStrings.Run_OutputPath_Description,
+        };
+        _Run_OutputFormat = new Option<string>("--output", "-o")
+        {
+            Description = CmdStrings.Run_OutputFormat_Description,
+        };
+        _Run_OutputFormat.AcceptOnlyFromAmong("Yaml", "Json", "Markdown", "NUnit3", "Csv", "Sarif");
+        _Run_InputPath = new Option<string[]>("--input-path", "-f")
+        {
+            Description = CmdStrings.Run_InputPath_Description,
+        };
+        _Run_Module = new Option<string[]>("--module", "-m")
+        {
+            Description = CmdStrings.Run_Module_Description,
+        };
+        _Run_Baseline = new Option<string>("--baseline")
+        {
+            Description = CmdStrings.Run_Baseline_Description,
+        };
+        _Run_Formats = new Option<string[]>("--formats")
+        {
+            Description = CmdStrings.Run_Formats_Description,
+        };
         _Run_Formats.AllowMultipleArgumentsPerToken = true;
-        _Run_Outcome = new Option<string[]>(
-            ["--outcome"],
-            description: CmdStrings.Run_Outcome_Description
-        ).FromAmong("Pass", "Fail", "Error", "Processed", "Problem");
-        _Run_Outcome.Arity = ArgumentArity.ZeroOrMore;
-        _Run_NoRestore = new Option<bool>(
-            "--no-restore",
-            description: CmdStrings.Run_NoRestore_Description
-        );
+        _Run_Outcome = new Option<string[]>("--outcome")
+        {
+            Description = CmdStrings.Run_Outcome_Description,
+            Arity = ArgumentArity.ZeroOrMore,
+        };
+        _Run_Outcome.AcceptOnlyFromAmong("Pass", "Fail", "Error", "Processed", "Problem");
+        _Run_NoRestore = new Option<bool>("--no-restore")
+        {
+            Description = CmdStrings.Run_NoRestore_Description,
+        };
 
         // Options for the module command.
-        _Module_Init_Force = new Option<bool>(
-            [ARG_FORCE],
-            description: CmdStrings.Module_Init_Force_Description
-        );
-        _Module_Add_Version = new Option<string>
-        (
-            ["--version"],
-            description: CmdStrings.Module_Add_Version_Description
-        );
-        _Module_Add_Force = new Option<bool>(
-            [ARG_FORCE],
-            description: CmdStrings.Module_Add_Force_Description
-        );
-        _Module_Add_SkipVerification = new Option<bool>(
-            ["--skip-verification"],
-            description: CmdStrings.Module_Add_SkipVerification_Description
-        );
-        _Module_Restore_Force = new Option<bool>(
-            [ARG_FORCE],
-            description: CmdStrings.Module_Restore_Force_Description
-        );
+        _Module_Init_Force = new Option<bool>(ARG_FORCE)
+        {
+            Description = CmdStrings.Module_Init_Force_Description
+        };
+        _Module_Add_Version = new Option<string>("--version")
+        {
+            Description = CmdStrings.Module_Add_Version_Description
+        };
+        _Module_Add_Force = new Option<bool>(ARG_FORCE)
+        {
+            Description = CmdStrings.Module_Add_Force_Description
+        };
+        _Module_Add_SkipVerification = new Option<bool>("--skip-verification")
+        {
+            Description = CmdStrings.Module_Add_SkipVerification_Description
+        };
+        _Module_Restore_Force = new Option<bool>(ARG_FORCE)
+        {
+            Description = CmdStrings.Module_Restore_Force_Description
+        };
 
         // Options for the listen command.
-        _Listen_Stdio = new Option<bool>(
-            ["--stdio"],
-            description: CmdStrings.Listen_Stdio_Description
-        );
+        _Listen_Stdio = new Option<bool>("--stdio")
+        {
+            Description = CmdStrings.Listen_Stdio_Description
+        };
 
-        _Listen_Pipe = new Option<string>(
-            ["--pipe"],
-            description: CmdStrings.Listen_Pipe_Description
-        );
+        _Listen_Pipe = new Option<string>("--pipe")
+        {
+            Description = CmdStrings.Listen_Pipe_Description
+        };
 
-        cmd.AddGlobalOption(_Global_Option);
-        cmd.AddGlobalOption(_Global_Verbose);
-        cmd.AddGlobalOption(_Global_Debug);
+        Command.Options.Add(_Global_Option);
+        Command.Options.Add(_Global_Verbose);
+        Command.Options.Add(_Global_Debug);
     }
 
     public RootCommand Command { get; }
@@ -147,7 +150,7 @@ internal sealed class ClientBuilder
     {
         var cmd = new RootCommand(string.Concat(CmdStrings.Cmd_Description, " v", _Version))
         {
-            Name = "ps-rule"
+
         };
 
         var builder = new ClientBuilder(cmd);
@@ -162,47 +165,49 @@ internal sealed class ClientBuilder
     /// </summary>
     private void AddRun()
     {
-        var cmd = new Command("run", CmdStrings.Run_Description);
-        cmd.AddOption(_Global_Path);
-        cmd.AddOption(_Run_OutputPath);
-        cmd.AddOption(_Run_OutputFormat);
-        cmd.AddOption(_Run_InputPath);
-        cmd.AddOption(_Run_Module);
-        cmd.AddOption(_Run_Baseline);
-        cmd.AddOption(_Run_Formats);
-        cmd.AddOption(_Run_Outcome);
-        cmd.AddOption(_Run_NoRestore);
-        cmd.SetHandler(async (invocation) =>
+        var cmd = new Command("run", CmdStrings.Run_Description)
+        {
+            _Global_Path,
+            _Run_OutputPath,
+            _Run_OutputFormat,
+            _Run_InputPath,
+            _Run_Module,
+            _Run_Baseline,
+            _Run_Formats,
+            _Run_Outcome,
+            _Run_NoRestore,
+        };
+        cmd.SetAction(async (parse, cancellationToken) =>
         {
             var option = new RunOptions
             {
-                Path = invocation.ParseResult.GetValueForOption(_Global_Path),
-                InputPath = invocation.ParseResult.GetValueForOption(_Run_InputPath),
-                Module = invocation.ParseResult.GetValueForOption(_Run_Module),
-                Baseline = invocation.ParseResult.GetValueForOption(_Run_Baseline),
-                Formats = invocation.ParseResult.GetValueForOption(_Run_Formats),
-                Outcome = invocation.ParseResult.GetValueForOption(_Run_Outcome).ToRuleOutcome(),
-                OutputPath = invocation.ParseResult.GetValueForOption(_Run_OutputPath),
-                OutputFormat = invocation.ParseResult.GetValueForOption(_Run_OutputFormat).ToOutputFormat(),
-                NoRestore = invocation.ParseResult.GetValueForOption(_Run_NoRestore),
+                Path = parse.GetValue(_Global_Path),
+                InputPath = parse.GetValue(_Run_InputPath),
+                Module = parse.GetValue(_Run_Module),
+                Baseline = parse.GetValue(_Run_Baseline),
+                Formats = parse.GetValue(_Run_Formats),
+                Outcome = parse.GetValue(_Run_Outcome).ToRuleOutcome(),
+                OutputPath = parse.GetValue(_Run_OutputPath),
+                OutputFormat = parse.GetValue(_Run_OutputFormat).ToOutputFormat(),
+                NoRestore = parse.GetValue(_Run_NoRestore),
             };
-            var client = GetClientContext(invocation);
+            var client = GetClientContext(parse);
 
             Environment.TryPathEnvironmentVariable("PSModulePath", out var searchPaths);
             var sp = searchPaths == null ? string.Empty : string.Join(',', searchPaths);
 
             if (client.Verbose)
             {
-                invocation.Console.WriteLine($"VERBOSE: Using workspace: {Environment.GetWorkingPath()}");
-                invocation.Console.WriteLine($"VERBOSE: Using module search path: {sp}");
-                invocation.Console.WriteLine($"VERBOSE: Using language server: {client.Path}");
-                invocation.Console.WriteLine($"VERBOSE: Using cache path: {client.CachePath}");
+                client.Console.Out.WriteLine($"VERBOSE: Using workspace: {Environment.GetWorkingPath()}");
+                client.Console.Out.WriteLine($"VERBOSE: Using module search path: {sp}");
+                client.Console.Out.WriteLine($"VERBOSE: Using language server: {client.Path}");
+                client.Console.Out.WriteLine($"VERBOSE: Using cache path: {client.CachePath}");
             }
 
-            var result = await RunCommand.RunAsync(option, client);
-            invocation.ExitCode = result.ExitCode;
+            var result = await RunCommand.RunAsync(option, client, cancellationToken);
+            return result.ExitCode;
         });
-        Command.AddCommand(cmd);
+        Command.Add(cmd);
     }
 
     /// <summary>
@@ -210,34 +215,33 @@ internal sealed class ClientBuilder
     /// </summary>
     private void AddModule()
     {
-        var cmd = new Command("module", CmdStrings.Module_Description);
+        var cmd = new Command("module", CmdStrings.Module_Description)
+        {
+            _Global_Path,
+        };
 
-        var moduleArg = new Argument<string[]>
-        (
-            "module",
-            CmdStrings.Module_Module_Description
-        );
-        moduleArg.Arity = ArgumentArity.OneOrMore;
+        var requiredModuleArg = new Argument<string[]>("module")
+        {
+            Description = CmdStrings.Module_Module_Description,
+            Arity = ArgumentArity.OneOrMore,
+        };
 
         // Init
-        var init = new Command
-        (
-            "init",
-            CmdStrings.Module_Init_Description
-        );
-        init.AddOption(_Module_Init_Force);
-        init.SetHandler(async (invocation) =>
+        var init = new Command("init", CmdStrings.Module_Init_Description)
+        {
+            _Module_Init_Force,
+        };
+        init.SetAction(async (parse, cancellationToken) =>
         {
             var option = new ModuleOptions
             {
-                Path = invocation.ParseResult.GetValueForOption(_Global_Path),
-                Version = invocation.ParseResult.GetValueForOption(_Module_Add_Version),
-                Force = invocation.ParseResult.GetValueForOption(_Module_Init_Force),
-                SkipVerification = invocation.ParseResult.GetValueForOption(_Module_Add_SkipVerification),
+                Path = parse.GetValue(_Global_Path),
+                Version = parse.GetValue(_Module_Add_Version),
+                Force = parse.GetValue(_Module_Init_Force),
+                SkipVerification = parse.GetValue(_Module_Add_SkipVerification),
             };
 
-            var client = GetClientContext(invocation);
-            invocation.ExitCode = await ModuleCommand.ModuleInitAsync(option, client);
+            return await ModuleCommand.ModuleInitAsync(option, GetClientContext(parse), cancellationToken);
         });
 
         // List
@@ -246,132 +250,123 @@ internal sealed class ClientBuilder
             "list",
             CmdStrings.Module_List_Description
         );
-        list.SetHandler(async (invocation) =>
+        list.SetAction(async (parse, cancellationToken) =>
         {
             var option = new ModuleOptions
             {
-                Path = invocation.ParseResult.GetValueForOption(_Global_Path),
-                Version = invocation.ParseResult.GetValueForOption(_Module_Add_Version),
-                Force = invocation.ParseResult.GetValueForOption(_Module_Add_Force),
-                SkipVerification = invocation.ParseResult.GetValueForOption(_Module_Add_SkipVerification),
+                Path = parse.GetValue(_Global_Path),
+                Version = parse.GetValue(_Module_Add_Version),
+                Force = parse.GetValue(_Module_Add_Force),
+                SkipVerification = parse.GetValue(_Module_Add_SkipVerification),
             };
 
-            var client = GetClientContext(invocation);
-            invocation.ExitCode = await ModuleCommand.ModuleListAsync(option, client);
+            return await ModuleCommand.ModuleListAsync(option, GetClientContext(parse), cancellationToken);
         });
 
         // Add
-        var add = new Command
-        (
-            "add",
-            CmdStrings.Module_Add_Description
-        );
-        add.AddArgument(moduleArg);
-        add.AddOption(_Module_Add_Version);
-        add.AddOption(_Module_Add_Force);
-        add.AddOption(_Module_Add_SkipVerification);
-        add.SetHandler(async (invocation) =>
+        var add = new Command("add", CmdStrings.Module_Add_Description)
+        {
+            requiredModuleArg,
+            _Module_Add_Version,
+            _Module_Add_Force,
+            _Module_Add_SkipVerification,
+        };
+        add.SetAction(async (parse, cancellationToken) =>
         {
             var option = new ModuleOptions
             {
-                Path = invocation.ParseResult.GetValueForOption(_Global_Path),
-                Module = invocation.ParseResult.GetValueForArgument(moduleArg),
-                Version = invocation.ParseResult.GetValueForOption(_Module_Add_Version),
-                Force = invocation.ParseResult.GetValueForOption(_Module_Add_Force),
-                SkipVerification = invocation.ParseResult.GetValueForOption(_Module_Add_SkipVerification),
+                Path = parse.GetValue(_Global_Path),
+                Module = parse.GetValue(requiredModuleArg),
+                Version = parse.GetValue(_Module_Add_Version),
+                Force = parse.GetValue(_Module_Add_Force),
+                SkipVerification = parse.GetValue(_Module_Add_SkipVerification),
             };
 
-            var client = GetClientContext(invocation);
-            invocation.ExitCode = await ModuleCommand.ModuleAddAsync(option, client);
+            return await ModuleCommand.ModuleAddAsync(option, GetClientContext(parse), cancellationToken);
         });
 
         // Remove
-        var remove = new Command
-        (
-            "remove",
-            CmdStrings.Module_Remove_Description
-        );
-        remove.AddArgument(moduleArg);
-        remove.SetHandler(async (invocation) =>
+        var remove = new Command("remove", CmdStrings.Module_Remove_Description)
+        {
+            requiredModuleArg,
+        };
+        remove.SetAction(async (parse, cancellationToken) =>
         {
             var option = new ModuleOptions
             {
-                Path = invocation.ParseResult.GetValueForOption(_Global_Path),
-                Module = invocation.ParseResult.GetValueForArgument(moduleArg),
+                Path = parse.GetValue(_Global_Path),
+                Module = parse.GetValue(requiredModuleArg),
             };
 
-            var client = GetClientContext(invocation);
-            invocation.ExitCode = await ModuleCommand.ModuleRemoveAsync(option, client);
+            return await ModuleCommand.ModuleRemoveAsync(option, GetClientContext(parse), cancellationToken);
         });
 
         // Upgrade
-        var upgrade = new Command
-        (
-            "upgrade",
-            CmdStrings.Module_Upgrade_Description
-        );
-        upgrade.SetHandler(async (invocation) =>
+        var upgrade = new Command("upgrade", CmdStrings.Module_Upgrade_Description);
+        upgrade.SetAction(async (parse, cancellationToken) =>
         {
             var option = new ModuleOptions
             {
-                Path = invocation.ParseResult.GetValueForOption(_Global_Path),
+                Path = parse.GetValue(_Global_Path),
             };
 
-            var client = GetClientContext(invocation);
-            invocation.ExitCode = await ModuleCommand.ModuleUpgradeAsync(option, client);
+            return await ModuleCommand.ModuleUpgradeAsync(option, GetClientContext(parse), cancellationToken);
         });
 
         // Restore
-        var restore = new Command("restore", CmdStrings.Module_Restore_Description);
-        // restore.AddOption(_Path);
-        restore.AddOption(_Module_Restore_Force);
-        restore.SetHandler(async (invocation) =>
+        var restore = new Command("restore", CmdStrings.Module_Restore_Description)
+        {
+            _Module_Restore_Force,
+        };
+
+        restore.SetAction(async (parse, cancellationToken) =>
         {
             var option = new RestoreOptions
             {
-                Path = invocation.ParseResult.GetValueForOption(_Global_Path),
-                Force = invocation.ParseResult.GetValueForOption(_Module_Restore_Force),
+                Path = parse.GetValue(_Global_Path),
+                Force = parse.GetValue(_Module_Restore_Force),
             };
-            var client = GetClientContext(invocation);
-            invocation.ExitCode = await ModuleCommand.ModuleRestoreAsync(option, client);
+
+            return await ModuleCommand.ModuleRestoreAsync(option, GetClientContext(parse), cancellationToken);
         });
 
-        cmd.AddCommand(init);
-        cmd.AddCommand(list);
-        cmd.AddCommand(add);
-        cmd.AddCommand(remove);
-        cmd.AddCommand(upgrade);
-        cmd.AddCommand(restore);
+        cmd.Add(init);
+        cmd.Add(list);
+        cmd.Add(add);
+        cmd.Add(remove);
+        cmd.Add(upgrade);
+        cmd.Add(restore);
 
-        cmd.AddOption(_Global_Path);
-        Command.AddCommand(cmd);
+        Command.Add(cmd);
     }
 
     private void AddListen()
     {
-        var cmd = new Command("listen", CmdStrings.Listen_Description);
-        cmd.AddOption(_Global_Path);
-        cmd.AddOption(_Listen_Stdio);
-        cmd.AddOption(_Listen_Pipe);
-        cmd.SetHandler(async (invocation) =>
+        var cmd = new Command("listen", CmdStrings.Listen_Description)
+        {
+            _Global_Path,
+            _Listen_Stdio,
+            _Listen_Pipe,
+        };
+        cmd.SetAction(async (parse, cancellationToken) =>
         {
             var option = new ListenOptions
             {
-                Path = invocation.ParseResult.GetValueForOption(_Global_Path),
-                Pipe = invocation.ParseResult.GetValueForOption(_Listen_Pipe),
-                Stdio = invocation.ParseResult.GetValueForOption(_Listen_Stdio),
+                Path = parse.GetValue(_Global_Path),
+                Pipe = parse.GetValue(_Listen_Pipe),
+                Stdio = parse.GetValue(_Listen_Stdio),
             };
-            var client = GetClientContext(invocation);
-            invocation.ExitCode = await ListenCommand.ListenAsync(option, client);
+
+            return await ListenCommand.ListenAsync(option, GetClientContext(parse), cancellationToken);
         });
-        Command.AddCommand(cmd);
+        Command.Add(cmd);
     }
 
-    private ClientContext GetClientContext(InvocationContext invocation)
+    private ClientContext GetClientContext(ParseResult parseResult)
     {
-        var option = invocation.ParseResult.GetValueForOption(_Global_Option).TrimQuotes();
-        var verbose = invocation.ParseResult.GetValueForOption(_Global_Verbose);
-        var debug = invocation.ParseResult.GetValueForOption(_Global_Debug);
+        var option = parseResult.GetValue(_Global_Option).TrimQuotes();
+        var verbose = parseResult.GetValue(_Global_Verbose);
+        var debug = parseResult.GetValue(_Global_Debug);
 
         if (!string.IsNullOrEmpty(option))
         {
@@ -382,7 +377,7 @@ internal sealed class ClientBuilder
 
         return new ClientContext
         (
-            invocation: invocation,
+            console: new CommandLine.Console(),
             option: option,
             verbose: verbose,
             debug: debug
