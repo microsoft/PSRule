@@ -67,6 +67,7 @@ internal sealed class ClientBuilder
         };
         _Global_Path = new Option<string[]>("--path", "-p")
         {
+            Recursive = true,
             Description = CmdStrings.Global_Path_Description,
         };
 
@@ -192,7 +193,6 @@ internal sealed class ClientBuilder
     {
         var cmd = new Command("run", CmdStrings.Run_Description)
         {
-            _Global_Path,
             _Run_OutputPath,
             _Run_OutputFormat,
             _Run_InputPath,
@@ -236,7 +236,7 @@ internal sealed class ClientBuilder
     {
         var cmd = new Command("module", CmdStrings.Module_Description)
         {
-            _Global_Path,
+
         };
 
         var requiredModuleArg = new Argument<string[]>("module")
