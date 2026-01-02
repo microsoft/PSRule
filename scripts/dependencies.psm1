@@ -138,7 +138,7 @@ function InstallVersion {
             Write-Host -Object "[$group] -- Installing $($module.Name) v$($module.Value.version)";
             $installParams = @{ Version = $module.Value.version };
             if ($Null -eq (Get-PSResource -Name $module.Name @installParams -ErrorAction Ignore)) {
-                Install-PSResource -Name $module.Name @installParams -Force -Repository $Repository;
+                Install-PSResource -Name $module.Name @installParams -Repository $Repository;
             }
         }
     }
