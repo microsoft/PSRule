@@ -52,13 +52,16 @@ function Install-Dependencies {
         [String]$Repository = 'PSGallery',
 
         [Parameter(Mandatory = $False)]
-        [Switch]$Dev
+        [Switch]$Dev,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$TrustRepository
     )
     process {
         $modules = Get-Content -Path $Path -Raw | ConvertFrom-Json;
-        InstallVersion $modules.dependencies -Repository $Repository;
+        InstallVersion $modules.dependencies -Repository $Repository -TrustRepository:$TrustRepository;
         if ($Dev) {
-            InstallVersion $modules.devDependencies -Repository $Repository -Dev;
+            InstallVersion $modules.devDependencies -Repository $Repository -Dev -TrustRepository:$TrustRepository;
         }
     }
 }
@@ -98,9 +101,7 @@ function CheckVersion {
             Write-Host -Object "[$group] -- Checking $($module.Name)";
             $installParams = @{}
             $installParams += $module.Value;
-            $installParams.MinimumVersion = $installParams.version;
-            $installParams.Remove('version');
-            $available = @(Find-Module -Repository $Repository -Name $module.Name @installParams -ErrorAction Ignore);
+            $available = @(Find-PSResource -Repository $Repository -Name $module.Name @installParams -ErrorAction Ignore);
             foreach ($found in $available) {
                 if (([Version]$found.Version) -gt ([Version]$module.Value.version)) {
                     Write-Host -Object "[$group] -- Newer version found $($found.Version)";
@@ -127,7 +128,10 @@ function InstallVersion {
         [String]$Repository,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$Dev
+        [Switch]$Dev,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$TrustRepository
     )
     begin {
         $group = 'Dependencies';
@@ -138,9 +142,11 @@ function InstallVersion {
     process {
         foreach ($module in $InputObject.PSObject.Properties.GetEnumerator()) {
             Write-Host -Object "[$group] -- Installing $($module.Name) v$($module.Value.version)";
-            $installParams = @{ RequiredVersion = $module.Value.version };
-            if ($Null -eq (Get-InstalledModule -Name $module.Name @installParams -ErrorAction Ignore)) {
-                Install-Module -Name $module.Name @installParams -Force -Repository $Repository;
+            $installParams = @{ Version = $module.Value.version };
+            if ($Null -eq (Get-PSResource -Name $module.Name @installParams -ErrorAction Ignore)) {
+                Install-PSResource -Name $module.Name @installParams -Repository $Repository -TrustRepository:$TrustRepository;
+            } else {
+                Write-Verbose -Message "[$group] -- $($module.Name) v$($module.Value.version) already installed.";
             }
         }
     }
