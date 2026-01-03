@@ -59,9 +59,9 @@ function Install-Dependencies {
     )
     process {
         $modules = Get-Content -Path $Path -Raw | ConvertFrom-Json;
-        InstallVersion $modules.dependencies -Repository $Repository;
+        InstallVersion $modules.dependencies -Repository $Repository -TrustRepository:$TrustRepository;
         if ($Dev) {
-            InstallVersion $modules.devDependencies -Repository $Repository -Dev;
+            InstallVersion $modules.devDependencies -Repository $Repository -Dev -TrustRepository:$TrustRepository;
         }
     }
 }
@@ -145,6 +145,8 @@ function InstallVersion {
             $installParams = @{ Version = $module.Value.version };
             if ($Null -eq (Get-PSResource -Name $module.Name @installParams -ErrorAction Ignore)) {
                 Install-PSResource -Name $module.Name @installParams -Repository $Repository -TrustRepository:$TrustRepository;
+            } else {
+                Write-Verbose -Message "[$group] -- $($module.Name) v$($module.Value.version) already installed.";
             }
         }
     }
