@@ -52,7 +52,10 @@ function Install-Dependencies {
         [String]$Repository = 'PSGallery',
 
         [Parameter(Mandatory = $False)]
-        [Switch]$Dev
+        [Switch]$Dev,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$TrustRepository
     )
     process {
         $modules = Get-Content -Path $Path -Raw | ConvertFrom-Json;
@@ -125,7 +128,10 @@ function InstallVersion {
         [String]$Repository,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$Dev
+        [Switch]$Dev,
+
+        [Parameter(Mandatory = $False)]
+        [Switch]$TrustRepository
     )
     begin {
         $group = 'Dependencies';
@@ -138,7 +144,7 @@ function InstallVersion {
             Write-Host -Object "[$group] -- Installing $($module.Name) v$($module.Value.version)";
             $installParams = @{ Version = $module.Value.version };
             if ($Null -eq (Get-PSResource -Name $module.Name @installParams -ErrorAction Ignore)) {
-                Install-PSResource -Name $module.Name @installParams -Repository $Repository;
+                Install-PSResource -Name $module.Name @installParams -Repository $Repository -TrustRepository:$TrustRepository;
             }
         }
     }
