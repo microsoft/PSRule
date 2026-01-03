@@ -55,13 +55,29 @@ function Install-Dependencies {
         [Switch]$Dev,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$TrustRepository
+        [Switch]$TrustRepository,
+
+        [Parameter(Mandatory = $False)]
+        [PSCredential]$Credential
     )
     process {
+        $installParams = @{
+            Repository = $Repository
+        }
+
+        if ($Credential) {
+            $installParams['Credential'] = $Credential;
+        }
+
+        if ($TrustRepository) {
+            $installParams['TrustRepository'] = $True;
+        }
+
         $modules = Get-Content -Path $Path -Raw | ConvertFrom-Json;
-        InstallVersion $modules.dependencies -Repository $Repository -TrustRepository:$TrustRepository;
+
+        InstallVersion $modules.dependencies @installParams;
         if ($Dev) {
-            InstallVersion $modules.devDependencies -Repository $Repository -Dev -TrustRepository:$TrustRepository;
+            InstallVersion $modules.devDependencies @installParams;
         }
     }
 }
@@ -131,7 +147,10 @@ function InstallVersion {
         [Switch]$Dev,
 
         [Parameter(Mandatory = $False)]
-        [Switch]$TrustRepository
+        [Switch]$TrustRepository,
+
+        [Parameter(Mandatory = $False)]
+        [PSCredential]$Credential
     )
     begin {
         $group = 'Dependencies';
@@ -141,8 +160,13 @@ function InstallVersion {
     }
     process {
         foreach ($module in $InputObject.PSObject.Properties.GetEnumerator()) {
-            Write-Host -Object "[$group] -- Installing $($module.Name) v$($module.Value.version)";
             $installParams = @{ Version = $module.Value.version };
+
+            if ($Credential) {
+                $installParams['Credential'] = $Credential;
+            }
+
+            Write-Host -Object "[$group] -- Installing $($module.Name) v$($module.Value.version)";
             if ($Null -eq (Get-PSResource -Name $module.Name @installParams -ErrorAction Ignore)) {
                 Install-PSResource -Name $module.Name @installParams -Repository $Repository -TrustRepository:$TrustRepository;
             } else {
