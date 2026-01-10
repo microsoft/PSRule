@@ -28,7 +28,6 @@ public sealed class TargetBinderTests
     {
         TargetName = ["name"],
         TargetType = ["type"],
-        // PreferTargetInfo = true
     };
 
 

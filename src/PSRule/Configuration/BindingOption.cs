@@ -93,7 +93,7 @@ public sealed class BindingOption : IEquatable<BindingOption>, IBindingOption
     /// Merge two option instances by replacing any unset properties from <paramref name="o1"/> with <paramref name="o2"/> values.
     /// Values from <paramref name="o1"/> that are set are not overridden.
     /// </summary>
-    internal static BindingOption Combine(BindingOption o1, BindingOption o2)
+    internal static BindingOption Combine(BindingOption? o1, BindingOption? o2)
     {
         var result = new BindingOption(o1)
         {

@@ -119,19 +119,22 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
     /// </summary>
     private void ProcessTargetObject(TargetObject targetObject)
     {
-        try
+        foreach (var run in _Runs)
         {
-            Context.EnterTargetObject(targetObject);
-            foreach (var run in _Runs)
+            try
             {
+                Context.EnterTargetObject(run, targetObject);
+
                 var result = InvokeRun(run, targetObject);
                 _Completed.Add(result);
+
                 Pipeline.Writer.WriteObject(result, false);
+
             }
-        }
-        finally
-        {
-            Context.ExitTargetObject();
+            finally
+            {
+                Context.ExitTargetObject();
+            }
         }
     }
 
@@ -149,6 +152,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
         foreach (var ruleBlockTarget in run.Rules.GetSingleTarget())
         {
             var ruleBlock = ruleBlockTarget.Value;
+            var ruleId = ((ILanguageBlock)ruleBlock).Id;
 
             // Enter rule block scope
             var ruleRecord = Context.EnterRuleBlock(run, ruleBlock: ruleBlock);
@@ -165,7 +169,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
                     ruleRecord.OutcomeReason = RuleOutcomeReason.DependencyFail;
                 }
                 // Check for suppression
-                else if (_SuppressionFilter.Match(id: ((ILanguageBlock)ruleBlock).Id, targetName: ruleRecord.TargetName))
+                else if (_SuppressionFilter.Match(id: ruleId, targetName: ruleRecord.TargetName))
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
                     suppressedRuleCounter++;
@@ -174,7 +178,7 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
                         Context.RuleSuppressed(ruleId: ruleRecord.RuleId);
                 }
                 // Check for suppression group
-                else if (_SuppressionGroupFilter.TrySuppressionGroup(ruleId: ((ILanguageBlock)ruleBlock).Id, targetObject, out var suppression))
+                else if (_SuppressionGroupFilter.TrySuppressionGroup(ruleId: ruleId, targetObject, out var suppression))
                 {
                     ruleRecord.OutcomeReason = RuleOutcomeReason.Suppressed;
                     if (!_IsSummary)
