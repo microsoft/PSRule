@@ -160,7 +160,7 @@ internal sealed class SarifBuilder
             {
                 Tool = GetTool(_Source),
                 Results = [],
-                Invocations = GetInvocation(),
+                Invocations = GetInvocation(run),
                 AutomationDetails = GetAutomationDetails(run),
                 OriginalUriBaseIds = GetBaseIds(),
                 VersionControlProvenance = GetVersionControl(_Option.Repository),
@@ -375,12 +375,16 @@ internal sealed class SarifBuilder
         };
     }
 
-    private static List<Invocation> GetInvocation()
+    private static List<Invocation> GetInvocation(IRun run)
     {
         var result = new List<Invocation>(1);
         var invocation = new Invocation
         {
-
+            Account = System.Environment.UserName,
+            Machine = System.Environment.MachineName,
+            ProcessId = System.Diagnostics.Process.GetCurrentProcess().Id,
+            StartTimeUtc = run.StartTime,
+            EndTimeUtc = run.EndTime,
         };
         result.Add(invocation);
         return result;
