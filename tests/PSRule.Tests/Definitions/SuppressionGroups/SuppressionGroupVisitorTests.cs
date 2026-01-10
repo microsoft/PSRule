@@ -1,9 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Linq;
 using PSRule.Configuration;
 using PSRule.Pipeline;
+using PSRule.Pipeline.Runs;
 using PSRule.Runtime;
 
 namespace PSRule.Definitions.SuppressionGroups;
@@ -20,7 +22,9 @@ public sealed class SuppressionGroupVisitorTests : ContextBaseTests
     {
         var suppressionGroup = GetSuppressionGroupVisitor("SuppressWithTestType", GetSource(path), out var context);
         var testObject = new TargetObject(GetObject((name: "value", value: 3)), "TestName", "TestType");
-        context.EnterTargetObject(testObject);
+        var run = GetRun();
+
+        context.EnterTargetObject(run, testObject);
         context.EnterLanguageScope(suppressionGroup.Source);
 
         Assert.True(suppressionGroup.TryMatch(ResourceId.Parse("FromFile3"), testObject, out _));
@@ -33,7 +37,9 @@ public sealed class SuppressionGroupVisitorTests : ContextBaseTests
     {
         var suppressionGroup = GetSuppressionGroupVisitor("SuppressWithTestTypePrecondition", GetSource(path), out var context);
         var testObject = new TargetObject(GetObject((name: "value", value: 3)), "TestName", "TestType");
-        context.EnterTargetObject(testObject);
+        var run = GetRun();
+
+        context.EnterTargetObject(run, testObject);
         context.EnterLanguageScope(suppressionGroup.Source);
 
         Assert.True(suppressionGroup.TryMatch(ResourceId.Parse("FromFile3"), testObject, out _));
@@ -46,6 +52,11 @@ public sealed class SuppressionGroupVisitorTests : ContextBaseTests
         var option = new PSRuleOption();
         option.Output.Culture = ["en-US", "en"];
         return option;
+    }
+
+    private static IRun GetRun()
+    {
+        return new Run(NullLogger.Instance, ".", "run-001", new InfoString("Test run", null), Guid.Empty.ToString(), new EmptyRuleGraph());
     }
 
     private SuppressionGroupVisitor GetSuppressionGroupVisitor(string name, Source[] sources, out LegacyRunspaceContext context)

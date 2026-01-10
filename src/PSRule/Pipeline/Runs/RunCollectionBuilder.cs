@@ -11,6 +11,7 @@ using PSRule.Host;
 using PSRule.Options;
 using PSRule.Rules;
 using PSRule.Runtime;
+using PSRule.Runtime.Binding;
 
 namespace PSRule.Pipeline.Runs;
 
@@ -93,7 +94,8 @@ internal sealed class RunCollectionBuilder(IResourceCache resourceCache, ILogger
             description: new InfoString(_Description),
             correlationGuid: _CorrelationGuid,
             graph: new RuleGraph(graph),
-            configuration: configuration
+            configuration: configuration,
+            targetBinder: BuildTargetBinder(id, null, option)
         );
 
         _Logger.LogDebug(EventId.None, "Adding run '{0}' for default run with {1} rules.", result.Guid, graph.Count);
@@ -204,7 +206,8 @@ internal sealed class RunCollectionBuilder(IResourceCache resourceCache, ILogger
             description: baseline?.Info?.Description != null && baseline.Info.Description.HasValue ? baseline.Info.Description : new InfoString(_Description),
             correlationGuid: _CorrelationGuid,
             graph: new RuleGraph(graph),
-            configuration: configuration
+            configuration: configuration,
+            targetBinder: BuildTargetBinder(id, parentConfig, option)
         );
 
         _Logger.LogDebug(EventId.None, "Adding run '{0}' for baseline '{1}'.", result.Guid, baseline.Id);
@@ -249,6 +252,15 @@ internal sealed class RunCollectionBuilder(IResourceCache resourceCache, ILogger
         return new RunConfiguration(
             configuration
         );
+    }
+
+    private static ITargetBinder BuildTargetBinder(string id, IScopeConfig? scopeConfig, PSRuleOption? options)
+    {
+        var binding = BindingOption.Combine(scopeConfig?.Binding, options?.Binding);
+        var inputTargetType = options?.Input?.TargetType;
+
+        var builder = new TargetBinderBuilder(PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, inputTargetType);
+        return builder.Build(binding);
     }
 
     private static DependencyGraph<IRuleBlock> GetRuleGraph(IRunBuilderContext context, IResourceCache resourceCache)

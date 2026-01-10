@@ -6,8 +6,6 @@ using PSRule.Options;
 
 namespace PSRule.Definitions.ModuleConfigs;
 
-#nullable enable
-
 /// <summary>
 /// A specification for a V2 module configuration.
 /// </summary>
@@ -25,5 +23,3 @@ internal interface IModuleConfigV2Spec : IModuleConfigSpec
 
     RuleOption? Rule { get; }
 }
-
-#nullable restore

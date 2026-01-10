@@ -122,9 +122,9 @@ public sealed class FieldMap : DynamicObject, IEnumerable<KeyValuePair<string, s
         get => _Map;
     }
 
-    internal static FieldMap Combine(FieldMap m1, FieldMap m2)
+    internal static FieldMap Combine(FieldMap? m1, FieldMap? m2)
     {
-        if (m1 == null) return m2;
+        if (m1 == null) return m2 ?? new FieldMap();
         if (m2 == null) return m1;
 
         var result = new FieldMap(m1);

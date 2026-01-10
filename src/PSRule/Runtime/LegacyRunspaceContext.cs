@@ -424,12 +424,14 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     /// <summary>
     /// Increment the pipeline object number.
     /// </summary>
-    internal void EnterTargetObject(TargetObject targetObject)
+    internal void EnterTargetObject(IRun run, TargetObject targetObject)
     {
         _ObjectNumber++;
         TargetObject = targetObject;
         if (Pipeline.ContentCache.Count > 0)
             Pipeline.ContentCache.Clear();
+
+        Binding = run.Bind(targetObject);
 
         // Run conventions
         RunConventionBegin();
@@ -437,6 +439,9 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public void ExitTargetObject()
     {
+        if (TargetObject == null)
+            return;
+
         RunConventionProcess();
         TargetObject = null;
         Binding = null;
@@ -485,6 +490,9 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         EnterRun(run);
         EnterLanguageScope(ruleBlock.Source);
 
+        var targetName = TargetObject?.Name ?? Binding?.TargetName ?? "<unknown>";
+        var targetType = TargetObject?.Type ?? Binding?.TargetType ?? "<unknown>";
+
         _RuleErrors = 0;
         RuleBlock = ruleBlock;
         RuleRecord = new RuleRecord(
@@ -492,8 +500,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             ruleId: ((ILanguageBlock)ruleBlock).Id,
             @ref: ((IResource)ruleBlock).Ref.GetValueOrDefault().Name,
             targetObject: TargetObject!,
-            targetName: Binding?.TargetName!,
-            targetType: Binding?.TargetType!,
+            targetName: targetName,
+            targetType: targetType,
             tag: ruleBlock.Tag,
             info: ruleBlock.Info,
             field: Binding?.Field,

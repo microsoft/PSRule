@@ -15,12 +15,12 @@ namespace PSRule.Pipeline.Runs;
 /// An instance of a run.
 /// </summary>
 [DebuggerDisplay("{Guid}: {Id}")]
-internal sealed class Run(ILogger logger, string? scope, string id, InfoString description, string correlationGuid, IRuleGraph graph, RunConfiguration? configuration = null) : IRun
+internal sealed class Run(ILogger logger, string? scope, string id, InfoString description, string correlationGuid, IRuleGraph graph, RunConfiguration? configuration = null, ITargetBinder? targetBinder = null) : IRun
 {
     private readonly ILogger _Logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly RunConfiguration? _RunConfiguration = configuration;
+    private readonly ITargetBinder _TargetBinder = targetBinder ?? new TargetBinderBuilder(PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, null).Build(null);
 
-    private ITargetBinder _TargetBinder;
     private WildcardMap<RuleOverride>? _Override;
 
     /// <inheritdoc/>
@@ -79,6 +79,13 @@ internal sealed class Run(ILogger logger, string? scope, string id, InfoString d
             _Override.TryGetValue(id.Name, out value);
     }
 
+    public ITargetBindingResult Bind(ITargetObject targetObject)
+    {
+        if (_TargetBinder == null) throw new InvalidOperationException($"Run '{Guid}': Target binder is not configured.");
+
+        return _TargetBinder.Bind(targetObject);
+    }
+
     public void Configure(OptionContext context)
     {
         if (context == null) throw new ArgumentNullException(nameof(context));
@@ -90,8 +97,8 @@ internal sealed class Run(ILogger logger, string? scope, string id, InfoString d
         // _BindingComparer = context.Binding.GetComparer();
         Culture = context.Output.Culture;
 
-        var builder = new TargetBinderBuilder(context.BindTargetName, context.BindTargetType, context.BindField, context.InputTargetType);
-        _TargetBinder = builder.Build(context.Binding);
+        // var builder = new TargetBinderBuilder(context.BindTargetName, context.BindTargetType, context.BindField, context.InputTargetType);
+        // _TargetBinder = builder.Build(context.Binding);
         _Override = WithOverride(context.Override);
     }
 

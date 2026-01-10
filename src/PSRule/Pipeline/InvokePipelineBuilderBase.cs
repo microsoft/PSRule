@@ -7,8 +7,6 @@ using PSRule.Host;
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
 /// <summary>
 /// A pipeline builder for any pipelines that test objects against rules.
 /// </summary>
@@ -151,5 +149,3 @@ internal abstract class InvokePipelineBuilderBase : PipelineBuilderBase, IInvoke
         return new PipelineInputStream(GetLanguageScopeSet(), _InputPath, GetInputObjectSourceFilter(), Option, _Output);
     }
 }
-
-#nullable restore
