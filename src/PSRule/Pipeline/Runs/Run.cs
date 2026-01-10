@@ -48,6 +48,12 @@ internal sealed class Run(ILogger logger, string? scope, string id, InfoString d
     /// <inheritdoc/>
     public IRuleGraph Rules { get; } = graph;
 
+    /// <inheritdoc/>
+    public DateTime StartTime { get; private set; }
+
+    /// <inheritdoc/>
+    public DateTime EndTime { get; private set; }
+
     public string? Scope { get; } = scope;
 
     #region IConfiguration
@@ -79,11 +85,27 @@ internal sealed class Run(ILogger logger, string? scope, string id, InfoString d
             _Override.TryGetValue(id.Name, out value);
     }
 
+    /// <inheritdoc/>
     public ITargetBindingResult Bind(ITargetObject targetObject)
     {
         if (_TargetBinder == null) throw new InvalidOperationException($"Run '{Guid}': Target binder is not configured.");
 
         return _TargetBinder.Bind(targetObject);
+    }
+
+    /// <inheritdoc/>
+    public void Start()
+    {
+        if (StartTime == default)
+            StartTime = DateTime.UtcNow;
+    }
+
+    /// <inheritdoc/>
+    public void Stop()
+    {
+        var now = DateTime.UtcNow;
+        if (now > EndTime)
+            EndTime = now;
     }
 
     public void Configure(OptionContext context)

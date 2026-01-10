@@ -40,7 +40,27 @@ public interface IRun : IConfiguration
     IRuleGraph Rules { get; }
 
     /// <summary>
+    /// The start time of the run in UTC.
+    /// </summary>
+    DateTime StartTime { get; }
+
+    /// <summary>
+    /// The end time of the run in UTC.
+    /// </summary>
+    DateTime EndTime { get; }
+
+    /// <summary>
     /// Evaluate bound properties for a target object.
     /// </summary>
     ITargetBindingResult Bind(ITargetObject targetObject);
+
+    /// <summary>
+    /// Start the run.
+    /// </summary>
+    void Start();
+
+    /// <summary>
+    /// Stop the run.
+    /// </summary>
+    void Stop();
 }

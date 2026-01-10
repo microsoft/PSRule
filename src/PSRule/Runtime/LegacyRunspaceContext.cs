@@ -445,6 +445,9 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         RunConventionProcess();
         TargetObject = null;
         Binding = null;
+
+        Run?.Stop();
+        Run = null;
     }
 
     public bool TrySelector(ResourceId id, ITargetObject targetObject)

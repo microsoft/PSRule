@@ -125,8 +125,12 @@ internal sealed class InvokeRulePipeline : RulePipeline, IPipeline
             {
                 Context.EnterTargetObject(run, targetObject);
 
+                run.Start();
+
                 var result = InvokeRun(run, targetObject);
                 _Completed.Add(result);
+
+                run.Stop();
 
                 Pipeline.Writer.WriteObject(result, false);
 
