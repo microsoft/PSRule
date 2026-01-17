@@ -22,7 +22,7 @@ namespace PSRule.Runtime;
 /// <summary>
 /// A context applicable to rule execution.
 /// </summary>
-internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext, IExpressionContext, IRunOverrideContext, IRunBuilderContext
+internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext, IExpressionContext, IRunOverrideContext, IRunBuilderContext, IConventionContext
 {
     private const string ERROR_ID_INVALID_RULE_RESULT = "PSRule.Runtime.InvalidRuleResult";
     private const string WARN_KEY_SEPARATOR = "_";
@@ -426,12 +426,17 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     /// </summary>
     internal void EnterTargetObject(IRun run, TargetObject targetObject)
     {
+        if (run == null) throw new ArgumentNullException(nameof(run));
+        if (targetObject == null) throw new ArgumentNullException(nameof(targetObject));
+
+        Run = run;
+
         _ObjectNumber++;
         TargetObject = targetObject;
         if (Pipeline.ContentCache.Count > 0)
             Pipeline.ContentCache.Clear();
 
-        Binding = run.Bind(targetObject);
+        Binding = Run.Bind(targetObject);
 
         // Run conventions
         RunConventionBegin();
@@ -570,6 +575,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     private void RunConventionInitialize()
     {
+        Logger?.LogDebug(EventId.None, "Initializing {0} conventions.", _Conventions != null ? _Conventions.Length : 0);
+
         for (var i = 0; _Conventions != null && i < _Conventions.Length; i++)
             _Conventions[i].Initialize(this, null);
     }
@@ -716,6 +723,15 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         // Get from run.
         if (Run != null && Run.TryConfigurationValue(name, out var result))
         {
+            value = result;
+            return true;
+        }
+
+        // Get from global options if set.
+        if (Pipeline.Option.Configuration.TryGetValue(name, out result))
+        {
+            Logger?.LogDebug(EventId.None, "Reading configuration key '{0}' from global options.", name);
+
             value = result;
             return true;
         }

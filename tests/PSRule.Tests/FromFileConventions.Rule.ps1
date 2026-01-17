@@ -13,8 +13,18 @@ Export-PSRuleConvention 'Convention1' {
     Write-Debug -Message 'Begin convention1'
     $PSRule.Data.count += 1;
     $PSRule.Data['Order'] += 'Convention1|'
+    $PSRule.Data['BeginConfiguration'] = $Configuration.BeginConfiguration
+
+    # Add the initialize value to the result data.
+    $PSRule.Data['InitializeConfiguration'] = $PSRule.GetService('Config').InitializeConfiguration
 } -End {
     Write-Debug -Message 'End convention1'
+} -Initialize {
+
+    # Data isn't available in initialize so store the value and load it in begin.
+    $PSRule.AddService('Config', [PSCustomObject]@{
+        InitializeConfiguration = $Configuration.InitializeConfiguration
+    })
 }
 
 # Synopsis: A convention for unit testing
