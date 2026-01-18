@@ -5,14 +5,17 @@ using System.Linq;
 using System.Management.Automation;
 using PSRule.Configuration;
 using PSRule.Definitions;
-using PSRule.Pipeline;
+using PSRule.Definitions.Conventions;
 
-namespace PSRule;
+namespace PSRule.Pipeline;
 
+/// <summary>
+/// Unit tests for verifying conventions in a pipeline.
+/// </summary>
 public sealed class ConventionTests : BaseTests
 {
     [Fact]
-    public void Invoke_WithConventions_CallsConventions()
+    public void Invoke_WithConventions_ShouldCallConventions()
     {
         var testObject1 = new TestObject { Name = "TestObject1" };
         var option = GetOption();
@@ -33,8 +36,60 @@ public sealed class ConventionTests : BaseTests
         pipeline.End();
     }
 
+    /// <summary>
+    /// Test that a convention running the <c>Initialize</c> block has access to global configuration options.
+    /// </summary>
     [Fact]
-    public void Invoke_WithConventions_CallConventionsInOrder()
+    public void Invoke_WithInitialize_ShouldHaveAccessToGlobalConfigurationOptions()
+    {
+        var testObject1 = new TestObject { Name = "TestObject1" };
+        var option = GetOption();
+        option.Configuration.Add("InitializeConfiguration", "InitializeValue");
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["ConventionTest"]);
+        option.Convention.Include = ["Convention1"];
+
+        var writer = new TestWriter(option);
+        var builder = PipelineBuilder.Invoke(GetSource(), option, null);
+        var pipeline = builder.Build(writer);
+
+        pipeline.Begin();
+        pipeline.Process(PSObject.AsPSObject(testObject1));
+        pipeline.End();
+
+        var actual1 = writer.Output[0] as InvokeResult;
+        var actual2 = actual1.AsRecord()[0].Data["InitializeConfiguration"];
+        Assert.Equal("InitializeValue", actual2);
+    }
+
+    /// <summary>
+    /// Test that a convention running the <c>Begin</c> block has access to global configuration options.
+    /// </summary>
+    [Fact]
+    public void Invoke_WithBegin_ShouldHaveAccessToGlobalConfigurationOptions()
+    {
+        var testObject1 = new TestObject { Name = "TestObject1" };
+        var option = GetOption();
+        option.Configuration.Add("BeginConfiguration", "BeginValue");
+        option.Rule.Include = ResourceHelper.GetResourceIdReference(["ConventionTest"]);
+        option.Convention.Include = ["Convention1"];
+
+        var writer = new TestWriter(option);
+        var builder = PipelineBuilder.Invoke(GetSource(), option, null);
+        var pipeline = builder.Build(writer);
+
+        pipeline.Begin();
+        pipeline.Process(PSObject.AsPSObject(testObject1));
+        pipeline.End();
+
+        var actual1 = writer.Output[0] as InvokeResult;
+        var actual2 = actual1.AsRecord()[0].Data["BeginConfiguration"];
+        Assert.Equal("BeginValue", actual2);
+    }
+
+    // TODO: Check that configuration that is in a run is also accessible within a begin block.
+
+    [Fact]
+    public void Invoke_WithConventions_ShouldCallConventionsInOrder()
     {
         var testObject1 = new TestObject { Name = "TestObject1" };
         var option = GetOption();

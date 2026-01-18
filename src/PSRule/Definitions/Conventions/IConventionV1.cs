@@ -2,67 +2,32 @@
 // Licensed under the MIT License.
 
 using System.Collections;
-using System.Diagnostics;
 
 namespace PSRule.Definitions.Conventions;
 
-[DebuggerDisplay("{Id}")]
-internal abstract class BaseConvention
+internal interface IConventionV1 : IResource
 {
-    protected BaseConvention(ISourceFile source, string name)
-    {
-        Source = source;
-        Name = name;
-        Id = new ResourceId(Source.Module, name, ResourceIdKind.Id);
-    }
-
-    public ISourceFile Source { get; }
-
-    public ResourceId Id { get; }
-
-    /// <summary>
-    /// The name of the convention.
-    /// </summary>
-    public string Name { get; }
-
-    public string SourcePath => Source.Path;
-
-    public string Module => Source.Module;
-
     /// <summary>
     /// Call to perform any initialization, such as creating global objects.
     /// Occurs once globally at the beginning of the pipeline outside of a run.
     /// </summary>
-    public virtual void Initialize(IConventionContext context, IEnumerable input)
-    {
-
-    }
+    void Initialize(IConventionContext context, IEnumerable input);
 
     /// <summary>
     /// Call to perform expansion, set data, or alter the object before rules are processed.
     /// Occurs once per object per run before the any rules are executed.
     /// </summary>
-    public virtual void Begin(IConventionContext context, IEnumerable input)
-    {
-
-    }
+    void Begin(IConventionContext context, IEnumerable input);
 
     /// <summary>
     /// Call to perform per object tasks after rules have run such as generate badges.
     /// Occurs once per object per run after all rules are executed.
     /// </summary>
-    public virtual void Process(IConventionContext context, IEnumerable input)
-    {
-
-    }
+    void Process(IConventionContext context, IEnumerable input);
 
     /// <summary>
     /// Call to perform any finalization, such as upload results to an external service.
     /// Occurs once globally at the end of the pipeline outside of a run.
     /// </summary>
-
-    public virtual void End(IConventionContext context, IEnumerable input)
-    {
-
-    }
+    void End(IConventionContext context, IEnumerable input);
 }

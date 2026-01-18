@@ -68,7 +68,7 @@ internal sealed class Run(ILogger logger, string? scope, string id, InfoString d
     public bool TryConfigurationValue(string configurationKey, out object? value)
     {
         value = null;
-        _Logger.LogDebug(EventId.None, "Run '{0}': Retrieving configuration key '{1}' from '{2}'", Guid, configurationKey, _RunConfiguration?.Guid);
+        _Logger.LogDebug(EventId.None, "Run '{0}': Reading configuration key '{1}' from '{2}'.", Guid, configurationKey, _RunConfiguration?.Guid);
 
         return _RunConfiguration != null && _RunConfiguration.Configuration.TryGetValue(configurationKey, out value);
     }
