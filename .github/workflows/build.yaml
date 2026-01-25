@@ -48,9 +48,9 @@ jobs:
         shell: pwsh
         timeout-minutes: 3
         run: |
-          ./scripts/pipeline-deps.ps1
-          Import-Module ./scripts/dependencies.psm1 -Force
-          Install-Dependencies -Dev -Repository 'PSGallery' -TrustRepository
+          ./scripts/pipeline-deps.ps1;
+          Import-Module ./scripts/dependencies.psm1 -Force;
+          Install-Dependencies -Dev -Repository 'PSGallery' -TrustRepository;
 
       - name: Build module
         shell: pwsh
