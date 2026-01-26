@@ -162,12 +162,12 @@ function InstallVersion {
         foreach ($module in $InputObject.PSObject.Properties.GetEnumerator()) {
             $installParams = @{ Version = $module.Value.version };
 
-            if ($Credential) {
-                $installParams['Credential'] = $Credential;
-            }
-
             Write-Host -Object "[$group] -- Installing $($module.Name) v$($module.Value.version)";
-            if ($Null -eq (Get-PSResource -Name $module.Name @installParams -ErrorAction Ignore)) {
+            if ($Null -eq (Get-InstalledPSResource -Name $module.Name @installParams -ErrorAction Ignore)) {
+                if ($Credential) {
+                    $installParams['Credential'] = $Credential;
+                }
+
                 Install-PSResource -Name $module.Name @installParams -Repository $Repository -TrustRepository:$TrustRepository;
             } else {
                 Write-Verbose -Message "[$group] -- $($module.Name) v$($module.Value.version) already installed.";
