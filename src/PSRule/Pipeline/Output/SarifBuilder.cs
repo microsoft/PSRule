@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Sarif;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PSRule.Configuration;
+using PSRule.Converters.Json;
 using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.Rules;
@@ -159,7 +160,7 @@ internal sealed class SarifBuilder
             {
                 Tool = GetTool(_Source),
                 Results = [],
-                Invocations = GetInvocation(),
+                Invocations = GetInvocation(run),
                 AutomationDetails = GetAutomationDetails(run),
                 OriginalUriBaseIds = GetBaseIds(),
                 VersionControlProvenance = GetVersionControl(_Option.Repository),
@@ -215,6 +216,7 @@ internal sealed class SarifBuilder
     private void AddOptions(Run run)
     {
         var s = new JsonSerializer();
+        s.Converters.Add(new StringMapJsonConverter<FormatType>());
         s.Converters.Add(new PSObjectJsonConverter());
         s.NullValueHandling = NullValueHandling.Ignore;
 
@@ -373,12 +375,16 @@ internal sealed class SarifBuilder
         };
     }
 
-    private static List<Invocation> GetInvocation()
+    private static List<Invocation> GetInvocation(IRun run)
     {
         var result = new List<Invocation>(1);
         var invocation = new Invocation
         {
-
+            Account = System.Environment.UserName,
+            Machine = System.Environment.MachineName,
+            ProcessId = System.Diagnostics.Process.GetCurrentProcess().Id,
+            StartTimeUtc = run.StartTime,
+            EndTimeUtc = run.EndTime,
         };
         result.Add(invocation);
         return result;

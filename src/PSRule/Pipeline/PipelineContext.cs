@@ -6,6 +6,7 @@ using System.Diagnostics;
 using PSRule.Configuration;
 using PSRule.Definitions;
 using PSRule.Definitions.Baselines;
+using PSRule.Definitions.Conventions;
 using PSRule.Definitions.Selectors;
 using PSRule.Definitions.SuppressionGroups;
 using PSRule.Options;

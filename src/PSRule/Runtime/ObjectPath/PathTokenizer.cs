@@ -10,22 +10,11 @@ namespace PSRule.Runtime.ObjectPath;
 /// </summary>
 internal static class PathTokenizer
 {
-    private sealed class TokenStream : ITokenWriter
+    private sealed class TokenStream() : ITokenWriter
     {
-        private readonly List<IPathToken> _Items;
+        private readonly List<IPathToken> _Items = [];
 
-        public TokenStream()
-        {
-            _Items = new List<IPathToken>();
-        }
-
-        public IPathToken? Last
-        {
-            get
-            {
-                return _Items.Count > 0 ? _Items[_Items.Count - 1] : null;
-            }
-        }
+        public IPathToken? Last => _Items.Count > 0 ? _Items[_Items.Count - 1] : null;
 
         public void Add(IPathToken token)
         {
@@ -34,14 +23,14 @@ internal static class PathTokenizer
 
         public IPathToken[] ToArray()
         {
-            return _Items.ToArray();
+            return [.. _Items];
         }
     }
 
     [DebuggerDisplay("Position = {Position}")]
     private sealed class PathStream
     {
-        private const char ROOTREF = '$';
+        private const char ROOT_REF = '$';
         private const char CURRENTREF = '@';
         private const char DOT = '.';
         private const char QUOTED_SINGLE = '\'';
@@ -105,7 +94,7 @@ internal static class PathTokenizer
         /// </summary>
         internal bool TryConsumeRef(ref int position, ITokenWriter tokens)
         {
-            if ((Current(position) == ROOTREF && !IsMemberName(position)) || (position == 0 && Current(position) == DOT))
+            if ((Current(position) == ROOT_REF && !IsMemberName(position)) || (position == 0 && Current(position) == DOT))
             {
                 tokens.Add(PathToken.RootRef);
                 Next(ref position);
@@ -573,7 +562,7 @@ internal static class PathTokenizer
         {
             var p = Current(position);
             var p1 = Current(position + 1);
-            return IsMemberNameCharacter(p) || (p == ROOTREF && IsMemberNameCharacter(p1));
+            return IsMemberNameCharacter(p) || (p == ROOT_REF && IsMemberNameCharacter(p1));
         }
 
         /// <summary>
@@ -595,13 +584,13 @@ internal static class PathTokenizer
         /// <summary>
         /// Continue while the character is a member name.
         /// </summary>
-        private bool WhileMemberName(ref int position, out string value)
+        private bool WhileMemberName(ref int position, out string? value)
         {
             value = null;
             if (position >= _Last)
                 return false;
 
-            var end = _Path[position] == ROOTREF ? position + 1 : position;
+            var end = _Path[position] == ROOT_REF ? position + 1 : position;
             while (end <= _Last && IsMemberNameCharacter(_Path[end]) && (end != position || _Path[end] != DASH))
                 end++;
 
@@ -638,7 +627,7 @@ internal static class PathTokenizer
         /// <summary>
         /// Find the end of the quote (').
         /// </summary>
-        private bool UntilQuote(ref int position, out string value)
+        private bool UntilQuote(ref int position, out string? value)
         {
             value = null;
             if (position >= _Last || !IsQuoted(_Path[position]))

@@ -31,9 +31,6 @@ internal static class PipelineHookActions
         if (targetObject == null)
             return null;
 
-        // if (preferTargetInfo && TryGetInfoTargetName(targetObject, out var targetName))
-        //     return targetName;
-
         if (propertyNames != null)
             return propertyNames.Any(n => n.Contains('.'))
                 ? NestedTargetPropertyBinding(propertyNames, caseSensitive, targetObject, DefaultTargetNameBinding, out path)
@@ -48,9 +45,6 @@ internal static class PipelineHookActions
         path = null;
         if (targetObject == null)
             return null;
-
-        // if (preferTargetInfo && TryGetInfoTargetType(targetObject, out var targetType))
-        //     return targetType;
 
         if (propertyNames != null)
             return propertyNames.Any(n => n.Contains('.'))

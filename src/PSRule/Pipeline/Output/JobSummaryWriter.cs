@@ -25,7 +25,7 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
     private readonly Source[]? _Source;
 
     private Stream? _Stream;
-    private StreamWriter _Writer;
+    private StreamWriter? _Writer;
     private bool _IsDisposed;
 
     public JobSummaryWriter(IPipelineWriter inner, PSRuleOption option, ShouldProcess shouldProcess, string? outputPath = null, Stream? stream = null, Source[]? source = null)
@@ -84,11 +84,13 @@ internal sealed class JobSummaryWriter : ResultOutputWriter<InvokeResult>
         var list = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         for (var i = 0; i < _Source.Length; i++)
         {
-            if (_Source[i].Module != null && !list.Contains(_Source[i].Module.Name))
+            var module = _Source[i].Module;
+
+            if (module != null && !list.Contains(module.Name))
             {
-                var projectLink = string.IsNullOrEmpty(_Source[i].Module.ProjectUri) ? _Source[i].Module.Name : $"[{_Source[i].Module.Name}]({_Source[i].Module.ProjectUri})";
-                WriteLine($"{projectLink} | v{_Source[i].Module.FullVersion}");
-                list.Add(_Source[i].Module.Name);
+                var projectLink = string.IsNullOrEmpty(module.ProjectUri) ? module.Name : $"[{module.Name}]({module.ProjectUri})";
+                WriteLine($"{projectLink} | v{module.FullVersion}");
+                list.Add(module.Name);
             }
         }
         WriteLine();

@@ -12,7 +12,7 @@ namespace PSRule.Converters.Yaml;
 /// <summary>
 /// A YAML converter for de/serializing <see cref="StringArrayMap"/>.
 /// </summary>
-public sealed class StringMapConverter<TValue> : IYamlTypeConverter where TValue : class
+public sealed class StringMapYamlConverter<TValue> : IYamlTypeConverter where TValue : class
 {
     /// <inheritdoc/>
     bool IYamlTypeConverter.Accepts(Type type)
@@ -37,10 +37,11 @@ public sealed class StringMapConverter<TValue> : IYamlTypeConverter where TValue
                     {
 
                         if (parser.TryConsume<Scalar>(out scalar))
+                        {
                             values.Add(scalar.Value);
-
+                        }
                     }
-                    result[key] = values.ToArray();
+                    result[key] = [.. values];
                     parser.Require<SequenceEnd>();
                     parser.MoveNext();
                 }

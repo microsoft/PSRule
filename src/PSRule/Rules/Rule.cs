@@ -83,8 +83,6 @@ public sealed class Rule : IDependencyTarget, ITargetInfo, IResource, IRuleV1
 
     TargetSourceInfo ITargetInfo.Source => new() { File = Source.Path };
 
-    // ITargetSourceMap? ITargetInfo.Source => null;
-
     bool IDependencyTarget.Dependency => Source.IsDependency();
 
     ResourceKind IResource.Kind => ResourceKind.Rule;

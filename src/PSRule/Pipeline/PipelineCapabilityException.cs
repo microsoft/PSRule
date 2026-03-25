@@ -3,8 +3,6 @@
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
 /// <summary>
 /// An exception thrown when a capability is not available.
 /// </summary>
@@ -43,5 +41,3 @@ public sealed class PipelineCapabilityException : PipelineException
     /// </summary>
     public string? Module { get; set; }
 }
-
-#nullable restore

@@ -2,10 +2,12 @@
 // Licensed under the MIT License.
 
 using System;
-using PSRule.Pipeline;
 
-namespace PSRule;
+namespace PSRule.Pipeline;
 
+/// <summary>
+/// Tests for <see cref="PathFilter"/>.
+/// </summary>
 public sealed class PathFilterTests
 {
     [Fact]
@@ -63,6 +65,18 @@ public sealed class PathFilterTests
     }
 
     [Theory]
+    [InlineData("file.ps1")]
+    [InlineData("out/file.cs")]
+    [InlineData("out/otherfile.cs")]
+    [InlineData("otherpath/file.cs")]
+    public void Match_WhenAllFilesExcluded_ShouldNotMatch(string path)
+    {
+        var filter = PathFilter.Create(GetWorkingPath(), ["**"], matchResult: false);
+
+        Assert.False(filter.Match(path));
+    }
+
+    [Theory]
     [InlineData("out/file.cs")]
     [InlineData("out/otherfile.cs")]
     [InlineData("otherpath/file.cs")]
@@ -111,32 +125,20 @@ public sealed class PathFilterTests
         Assert.True(filter.Match(path));
     }
 
-    [Fact]
-    public void Builder()
+    [Theory]
+    [InlineData("deployments/prod/deploy.bicep")]
+    [InlineData("modules/network/module.tests.bicep")]
+    public void Match_WhenExcludeAllFilesExceptDeepPaths_ShouldMatch(string path)
     {
-        var builder = PathFilterBuilder.Create(GetWorkingPath(), ["out/"], false, false);
-        var actual1 = builder.Build();
-        Assert.False(actual1.Match("out/not.file"));
-        Assert.True(actual1.Match(".git/HEAD"));
-        Assert.True(actual1.Match(".gitignore"));
-        Assert.True(actual1.Match(".github/CODEOWNERS"));
-        Assert.True(actual1.Match(".github/dependabot.yml"));
+        var expressions = new string[]
+        {
+            "**",
+            "!deployments/**/deploy.bicep",
+            "!modules/**/*.tests.bicep"
+        };
 
-        builder = PathFilterBuilder.Create(GetWorkingPath(), ["out/"], true, false);
-        var actual2 = builder.Build();
-        Assert.False(actual2.Match("out/not.file"));
-        Assert.False(actual2.Match(".git/HEAD"));
-        Assert.True(actual2.Match(".gitignore"));
-        Assert.True(actual2.Match(".github/CODEOWNERS"));
-        Assert.True(actual2.Match(".github/dependabot.yml"));
-
-        builder = PathFilterBuilder.Create(GetWorkingPath(), ["out/"], true, true);
-        var actual3 = builder.Build();
-        Assert.False(actual3.Match("out/not.file"));
-        Assert.False(actual3.Match(".git/HEAD"));
-        Assert.False(actual3.Match(".gitignore"));
-        Assert.False(actual3.Match(".github/CODEOWNERS"));
-        Assert.True(actual3.Match(".github/dependabot.yml"));
+        var filter = PathFilter.Create(GetWorkingPath(), expressions, matchResult: false);
+        Assert.True(filter.Match(path));
     }
 
     #region Helper methods

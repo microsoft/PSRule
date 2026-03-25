@@ -11,8 +11,6 @@ using PSRule.Runtime;
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
 /// <summary>
 /// A stream of input objects that will be evaluated.
 /// </summary>
@@ -117,5 +115,3 @@ internal sealed class PipelineInputStream : IPipelineReader
         }
     }
 }
-
-#nullable restore

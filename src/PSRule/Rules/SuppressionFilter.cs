@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using PSRule.Configuration;
+using PSRule.Data;
 using PSRule.Definitions;
 using PSRule.Definitions.SuppressionGroups;
 using PSRule.Pipeline;
@@ -13,10 +14,10 @@ namespace PSRule.Rules;
 [DebuggerDisplay("{_Index.Count}")]
 internal sealed class SuppressionFilter
 {
-    private readonly HashSet<SuppressionKey> _Index;
+    private readonly HashSet<SuppressionKey>? _Index;
     private readonly bool _IsEmpty;
-    private readonly ResourceIndex _ResourceIndex;
-    private readonly Dictionary<string, List<SuppressionGroupVisitor>> _RuleSuppressionGroupIndex;
+    private readonly ResourceIndex? _ResourceIndex;
+    private readonly Dictionary<string, List<SuppressionGroupVisitor>>? _RuleSuppressionGroupIndex;
 
     public SuppressionFilter(LegacyRunspaceContext context, SuppressionOption option, ResourceIndex resourceIndex)
     {
@@ -130,7 +131,7 @@ internal sealed class SuppressionFilter
     /// <param name="targetObject">The <seealso cref="TargetObject"/> we are evaluating.</param>
     /// <param name="suppression">Information about a matching suppression group.</param>
     /// <returns>Boolean indicating if suppression group has been found.</returns>
-    public bool TrySuppressionGroup(ResourceId ruleId, TargetObject targetObject, out ISuppressionInfo suppression)
+    public bool TrySuppressionGroup(ResourceId ruleId, ITargetObject targetObject, out ISuppressionInfo? suppression)
     {
         suppression = null;
         if (_RuleSuppressionGroupIndex.TryGetValue(ruleId.Value, out var suppressionGroupVisitors))

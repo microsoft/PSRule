@@ -45,7 +45,7 @@ internal sealed class FileOutputWriter : PipelineWriter
 
     private void InfoOutputPath(string rootedPath)
     {
-        if (!Option.Output.Footer.GetValueOrDefault(OutputOption.Default.Footer.Value).HasFlag(FooterFormat.OutputFile))
+        if (!Option.Output.Footer.GetValueOrDefault(OutputOption.Default.Footer!.Value).HasFlag(FooterFormat.OutputFile))
             return;
 
         var message = string.Format(Thread.CurrentThread.CurrentCulture, PSRuleResources.InfoOutputPath, rootedPath);

@@ -15,12 +15,12 @@ namespace PSRule.Pipeline.Runs;
 /// An instance of a run.
 /// </summary>
 [DebuggerDisplay("{Guid}: {Id}")]
-internal sealed class Run(ILogger logger, string? scope, string id, InfoString description, string correlationGuid, IRuleGraph graph, RunConfiguration? configuration = null) : IRun
+internal sealed class Run(ILogger logger, string? scope, string id, InfoString description, string correlationGuid, IRuleGraph graph, RunConfiguration? configuration = null, ITargetBinder? targetBinder = null) : IRun
 {
     private readonly ILogger _Logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly RunConfiguration? _RunConfiguration = configuration;
+    private readonly ITargetBinder _TargetBinder = targetBinder ?? new TargetBinderBuilder(PipelineHookActions.BindTargetName, PipelineHookActions.BindTargetType, PipelineHookActions.BindField, null).Build(null);
 
-    private ITargetBinder _TargetBinder;
     private WildcardMap<RuleOverride>? _Override;
 
     /// <inheritdoc/>
@@ -48,6 +48,12 @@ internal sealed class Run(ILogger logger, string? scope, string id, InfoString d
     /// <inheritdoc/>
     public IRuleGraph Rules { get; } = graph;
 
+    /// <inheritdoc/>
+    public DateTime StartTime { get; private set; }
+
+    /// <inheritdoc/>
+    public DateTime EndTime { get; private set; }
+
     public string? Scope { get; } = scope;
 
     #region IConfiguration
@@ -62,7 +68,7 @@ internal sealed class Run(ILogger logger, string? scope, string id, InfoString d
     public bool TryConfigurationValue(string configurationKey, out object? value)
     {
         value = null;
-        _Logger.LogDebug(EventId.None, "Run '{0}': Retrieving configuration key '{1}' from '{2}'", Guid, configurationKey, _RunConfiguration?.Guid);
+        _Logger.LogDebug(EventId.None, "Run '{0}': Reading configuration key '{1}' from '{2}'.", Guid, configurationKey, _RunConfiguration?.Guid);
 
         return _RunConfiguration != null && _RunConfiguration.Configuration.TryGetValue(configurationKey, out value);
     }
@@ -79,6 +85,29 @@ internal sealed class Run(ILogger logger, string? scope, string id, InfoString d
             _Override.TryGetValue(id.Name, out value);
     }
 
+    /// <inheritdoc/>
+    public ITargetBindingResult Bind(ITargetObject targetObject)
+    {
+        if (_TargetBinder == null) throw new InvalidOperationException($"Run '{Guid}': Target binder is not configured.");
+
+        return _TargetBinder.Bind(targetObject);
+    }
+
+    /// <inheritdoc/>
+    public void Start()
+    {
+        if (StartTime == default)
+            StartTime = DateTime.UtcNow;
+    }
+
+    /// <inheritdoc/>
+    public void Stop()
+    {
+        var now = DateTime.UtcNow;
+        if (now > EndTime)
+            EndTime = now;
+    }
+
     public void Configure(OptionContext context)
     {
         if (context == null) throw new ArgumentNullException(nameof(context));
@@ -90,8 +119,8 @@ internal sealed class Run(ILogger logger, string? scope, string id, InfoString d
         // _BindingComparer = context.Binding.GetComparer();
         Culture = context.Output.Culture;
 
-        var builder = new TargetBinderBuilder(context.BindTargetName, context.BindTargetType, context.BindField, context.InputTargetType);
-        _TargetBinder = builder.Build(context.Binding);
+        // var builder = new TargetBinderBuilder(context.BindTargetName, context.BindTargetType, context.BindField, context.InputTargetType);
+        // _TargetBinder = builder.Build(context.Binding);
         _Override = WithOverride(context.Override);
     }
 

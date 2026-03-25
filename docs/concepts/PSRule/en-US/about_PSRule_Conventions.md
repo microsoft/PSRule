@@ -13,6 +13,24 @@ When processing input it may be necessary to perform custom actions before or af
 Conventions provide an extensibility point that can be shipped with or external to standard rules.
 Each convention, hooks into one or more places within the pipeline.
 
+### Execution flow
+
+Before defining a convention it is important to understand the high execution level flow of PSRule.
+Which can be described as:
+
+- Pipeline
+  - Initialize:
+    - Call convention initialize.
+  - Begin.
+  - Process:
+    - Each object:
+      - Each run:
+        - Call convention begin.
+        - Each rule.
+        - Call convention process.
+  - End:
+    - Call convention end.
+
 ### Using conventions
 
 A convention can be included by using the `-Convention` parameter when executing a PSRule cmdlet.
@@ -52,14 +70,14 @@ Export-PSRuleConvention 'ExampleConvention' {
 Conventions define four executable blocks `Initialize`, `Begin`, `Process`, `End` similar to a PowerShell function.
 Each block is injected in a different part of the pipeline as follows:
 
-- `Initialize` occurs once at the beginning of the pipeline.
-  Use `Initialize` to perform any initialization required by the convention.
-- `Begin` occurs once per object before the any rules are executed.
+- `Initialize` occurs once globally at the beginning of the pipeline outside of a run.
+  Use `Initialize` to perform any initialization, such as creating global objects.
+- `Begin` occurs once per object per run before the any rules are executed.
   Use `Begin` blocks to perform expansion, set data, or alter the object before rules are processed.
-- `Process` occurs once per object after all rules are executed.
+- `Process` occurs once per object per run after all rules are executed.
   Use `Process` blocks to perform per object tasks such as generate badges.
-- `End` occurs only once after all objects have been processed.
-  Use `End` blocks to upload results to an external service.
+- `End` occurs once globally at the end of the pipeline outside of a run.
+  Use `End` to perform any finalization, such as upload results to an external service.
 
 Convention block limitations:
 
