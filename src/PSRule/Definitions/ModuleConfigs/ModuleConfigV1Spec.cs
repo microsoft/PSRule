@@ -5,8 +5,6 @@ using PSRule.Configuration;
 
 namespace PSRule.Definitions.ModuleConfigs;
 
-#nullable enable
-
 /// <summary>
 /// A specification for a V1 module configuration.
 /// </summary>
@@ -22,5 +20,3 @@ internal sealed class ModuleConfigV1Spec : Spec, IModuleConfigV1Spec
 
     public RuleOption? Rule { get; set; }
 }
-
-#nullable restore

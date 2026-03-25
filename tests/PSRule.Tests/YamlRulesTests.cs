@@ -105,29 +105,29 @@ public sealed class YamlRulesTests : ContextBaseTests
         var actual2 = GetObject((name: "resources", value: new string[] { "abc", "123", "abc" }));
 
         // YamlRuleWithPrecondition
-        context.EnterTargetObject(actual1);
+        context.EnterTargetObject(run, actual1);
         context.EnterRuleBlock(run, subselector1);
         Assert.True(subselector1.Condition.If(context, actual1).AllOf());
 
-        context.EnterTargetObject(actual2);
+        context.EnterTargetObject(run, actual2);
         context.EnterRuleBlock(run, subselector1);
         Assert.True(subselector1.Condition.If(context, actual2).Skipped());
 
         // YamlRuleWithSubselector
-        context.EnterTargetObject(actual1);
+        context.EnterTargetObject(run, actual1);
         context.EnterRuleBlock(run, subselector2);
         Assert.True(subselector2.Condition.If(context, actual1).AllOf());
 
-        context.EnterTargetObject(actual2);
+        context.EnterTargetObject(run, actual2);
         context.EnterRuleBlock(run, subselector2);
         Assert.False(subselector2.Condition.If(context, actual2).AllOf());
 
         // YamlRuleWithSubselectorReordered
-        context.EnterTargetObject(actual1);
+        context.EnterTargetObject(run, actual1);
         context.EnterRuleBlock(run, subselector3);
         Assert.True(subselector3.Condition.If(context, actual1).AllOf());
 
-        context.EnterTargetObject(actual2);
+        context.EnterTargetObject(run, actual2);
         context.EnterRuleBlock(run, subselector3);
         Assert.True(subselector3.Condition.If(context, actual2).AllOf());
 
@@ -137,15 +137,15 @@ public sealed class YamlRulesTests : ContextBaseTests
         actual2 = fromFile[1];
         var actual3 = fromFile[2];
 
-        context.EnterTargetObject(actual1);
+        context.EnterTargetObject(run, actual1);
         context.EnterRuleBlock(run, subselector4);
         Assert.True(subselector4.Condition.If(context, actual1).AllOf());
 
-        context.EnterTargetObject(actual2);
+        context.EnterTargetObject(run, actual2);
         context.EnterRuleBlock(run, subselector4);
         Assert.False(subselector4.Condition.If(context, actual2).AllOf());
 
-        context.EnterTargetObject(actual3);
+        context.EnterTargetObject(run, actual3);
         context.EnterRuleBlock(run, subselector4);
         Assert.True(subselector4.Condition.If(context, actual3).AllOf());
     }
@@ -173,47 +173,47 @@ public sealed class YamlRulesTests : ContextBaseTests
         if (actual3.Value is PSObject pso)
             pso.TypeNames.Insert(0, "CustomType");
 
-        context.EnterTargetObject(actual1);
+        context.EnterTargetObject(run, actual1);
         context.EnterRuleBlock(run, yamlTrue);
         Assert.True(yamlTrue.Condition.If(context, actual1).AllOf());
         context.EnterRuleBlock(run, yamlFalse);
         Assert.False(yamlFalse.Condition.If(context, actual1).AllOf());
 
-        context.EnterTargetObject(actual2);
+        context.EnterTargetObject(run, actual2);
         context.EnterRuleBlock(run, yamlTrue);
         Assert.False(yamlTrue.Condition.If(context, actual2).AllOf());
         context.EnterRuleBlock(run, yamlFalse);
         Assert.False(yamlFalse.Condition.If(context, actual2).AllOf());
 
-        context.EnterTargetObject(actual3);
+        context.EnterTargetObject(run, actual3);
         context.EnterRuleBlock(run, yamlTrue);
         Assert.False(yamlTrue.Condition.If(context, actual3).AllOf());
         context.EnterRuleBlock(run, yamlFalse);
         Assert.True(yamlFalse.Condition.If(context, actual3).AllOf());
 
         // With type pre-condition
-        context.EnterTargetObject(actual1);
+        context.EnterTargetObject(run, actual1);
         context.EnterRuleBlock(run, customType);
         Assert.Null(customType.Condition.If(context, actual1));
 
-        context.EnterTargetObject(actual2);
+        context.EnterTargetObject(run, actual2);
         context.EnterRuleBlock(run, customType);
         Assert.Null(customType.Condition.If(context, actual2));
 
-        context.EnterTargetObject(actual3);
+        context.EnterTargetObject(run, actual3);
         context.EnterRuleBlock(run, customType);
         Assert.NotNull(customType.Condition.If(context, actual3));
 
         // With selector pre-condition
-        context.EnterTargetObject(actual1);
+        context.EnterTargetObject(run, actual1);
         context.EnterRuleBlock(run, withSelector);
         Assert.Null(withSelector.Condition.If(context, actual1));
 
-        context.EnterTargetObject(actual2);
+        context.EnterTargetObject(run, actual2);
         context.EnterRuleBlock(run, withSelector);
         Assert.NotNull(withSelector.Condition.If(context, actual2));
 
-        context.EnterTargetObject(actual3);
+        context.EnterTargetObject(run, actual3);
         context.EnterRuleBlock(run, withSelector);
         Assert.Null(withSelector.Condition.If(context, actual3));
     }
@@ -234,17 +234,17 @@ public sealed class YamlRulesTests : ContextBaseTests
         var actual = GetObject(GetSourcePath("ObjectFromFile3.json"));
 
         var actualObject = new TargetObject(new PSObject(actual[0]));
-        context.EnterTargetObject(actualObject);
+        context.EnterTargetObject(run, actualObject);
         context.EnterRuleBlock(run, yamlObjectPath);
         Assert.True(yamlObjectPath.Condition.If(context, actualObject).AllOf());
 
         actualObject = new TargetObject(new PSObject(actual[1]));
-        context.EnterTargetObject(actualObject);
+        context.EnterTargetObject(run, actualObject);
         context.EnterRuleBlock(run, yamlObjectPath);
         Assert.False(yamlObjectPath.Condition.If(context, actualObject).AllOf());
 
         actualObject = new TargetObject(new PSObject(actual[2]));
-        context.EnterTargetObject(actualObject);
+        context.EnterTargetObject(run, actualObject);
         context.EnterRuleBlock(run, yamlObjectPath);
         Assert.True(yamlObjectPath.Condition.If(context, actualObject).AllOf());
     }

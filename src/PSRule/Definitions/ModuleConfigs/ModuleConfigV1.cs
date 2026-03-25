@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
+using PSRule.Configuration;
 using PSRule.Pipeline;
 using YamlDotNet.Serialization;
 
@@ -24,6 +25,8 @@ internal sealed class ModuleConfigV1(string apiVersion, SourceFile source, Resou
     IModuleConfigSpec IResource<IModuleConfigSpec>.Spec => Spec;
 
     ResourceId IScopeConfig.Id => Id;
+
+    BindingOption? IScopeConfig.Binding => Spec?.Binding;
 
     IDictionary<string, object>? IScopeConfig.Configuration => Spec?.Configuration;
 }

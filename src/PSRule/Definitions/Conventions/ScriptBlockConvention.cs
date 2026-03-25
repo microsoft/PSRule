@@ -62,30 +62,49 @@ internal sealed class ScriptBlockConvention : BaseConvention, IConventionV1, IDi
     // Not supported with conventions.
     IResourceLabels? IResource.Labels => null;
 
-    public override void Initialize(LegacyRunspaceContext context, IEnumerable input)
+    /// <inheritdoc/>
+    public override void Initialize(IConventionContext context, IEnumerable input)
     {
+        if (_Initialize == null)
+            return;
+
+        context.Logger?.LogDebug(EventId.None, $"Initializing convention '{Id}'.");
+
         InvokeConventionBlock(context, Source, _Initialize, input);
     }
 
-    public override void Begin(LegacyRunspaceContext context, IEnumerable input)
+    /// <inheritdoc/>
+    public override void Begin(IConventionContext context, IEnumerable input)
     {
+        if (_Begin == null)
+            return;
+
         InvokeConventionBlock(context, Source, _Begin, input);
     }
 
-    public override void Process(LegacyRunspaceContext context, IEnumerable input)
+    /// <inheritdoc/>
+    public override void Process(IConventionContext context, IEnumerable input)
     {
+        if (_Process == null)
+            return;
+
         InvokeConventionBlock(context, Source, _Process, input);
     }
 
-    public override void End(LegacyRunspaceContext context, IEnumerable input)
+    /// <inheritdoc/>
+    public override void End(IConventionContext context, IEnumerable input)
     {
+        if (_End == null)
+            return;
+
         InvokeConventionBlock(context, Source, _End, input);
     }
 
-    private static void InvokeConventionBlock(LegacyRunspaceContext context, ISourceFile source, LanguageScriptBlock? block, IEnumerable input)
+    private static void InvokeConventionBlock(IConventionContext context, ISourceFile source, LanguageScriptBlock block, IEnumerable input)
     {
-        if (block == null)
-            return;
+        if (context == null) throw new ArgumentNullException(nameof(context));
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        if (block == null) throw new ArgumentNullException(nameof(block));
 
         try
         {

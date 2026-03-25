@@ -979,8 +979,8 @@
       },
       "System.CommandLine": {
         "type": "Transitive",
-        "resolved": "2.0.1",
-        "contentHash": "GLc43eDFq8KbpxIb7UhTwV0vC5CzB0NspJvfFbfhoW4O057xCJXuO18KLpVn9x3JykQn2mRske6+I6JXHwqmDg=="
+        "resolved": "2.0.2",
+        "contentHash": "zqn6I1IULEJaLEFKejeSFlZrf8HzIUU4qEjuYtEVRx5AsxKMLqLP+t0dQ4fk51A5CzT9Uv8wBLdMHSIYIrCKBw=="
       },
       "System.ComponentModel.Annotations": {
         "type": "Transitive",
@@ -1787,7 +1787,7 @@
           "Microsoft.PSRule.SDK": "[0.0.1, )",
           "Microsoft.PowerShell.SDK": "[7.4.13, )",
           "NuGet.Protocol": "[7.0.1, )",
-          "System.CommandLine": "[2.0.1, )"
+          "System.CommandLine": "[2.0.2, )"
         }
       },
       "Microsoft.PSRule.Core": {

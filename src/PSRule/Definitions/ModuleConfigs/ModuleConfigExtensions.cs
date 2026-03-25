@@ -5,8 +5,6 @@ using PSRule.Runtime;
 
 namespace PSRule.Definitions.ModuleConfigs;
 
-#nullable enable
-
 /// <summary>
 /// Extensions methods for module configurations.
 /// </summary>
@@ -29,5 +27,3 @@ internal static class ModuleConfigExtensions
         return [.. results.Values];
     }
 }
-
-#nullable restore

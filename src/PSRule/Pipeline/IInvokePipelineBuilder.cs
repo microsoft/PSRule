@@ -3,8 +3,6 @@
 
 namespace PSRule.Pipeline;
 
-#nullable enable
-
 /// <summary>
 /// A helper to build a pipeline for executing rules and conventions within a PSRule sandbox.
 /// </summary>
@@ -38,5 +36,3 @@ public interface IInvokePipelineBuilder : IPipelineBuilder
     /// </summary>
     void Formats(string[]? format);
 }
-
-#nullable restore

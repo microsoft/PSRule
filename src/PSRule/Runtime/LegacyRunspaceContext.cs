@@ -22,7 +22,7 @@ namespace PSRule.Runtime;
 /// <summary>
 /// A context applicable to rule execution.
 /// </summary>
-internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext, IExpressionContext, IRunOverrideContext, IRunBuilderContext
+internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResourceDiscoveryContext, IGetLocalizedPathContext, IExpressionContext, IRunOverrideContext, IRunBuilderContext, IConventionContext
 {
     private const string ERROR_ID_INVALID_RULE_RESULT = "PSRule.Runtime.InvalidRuleResult";
     private const string WARN_KEY_SEPARATOR = "_";
@@ -424,12 +424,19 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
     /// <summary>
     /// Increment the pipeline object number.
     /// </summary>
-    internal void EnterTargetObject(TargetObject targetObject)
+    internal void EnterTargetObject(IRun run, TargetObject targetObject)
     {
+        if (run == null) throw new ArgumentNullException(nameof(run));
+        if (targetObject == null) throw new ArgumentNullException(nameof(targetObject));
+
+        Run = run;
+
         _ObjectNumber++;
         TargetObject = targetObject;
         if (Pipeline.ContentCache.Count > 0)
             Pipeline.ContentCache.Clear();
+
+        Binding = Run.Bind(targetObject);
 
         // Run conventions
         RunConventionBegin();
@@ -437,9 +444,15 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     public void ExitTargetObject()
     {
+        if (TargetObject == null)
+            return;
+
         RunConventionProcess();
         TargetObject = null;
         Binding = null;
+
+        Run?.Stop();
+        Run = null;
     }
 
     public bool TrySelector(ResourceId id, ITargetObject targetObject)
@@ -485,6 +498,9 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         EnterRun(run);
         EnterLanguageScope(ruleBlock.Source);
 
+        var targetName = TargetObject?.Name ?? Binding?.TargetName ?? "<unknown>";
+        var targetType = TargetObject?.Type ?? Binding?.TargetType ?? "<unknown>";
+
         _RuleErrors = 0;
         RuleBlock = ruleBlock;
         RuleRecord = new RuleRecord(
@@ -492,8 +508,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
             ruleId: ((ILanguageBlock)ruleBlock).Id,
             @ref: ((IResource)ruleBlock).Ref.GetValueOrDefault().Name,
             targetObject: TargetObject!,
-            targetName: Binding?.TargetName!,
-            targetType: Binding?.TargetType!,
+            targetName: targetName,
+            targetType: targetType,
             tag: ruleBlock.Tag,
             info: ruleBlock.Info,
             field: Binding?.Field,
@@ -559,6 +575,8 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
 
     private void RunConventionInitialize()
     {
+        Logger?.LogDebug(EventId.None, "Initializing {0} conventions.", _Conventions != null ? _Conventions.Length : 0);
+
         for (var i = 0; _Conventions != null && i < _Conventions.Length; i++)
             _Conventions[i].Initialize(this, null);
     }
@@ -705,6 +723,15 @@ internal sealed class LegacyRunspaceContext : IDisposable, ILogger, IScriptResou
         // Get from run.
         if (Run != null && Run.TryConfigurationValue(name, out var result))
         {
+            value = result;
+            return true;
+        }
+
+        // Get from global options if set.
+        if (Pipeline.Option.Configuration.TryGetValue(name, out result))
+        {
+            Logger?.LogDebug(EventId.None, "Reading configuration key '{0}' from global options.", name);
+
             value = result;
             return true;
         }

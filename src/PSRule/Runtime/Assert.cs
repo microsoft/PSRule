@@ -18,7 +18,7 @@ namespace PSRule.Runtime;
 /// </summary>
 public sealed class Assert
 {
-    private const string COMMASEPARATOR = ", ";
+    private const string COMMA_SEPARATOR = ", ";
     private const string PROPERTY_SCHEMA = "$schema";
     private const string VARIABLE_NAME = "Assert";
     private const string TYPENAME_STRING = "[string]";
@@ -1508,7 +1508,7 @@ public sealed class Assert
 
     private static string FormatArray(string[] values)
     {
-        return string.Join(COMMASEPARATOR, values);
+        return string.Join(COMMA_SEPARATOR, values);
     }
 
     /// <summary>

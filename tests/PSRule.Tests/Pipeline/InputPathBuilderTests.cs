@@ -89,6 +89,23 @@ public sealed class InputPathBuilderTests
         Assert.True(actual.Length > 100);
     }
 
+    [Fact]
+    public void Build_WithPathFilterAndExclusion_ShouldMatchSingleFile()
+    {
+        var expressions = new string[]
+        {
+            "**",
+            "!README.md",
+        };
+
+        var filter = PathFilter.Create(GetWorkingPath(), expressions, matchResult: false);
+        var builder = new InputPathBuilder(null, GetWorkingPath(), "*", filter, null);
+        builder.Add(".");
+        var actual = builder.Build();
+
+        Assert.Single(actual);
+    }
+
     #region Helper methods
 
     private static string GetWorkingPath()

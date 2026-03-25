@@ -105,29 +105,29 @@ public sealed class JsonRulesTests : ContextBaseTests
         var actual2 = GetObject((name: "resources", value: new string[] { "abc", "123", "abc" }));
 
         // JsonRuleWithPrecondition
-        context.EnterTargetObject(actual1);
+        context.EnterTargetObject(run, actual1);
         context.EnterRuleBlock(run, subselector1);
         Assert.True(subselector1.Condition.If(context, actual1).AllOf());
 
-        context.EnterTargetObject(actual2);
+        context.EnterTargetObject(run, actual2);
         context.EnterRuleBlock(run, subselector1);
         Assert.True(subselector1.Condition.If(context, actual2).Skipped());
 
         // JsonRuleWithSubselector
-        context.EnterTargetObject(actual1);
+        context.EnterTargetObject(run, actual1);
         context.EnterRuleBlock(run, subselector2);
         Assert.True(subselector2.Condition.If(context, actual1).AllOf());
 
-        context.EnterTargetObject(actual2);
+        context.EnterTargetObject(run, actual2);
         context.EnterRuleBlock(run, subselector2);
         Assert.False(subselector2.Condition.If(context, actual2).AllOf());
 
         // JsonRuleWithSubselectorReordered
-        context.EnterTargetObject(actual1);
+        context.EnterTargetObject(run, actual1);
         context.EnterRuleBlock(run, subselector3);
         Assert.True(subselector3.Condition.If(context, actual1).AllOf());
 
-        context.EnterTargetObject(actual2);
+        context.EnterTargetObject(run, actual2);
         context.EnterRuleBlock(run, subselector3);
         Assert.True(subselector3.Condition.If(context, actual2).AllOf());
 
@@ -137,15 +137,15 @@ public sealed class JsonRulesTests : ContextBaseTests
         actual2 = fromFile[1];
         var actual3 = fromFile[2];
 
-        context.EnterTargetObject(actual1);
+        context.EnterTargetObject(run, actual1);
         context.EnterRuleBlock(run, subselector4);
         Assert.True(subselector4.Condition.If(context, actual1).AllOf());
 
-        context.EnterTargetObject(actual2);
+        context.EnterTargetObject(run, actual2);
         context.EnterRuleBlock(run, subselector4);
         Assert.False(subselector4.Condition.If(context, actual2).AllOf());
 
-        context.EnterTargetObject(actual3);
+        context.EnterTargetObject(run, actual3);
         context.EnterRuleBlock(run, subselector4);
         Assert.True(subselector4.Condition.If(context, actual3).AllOf());
     }

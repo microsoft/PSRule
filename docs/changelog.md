@@ -45,12 +45,14 @@ What's changed since pre-release v3.0.0-B0453:
     [#2891](https://github.com/microsoft/PSRule/issues/2891)
   - **Important change**: Remove pass fail streams by @BernieWhite.
     [#2892](https://github.com/microsoft/PSRule/issues/2892)
+  - **Important change**: Cleanup PreferTargetInfo option by @BernieWhite.
+    [#2994](https://github.com/microsoft/PSRule/issues/2994)
   - Added GitHub Actions support to CLI by @BernieWhite.
     [#2824](https://github.com/microsoft/PSRule/issues/2824)
   - Added Azure Pipelines support to CLI by @BernieWhite.
     [#2825](https://github.com/microsoft/PSRule/issues/2825)
-  - Bump vscode engine to v1.107.0.
-    [#3144](https://github.com/microsoft/PSRule/pull/3144)
+  - Bump vscode engine to v1.108.0.
+    [#3183](https://github.com/microsoft/PSRule/pull/3183)
   - Bump Newtonsoft.Json to 13.0.4.
     [#3161](https://github.com/microsoft/PSRule/pull/3161)
   - Bump System.CommandLine to 2.0.1.

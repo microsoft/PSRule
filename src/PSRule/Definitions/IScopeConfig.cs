@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using PSRule.Configuration;
+
 namespace PSRule.Definitions;
 
 /// <summary>
@@ -14,6 +16,11 @@ public interface IScopeConfig
     /// The unique identifier.
     /// </summary>
     ResourceId Id { get; }
+
+    /// <summary>
+    /// Get binding options.
+    /// </summary>
+    BindingOption? Binding { get; }
 
     /// <summary>
     /// Get configuration.
