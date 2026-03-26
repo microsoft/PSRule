@@ -24,6 +24,12 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+What's changed since pre-release v3.0.0-B0755:
+
+- Engineering:
+  - Bump vscode engine to v1.108.1.
+    [#3262](https://github.com/microsoft/PSRule/pull/3262)
+
 ## v3.0.0-B0755 (pre-release)
 
 What's changed since pre-release v3.0.0-B0453:
