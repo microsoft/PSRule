@@ -146,7 +146,7 @@ jobs:
       - if: ${{ matrix.shell == 'powershell' }}
         name: Install dependencies (Windows PowerShell)
         shell: powershell
-        timeout-minutes: 3
+        timeout-minutes: 5
         run: |
           ./scripts/pipeline-deps.ps1
           Import-Module ./scripts/dependencies.psm1 -Force
