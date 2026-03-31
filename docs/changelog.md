@@ -29,6 +29,9 @@ What's changed since pre-release v3.0.0-B0755:
 - Engineering:
   - Bump vscode engine to v1.110.0.
     [#3262](https://github.com/microsoft/PSRule/pull/3262)
+- Bug fixes:
+  - Fixed version constraint string does not include pre-release flag by @BernieWhite.
+    [#3287](https://github.com/microsoft/PSRule/issues/3287)
 
 ## v3.0.0-B0755 (pre-release)
 
