@@ -436,10 +436,10 @@ public static class DateVersion
             _Identifiers = null;
         }
 
-        internal PR(string value)
+        internal PR(string? value)
         {
-            Value = string.IsNullOrEmpty(value) ? string.Empty : value;
-            _Identifiers = string.IsNullOrEmpty(value) ? null : value.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
+            Value = value == null || string.IsNullOrEmpty(value) ? string.Empty : value;
+            _Identifiers = value == null || string.IsNullOrEmpty(value) ? null : value.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>

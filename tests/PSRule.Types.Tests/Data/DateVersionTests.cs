@@ -1,12 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using PSRule.Data;
-
-namespace PSRule;
+namespace PSRule.Data;
 
 /// <summary>
-/// Tests for date version comparison.
+/// Tests for <see cref="DateVersion"/> and <see cref="IDateVersionConstraint"/>.
 /// </summary>
 public sealed class DateVersionTests
 {
@@ -14,16 +12,16 @@ public sealed class DateVersionTests
     /// Test parsing of versions.
     /// </summary>
     [Fact]
-    public void Version()
+    public void DateVersion_WithTryParseVersion_ShouldParseSuccessfully()
     {
         Assert.True(DateVersion.TryParseVersion("2015-10-01", out var actual));
-        Assert.Equal(2015, actual.Year);
+        Assert.Equal(2015, actual!.Year);
         Assert.Equal(10, actual.Month);
         Assert.Equal(1, actual.Day);
         Assert.Equal(string.Empty, actual.Prerelease.Value);
 
         Assert.True(DateVersion.TryParseVersion("2015-1-01-prerelease", out actual));
-        Assert.Equal(2015, actual.Year);
+        Assert.Equal(2015, actual!.Year);
         Assert.Equal(1, actual.Month);
         Assert.Equal(1, actual.Day);
         Assert.Equal("prerelease", actual.Prerelease.Value);
@@ -33,30 +31,30 @@ public sealed class DateVersionTests
     /// Test ordering of versions by comparison.
     /// </summary>
     [Fact]
-    public void VersionOrder()
+    public void DateVersion_WithCompareTo_ShouldCrossCompare()
     {
         Assert.True(DateVersion.TryParseVersion("2015-10-01", out var actual1));
         Assert.True(DateVersion.TryParseVersion("2015-10-01-prerelease", out var actual2));
         Assert.True(DateVersion.TryParseVersion("2022-03-01", out var actual3));
         Assert.True(DateVersion.TryParseVersion("2022-01-03", out var actual4));
 
-        Assert.True(actual1.CompareTo(actual1) == 0);
-        Assert.True(actual1.CompareTo(actual2) > 0);
-        Assert.True(actual1.CompareTo(actual3) < 0);
-        Assert.True(actual1.CompareTo(actual4) < 0);
-        Assert.True(actual2.CompareTo(actual2) == 0);
+        Assert.Equal(0, actual1!.CompareTo(actual1));
+        Assert.True(actual1.CompareTo(actual2!) > 0);
+        Assert.True(actual1.CompareTo(actual3!) < 0);
+        Assert.True(actual1.CompareTo(actual4!) < 0);
+        Assert.Equal(0, actual2!.CompareTo(actual2));
         Assert.True(actual2.CompareTo(actual1) < 0);
-        Assert.True(actual2.CompareTo(actual3) < 0);
-        Assert.True(actual2.CompareTo(actual4) < 0);
-        Assert.True(actual3.CompareTo(actual4) > 0);
-        Assert.True(actual1.CompareTo(actual4) < 0);
+        Assert.True(actual2.CompareTo(actual3!) < 0);
+        Assert.True(actual2.CompareTo(actual4!) < 0);
+        Assert.True(actual3!.CompareTo(actual4!) > 0);
+        Assert.True(actual1.CompareTo(actual4!) < 0);
     }
 
     /// <summary>
     /// Test parsing of constraints.
     /// </summary>
     [Fact]
-    public void Constraint()
+    public void DateVersion_WithTryParseConstraint_ShouldAcceptMatchingVersions()
     {
         // Versions
         Assert.True(DateVersion.TryParseVersion("2015-10-01", out var version1));
@@ -154,7 +152,7 @@ public sealed class DateVersionTests
     /// Test parsing and order of pre-releases.
     /// </summary>
     [Fact]
-    public void Prerelease()
+    public void DateVersion_WithPrerelease_ShouldCrossCompare()
     {
         var actual1 = new DateVersion.PR(null);
         var actual2 = new DateVersion.PR("alpha");
@@ -166,7 +164,7 @@ public sealed class DateVersionTests
         var actual8 = new DateVersion.PR("rc.1");
         var actual9 = new DateVersion.PR("alpha.9");
 
-        Assert.True(actual1.CompareTo(actual1) == 0);
+        Assert.Equal(0, actual1.CompareTo(actual1));
         Assert.True(actual1.CompareTo(actual2) > 0);
         Assert.True(actual1.CompareTo(actual6) > 0);
         Assert.True(actual2.CompareTo(actual3) < 0);

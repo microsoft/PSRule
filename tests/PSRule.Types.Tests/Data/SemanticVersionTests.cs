@@ -4,7 +4,7 @@
 namespace PSRule.Data;
 
 /// <summary>
-/// Tests for semantic version comparison.
+/// Tests for <see cref="SemanticVersion"/> and <see cref="ISemanticVersionConstraint"/>.
 /// </summary>
 public sealed class SemanticVersionTests
 {
@@ -70,6 +70,7 @@ public sealed class SemanticVersionTests
         Assert.True(SemanticVersion.TryParseVersion("1.2.3-0", out var _));
         Assert.False(SemanticVersion.TryParseVersion("1.2.3-0123", out var _));
         Assert.True(SemanticVersion.TryParseVersion("1.2.3-0A", out var _));
+        Assert.True(SemanticVersion.TryParseVersion("3.0.0-b755", out var version9));
 
         // Constraints
         Assert.True(SemanticVersion.TryParseConstraint("1.2.3", out var actual1));
@@ -93,6 +94,8 @@ public sealed class SemanticVersionTests
         Assert.True(SemanticVersion.TryParseConstraint("<=3.4.5-0", out var actual19, includePrerelease: true));
         Assert.True(SemanticVersion.TryParseConstraint("@pre >=1.2.3", out var actual20));
         Assert.True(SemanticVersion.TryParseConstraint("@prerelease <=3.4.5-0", out var actual21));
+        Assert.True(SemanticVersion.TryParseConstraint("@pre >=3.0.0", out var actual22));
+        Assert.True(SemanticVersion.TryParseConstraint("@pre >=3.0.0-0", out var actual23));
 
         // Version1 - 1.2.3
         Assert.True(actual1.Accepts(version1));
@@ -185,6 +188,31 @@ public sealed class SemanticVersionTests
         Assert.False(actual19.Accepts(version4));
         Assert.True(actual20.Accepts(version4));
         Assert.False(actual21.Accepts(version4));
+
+        // Version 9 - 3.0.0-b755
+        Assert.False(actual1.Accepts(version9));
+        Assert.False(actual2.Accepts(version9));
+        Assert.False(actual3.Accepts(version9));
+        Assert.False(actual4.Accepts(version9));
+        Assert.False(actual5.Accepts(version9));
+        Assert.False(actual6.Accepts(version9));
+        Assert.False(actual7.Accepts(version9));
+        Assert.False(actual8.Accepts(version9));
+        Assert.False(actual9.Accepts(version9));
+        Assert.False(actual10.Accepts(version9));
+        Assert.False(actual11.Accepts(version9));
+        Assert.False(actual12.Accepts(version9));
+        Assert.False(actual13.Accepts(version9));
+        Assert.False(actual14.Accepts(version9));
+        Assert.False(actual15.Accepts(version9));
+        Assert.False(actual16.Accepts(version9));
+        Assert.False(actual17.Accepts(version9));
+        Assert.True(actual18.Accepts(version9));
+        Assert.True(actual19.Accepts(version9));
+        Assert.True(actual20.Accepts(version9));
+        Assert.True(actual21.Accepts(version9));
+        Assert.False(actual22.Accepts(version9));
+        Assert.True(actual23.Accepts(version9));
     }
 
     /// <summary>
@@ -257,6 +285,10 @@ public sealed class SemanticVersionTests
     [InlineData("=1.2.3", "=1.2.3")]
     [InlineData(">=1.2.3", ">=1.2.3")]
     [InlineData("1.2.3 ||>=3.4.5-0 || 3.4.5", "=1.2.3 || >=3.4.5-0 || =3.4.5")]
+    [InlineData("@pre 3.0.0", "@prerelease =3.0.0")]
+    [InlineData("@pre 3.0.0-0", "@prerelease =3.0.0-0")]
+    [InlineData("@pre >=3.0.0-0", "@prerelease >=3.0.0-0")]
+    [InlineData(">=3.0.0 || @pre >=3.0.0-0", ">=3.0.0 || @prerelease >=3.0.0-0")]
     public void SemanticVersion_WithTryParseConstraint_ShouldReturnString(string constraint, string expected)
     {
         Assert.True(SemanticVersion.TryParseConstraint(constraint, out var actual));

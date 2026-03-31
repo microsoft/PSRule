@@ -386,6 +386,9 @@ public static class SemanticVersion
         private string GetExpressionString()
         {
             var sb = new StringBuilder();
+            if (_IncludePrerelease)
+                sb.Append(FLAG_PRERELEASE);
+
             switch (_Flag)
             {
                 case ComparisonOperator.Equals:
@@ -1000,12 +1003,15 @@ public static class SemanticVersion
             return true;
 
         var stream = new VersionStream(value);
-        stream.Flags(out var flags);
-        if (flags.HasFlag(ConstraintModifier.Prerelease))
-            includePrerelease = true;
 
         while (!stream.EOF)
         {
+            var prereleaseFlag = includePrerelease;
+
+            stream.Flags(out var flags);
+            if (flags.HasFlag(ConstraintModifier.Prerelease))
+                prereleaseFlag = true;
+
             stream.Operator(out var comparison);
             if (!stream.TrySegments(out var segments))
                 return false;
@@ -1013,7 +1019,7 @@ public static class SemanticVersion
             stream.Prerelease(out var prerelease);
             stream.Build(out _);
 
-            c.Join(segments[0], segments[1], segments[2], prerelease, comparison, stream.GetJoin(), includePrerelease);
+            c.Join(segments[0], segments[1], segments[2], prerelease, comparison, stream.GetJoin(), prereleaseFlag);
         }
         return true;
     }
