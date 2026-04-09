@@ -90,12 +90,12 @@
       },
       "Sarif.Sdk": {
         "type": "Direct",
-        "requested": "[2.4.16, )",
-        "resolved": "2.4.16",
-        "contentHash": "ikJcKaMnwEvlqmxD3rtMn4ksYr8tvWdid7uzq4JFPcASwz21ErE1wF2CHbY/orlxt+E7uhZ4zBblgk5rdflfpg==",
+        "requested": "[3.1.0, )",
+        "resolved": "3.1.0",
+        "contentHash": "WIiF4mhbxENA5Ey5FwHI9WnIrJF3EPw6kthI7BCQRsErgiZYymXGMTHCsjki5SFeQajJDqJLHwbvB6KT2WCpdA==",
         "dependencies": {
-          "Newtonsoft.Json": "13.0.1",
-          "System.Collections.Immutable": "5.0.0"
+          "Newtonsoft.Json": "9.0.1",
+          "System.Collections.Immutable": "1.5.0"
         }
       },
       "System.Net.Http": {
@@ -589,11 +589,8 @@
       },
       "System.Collections.Immutable": {
         "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "FXkLXiK0sVVewcso0imKQoOxjoPAj42R8HtjjbSjVPAzwDfzoyoznWxgA3c38LDbN9SJux1xXoXYAhz98j7r2g==",
-        "dependencies": {
-          "System.Memory": "4.5.4"
-        }
+        "resolved": "1.5.0",
+        "contentHash": "EXKiDFsChZW0RjrZ4FYHu9aW6+P4MCgEDCklsVseRfhoO0F+dXeMSsMRAlVXIo06kGJ/zv+2w1a2uc2+kxxSaQ=="
       },
       "System.ComponentModel.Annotations": {
         "type": "Transitive",
