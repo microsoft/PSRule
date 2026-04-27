@@ -24,11 +24,21 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 
 ## Unreleased
 
+## v3.0.0-B0783 (pre-release)
+
 What's changed since pre-release v3.0.0-B0755:
 
 - Engineering:
   - Bump vscode engine to v1.110.0.
     [#3262](https://github.com/microsoft/PSRule/pull/3262)
+  - Bump System.CommandLine to 2.0.7.
+    [#3328](https://github.com/microsoft/PSRule/pull/3328)
+  - Bump Microsoft.Extensions.Hosting to 10.0.6.
+    [#3313](https://github.com/microsoft/PSRule/pull/3313)
+  - Bump NuGet.Protocol to 7.0.3.
+    [#3307](https://github.com/microsoft/PSRule/pull/3307)
+  - Bump YamlDotNet to 17.0.1.
+    [#3304](https://github.com/microsoft/PSRule/pull/3304)
 - Bug fixes:
   - Fixed version constraint string does not include pre-release flag by @BernieWhite.
     [#3287](https://github.com/microsoft/PSRule/issues/3287)
