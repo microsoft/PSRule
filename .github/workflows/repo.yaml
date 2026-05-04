@@ -1,0 +1,45 @@
+#
+# Repository configuration analysis
+#
+
+# NOTES:
+# This workflow uses PSRule.
+# You can read more about these linting tools and configuration options here:
+#   PSRule - https://aka.ms/ps-rule and https://github.com/Microsoft/PSRule.Rules.GitHub
+
+name: Repository
+on:
+  push:
+    branches: [main, 'release/*']
+  pull_request:
+    branches: [main, 'release/*']
+  schedule:
+    - cron: '24 22 * * 0' # At 10:24 PM, on Sunday each week
+  workflow_dispatch:
+
+jobs:
+  repo:
+    name: Repository configuration
+    runs-on: ubuntu-latest
+    # if: github.repository == 'microsoft/PSRule'
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run PSRule analysis
+        uses: Microsoft/ps-rule@v2.8.1
+        with:
+          modules: PSRule.Rules.GitHub
+          outputFormat: Sarif
+          outputPath: reports/ps-rule-results.sarif
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload results to security tab
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: reports/ps-rule-results.sarif
