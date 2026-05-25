@@ -56,11 +56,11 @@
       },
       "System.Drawing.Common": {
         "type": "Direct",
-        "requested": "[10.0.5, )",
-        "resolved": "10.0.5",
-        "contentHash": "FYgPPbii/9Prh7RuY1gaxSyik7Ysw594K0uCHggDxHDgl7mfk8c4UlwluKjQoMquVGLce7Jld4DjjsnuYK3m7g==",
+        "requested": "[10.0.8, )",
+        "resolved": "10.0.8",
+        "contentHash": "LCISd6JAF80vsy9L6wuetZeOMR3FH+SwKovw5Zl0Nov9pB9ZOiCSqvOfMzooypPItQLv0mGfEePjJ1nCCQztNw==",
         "dependencies": {
-          "Microsoft.Win32.SystemEvents": "10.0.5"
+          "Microsoft.Win32.SystemEvents": "10.0.8"
         }
       },
       "Microsoft.Build.Tasks.Git": {
@@ -330,8 +330,8 @@
       },
       "Microsoft.Win32.SystemEvents": {
         "type": "Transitive",
-        "resolved": "10.0.5",
-        "contentHash": "a7rC0Qb5JGiA4f4ooqQjsx17LgYkb9feOcMNGyBXGqYmqC4ZoLbrV98zn7Kr5Z39BIU10Bti80Jwm/QAw+45VA=="
+        "resolved": "10.0.8",
+        "contentHash": "J9+VT0lkrA7wW38CGxO2sZd+iH9C0qzioMi/2ztpT32WOVr+04uNqFIrxisTRf+mvtXLtdqcio1AoS0vfAVLLQ=="
       },
       "System.Diagnostics.DiagnosticSource": {
         "type": "Transitive",
