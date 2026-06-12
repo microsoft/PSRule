@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <PSRule_Version>$(version)</PSRule_Version>
+    <PSRule_Version Condition="'$(PSRule_Version)' == ''">0.0.1</PSRule_Version>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
