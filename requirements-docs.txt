@@ -1,6 +1,6 @@
 mkdocs==1.6.1
 mkdocs-material==9.7.6
-pymdown-extensions==10.21.2
+pymdown-extensions==10.21.3
 mike==2.2.0
 mkdocs-git-revision-date-localized-plugin==1.5.1
 mkdocs-git-committers-plugin-2==2.5.0
