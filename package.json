@@ -8,7 +8,7 @@
     "name": "Microsoft"
   },
   "engines": {
-    "vscode": "^1.110.0"
+    "vscode": "^1.125.0"
   },
   "channel": "stable",
   "license": "SEE LICENSE IN LICENSE",
@@ -566,7 +566,7 @@
     "test": "npm run build:dotnet && npm run build:esbuild && vscode-test"
   },
   "dependencies": {
-    "fs-extra": "^11.3.4",
+    "fs-extra": "^11.3.5",
     "vscode-languageclient": "^9.0.1"
   },
   "extensionDependencies": [
@@ -580,14 +580,14 @@
     "@types/node": "^24.13.2",
     "@types/vscode": "1.125.0",
     "@typescript-eslint/eslint-plugin": "^8.61.1",
-    "@typescript-eslint/parser": "^8.57.2",
-    "@vscode/test-cli": "^0.0.12",
+    "@typescript-eslint/parser": "^8.61.1",
+    "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^3.0.0",
-    "@vscode/vsce": "^3.9.1",
+    "@vscode/vsce": "^3.9.2",
     "esbuild": "^0.28.1",
     "eslint": "^10.5.0",
     "glob": "^13.0.6",
-    "mocha": "^11.7.6",
+    "mocha": "^11.3.0",
     "typescript": "^6.0.3"
   }
 }
