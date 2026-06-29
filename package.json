@@ -567,7 +567,7 @@
   },
   "dependencies": {
     "fs-extra": "^11.3.5",
-    "vscode-languageclient": "^9.0.1"
+    "vscode-languageclient": "^10.0.1"
   },
   "extensionDependencies": [
     "vscode.powershell",
