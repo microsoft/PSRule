@@ -323,8 +323,8 @@ task TestModule Dependencies, {
     if ($Null -eq $results) {
         throw 'Failed to get Pester test results.';
     }
-    elseif ($results.FailedCount -gt 0) {
-        throw "$($results.FailedCount) tests failed.";
+    elseif (($results.FailedCount + $results.FailedBlocksCount + $results.FailedContainersCount) -gt 0) {
+        throw "Pester run failed: $($results.FailedCount) failed test(s), $($results.FailedBlocksCount) failed block(s), $($results.FailedContainersCount) failed container(s), of $($results.TotalCount) total tests";
     }
 }
 
