@@ -50,9 +50,9 @@
       },
       "System.CommandLine": {
         "type": "Direct",
-        "requested": "[2.0.7, )",
-        "resolved": "2.0.7",
-        "contentHash": "ih4yNLLF2Ebz85xJJBaPeddLa4d1AekYId7Y1g8oSsEaBHHd/CtyeBJ+tDvQadqeXz7i591K5ry/td+4aaHnQA=="
+        "requested": "[2.0.10, )",
+        "resolved": "2.0.10",
+        "contentHash": "6i1D6/U3i1f/PiXTt9pDvbJwdXEe0F2DZPup6BHzeIu5yPk/lkFzgtrJnPbj54JWUh8Y9vJeKG/TZIT6MkF8TA=="
       },
       "System.Drawing.Common": {
         "type": "Direct",
