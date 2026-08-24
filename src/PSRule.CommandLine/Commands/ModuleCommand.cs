@@ -505,6 +505,10 @@ public sealed class ModuleCommand
         var cache = new SourceCacheContext();
         var logger = new NullLogger();
         var resource = await GetSourceRepositoryAsync();
+
+        if (resource == null)
+            return null;
+
         var versions = await resource.GetAllVersionsAsync(module, cache, logger, cancellationToken);
 
         SemanticVersion.Version? result = null;
@@ -534,7 +538,7 @@ public sealed class ModuleCommand
         var packageVersion = new NuGetVersion(stringVersion);
         using var packageStream = new MemoryStream();
 
-        if (!await resource.CopyNupkgToStreamAsync(
+        if (resource == null || !await resource.CopyNupkgToStreamAsync(
             name,
             packageVersion,
             packageStream,
@@ -613,7 +617,7 @@ public sealed class ModuleCommand
         return count > 0 ? version : null;
     }
 
-    private static async Task<FindPackageByIdResource> GetSourceRepositoryAsync()
+    private static async Task<FindPackageByIdResource?> GetSourceRepositoryAsync()
     {
         var source = new PackageSource(POWERSHELL_GALLERY_SOURCE);
         var repository = Repository.Factory.GetCoreV2(source);
