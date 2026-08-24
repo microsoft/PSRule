@@ -23,6 +23,12 @@ updates:
     ignore:
       - dependency-name: gitversion.tool
 
+      # Allow bumping patch version only.
+      - dependency-name: Microsoft.PowerShell.SDK
+        update-types:
+          - version-update:semver-major
+          - version-update:semver-minor
+
       # Don't auto-update to new major versions, we need to migrate code first.
       # https://github.com/microsoft/PSRule/issues/3158
       - dependency-name: Microsoft.CodeAnalysis.Common
