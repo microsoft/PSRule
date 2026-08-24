@@ -3435,7 +3435,7 @@
 <li>The rule definition is saved within a file named <code>azureTags.Rule.ps1</code>.</li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c"># Synopsis: Resource must have environment tag</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">Rule</span> <span class="s1">&#39;environmentTag&#39;</span> <span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">Rule</span> <span class="s1">'environmentTag'</span> <span class="p">{</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="c"># Rule conditions go here</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span>
 </span></code></pre></div>
@@ -3443,12 +3443,12 @@
 <p>Conditions can be any valid PowerShell expression that results in a <code>$True</code> or <code>$False</code>, just like an <code>If</code> statement, but without specifically requiring the <code>If</code> keyword to be used.</p>
 <p>In <code>resources.json</code> one of our example storage accounts has the <code>Tags</code> property as shown below, this is how Azure Resource Manager stores tags for a resource. We will use this property as the basis of our rules to determine if the resource is tagged and what the tag value is.</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;storage&quot;</span><span class="p">,</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">&quot;ResourceName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;storage&quot;</span><span class="p">,</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">&quot;ResourceType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Microsoft.Storage/storageAccounts&quot;</span><span class="p">,</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">&quot;Tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deployment&quot;</span><span class="p">,</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">        </span><span class="nt">&quot;environment&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;production&quot;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"storage"</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">"ResourceName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"storage"</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">"ResourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Microsoft.Storage/storageAccounts"</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">"Tags"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">        </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"deployment"</span><span class="p">,</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">        </span><span class="nt">"environment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"production"</span>
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
 </span></code></pre></div>
@@ -3464,8 +3464,8 @@
 </li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c"># Synopsis: Resource must have environment tag</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">Rule</span> <span class="s1">&#39;environmentTag&#39;</span> <span class="p">{</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">Exists</span> <span class="s1">&#39;Tags.environment&#39;</span> <span class="o">-CaseSensitive</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">Rule</span> <span class="s1">'environmentTag'</span> <span class="p">{</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">Exists</span> <span class="s1">'Tags.environment'</span> <span class="o">-CaseSensitive</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="tag-uses-only-allowed-values">Tag uses only allowed values<a class="headerlink" href="#tag-uses-only-allowed-values" title="Permanent link">#</a></h3>
@@ -3481,9 +3481,9 @@
 </li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c"># Synopsis: Resource must have environment tag</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">Rule</span> <span class="s1">&#39;environmentTag&#39;</span> <span class="p">{</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">Exists</span> <span class="s1">&#39;Tags.environment&#39;</span> <span class="o">-CaseSensitive</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">Within</span> <span class="s1">&#39;Tags.environment&#39;</span> <span class="s1">&#39;production&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;development&#39;</span> <span class="o">-CaseSensitive</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">Rule</span> <span class="s1">'environmentTag'</span> <span class="p">{</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">Exists</span> <span class="s1">'Tags.environment'</span> <span class="o">-CaseSensitive</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">Within</span> <span class="s1">'Tags.environment'</span> <span class="s1">'production'</span><span class="p">,</span> <span class="s1">'test'</span><span class="p">,</span> <span class="s1">'development'</span> <span class="o">-CaseSensitive</span>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Alternatively, instead of using the <code>Within</code> keyword the <code>-cin</code> operator could be used. <code>Within</code> provides additional verbose logging, however either syntax is valid.</p>
@@ -3499,9 +3499,9 @@
 </li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c"># Synopsis: Resource must have environment tag</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">Rule</span> <span class="s1">&#39;environmentTag&#39;</span> <span class="p">{</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">Exists</span> <span class="s1">&#39;Tags.environment&#39;</span> <span class="o">-CaseSensitive</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">Tags</span><span class="p">.</span><span class="n">environment</span> <span class="n">-cin</span> <span class="s1">&#39;production&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;development&#39;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">Rule</span> <span class="s1">'environmentTag'</span> <span class="p">{</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">Exists</span> <span class="s1">'Tags.environment'</span> <span class="o">-CaseSensitive</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">Tags</span><span class="p">.</span><span class="n">environment</span> <span class="n">-cin</span> <span class="s1">'production'</span><span class="p">,</span> <span class="s1">'test'</span><span class="p">,</span> <span class="s1">'development'</span>
 </span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="tag-value-matches-regular-expression">Tag value matches regular expression<a class="headerlink" href="#tag-value-matches-regular-expression" title="Permanent link">#</a></h3>
@@ -3516,9 +3516,9 @@
 </li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c"># Synopsis: Resource must have costCentre tag</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">Rule</span> <span class="s1">&#39;costCentreTag&#39;</span> <span class="p">{</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">Exists</span> <span class="s1">&#39;Tags.costCentre&#39;</span> <span class="o">-CaseSensitive</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">Match</span> <span class="s1">&#39;Tags.costCentre&#39;</span> <span class="s1">&#39;^([1-9][0-9]{4})$&#39;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">Rule</span> <span class="s1">'costCentreTag'</span> <span class="p">{</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">Exists</span> <span class="s1">'Tags.costCentre'</span> <span class="o">-CaseSensitive</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">Match</span> <span class="s1">'Tags.costCentre'</span> <span class="s1">'^([1-9][0-9]{4})$'</span>
 </span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>An alternative way to write the rule would be to use the <code>-match</code> operator instead of the <code>Match</code> keyword. Like the <code>Within</code> keyword, the <code>Match</code> keyword provides additional verbose logging that the <code>-match</code> operator does not provide.</p>
@@ -3533,9 +3533,9 @@
 </li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c"># Synopsis: Resource must have costCentre tag</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">Rule</span> <span class="s1">&#39;costCentreTag&#39;</span> <span class="p">{</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">Exists</span> <span class="s1">&#39;Tags.costCentre&#39;</span> <span class="o">-CaseSensitive</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">Tags</span><span class="p">.</span><span class="n">costCentre</span> <span class="o">-match</span> <span class="s1">&#39;^([1-9][0-9]{4})$&#39;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">Rule</span> <span class="s1">'costCentreTag'</span> <span class="p">{</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">Exists</span> <span class="s1">'Tags.costCentre'</span> <span class="o">-CaseSensitive</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">Tags</span><span class="p">.</span><span class="n">costCentre</span> <span class="o">-match</span> <span class="s1">'^([1-9][0-9]{4})$'</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="use-business-unit-name-from-configuration">Use business unit name from configuration<a class="headerlink" href="#use-business-unit-name-from-configuration" title="Permanent link">#</a></h3>
@@ -3550,18 +3550,18 @@
 </ul>
 <p>An extract from <em>azureTags.Rule.ps1</em>:</p>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c"># Synopsis: Resource must have businessUnit tag</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">Rule</span> <span class="s1">&#39;businessUnitTag&#39;</span> <span class="p">{</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">Exists</span> <span class="s1">&#39;Tags.businessUnit&#39;</span> <span class="o">-CaseSensitive</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">Within</span> <span class="s1">&#39;Tags.businessUnit&#39;</span> <span class="nv">$Configuration</span><span class="p">.</span><span class="n">allowedBusinessUnits</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">Rule</span> <span class="s1">'businessUnitTag'</span> <span class="p">{</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">Exists</span> <span class="s1">'Tags.businessUnit'</span> <span class="o">-CaseSensitive</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">Within</span> <span class="s1">'Tags.businessUnit'</span> <span class="nv">$Configuration</span><span class="p">.</span><span class="n">allowedBusinessUnits</span>
 </span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>An extract from <em>ps-rule.yaml</em>:</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Configure business units that are allowed</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nt">configuration</span><span class="p">:</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="nt">allowedBusinessUnits</span><span class="p">:</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;IT</span><span class="nv"> </span><span class="s">Operations&#39;</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;Finance&#39;</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HR&#39;</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'IT</span><span class="nv"> </span><span class="s">Operations'</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'Finance'</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'HR'</span>
 </span></code></pre></div>
 <h2 id="execute-rules">Execute rules<a class="headerlink" href="#execute-rules" title="Permanent link">#</a></h2>
 <p>With a rule defined, the next step is to execute it. To execute rules, pipe the target object to <code>Invoke-PSRule</code>.</p>

@@ -3437,7 +3437,7 @@ Each rule must be named uniquely.</li>
 <li>The rule definition is saved within a file named <code>kubernetes.Rule.ps1</code>.</li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c"># Synopsis: Must have the app.kubernetes.io/name label</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">Rule</span> <span class="s1">&#39;metadata.Name&#39;</span> <span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">Rule</span> <span class="s1">'metadata.Name'</span> <span class="p">{</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="c"># Rule conditions go here</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">}</span>
 </span></code></pre></div>
@@ -3460,8 +3460,8 @@ PSRule supports this by enclosing the field name (<code>app.kubernetes.io/name</
 </li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c"># Synopsis: Must have the app.kubernetes.io/name label</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">Rule</span> <span class="s1">&#39;metadata.Name&#39;</span> <span class="p">{</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">Exists</span> <span class="s2">&quot;metadata.labels.&#39;app.kubernetes.io/name&#39;&quot;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">Rule</span> <span class="s1">'metadata.Name'</span> <span class="p">{</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">Exists</span> <span class="s2">"metadata.labels.'app.kubernetes.io/name'"</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>We have also defined something similar for the <em>version</em> and <em>component</em> labels.</p>
@@ -3471,14 +3471,14 @@ PSRule supports this by enclosing the field name (<code>app.kubernetes.io/name</
 <li>The <code>Within</code> keyword is used to validate that the <code>app.kubernetes.io/component</code> only uses one of four (4) allowed values.</li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c"># Synopsis: Must have the app.kubernetes.io/version label</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">Rule</span> <span class="s1">&#39;metadata.Version&#39;</span> <span class="p">{</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">Exists</span> <span class="s1">&#39;metadata.labels.&#39;&#39;app.kubernetes.io/version&#39;&#39;&#39;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">Rule</span> <span class="s1">'metadata.Version'</span> <span class="p">{</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">Exists</span> <span class="s1">'metadata.labels.''app.kubernetes.io/version'''</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c"># Synopsis: Must have the app.kubernetes.io/component label</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">Rule</span> <span class="s1">&#39;metadata.Component&#39;</span> <span class="p">{</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">Exists</span> <span class="s1">&#39;metadata.labels.&#39;&#39;app.kubernetes.io/component&#39;&#39;&#39;</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">Within</span> <span class="s1">&#39;metadata.labels.&#39;&#39;app.kubernetes.io/component&#39;&#39;&#39;</span> <span class="s1">&#39;web&#39;</span><span class="p">,</span> <span class="s1">&#39;api&#39;</span><span class="p">,</span> <span class="s1">&#39;database&#39;</span><span class="p">,</span> <span class="s1">&#39;gateway&#39;</span> <span class="o">-CaseSensitive</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">Rule</span> <span class="s1">'metadata.Component'</span> <span class="p">{</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">Exists</span> <span class="s1">'metadata.labels.''app.kubernetes.io/component'''</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">Within</span> <span class="s1">'metadata.labels.''app.kubernetes.io/component'''</span> <span class="s1">'web'</span><span class="p">,</span> <span class="s1">'api'</span><span class="p">,</span> <span class="s1">'database'</span><span class="p">,</span> <span class="s1">'gateway'</span> <span class="o">-CaseSensitive</span>
 </span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">}</span>
 </span></code></pre></div>
 <h2 id="use-custom-binding">Use custom binding<a class="headerlink" href="#use-custom-binding" title="Permanent link">#</a></h2>
@@ -3506,11 +3506,11 @@ To change binding property names set the <code>Binding.TargetName</code> and <co
 <p>These options can be set in the file <code>.\ps-rule.yaml</code> to be automatically loaded at when PSRule cmdlets are called.
 To set these configuration options either edit the file manually or use the following command.</p>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c"># Set options in ps-rule.yaml</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">Set-PSRuleOption</span> <span class="n">-TargetName</span> <span class="s1">&#39;metadata.Name&#39;</span> <span class="n">-TargetType</span> <span class="s1">&#39;kind&#39;</span><span class="p">;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">Set-PSRuleOption</span> <span class="n">-TargetName</span> <span class="s1">'metadata.Name'</span> <span class="n">-TargetType</span> <span class="s1">'kind'</span><span class="p">;</span>
 </span></code></pre></div>
 <p>Alternatively, these options can be set at runtime using the hashtable syntax.</p>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c"># Save options to a variable</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nv">$option</span> <span class="p">=</span> <span class="nb">New-PSRuleOption</span> <span class="n">-TargetName</span> <span class="s1">&#39;metadata.Name&#39;</span> <span class="n">-TargetType</span> <span class="s1">&#39;kind&#39;</span><span class="p">;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nv">$option</span> <span class="p">=</span> <span class="nb">New-PSRuleOption</span> <span class="n">-TargetName</span> <span class="s1">'metadata.Name'</span> <span class="n">-TargetType</span> <span class="s1">'kind'</span><span class="p">;</span>
 </span></code></pre></div>
 <p>These options will be passed to <code>Invoke-PSRule</code> using the <code>-Option</code> parameter in a later step.</p>
 <h2 id="define-preconditions">Define preconditions<a class="headerlink" href="#define-preconditions" title="Permanent link">#</a></h2>
@@ -3537,15 +3537,15 @@ Kubernetes has many types of built-in resource such as <em>Services</em>, <em>De
 <li>In a previous step, <code>TypeName</code> was bound to the <code>kind</code> property which will be <em>Deployment</em> or <em>Service</em> for these resource types.</li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c"># Synopsis: Must have the app.kubernetes.io/name label</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">Rule</span> <span class="s1">&#39;metadata.Name&#39;</span> <span class="n">-Type</span> <span class="s1">&#39;Deployment&#39;</span><span class="p">,</span> <span class="s1">&#39;Service&#39;</span> <span class="p">{</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">Exists</span> <span class="s2">&quot;metadata.labels.&#39;app.kubernetes.io/name&#39;&quot;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">Rule</span> <span class="s1">'metadata.Name'</span> <span class="n">-Type</span> <span class="s1">'Deployment'</span><span class="p">,</span> <span class="s1">'Service'</span> <span class="p">{</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">Exists</span> <span class="s2">"metadata.labels.'app.kubernetes.io/name'"</span>
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Using a type precondition satisfies our business rules and will deliver faster performance then using a script block.
 An example using a script block precondition is also shown below.</p>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c"># Synopsis: Must have the app.kubernetes.io/name label</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">Rule</span> <span class="s1">&#39;metadata.Name&#39;</span> <span class="n">-If</span> <span class="p">{</span> <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">kind</span> <span class="o">-eq</span> <span class="s1">&#39;Deployment&#39;</span> <span class="o">-or</span> <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">kind</span> <span class="o">-eq</span> <span class="s1">&#39;Service&#39;</span> <span class="p">}</span> <span class="p">{</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">Exists</span> <span class="s2">&quot;metadata.labels.&#39;app.kubernetes.io/name&#39;&quot;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">Rule</span> <span class="s1">'metadata.Name'</span> <span class="n">-If</span> <span class="p">{</span> <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">kind</span> <span class="o">-eq</span> <span class="s1">'Deployment'</span> <span class="o">-or</span> <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">kind</span> <span class="o">-eq</span> <span class="s1">'Service'</span> <span class="p">}</span> <span class="p">{</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">Exists</span> <span class="s2">"metadata.labels.'app.kubernetes.io/name'"</span>
 </span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="p">}</span>
 </span></code></pre></div>
 <h2 id="complete-remaining-rules">Complete remaining rules<a class="headerlink" href="#complete-remaining-rules" title="Permanent link">#</a></h2>
@@ -3559,26 +3559,26 @@ Each follows a similar pattern and builds on the previous sections.</p>
 </li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c"># Synopsis: Deployments use a minimum of 2 replicas</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">Rule</span> <span class="s1">&#39;deployment.HasMinimumReplicas&#39;</span> <span class="n">-Type</span> <span class="s1">&#39;Deployment&#39;</span> <span class="p">{</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">Exists</span> <span class="s1">&#39;spec.replicas&#39;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">Rule</span> <span class="s1">'deployment.HasMinimumReplicas'</span> <span class="n">-Type</span> <span class="s1">'Deployment'</span> <span class="p">{</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">Exists</span> <span class="s1">'spec.replicas'</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">spec</span><span class="p">.</span><span class="n">replicas</span> <span class="o">-ge</span> <span class="n">2</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span>
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
 </span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c"># Synopsis: Deployments use specific tags</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="n">Rule</span> <span class="s1">&#39;deployment.NotLatestImage&#39;</span> <span class="n">-Type</span> <span class="s1">&#39;Deployment&#39;</span> <span class="p">{</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="n">Rule</span> <span class="s1">'deployment.NotLatestImage'</span> <span class="n">-Type</span> <span class="s1">'Deployment'</span> <span class="p">{</span>
 </span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    <span class="k">foreach</span> <span class="p">(</span><span class="nv">$container</span> <span class="k">in</span> <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">spec</span><span class="p">.</span><span class="n">template</span><span class="p">.</span><span class="n">spec</span><span class="p">.</span><span class="n">containers</span><span class="p">)</span> <span class="p">{</span>
-</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>        <span class="nv">$container</span><span class="p">.</span><span class="n">image</span> <span class="o">-like</span> <span class="s1">&#39;*:*&#39;</span> <span class="o">-and</span>
-</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>        <span class="nv">$container</span><span class="p">.</span><span class="n">image</span> <span class="o">-notlike</span> <span class="s1">&#39;*:latest&#39;</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>        <span class="nv">$container</span><span class="p">.</span><span class="n">image</span> <span class="o">-like</span> <span class="s1">'*:*'</span> <span class="o">-and</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>        <span class="nv">$container</span><span class="p">.</span><span class="n">image</span> <span class="o">-notlike</span> <span class="s1">'*:latest'</span>
 </span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    <span class="p">}</span>
 </span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="p">}</span>
 </span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>
 </span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="c"># Synopsis: Resource requirements are set for each container</span>
-</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="n">Rule</span> <span class="s1">&#39;deployment.ResourcesSet&#39;</span> <span class="n">-Type</span> <span class="s1">&#39;Deployment&#39;</span> <span class="p">{</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="n">Rule</span> <span class="s1">'deployment.ResourcesSet'</span> <span class="n">-Type</span> <span class="s1">'Deployment'</span> <span class="p">{</span>
 </span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>    <span class="k">foreach</span> <span class="p">(</span><span class="nv">$container</span> <span class="k">in</span> <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">spec</span><span class="p">.</span><span class="n">template</span><span class="p">.</span><span class="n">spec</span><span class="p">.</span><span class="n">containers</span><span class="p">)</span> <span class="p">{</span>
-</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>        <span class="nv">$container</span> <span class="p">|</span> <span class="n">Exists</span> <span class="s1">&#39;resources.requests.cpu&#39;</span>
-</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>        <span class="nv">$container</span> <span class="p">|</span> <span class="n">Exists</span> <span class="s1">&#39;resources.requests.memory&#39;</span>
-</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>        <span class="nv">$container</span> <span class="p">|</span> <span class="n">Exists</span> <span class="s1">&#39;resources.limits.cpu&#39;</span>
-</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>        <span class="nv">$container</span> <span class="p">|</span> <span class="n">Exists</span> <span class="s1">&#39;resources.limits.memory&#39;</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>        <span class="nv">$container</span> <span class="p">|</span> <span class="n">Exists</span> <span class="s1">'resources.requests.cpu'</span>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>        <span class="nv">$container</span> <span class="p">|</span> <span class="n">Exists</span> <span class="s1">'resources.requests.memory'</span>
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>        <span class="nv">$container</span> <span class="p">|</span> <span class="n">Exists</span> <span class="s1">'resources.limits.cpu'</span>
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>        <span class="nv">$container</span> <span class="p">|</span> <span class="n">Exists</span> <span class="s1">'resources.limits.memory'</span>
 </span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>    <span class="p">}</span>
 </span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="p">}</span>
 </span></code></pre></div>

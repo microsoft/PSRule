@@ -3436,7 +3436,7 @@ Each rule must be named uniquely.</li>
 <li>The rule definition is saved within a file named <code>storageAccounts.Rule.ps1</code>.</li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">Rule</span> <span class="s1">&#39;storageAccounts.UseHttps&#39;</span> <span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">Rule</span> <span class="s1">'storageAccounts.UseHttps'</span> <span class="p">{</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="c"># Rule conditions go here</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span>
 </span></code></pre></div>
@@ -3447,14 +3447,14 @@ Each rule must be named uniquely.</li>
 </blockquote>
 <p>In <code>resources.json</code> one of our example storage accounts has a property <code>Properties.supportsHttpsTrafficOnly</code> as shown below, which will be how our rule will pass <code>$True</code> or fail <code>$False</code> Azure resources that we throw at it.</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;storage&quot;</span><span class="p">,</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">&quot;ResourceName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;storage&quot;</span><span class="p">,</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">&quot;ResourceType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Microsoft.Storage/storageAccounts&quot;</span><span class="p">,</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">&quot;Kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Storage&quot;</span><span class="p">,</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">&quot;ResourceGroupName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;test-rg&quot;</span><span class="p">,</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="nt">&quot;Location&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eastus2&quot;</span><span class="p">,</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="nt">&quot;Properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">        </span><span class="nt">&quot;supportsHttpsTrafficOnly&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"storage"</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">"ResourceName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"storage"</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">"ResourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Microsoft.Storage/storageAccounts"</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">"Kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Storage"</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">"ResourceGroupName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test-rg"</span><span class="p">,</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="nt">"Location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eastus2"</span><span class="p">,</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="nt">"Properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">        </span><span class="nt">"supportsHttpsTrafficOnly"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 </span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="p">}</span>
 </span></code></pre></div>
@@ -3468,7 +3468,7 @@ Each rule must be named uniquely.</li>
 </li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">Rule</span> <span class="s1">&#39;storageAccounts.UseHttps&#39;</span> <span class="p">{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">Rule</span> <span class="s1">'storageAccounts.UseHttps'</span> <span class="p">{</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="c"># This property returns true or false, so nothing more needs to be done</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">supportsHttpsTrafficOnly</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
@@ -3484,8 +3484,8 @@ Each rule must be named uniquely.</li>
 <li>Directly after the <code>Recommend</code> keyword is a message to help understand why the rule failed or passed.</li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">Rule</span> <span class="s1">&#39;storageAccounts.UseHttps&#39;</span> <span class="p">{</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">Recommend</span> <span class="s1">&#39;Storage accounts should only allow secure traffic&#39;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">Rule</span> <span class="s1">'storageAccounts.UseHttps'</span> <span class="p">{</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">Recommend</span> <span class="s1">'Storage accounts should only allow secure traffic'</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">supportsHttpsTrafficOnly</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">}</span>
@@ -3501,8 +3501,8 @@ When the rule is executed, if the precondition is <code>$True</code> then the ru
 <li>A check against <code>$TargetObject.ResourceType</code> ensured that our rule is only processed for Storage Accounts.</li>
 </ul>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">Rule</span> <span class="s1">&#39;storageAccounts.UseHttps&#39;</span> <span class="n">-If</span> <span class="p">{</span> <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">ResourceType</span> <span class="o">-eq</span> <span class="s1">&#39;Microsoft.Storage/storageAccounts&#39;</span> <span class="p">}</span> <span class="p">{</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">Recommend</span> <span class="s1">&#39;Storage accounts should only allow secure traffic&#39;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">Rule</span> <span class="s1">'storageAccounts.UseHttps'</span> <span class="n">-If</span> <span class="p">{</span> <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">ResourceType</span> <span class="o">-eq</span> <span class="s1">'Microsoft.Storage/storageAccounts'</span> <span class="p">}</span> <span class="p">{</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">Recommend</span> <span class="s1">'Storage accounts should only allow secure traffic'</span>
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
 </span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">supportsHttpsTrafficOnly</span>
 </span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="p">}</span>
@@ -3560,8 +3560,8 @@ This function will be used by preconditions to check the type of Azure resource.
 </span></code></pre></div>
 <p>Updating our existing <code>storageAccounts.UseHttps</code> rule, our rule definition becomes:</p>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c"># Synopsis: Configure storage accounts to only accept encrypted traffic i.e. HTTPS/SMB</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">Rule</span> <span class="s1">&#39;storageAccounts.UseHttps&#39;</span> <span class="n">-If</span> <span class="p">{</span> <span class="n">ResourceType</span> <span class="s1">&#39;Microsoft.Storage/storageAccounts&#39;</span> <span class="p">}</span> <span class="p">{</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">Recommend</span> <span class="s1">&#39;Storage accounts should only allow secure traffic&#39;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">Rule</span> <span class="s1">'storageAccounts.UseHttps'</span> <span class="n">-If</span> <span class="p">{</span> <span class="n">ResourceType</span> <span class="s1">'Microsoft.Storage/storageAccounts'</span> <span class="p">}</span> <span class="p">{</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">Recommend</span> <span class="s1">'Storage accounts should only allow secure traffic'</span>
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
 </span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="nv">$TargetObject</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">supportsHttpsTrafficOnly</span>
 </span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="p">}</span>
