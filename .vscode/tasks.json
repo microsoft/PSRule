@@ -250,7 +250,7 @@
       "label": "install .NET dependencies",
       "detail": "Install .NET dependencies.",
       "type": "shell",
-      "command": "sudo ./dotnet-install.sh --install-dir /usr/lib/dotnet --jsonfile ./global.json && sudo dotnet workload update",
+      "command": "sudo ./dotnet-install.sh --install-dir /usr/share/dotnet --jsonfile ./global.json && sudo dotnet workload update",
       "problemMatcher": [],
       "presentation": {
         "clear": true,
