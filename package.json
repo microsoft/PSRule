@@ -589,7 +589,7 @@
     "glob": "^13.0.6",
     "mocha": "^11.8.0",
     "serialize-javascript": ">=7.1.0",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "allowScripts": {
     "@vscode/vsce-sign@2.1.0": true,
