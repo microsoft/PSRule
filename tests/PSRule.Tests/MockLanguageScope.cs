@@ -63,6 +63,11 @@ internal sealed class MockLanguageScope : ILanguageScope
         throw new NotImplementedException();
     }
 
+    public IEnumerable<Type> GetConventions()
+    {
+        throw new NotImplementedException();
+    }
+
     public IResourceFilter GetFilter(ResourceKind kind)
     {
         throw new NotImplementedException();
