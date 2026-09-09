@@ -4,9 +4,9 @@
     "net8.0": {
       "Microsoft.CodeAnalysis.NetAnalyzers": {
         "type": "Direct",
-        "requested": "[10.0.301, )",
-        "resolved": "10.0.301",
-        "contentHash": "QAHyooyQN0JB95pI8q/N/eAH7Bb0OWSDSSNFGlmuxC+b/fXUVQJJChOBE6ygJFNkRj42u7rCHCSCPQC5n30tNg=="
+        "requested": "[10.0.401, )",
+        "resolved": "10.0.401",
+        "contentHash": "qGPLk4hknvVp6j9Lowa0qykw1cK7CyEyyy2aVs4dkOGroOMHJLRsMpUT53IKvYT6q78jxv96FZhzy3BrKCPgmA=="
       },
       "Microsoft.SourceLink.GitHub": {
         "type": "Direct",
@@ -1770,8 +1770,8 @@
       },
       "YamlDotNet": {
         "type": "Transitive",
-        "resolved": "17.0.1",
-        "contentHash": "qVir5fehR/W5nTJyoJUibypETXaW4iRAF9cQa0FQIC9TJ3VC0qDOwm4o/RxANewj8KzPF8WMF2abBfUgi6LC4w=="
+        "resolved": "18.1.0",
+        "contentHash": "5K+9KFg2TdTl7VXv88Qzi/0lqK6JFoNP3lRuImPYGRV7K/QYklDyTrj4+A+KAki1JsQi6qKY+hDyY7d6WRqjrw=="
       },
       "Microsoft.PSRule.Badges": {
         "type": "Project",
@@ -1812,7 +1812,7 @@
         "type": "Project",
         "dependencies": {
           "Newtonsoft.Json": "[13.0.4, )",
-          "YamlDotNet": "[17.0.1, )"
+          "YamlDotNet": "[18.1.0, )"
         }
       }
     }
