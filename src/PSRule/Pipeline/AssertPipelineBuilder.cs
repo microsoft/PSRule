@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using PSRule.Configuration;
+using PSRule.Definitions;
 using PSRule.Pipeline.Output;
 using PSRule.Rules;
 
@@ -59,9 +60,12 @@ internal sealed class AssertPipelineBuilder : InvokePipelineBuilderBase
         if (!RequireModules() || !RequireWorkspaceCapabilities() || !RequireSources())
             return null;
 
-        var context = PrepareContext(PipelineHookActions.Default, writer: HandleJobSummary(writer ?? PrepareWriter()), checkModuleCapabilities: true);
+        var context = PrepareContext(PipelineHookActions.Default, writer: writer, checkModuleCapabilities: true);
         if (context == null)
             return null;
+
+        // Update job summary writer to include conventions
+        writer = HandleJobSummary(writer, context);
 
         return new InvokeRulePipeline
         (
@@ -71,17 +75,21 @@ internal sealed class AssertPipelineBuilder : InvokePipelineBuilderBase
         );
     }
 
-    private IPipelineWriter HandleJobSummary(IPipelineWriter writer)
+    private IPipelineWriter HandleJobSummary(IPipelineWriter writer, PipelineContext context)
     {
         if (string.IsNullOrEmpty(Option.Output.JobSummaryPath))
             return writer;
+
+        // Get conventions that contribute to job summaries
+        var contributors = context.ResourceCache.OfType<IJobSummaryContributor>().ToArray();
 
         return new JobSummaryWriter
         (
             inner: writer,
             option: Option,
             shouldProcess: ShouldProcess,
-            source: Source
+            source: Source,
+            contributors: contributors.Length > 0 ? contributors : null
         );
     }
 }

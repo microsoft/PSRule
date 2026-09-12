@@ -19,6 +19,7 @@ internal sealed class LanguageScope(string name, RuntimeFactoryContainer? contai
     private readonly RuntimeFactoryContainer? _Container = container;
     private readonly Dictionary<string, object> _Service = [];
     private readonly List<Type> _EmitterTypes = [];
+    private readonly List<Type> _ConventionTypes = [];
     private readonly Dictionary<ResourceKind, IResourceFilter> _Filter = [];
 
     private IDictionary<string, object>? _Configuration = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
@@ -138,6 +139,12 @@ internal sealed class LanguageScope(string name, RuntimeFactoryContainer? contai
         return _EmitterTypes;
     }
 
+    /// <inheritdoc/>
+    public IEnumerable<Type> GetConventions()
+    {
+        return _ConventionTypes;
+    }
+
     public ITargetBindingResult? Bind(ITargetObject targetObject)
     {
         return _TargetBinder?.Bind(targetObject);
@@ -234,6 +241,12 @@ internal sealed class LanguageScope(string name, RuntimeFactoryContainer? contai
         // Add any emitter.
         if (typeof(TInterface) == typeof(IEmitter))
             _EmitterTypes.Add(typeof(TService));
+    }
+
+    /// <inheritdoc/>
+    void IRuntimeServiceCollection.AddConvention<TConvention>()
+    {
+        _ConventionTypes.Add(typeof(TConvention));
     }
 
     #endregion IRuntimeServiceCollection
