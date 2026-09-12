@@ -20,6 +20,15 @@ updates:
         patterns:
           - System.Management.Automation
           - Microsoft.PowerShell.SDK
+
+      dev-dotnet:
+        patterns:
+          - Microsoft.NET.Test.Sdk
+          - Microsoft.CodeAnalysis.NetAnalyzers
+          - xunit
+          - xunit.runner.visualstudio
+          - Microsoft.SourceLink.GitHub
+
     ignore:
       - dependency-name: gitversion.tool
 
