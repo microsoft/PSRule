@@ -583,7 +583,7 @@
     "@typescript-eslint/parser": "^8.67.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.1.0",
-    "@vscode/vsce": "^3.9.2",
+    "@vscode/vsce": "^4.0.0",
     "esbuild": "^0.28.2",
     "eslint": "^10.10.0",
     "glob": "^13.0.6",
