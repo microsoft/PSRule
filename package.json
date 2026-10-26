@@ -566,7 +566,7 @@
     "test": "npm run build:dotnet && npm run build:esbuild && vscode-test"
   },
   "dependencies": {
-    "fs-extra": "^11.3.5",
+    "fs-extra": "^11.4.1",
     "vscode-languageclient": "^10.1.1"
   },
   "extensionDependencies": [
