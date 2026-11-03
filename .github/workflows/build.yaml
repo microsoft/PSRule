@@ -312,7 +312,7 @@ jobs:
           path: ./out/nuget/PSRule
 
       - name: Run v3 action
-        uses: microsoft/ps-rule@dev/v3
+        uses: microsoft/ps-rule@46451b8f5258c41beb5ae69ed7190ccbba84112c # v2.9.0
         env:
           PSRULE_TOOL_PACKAGE_SOURCE: '${{ github.workspace }}/out/nuget/PSRule'
           PSRULE_TOOL_PACKAGE_VERSION: 0.0.1
