@@ -1,0 +1,62 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+# Test baselines with selector support
+
+---
+# Synopsis: Example baseline that selects high severity rules
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: HighSeverityBaseline
+spec:
+  rule:
+    selector:
+      if:
+        field: 'Level'
+        equals: 'Error'
+
+---
+# Synopsis: Example baseline that selects rules with names starting with prefix
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: PrefixBaseline
+spec:
+  rule:
+    selector:
+      if:
+        field: 'Name'
+        startsWith: 'Azure.'
+
+---
+# Synopsis: Example baseline combining multiple criteria
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: ComplexBaseline
+spec:
+  rule:
+    selector:
+      if:
+        anyOf:
+          - field: 'Level'
+            in: ['Error', 'Warning']
+          - allOf:
+            - field: 'Name'
+              startsWith: 'Security.'
+            - field: 'Tags.category'
+              equals: 'Security'
+
+---
+# Synopsis: Example baseline using annotation-based selection
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: AnnotationBaseline
+spec:
+  rule:
+    selector:
+      if:
+        field: 'Annotations.severity'
+        in: ['high', 'critical']
