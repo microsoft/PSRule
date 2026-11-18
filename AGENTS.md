@@ -1,11 +1,41 @@
 # PSRule Development Instructions
 
-Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
+Always reference these instructions first. If a documented command fails or its output differs from the stated Expected value, stop, report the exact command and output, and then search the repository files (not the web) for the relevant script or config before retrying.
 
 ## Working Effectively
 
 PSRule is a cross-platform PowerShell module for validating infrastructure as code (IaC) and objects using PowerShell rules.
 The project includes .NET libraries, a PowerShell module, CLI tools, VS Code extension, and comprehensive documentation.
+
+### Scoped Instructions
+
+Keep shared workflow and build guidance in this file. Language-specific conventions are maintained separately:
+
+| Files | Instructions |
+|-------|--------------|
+| `**/*.cs` | [C#](.github/instructions/csharp.instructions.md) |
+| `**/*.ps1`, `**/*.psm1`, `**/*.psd1` | [PowerShell](.github/instructions/powershell.instructions.md) |
+| `**/*.ts` | [TypeScript](.github/instructions/typescript.instructions.md) |
+| `**/*.md` | [Markdown and documentation](.github/instructions/documentation.instructions.md) |
+
+These files use `applyTo` patterns for agents that support scoped instructions.
+If an agent does not load them automatically, read the matching files before editing.
+For mixed-language changes, use each applicable instruction file without duplicating its rules here.
+
+### Command Execution
+
+- Prefer one direct command per tool call, using the repository working directory.
+  Run independent commands in parallel tool calls rather than combining them in a shell command.
+- For routine builds and tests, use the tool's captured output and exit status.
+  Avoid log redirection, pipes to `tail`, shell variable assignments, and exit-code wrappers.
+  These add shell complexity and filesystem writes that can require additional approval.
+- Reduce output with the command's own verbosity options, such as `dotnet test --verbosity quiet`.
+  If output is truncated, inspect the tool-provided output file with targeted reads.
+- For long-running commands, use the execution tool's wait and follow-up output features.
+  Do not add shell backgrounding or rerun a command just to retrieve its output.
+- Create logs only when needed for diagnosis or explicitly requested; avoid unnecessary writes outside the repository.
+- Do not disable approval safeguards, broaden permissions, or disguise commands to avoid approval.
+  Simple commands may still require approval under the user's configuration.
 
 ### Bootstrap and Build Process
 1. **Install PowerShell dependencies** (3 seconds, NEVER CANCEL):
@@ -62,23 +92,28 @@ The project includes .NET libraries, a PowerShell module, CLI tools, VS Code ext
 
 Always test functionality after making changes:
 
+Map changed paths to checks: `src/PSRule/` or `src/PSRule.Types/` requires the Import-Module check and `dotnet test tests/PSRule.Types.Tests/`; `src/PSRule.Tool/` or `src/PSRule.CommandLine/` requires the CLI --help check; `src/vscode-ps-rule/` requires `npm run package`; `src/PSRule.EditorServices/` requires `dotnet test tests/PSRule.EditorServices.Tests/`. Documentation changes under `docs/` require `mkdocs build`.
+
 1. **Verify PowerShell module loads correctly**:
    ```bash
    pwsh -c "Import-Module ./out/modules/PSRule/PSRule.psd1 -Force; Get-Command -Module PSRule | Measure-Object | Select Count"
    ```
    Expected: Should return 11 commands without errors.
+   If the import fails or the count is not 11, stop, report the full error output and actual count (if available), and do not modify source files to make the check pass.
 
 2. **Test CLI tool functionality**:
    ```bash
    ./out/cli/build/Microsoft.PSRule.Tool --help
    ```
    Expected: Should display help text starting with "PSRule CLI v0.0.1".
+   If the help output does not start with the expected text, report the full CLI --help output instead of treating the step as passed.
 
 3. **Verify VS Code extension builds**:
    ```bash
    npm run package
    ```
    Expected: Creates `out/package/vscode-ps-rule-0.0.1.vsix` (~29MB).
+   If the file is missing or its size differs significantly from ~29MB, report the `npm run package` output and the actual file size (or that the file is missing) instead of treating the step as passed.
 
 ## Project Structure
 
@@ -155,13 +190,12 @@ Use `Invoke-Build` with these common targets:
 
 ## Development Context
 
-- When implementing logging use `ILogger` from `src/PSRule.Types/Runtime/ILogger.cs`.
 - When creating new files, always add a trailing newline before the end of the file.
 
 ## Troubleshooting
 
 ### Common Issues
-1. **Tests fail with network errors**: Normal in restricted environments. Focus on core functionality tests.
+1. **Tests fail with network errors**: If network-dependent tests fail, run `dotnet test tests/PSRule.Types.Tests/` and the Validation Scenarios above, then report which tests failed and why.
 2. **PowerShell execution policy errors**: Use `pwsh` instead of `powershell` for cross-platform compatibility.
 3. **Documentation build API errors**: Normal without GitHub token. Use `mkdocs build` without `--strict`.
 4. **Long build times**: Builds can take 60+ seconds total. NEVER cancel early.
