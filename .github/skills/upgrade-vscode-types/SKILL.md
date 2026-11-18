@@ -49,6 +49,11 @@ This skill is Markdown-only; do not add helper scripts or automation to perform 
 5. Preserve other engine fields, the extension's own version, and unrelated dependencies and settings.
    Raising the engine minimum intentionally raises the minimum supported VS Code release;
    do not downgrade the types or widen the engine range to hide a packaging error.
+6. When the update changes the VS Code engine minimum, update or add an `Engineering` entry in the
+   `Unreleased` section of [docs/changelog.md](../../../docs/changelog.md). Keep the engine version
+   current and link the associated PSRule pull request, not the upstream DefinitelyTyped source.
+   Verify that the pull request link resolves to the intended update; replace any stale version or
+   pull request reference in the existing unreleased engine entry.
 
 ## Validation and Completion
 

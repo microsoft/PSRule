@@ -25,8 +25,8 @@ See [upgrade notes][1] for helpful information when upgrading from previous vers
 ## Unreleased
 
 - Engineering:
-  - Bump vscode engine to v1.134.0.
-    [#3436](https://github.com/microsoft/PSRule/pull/3436)
+  - Bump vscode engine to v1.146.0.
+    [#3553](https://github.com/microsoft/PSRule/pull/3553)
 
 ## v3.0.0-B0783 (pre-release)
 
