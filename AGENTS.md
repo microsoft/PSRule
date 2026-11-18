@@ -22,6 +22,21 @@ These files use `applyTo` patterns for agents that support scoped instructions.
 If an agent does not load them automatically, read the matching files before editing.
 For mixed-language changes, use each applicable instruction file without duplicating its rules here.
 
+### Command Execution
+
+- Prefer one direct command per tool call, using the repository working directory.
+  Run independent commands in parallel tool calls rather than combining them in a shell command.
+- For routine builds and tests, use the tool's captured output and exit status.
+  Avoid log redirection, pipes to `tail`, shell variable assignments, and exit-code wrappers.
+  These add shell complexity and filesystem writes that can require additional approval.
+- Reduce output with the command's own verbosity options, such as `dotnet test --verbosity quiet`.
+  If output is truncated, inspect the tool-provided output file with targeted reads.
+- For long-running commands, use the execution tool's wait and follow-up output features.
+  Do not add shell backgrounding or rerun a command just to retrieve its output.
+- Create logs only when needed for diagnosis or explicitly requested; avoid unnecessary writes outside the repository.
+- Do not disable approval safeguards, broaden permissions, or disguise commands to avoid approval.
+  Simple commands may still require approval under the user's configuration.
+
 ### Bootstrap and Build Process
 1. **Install PowerShell dependencies** (3 seconds, NEVER CANCEL):
    ```bash
