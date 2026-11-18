@@ -12,12 +12,17 @@ namespace PSRule.Pipeline;
 /// </summary>
 public sealed class InputPathBuilderTests
 {
+    /// <summary>
+    /// Repository files intentionally provide a predictable input set for these path patterns.
+    /// Keep fixed expected counts; verify added or removed files before updating them.
+    /// Do not replace these inputs with generated fixtures or calculate expectations from the output.
+    /// </summary>
     [Theory]
     [InlineData("./.github/*.yml", 1)]
-    [InlineData("./.github/**/*.yaml", 9)]
-    [InlineData("./.github/", 14)]
-    [InlineData(".github/", 14)]
-    [InlineData(".github", 14)]
+    [InlineData("./.github/**/*.yaml", 8)]
+    [InlineData("./.github/", 16)]
+    [InlineData(".github/", 16)]
+    [InlineData(".github", 16)]
     [InlineData("./*.json", 8)]
     public void Build_WithValidPathAdded_ShouldReturnFiles(string path, int expected)
     {
